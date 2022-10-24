@@ -1,6 +1,7 @@
-#include "eval_mixer.h"
-#include "mixers.h"
 #include <iostream>
+#include "eval_mixer.h"
+#include "format_result.h"
+#include "mixers.h"
 
 
 void build_trng() {
@@ -22,16 +23,7 @@ int main(int argc, char** args) {
 	using namespace mixer;
 	//build_trng();
 
-	const auto test_mixer = [](uint64_t x) {
-		x ^= x >> 33;
-		x *= 0xff51afd7ed558ccdull;
-		x ^= x >> 33;
-		x *= 0xc4ceb9fe1a85ec53ull;
-		x ^= x >> 33;
-		return x;
-	};
-
-	const auto n = 10000;
+	constexpr auto n = 10000;
 	const auto baseline = evaluate_trng(n);
 
 	Table table({"mixer", "stream", "sac_std_bias", "sac_avg_bias", "sac_max_bias", "bic_std_bias", "bic_avg_bias", "bic_max_bias", "n"});

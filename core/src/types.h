@@ -1,0 +1,23 @@
+#pragma once
+
+namespace mixer {
+
+struct stream {
+	std::string name;
+	std::function<std::optional<uint64_t>()> next;
+
+	std::optional<uint64_t> operator()() const {
+		return next();
+	}
+};
+
+struct mixer {
+	std::string name;
+	std::function<uint64_t(uint64_t)> mix;
+
+	uint64_t operator()(uint64_t x) const {
+		return mix(x);
+	}
+};
+
+}

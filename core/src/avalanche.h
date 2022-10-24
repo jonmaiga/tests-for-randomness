@@ -2,35 +2,12 @@
 
 #include <algorithm>
 #include <cmath>
-#include <intrin.h>
 #include <optional>
 
-#include "mixers.h"
-#include "streams.h"
+#include "util/bitwise.h"
+#include "types.h"
 
 namespace mixer {
-
-inline uint64_t count_bits_changed(uint64_t a, uint64_t b) {
-	const uint64_t ah_bh = a ^ b;
-	return __popcnt64(ah_bh);
-}
-
-inline uint64_t flip_bit(uint64_t i, int bit) {
-	return i ^ (1ull << bit);
-}
-
-inline double avalanche_1d_fast_test(const mixer& hash, int n) {
-	double mean = 0;
-	for (int i = 0; i < n; ++i) {
-		const uint64_t h = hash(i);
-		for (int bit = 0; bit < 64; ++bit) {
-			mean += count_bits_changed(h, hash(flip_bit(i, bit)));
-		}
-	}
-	mean /= 64. * n;
-	const double score = 1. - fabs(1. - mean / 32.);
-	return score;
-}
 
 struct avalanche_stats {
 	double max_bias = 0;

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
 set(CMAKE_CXX_STANDARD 17)
-project(mixer_eval)
+project(bit_mixer_evaluation)
 link_directories(/usr/local/lib/)
 add_subdirectory(core/)

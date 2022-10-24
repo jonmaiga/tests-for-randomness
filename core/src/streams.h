@@ -1,19 +1,9 @@
 #pragma once
 
 #include "util/fileutil.h"
-#include "rrc.h"
+#include "types.h"
 
 namespace mixer {
-
-
-struct stream {
-	std::string name;
-	std::function<std::optional<uint64_t>()> next;
-
-	std::optional<uint64_t> operator()() const {
-		return next();
-	}
-};
 
 using stream_factory = std::function<stream()>;
 
@@ -71,19 +61,6 @@ inline stream createStreamFromBinaryFile(const std::filesystem::path& path, int 
 		data.resize(n);
 	}
 	return {path.filename().string(), generated_stream{data}};
-}
-
-
-inline stream add_rrc(const stream& source, int rotation, rrc_type type) {
-	const auto name = to_string(type) + "-" + std::to_string(rotation) + "(" + source.name + ")";
-	return {
-		name, [source, rotation, type]()-> std::optional<uint64_t> {
-			if (const auto x = source()) {
-				return permute(*x, rotation, type);
-			}
-			return {};
-		}
-	};
 }
 
 
