@@ -23,21 +23,23 @@ int main(int argc, char** args) {
 	using namespace mixer;
 	//build_trng();
 
-	constexpr auto n = 5000;
+	constexpr auto n = 30000;
 	const auto baseline = evaluate_trng(n);
 
 	result_analyzer analyzer;
 
 	analyzer.add(baseline);
-	analyzer.add(evaluate_rrc(mx3, n));
-	analyzer.add(evaluate_rrc(nasam, n));
-	analyzer.add(evaluate_rrc(xmxmxm, n));
-	analyzer.add(evaluate_rrc(moremur, n));
-	analyzer.add(evaluate_rrc(lea64, n));
-	analyzer.add(evaluate_rrc(degski64, n));
-	analyzer.add(evaluate_rrc(murmur3, n));
-	analyzer.add(evaluate_rrc(xxh3, n));
-	analyzer.add(evaluate_rrc(fast_hash, n));
-	std::cout << analyzer.summarize() << "\n";
+	analyzer.add(evaluate_rrc(mx4, n));
+	//analyzer.add(evaluate_rrc(mx3, n));
+	//analyzer.add(evaluate_rrc(nasam, n));
+	//analyzer.add(evaluate_rrc(xmxmxm, n));
+	//analyzer.add(evaluate_rrc(moremur, n));
+	//analyzer.add(evaluate_rrc(lea64, n));
+	//analyzer.add(evaluate_rrc(degski64, n));
+	//analyzer.add(evaluate_rrc(murmur3, n));
+	//analyzer.add(evaluate_rrc(xxh3, n));
+	//analyzer.add(evaluate_rrc(fast_hash, n));
+
+	std::cout << analyzer.summarize_rank() << "\n";
 	return 0;
 }

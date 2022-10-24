@@ -40,6 +40,44 @@ inline void add_all(Table& table, const test_result& r) {
 	std::cout << table.to_string() << "\n";
 }
 
+inline avalanche_stats max(const avalanche_stats& l, const avalanche_stats& r) {
+	avalanche_stats as;
+	as.max_bias = std::max(l.max_bias, r.max_bias);
+	as.std_dev_bias = std::max(l.std_dev_bias, r.std_dev_bias);
+	if (std::abs(l.mean_bias) > std::abs(r.mean_bias)) {
+		as.mean_bias = l.mean_bias;
+	}
+	else {
+		as.mean_bias = r.mean_bias;
+	}
+	return as;
+}
+
+inline avalanche_result get_worst(const test_result& r) {
+	avalanche_result worst{"-"};
+	for (const auto& rr : r.results) {
+		worst.mixer_name = rr.mixer_name;
+		worst.sac = max(worst.sac, rr.sac);
+		worst.bic = max(worst.bic, rr.bic);
+	}
+	return worst;
+}
+
+inline avalanche_result get_sum(const test_result& r) {
+	avalanche_result sum{"-"};
+	for (const auto& rr : r.results) {
+		sum.mixer_name = rr.mixer_name;
+		sum.sac.max_bias += rr.sac.max_bias;
+		sum.sac.mean_bias += rr.sac.mean_bias;
+		sum.sac.std_dev_bias += rr.sac.std_dev_bias;
+		sum.bic.max_bias += rr.bic.max_bias;
+		sum.bic.mean_bias += rr.bic.mean_bias;
+		sum.bic.std_dev_bias += rr.bic.std_dev_bias;
+	}
+	return sum;
+}
+
+
 class result_analyzer {
 
 public:
@@ -73,6 +111,25 @@ public:
 		}
 		return table.to_string();
 	}
+
+	std::string summarize_rank() const {
+		std::vector<avalanche_result> rows;
+		for (const auto& mixer_result : results) {
+			//rows.push_back(get_worst(mixer_result));
+			rows.push_back(get_sum(mixer_result));
+		}
+
+		std::sort(rows.begin(), rows.end(), [](const avalanche_result& l, const avalanche_result& r) {
+			return l.bic.max_bias < r.bic.max_bias;
+		});
+
+		Table table({"mixer", "stream", "sac_std_bias", "sac_avg_bias", "sac_max_bias", "bic_std_bias", "bic_avg_bias", "bic_max_bias", "n"});
+		for (const auto& row : rows) {
+			add_avalanche_result(table, row);
+		}
+		return table.to_string();
+	}
+
 
 private:
 	Table runtime_table;
