@@ -23,20 +23,21 @@ int main(int argc, char** args) {
 	using namespace mixer;
 	//build_trng();
 
-	constexpr auto n = 10000;
+	constexpr auto n = 5000;
 	const auto baseline = evaluate_trng(n);
 
-	Table table({"mixer", "stream", "sac_std_bias", "sac_avg_bias", "sac_max_bias", "bic_std_bias", "bic_avg_bias", "bic_max_bias", "n"});
-	add_worst(table, baseline);
-	add_worst(table, evaluate_rrc(mx3, n));
-	add_worst(table, evaluate_rrc(nasam, n));
-	add_worst(table, evaluate_rrc(xmxmxm, n));
-	add_worst(table, evaluate_rrc(moremur, n));
-	add_worst(table, evaluate_rrc(lea64, n));
-	add_worst(table, evaluate_rrc(degski64, n));
-	add_worst(table, evaluate_rrc(murmur3, n));
-	add_worst(table, evaluate_rrc(xxh3, n));
-	add_worst(table, evaluate_rrc(fast_hash, n));
+	result_analyzer analyzer;
 
+	analyzer.add(baseline);
+	analyzer.add(evaluate_rrc(mx3, n));
+	analyzer.add(evaluate_rrc(nasam, n));
+	analyzer.add(evaluate_rrc(xmxmxm, n));
+	analyzer.add(evaluate_rrc(moremur, n));
+	analyzer.add(evaluate_rrc(lea64, n));
+	analyzer.add(evaluate_rrc(degski64, n));
+	analyzer.add(evaluate_rrc(murmur3, n));
+	analyzer.add(evaluate_rrc(xxh3, n));
+	analyzer.add(evaluate_rrc(fast_hash, n));
+	std::cout << analyzer.summarize() << "\n";
 	return 0;
 }
