@@ -29,4 +29,17 @@ inline void add_worst(Table& table, const test_result& r) {
 	std::cout << table.to_string() << "\n";
 }
 
+inline void add_all(Table& table, const test_result& r) {
+	auto rs = r.results;
+	std::sort(rs.begin(), rs.end(), [](const avalanche_result& l, const avalanche_result& r) {
+		return l.bic.max_bias < r.bic.max_bias; 
+	});
+
+	for (const auto& rr : rs) {
+		add_avalanche_result(table, rr);
+	}
+	std::cout << table.to_string() << "\n";
+}
+
+
 }

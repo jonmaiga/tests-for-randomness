@@ -20,4 +20,11 @@ struct mixer {
 	}
 };
 
+struct test_config {
+	stream stream;
+	mixer mixer;
+};
+
+using test_factory = std::function<test_config()>;
+
 }

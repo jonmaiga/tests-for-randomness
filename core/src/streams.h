@@ -34,15 +34,16 @@ struct counter_stream {
 	}
 };
 
-struct test_stream {
-	uint64_t n{};
-	uint64_t index{};
+struct f_stream {
+	const uint64_t n{};
+	const std::function<uint64_t(uint64_t)> f;
+	uint64_t i{};
 
 	uint64_t operator()() {
-		if (index == n) {
+		if (i == n) {
 			throw std::runtime_error("No more stream data.");
 		}
-		return 2 ^ index++ + 1;
+		return f(++i);
 	}
 };
 
@@ -50,10 +51,11 @@ inline stream create_counter_stream(uint64_t increment, std::size_t n) {
 	return {"counter-" + std::to_string(increment), counter_stream{increment, n}};
 }
 
-inline stream create_xor_stream(std::size_t n) {
-	return {"A256008", test_stream{n}};
-}
+#define FUNC(exp) [=](uint64_t i) { return exp; }
 
+inline stream create_gray_code(std::size_t n, uint64_t d) {
+	return {"gray code-" + std::to_string(d), f_stream{n, FUNC(i ^ (i / d))}};
+}
 
 inline stream createStreamFromBinaryFile(const std::filesystem::path& path, int n) {
 	auto data = readBinaryMustExist<uint64_t>(path.string());
