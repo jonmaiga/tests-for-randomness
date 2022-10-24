@@ -26,11 +26,8 @@ using test_factory = std::function<test_config()>;
 inline stream add_rrc(const stream& source, int rotation, rrc_type type) {
 	const auto name = to_string(type) + "-" + std::to_string(rotation) + "(" + source.name + ")";
 	return {
-		name, [source, rotation, type]()-> std::optional<uint64_t> {
-			if (const auto x = source()) {
-				return permute(*x, rotation, type);
-			}
-			return {};
+		name, [source, rotation, type]()-> uint64_t {
+			return permute(source(), rotation, type);
 		}
 	};
 }
@@ -75,7 +72,7 @@ inline test_result evaluate_trng(uint64_t n) {
 	auto data = readBinaryMustExist<uint64_t>(R"(C:\tmp\random.org\trng_small.bin)");
 	const auto factory = [data, n]() {
 		const auto dummy_stream = stream{
-			"dummy", [n]() mutable -> std::optional<uint64_t> {
+			"dummy", [n]() mutable -> uint64_t {
 				if (n-- == 0) {
 					throw std::runtime_error("No more stream data.");
 				}

@@ -4,9 +4,9 @@ namespace mixer {
 
 struct stream {
 	std::string name;
-	std::function<std::optional<uint64_t>()> next;
+	std::function<uint64_t()> next;
 
-	std::optional<uint64_t> operator()() const {
+	uint64_t operator()() const {
 		return next();
 	}
 };

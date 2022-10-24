@@ -30,9 +30,8 @@ inline avalanche_result avalanche_bit_independence_test(const stream& stream, co
 	avalanche_result result{stream.name, mixer.name};
 	uint64_t n = 0;
 	try {
-		while (const auto maybeX = stream()) {
+		while (const auto x = stream()) {
 			++n;
-			const uint64_t x = *maybeX;
 			const uint64_t h0 = mixer(x);
 			for (int j = 0; j < 64; j++) {
 				const uint64_t change = h0 ^ mixer(flip_bit(x, j));

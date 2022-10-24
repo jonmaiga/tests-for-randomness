@@ -11,9 +11,9 @@ struct generated_stream {
 	std::vector<uint64_t> data;
 	std::size_t index = 0;
 
-	std::optional<uint64_t> operator()() {
+	uint64_t operator()() {
 		if (index == data.size()) {
-			return {};
+			throw std::runtime_error("No more stream data.");
 		}
 		return data[index++];
 	}
@@ -24,9 +24,9 @@ struct counter_stream {
 	uint64_t n{};
 	uint64_t index{};
 
-	std::optional<uint64_t> operator()() {
+	uint64_t operator()() {
 		if (n == 0) {
-			return {};
+			throw std::runtime_error("No more stream data.");
 		}
 		--n;
 		index += increment;
@@ -38,9 +38,9 @@ struct test_stream {
 	uint64_t n{};
 	uint64_t index{};
 
-	std::optional<uint64_t> operator()() {
+	uint64_t operator()() {
 		if (index == n) {
-			return {};
+			throw std::runtime_error("No more stream data.");
 		}
 		return 2 ^ index++ + 1;
 	}
