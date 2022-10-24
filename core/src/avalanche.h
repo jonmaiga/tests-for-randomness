@@ -23,6 +23,8 @@ struct avalanche_result {
 	avalanche_stats sac;
 };
 
+constexpr uint64_t avalanche_draws = 65;
+
 inline avalanche_result avalanche_bit_independence_test(const stream& stream, const mixer& mixer) {
 	uint64_t bic_matrix[64][64] = {{}};
 	uint64_t sac_count[64] = {};
@@ -30,8 +32,8 @@ inline avalanche_result avalanche_bit_independence_test(const stream& stream, co
 	avalanche_result result{stream.name, mixer.name};
 	uint64_t n = 0;
 	try {
-		while (const auto x = stream()) {
-			++n;
+		while (true) {
+			const auto x = stream();
 			const uint64_t h0 = mixer(x);
 			for (int j = 0; j < 64; j++) {
 				const uint64_t change = h0 ^ mixer(flip_bit(x, j));
@@ -41,6 +43,7 @@ inline avalanche_result avalanche_bit_independence_test(const stream& stream, co
 					sac_count[k] += bit;
 				}
 			}
+			++n;
 		}
 	}
 	catch (const std::runtime_error&) {

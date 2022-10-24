@@ -34,7 +34,7 @@ struct counter_stream {
 	}
 };
 
-struct f_stream {
+struct function_stream {
 	const uint64_t n{};
 	const std::function<uint64_t(uint64_t)> f;
 	uint64_t i{};
@@ -54,8 +54,10 @@ inline stream create_counter_stream(uint64_t increment, std::size_t n) {
 #define FUNC(exp) [=](uint64_t i) { return exp; }
 
 inline stream create_gray_code(std::size_t n, uint64_t d) {
-	return {"gray code-" + std::to_string(d), f_stream{n, FUNC(i ^ (i / d))}};
+	return {"graycode-" + std::to_string(d), function_stream{n, FUNC(i ^ (i / d))}};
 }
+
+#undef FUNC
 
 inline stream createStreamFromBinaryFile(const std::filesystem::path& path, int n) {
 	auto data = readBinaryMustExist<uint64_t>(path.string());

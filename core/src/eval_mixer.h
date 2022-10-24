@@ -57,11 +57,10 @@ inline test_result evaluate(const mixer& mixer, uint64_t n) {
 	return evaluate(create_test_streams(mixer, n));
 }
 
-inline test_result evaluate_trng(uint64_t n) {
-	auto data = readBinaryMustExist<uint64_t>(R"(C:\tmp\random.org\trng_small.bin)");
-	const auto factory = [data, n]() {
+inline test_factory create_trng_factory(const std::vector<uint64_t>& data, size_t block, uint64_t n) {
+	return [&data, n, block]() {
 		const auto dummy_stream = stream{
-			"dummy", [n]() mutable -> uint64_t {
+			"block-" + std::to_string(block), [n]() mutable -> uint64_t {
 				if (n-- == 0) {
 					throw std::runtime_error("No more stream data.");
 				}
@@ -69,10 +68,9 @@ inline test_result evaluate_trng(uint64_t n) {
 			}
 		};
 
-		std::size_t index = 0;
 		const auto trng_mixer = mixer{
 			"trng",
-			[index, data](uint64_t) mutable-> uint64_t {
+			[index = block * avalanche_draws, &data](uint64_t) mutable-> uint64_t {
 				if (index >= data.size()) {
 					throw std::runtime_error("No more mixer data.");
 				}
@@ -81,8 +79,21 @@ inline test_result evaluate_trng(uint64_t n) {
 		};
 		return test_config{dummy_stream, trng_mixer};
 	};
+}
 
-	return evaluate({factory});
+inline test_result evaluate_trng(uint64_t n) {
+	const auto wanted_elements = n * avalanche_draws * 256;
+	std::cout << "Reading trng stream from disk...";
+	const auto data = readBinaryMustExist<uint64_t>(R"(C:\tmp\random.org\trng.bin)", wanted_elements);
+	std::cout << " done!\n";
+	if (data.size() < wanted_elements) {
+		std::cout << "WARNING: not enough data, " << wanted_elements << "/" << data.size() << "\n";
+	}
+	std::vector<test_factory> factories;
+	for (size_t block = 0; block < 256; ++block) {
+		factories.push_back(create_trng_factory(data, block, n));
+	}
+	return evaluate(factories);
 }
 
 

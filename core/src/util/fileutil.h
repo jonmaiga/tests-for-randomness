@@ -25,7 +25,7 @@ void mustExist(const std::string& path);
 std::size_t countFiles(const std::string& dir);
 
 template <typename T>
-std::vector<T> readBinaryMustExist(const std::string& path) {
+std::vector<T> readBinaryMustExist(const std::string& path, size_t max_elements = -1) {
 	std::ifstream t(path, std::ios::binary);
 	assertion_2(t.good(), "Could not open file ", path);
 
@@ -36,10 +36,13 @@ std::vector<T> readBinaryMustExist(const std::string& path) {
 	const size_t remainder = size % sizeof(T);
 	size -= remainder;
 
+	if (size / sizeof(T) > max_elements) {
+		size = max_elements * sizeof(T);
+	}
+
 	size_t size_with_T = size / sizeof(T);
 	std::vector<T> data(size_with_T);
 	t.read(reinterpret_cast<char*>(data.data()), size);
-	T last = data.back();
 	return data;
 }
 
