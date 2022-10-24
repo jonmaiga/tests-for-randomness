@@ -23,14 +23,14 @@ int main(int argc, char** args) {
 	using namespace mixer;
 	//build_trng();
 
-	constexpr auto n = 10000;
+	constexpr auto n = 1000;
 	const auto baseline = evaluate_trng(n);
 
 	Table table({"mixer", "stream", "sac_std_bias", "sac_avg_bias", "sac_max_bias", "bic_std_bias", "bic_avg_bias", "bic_max_bias", "n"});
 	add_worst(table, baseline);
-	add_worst(table, evaluate(mx3, n));
-	add_worst(table, evaluate(nasam, n));
-	add_worst(table, evaluate(xmxmxm, n));
+	add_worst(table, evaluate_rrc(mx3, n));
+	add_worst(table, evaluate_rrc(nasam, n));
+	add_worst(table, evaluate_rrc(xmxmxm, n));
 	add_worst(table, evaluate(moremur, n));
 	add_worst(table, evaluate(lea64, n));
 	add_worst(table, evaluate(degski64, n));

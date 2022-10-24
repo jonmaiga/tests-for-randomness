@@ -32,7 +32,7 @@ inline void add_worst(Table& table, const test_result& r) {
 inline void add_all(Table& table, const test_result& r) {
 	auto rs = r.results;
 	std::sort(rs.begin(), rs.end(), [](const avalanche_result& l, const avalanche_result& r) {
-		return l.bic.max_bias < r.bic.max_bias; 
+		return l.bic.max_bias < r.bic.max_bias;
 	});
 
 	for (const auto& rr : rs) {
