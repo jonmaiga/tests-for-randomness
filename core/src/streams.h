@@ -21,40 +21,31 @@ struct generated_stream {
 
 struct counter_stream {
 	uint64_t increment{};
-	uint64_t n{};
 	uint64_t index{};
 
 	uint64_t operator()() {
-		if (n == 0) {
-			throw std::runtime_error("No more stream data.");
-		}
-		--n;
 		index += increment;
 		return index;
 	}
 };
 
 struct function_stream {
-	const uint64_t n{};
 	const std::function<uint64_t(uint64_t)> f;
 	uint64_t i{};
 
 	uint64_t operator()() {
-		if (i == n) {
-			throw std::runtime_error("No more stream data.");
-		}
 		return f(++i);
 	}
 };
 
-inline stream create_counter_stream(uint64_t increment, std::size_t n) {
-	return {"counter-" + std::to_string(increment), counter_stream{increment, n}};
+inline stream create_counter_stream(uint64_t increment) {
+	return {"counter-" + std::to_string(increment), counter_stream{increment}};
 }
 
 #define FUNC(exp) [=](uint64_t i) { return exp; }
 
-inline stream create_gray_code(std::size_t n, uint64_t d) {
-	return {"graycode-" + std::to_string(d), function_stream{n, FUNC(i ^ (i / d))}};
+inline stream create_gray_code(uint64_t d) {
+	return {"graycode-" + std::to_string(d), function_stream{FUNC(i ^ (i / d))}};
 }
 
 #undef FUNC

@@ -38,12 +38,12 @@ inline kolmogorov_stats kolmogorov_smirnov_test(std::vector<double> data) {
 	return {data.size(), max_distance, max_index};
 }
 
-inline kolmogorov_result kolmogorov_test(const stream& stream, const mixer& mixer) {
+inline kolmogorov_result kolmogorov_test(const uint64_t n, const stream& stream, const mixer& mixer) {
 	const auto mixer_stream = create_mixer_stream(stream, mixer);
 	constexpr auto normalizer = static_cast<double>(std::numeric_limits<uint64_t>::max());
 	std::vector<double> data;
 	try {
-		while (true) {
+		for (uint64_t i = 0; i < n; ++i) {
 			const auto d = static_cast<double>(mixer_stream());
 			data.push_back(d / normalizer);
 		}

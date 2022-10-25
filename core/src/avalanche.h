@@ -25,14 +25,14 @@ struct avalanche_result {
 
 constexpr uint64_t avalanche_draws = 65;
 
-inline avalanche_result avalanche_test(const stream& stream, const mixer& mixer) {
+inline avalanche_result avalanche_test(const uint64_t n, const stream& stream, const mixer& mixer) {
 	uint64_t bic_matrix[64][64] = {{}};
 	uint64_t sac_count[64] = {};
 
 	avalanche_result result{stream.name, mixer.name};
-	uint64_t n = 0;
+	uint64_t actual = 0;
 	try {
-		while (true) {
+		for (uint64_t i = 0; i < n; ++i) {
 			const auto x = stream();
 			const uint64_t h0 = mixer(x);
 			for (int j = 0; j < 64; j++) {
@@ -43,13 +43,13 @@ inline avalanche_result avalanche_test(const stream& stream, const mixer& mixer)
 					sac_count[k] += bit;
 				}
 			}
-			++n;
+			++actual;
 		}
 	}
 	catch (const std::runtime_error&) {
 	}
 
-	result.n = n;
+	result.n = actual;
 	{
 		const double expected_bit_count = n / 2.;
 		for (auto& bin : bic_matrix) {

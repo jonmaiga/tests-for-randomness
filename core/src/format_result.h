@@ -132,7 +132,7 @@ public:
 	std::string summarize_ks() const {
 		std::vector<kolmogorov_result> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_sum(result.ks_results));
+			rows.push_back(get_worst(result.ks_results));
 		}
 
 		std::sort(rows.begin(), rows.end(), [](const kolmogorov_result& l, const kolmogorov_result& r) {
