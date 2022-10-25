@@ -17,6 +17,16 @@ void build_trng() {
 	write(R"(C:\tmp\random.org\raw\trng_small.bin)", data_str);
 }
 
+void write_stream(const mixer& m, uint64_t n) {
+	std::vector<uint64_t> data;
+	for (uint64_t i = 0; i < n; ++i) {
+		data.push_back(m(i));
+	}
+	auto from = reinterpret_cast<char*>(data.data());
+	const std::string data_str(from, from + data.size() * sizeof(uint64_t));
+	write(R"(/Users/jonkagstrom/root/github/bit_mixer_evaluation/mx3.bin)", data_str);
+}
+
 inline void run_tests() {
 	using test_method = std::function<test_result(const mixer&, uint64_t)>;
 
@@ -49,6 +59,7 @@ inline void run_tests() {
 
 int main(int argc, char** args) {
 	try {
+		//write_stream(mixer::mx3, 100000000ull);
 		mixer::run_tests();
 	}
 	catch (std::runtime_error& e) {

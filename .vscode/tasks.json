@@ -1,0 +1,69 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+          "label": "CMake Debug",
+          "type": "shell",
+          "options": {
+            "cwd": "${workspaceRoot}/cmake/"
+          },
+          "command": "cmake",
+          "args": ["-G", "Unix Makefiles", "-DCMAKE_BUILD_TYPE=Debug", ".."],
+          "group": {
+            "kind": "build",
+            "isDefault": true
+          },
+          "presentation": {
+            "clear": true
+          }
+        },
+        {
+          "label": "CMake Release",
+          "type": "shell",
+          "options": {
+            "cwd": "${workspaceRoot}/cmake/"
+          },
+          "command": "cmake",
+          "args": ["-G", "Unix Makefiles", "-DCMAKE_BUILD_TYPE=Release", ".."],
+          "group": {
+            "kind": "build",
+            "isDefault": true
+          },
+          "presentation": {
+            "clear": true
+          }
+        },
+        {
+            "label": "Make",
+            "type": "shell",
+            "options": {
+              "cwd": "${workspaceRoot}/cmake/"
+            },
+            "command": "make", 
+            "args": ["-j", "4"],
+            "group": {
+              "kind": "build",
+              "isDefault": true
+            },
+            "presentation": {
+              "clear": true
+            }
+          },
+          {
+            "label": "Make Install Server",
+            "type": "shell",
+            "options": {
+              "cwd": "${workspaceRoot}/cmake/"
+            },
+            "command": "make", 
+            "args": ["install"],
+            "group": {
+              "kind": "build",
+              "isDefault": true
+            },
+            "presentation": {
+              "clear": true
+            }
+          }        
+    ]
+}

@@ -8,10 +8,8 @@
             "name": "(lldb) evaluate",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/build/core/mixer_eval-core",
-            "cwd": "${workspaceFolder}/build/core/",
+            "program": "${workspaceFolder}/cmake/core/mixer_eval-core",
+            "cwd": "${workspaceFolder}/cmake/core/",
           },
-
-
     ]
 }
