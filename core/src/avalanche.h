@@ -25,7 +25,7 @@ struct avalanche_result {
 
 constexpr uint64_t avalanche_draws = 65;
 
-inline avalanche_result avalanche_bit_independence_test(const stream& stream, const mixer& mixer) {
+inline avalanche_result avalanche_test(const stream& stream, const mixer& mixer) {
 	uint64_t bic_matrix[64][64] = {{}};
 	uint64_t sac_count[64] = {};
 

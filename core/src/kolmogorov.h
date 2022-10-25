@@ -19,9 +19,9 @@ struct kolmogorov_result {
 	kolmogorov_stats stats;
 };
 
-inline kolmogorov_stats kolmogorov_test(std::vector<double> data) {
+inline kolmogorov_stats kolmogorov_smirnov_test(std::vector<double> data) {
 	std::sort(data.begin(), data.end());
-	const double n = data.size();
+	const auto n = static_cast<double>(data.size());
 	double max_distance = 0;
 	std::size_t max_index = 0;
 	for (std::size_t i = 0; i < data.size(); ++i) {
@@ -49,7 +49,7 @@ inline kolmogorov_result kolmogorov_test(const stream& stream, const mixer& mixe
 	}
 	catch (const std::runtime_error&) {
 	}
-	return {stream.name, mixer.name, kolmogorov_test(data)};
+	return {stream.name, mixer.name, kolmogorov_smirnov_test(data)};
 }
 
 }

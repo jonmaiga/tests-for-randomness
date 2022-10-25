@@ -23,15 +23,14 @@ int main(int argc, char** args) {
 	using namespace mixer;
 	//build_trng();
 
-	constexpr auto n = 30000;
+	constexpr auto n = 1000;
 	const auto baseline = evaluate_trng(n);
 
 	result_analyzer analyzer;
 
 	analyzer.add(baseline);
-	analyzer.add(evaluate_rrc(mx4, n));
-	//analyzer.add(evaluate_rrc(mx3, n));
-	//analyzer.add(evaluate_rrc(nasam, n));
+	analyzer.add(evaluate_rrc(mx3, n));
+	analyzer.add(evaluate_rrc(nasam, n));
 	//analyzer.add(evaluate_rrc(xmxmxm, n));
 	//analyzer.add(evaluate_rrc(moremur, n));
 	//analyzer.add(evaluate_rrc(lea64, n));

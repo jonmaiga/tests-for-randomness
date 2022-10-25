@@ -26,32 +26,6 @@ const mixer mx3 = {
 	}
 };
 
-const mixer mx4 = {
-
-	"mx4", [](uint64_t x) {
-
-		constexpr uint64_t C1 = 0xe9846af9b1a615dull;
-		x ^= x >> 32;
-		x *= C1;
-		x ^= x >> 32;
-		x *= C1;
-		x ^= x >> 28;
-		x *= C1;
-		constexpr uint64_t C = 0xbea225f9eb34556d;
-		x ^= (x >> 32);
-		x *= C;
-		x ^= (x >> 29);
-		x *= C;
-		x ^= (x >> 32);
-		x *= C;
-		x ^= (x >> 29);
-
-
-		return x;
-	}
-};
-
-
 const mixer xmxmxm = {
 	"xmxmxm", [](uint64_t x) {
 		constexpr uint64_t C = 0xe9846af9b1a615dull;

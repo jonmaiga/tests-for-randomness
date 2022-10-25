@@ -20,7 +20,7 @@ inline Table& add_avalanche_result(Table& table, const avalanche_result& result)
 
 inline void add_worst(Table& table, const test_result& r) {
 	avalanche_result worst;
-	for (const auto& rr : r.results) {
+	for (const auto& rr : r.avalanche_results) {
 		if (std::abs(rr.bic.max_bias) > std::abs(worst.bic.max_bias)) {
 			worst = rr;
 		}
@@ -29,7 +29,7 @@ inline void add_worst(Table& table, const test_result& r) {
 }
 
 inline void add_all(Table& table, const test_result& r) {
-	auto rs = r.results;
+	auto rs = r.avalanche_results;
 	std::sort(rs.begin(), rs.end(), [](const avalanche_result& l, const avalanche_result& r) {
 		return l.bic.max_bias < r.bic.max_bias;
 	});
@@ -55,7 +55,7 @@ inline avalanche_stats max(const avalanche_stats& l, const avalanche_stats& r) {
 
 inline avalanche_result get_worst(const test_result& r) {
 	avalanche_result worst{"-"};
-	for (const auto& rr : r.results) {
+	for (const auto& rr : r.avalanche_results) {
 		worst.mixer_name = rr.mixer_name;
 		worst.sac = max(worst.sac, rr.sac);
 		worst.bic = max(worst.bic, rr.bic);
@@ -65,7 +65,7 @@ inline avalanche_result get_worst(const test_result& r) {
 
 inline avalanche_result get_sum(const test_result& r) {
 	avalanche_result sum{"-"};
-	for (const auto& rr : r.results) {
+	for (const auto& rr : r.avalanche_results) {
 		sum.mixer_name = rr.mixer_name;
 		sum.sac.max_bias += rr.sac.max_bias;
 		sum.sac.mean_bias += rr.sac.mean_bias;
@@ -94,7 +94,7 @@ public:
 	std::string summarize() const {
 		std::vector<avalanche_result> rows;
 		for (const auto& mixer_result : results) {
-			auto rs = mixer_result.results;
+			auto rs = mixer_result.avalanche_results;
 			std::sort(rs.begin(), rs.end(), [](const avalanche_result& l, const avalanche_result& r) {
 				return l.bic.max_bias < r.bic.max_bias;
 			});
