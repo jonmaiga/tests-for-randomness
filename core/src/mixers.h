@@ -40,6 +40,17 @@ const mixer xmxmxm = {
 	}
 };
 
+
+const mixer xmx = {
+	"xmx", [](uint64_t x) {
+		x ^= x >> 32;
+		x *= 0xe9846af9b1a615dull;
+		x ^= x >> 29;
+		return x;
+	}
+};
+
+
 const mixer murmur3 = {
 	"murmur3", [](uint64_t x) {
 		x ^= x >> 33;

@@ -3,26 +3,22 @@
 #include "format_result.h"
 #include "mixers.h"
 
+namespace mixer {
 
 void build_trng() {
 	std::vector<char> data;
-	//C:\tmp\random.org\raw\
-	
-	mixer::forEachFileRecursively(R"(C:\tmp\random.org\raw\random.org-pregenerated-2022-09-bin\)", ".bin", [&data](const auto& path) {
-		auto r = mixer::readBinaryMustExist<char>(path.string());
+	forEachFileRecursively(R"(C:\tmp\random.org\raw\random.org-pregenerated-2022-09-bin\)", ".bin", [&data](const auto& path) {
+		auto r = readBinaryMustExist<char>(path.string());
 		data.insert(data.end(), r.begin(), r.end());
 		std::cout << path.string() << "\n";
 	});
 
 	const std::string data_str(data.begin(), data.end());
-	mixer::write(R"(C:\tmp\random.org\raw\trng_small.bin)", data_str);
+	write(R"(C:\tmp\random.org\raw\trng_small.bin)", data_str);
 }
 
-
-int main(int argc, char** args) {
-	using namespace mixer;
-
-	using test_method = std::function<test_result(const ::mixer::mixer&, uint64_t)>;
+inline void run_tests() {
+	using test_method = std::function<test_result(const mixer&, uint64_t)>;
 
 	const auto trng_stream = create_stream_from_data("trng", get_trng_data());
 	const auto trng = create_mixer_from_stream("trng", trng_stream);
@@ -35,6 +31,7 @@ int main(int argc, char** args) {
 	analyzer.add(test(trng, n));
 	analyzer.add(test(mx3, n));
 	analyzer.add(test(nasam, n));
+	analyzer.add(test(xmx, n));
 	analyzer.add(test(xmxmxm, n));
 	analyzer.add(test(moremur, n));
 	analyzer.add(test(lea64, n));
@@ -46,5 +43,16 @@ int main(int argc, char** args) {
 	std::cout << analyzer.summarize_avalanche() << "\n";
 	std::cout << analyzer.summarize_ks() << "\n";
 	std::cout << analyzer.summarize_chi2() << "\n";
+}
+
+}
+
+int main(int argc, char** args) {
+	try {
+		mixer::run_tests();
+	}
+	catch (std::runtime_error& e) {
+		std::cout << "ERROR: " << e.what() << "\n";
+	}
 	return 0;
 }

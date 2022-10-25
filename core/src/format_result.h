@@ -163,7 +163,9 @@ public:
 			return l.bic.max_bias < r.bic.max_bias;
 		});
 
-		Table table({"mixer", "stream", "sac_std_bias", "sac_avg_bias", "sac_max_bias", "bic_std_bias", "bic_avg_bias", "bic_max_bias", "n"});
+		Table table({"mixer", "stream", 
+			"sac_std_bias", "sac_avg_bias", "sac_max_bias",
+			"bic_std_bias", "bic_avg_bias", "bic_max_bias", "n"});
 		for (const auto& row : rows) {
 			add_avalanche_result(table, row);
 		}
