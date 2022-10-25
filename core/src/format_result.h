@@ -126,8 +126,7 @@ public:
 			.col(aw.mixer_name)
 			.col(aw.bic.max_bias).col(aw.n)
 			.col(kw.stats.d_max).col(kw.n).row();
-		std::cout << runtime_table.to_string();
-		std::cout << "total n: " << sum_total_n(r) << "\n\n";
+		std::cout << runtime_table.to_string() << "\n";
 	}
 
 	std::string summarize_avalanche() const {
@@ -150,7 +149,7 @@ public:
 	std::string summarize_ks() const {
 		std::vector<kolmogorov_result> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_worst(result.ks_results));
+			rows.push_back(get_sum(result.ks_results));
 		}
 
 		std::sort(rows.begin(), rows.end(), [](const kolmogorov_result& l, const kolmogorov_result& r) {

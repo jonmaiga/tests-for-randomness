@@ -20,6 +20,8 @@ struct test_result {
 	std::vector<kolmogorov_result> ks_results;
 };
 
+namespace internal {
+
 inline stream add_rrc(const stream& source, int rotation, rrc_type type) {
 	const auto name = to_string(type) + "-" + std::to_string(rotation) + "(" + source.name + ")";
 	return {
@@ -51,10 +53,6 @@ inline test_result evaluate_rrc(const std::vector<test_factory>& test_factories)
 	return results;
 }
 
-inline test_result evaluate_rrc(const mixer& mixer, uint64_t n) {
-	return evaluate_rrc(create_test_factories(mixer, n));
-}
-
 template <typename T>
 std::vector<T> evaluate(const test<T>& test, const std::vector<test_factory>& test_factories) {
 	std::vector<T> results;
@@ -72,8 +70,15 @@ inline test_result evaluate(const std::vector<test_factory>& test_factories) {
 	return result;
 }
 
+} // namespace internal
+
+inline test_result evaluate_rrc(const mixer& mixer, uint64_t n) {
+	return internal::evaluate_rrc(create_test_factories(mixer, n));
+}
+
+
 inline test_result evaluate(const mixer& mixer, uint64_t n) {
-	return evaluate(create_test_factories(mixer, n));
+	return internal::evaluate(create_test_factories(mixer, n));
 }
 
 }
