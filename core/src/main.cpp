@@ -45,5 +45,6 @@ int main(int argc, char** args) {
 
 	std::cout << analyzer.summarize_avalanche() << "\n";
 	std::cout << analyzer.summarize_ks() << "\n";
+	std::cout << analyzer.summarize_chi2() << "\n";
 	return 0;
 }

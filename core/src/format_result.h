@@ -63,6 +63,26 @@ inline avalanche_result get_worst(const std::vector<avalanche_result>& results) 
 	return worst;
 }
 
+inline kolmogorov_result get_worst(const std::vector<kolmogorov_result>& results) {
+	kolmogorov_result worst{};
+	for (const auto& rr : results) {
+		if (rr.stats.d_max > worst.stats.d_max) {
+			worst = rr;
+		}
+	}
+	return worst;
+}
+
+inline chi2_result get_worst(const std::vector<chi2_result>& results) {
+	chi2_result worst{};
+	for (const auto& rr : results) {
+		if (rr.stats.chi2 > worst.stats.chi2) {
+			worst = rr;
+		}
+	}
+	return worst;
+}
+
 inline avalanche_result get_sum(const std::vector<avalanche_result>& results) {
 	avalanche_result sum{"-"};
 	for (const auto& result : results) {
@@ -78,16 +98,6 @@ inline avalanche_result get_sum(const std::vector<avalanche_result>& results) {
 	return sum;
 }
 
-inline kolmogorov_result get_worst(const std::vector<kolmogorov_result>& results) {
-	kolmogorov_result worst{};
-	for (const auto& rr : results) {
-		if (rr.stats.d_max > worst.stats.d_max) {
-			worst = rr;
-		}
-	}
-	return worst;
-}
-
 inline kolmogorov_result get_sum(const std::vector<kolmogorov_result>& results) {
 	kolmogorov_result sum{"-"};
 	for (const auto& rr : results) {
@@ -98,6 +108,17 @@ inline kolmogorov_result get_sum(const std::vector<kolmogorov_result>& results) 
 	}
 	return sum;
 }
+
+inline chi2_result get_sum(const std::vector<chi2_result>& results) {
+	chi2_result sum{"-"};
+	for (const auto& rr : results) {
+		sum.mixer_name = rr.mixer_name;
+		sum.stats.chi2 += rr.stats.chi2;
+		sum.n += rr.n;
+	}
+	return sum;
+}
+
 
 inline uint64_t sum_total_n(const test_result& r) {
 	uint64_t total = 0;
@@ -115,17 +136,20 @@ class result_analyzer {
 
 public:
 	result_analyzer() :
-		runtime_table({"mixer", "bic_max_bias", "bic_n", "ks_max", "ks_n"}) {
+		runtime_table({"mixer", "bic_max", "ks_max", "chi2"}) {
 	}
 
 	void add(const test_result& r) {
 		results.push_back(r);
 		const auto aw = get_sum(r.avalanche_results);
 		const auto kw = get_sum(r.ks_results);
+		const auto ch = get_worst(r.chi2_results);
 		runtime_table
 			.col(aw.mixer_name)
-			.col(aw.bic.max_bias).col(aw.n)
-			.col(kw.stats.d_max).col(kw.n).row();
+			.col(aw.bic.max_bias)
+			.col(kw.stats.d_max)
+			.col(ch.stats.chi2)
+			.row();
 		std::cout << runtime_table.to_string() << "\n";
 	}
 
@@ -166,6 +190,27 @@ public:
 		}
 		return table.to_string();
 	}
+
+	std::string summarize_chi2() const {
+		std::vector<chi2_result> rows;
+		for (const auto& result : results) {
+			rows.push_back(get_sum(result.chi2_results));
+		}
+
+		std::sort(rows.begin(), rows.end(), [](const chi2_result& l, const chi2_result& r) {
+			return l.stats.chi2 < r.stats.chi2;
+		});
+
+		Table table({"mixer", "stream", "chi2", "n"});
+		for (const auto& row : rows) {
+			table.col(row.mixer_name)
+			     .col(row.stream_name)
+			     .col(row.stats.chi2)
+			     .col(row.n).row();
+		}
+		return table.to_string();
+	}
+
 
 private:
 	Table runtime_table;

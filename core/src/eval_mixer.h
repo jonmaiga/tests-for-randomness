@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "avalanche.h"
+#include "chi2.h"
 #include "kolmogorov.h"
 #include "rrc.h"
 #include "test_streams.h"
@@ -18,6 +19,7 @@ struct test_result {
 	std::string name;
 	std::vector<avalanche_result> avalanche_results;
 	std::vector<kolmogorov_result> ks_results;
+	std::vector<chi2_result> chi2_results;
 };
 
 namespace internal {
@@ -50,6 +52,7 @@ inline test_result evaluate_rrc(const std::vector<test_factory>& test_factories)
 	test_result results{"rrc"};
 	results.avalanche_results = evaluate_rrc<avalanche_result>(avalanche_test, test_factories);
 	results.ks_results = evaluate_rrc<kolmogorov_result>(kolmogorov_test, test_factories);
+	results.chi2_results = evaluate_rrc<chi2_result>(chi2_test, test_factories);
 	return results;
 }
 
@@ -67,6 +70,7 @@ inline test_result evaluate(const std::vector<test_factory>& test_factories) {
 	test_result result{"single"};
 	result.avalanche_results = evaluate<avalanche_result>(avalanche_test, test_factories);
 	result.ks_results = evaluate<kolmogorov_result>(kolmogorov_test, test_factories);
+	result.chi2_results = evaluate<chi2_result>(chi2_test, test_factories);
 	return result;
 }
 
