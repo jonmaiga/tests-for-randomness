@@ -24,7 +24,7 @@ int main(int argc, char** args) {
 	//build_trng();
 
 	constexpr auto n = 1000;
-	const auto baseline = evaluate_trng(n);
+	const auto baseline = evaluate_trng_rrc(n);
 
 	result_analyzer analyzer;
 

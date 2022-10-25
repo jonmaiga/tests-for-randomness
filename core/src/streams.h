@@ -7,25 +7,13 @@ namespace mixer {
 
 using stream_factory = std::function<stream()>;
 
-struct generated_stream {
-	std::vector<uint64_t> data;
-	std::size_t index = 0;
-
-	uint64_t operator()() {
-		if (index == data.size()) {
-			throw std::runtime_error("No more stream data.");
-		}
-		return data[index++];
-	}
-};
-
 struct counter_stream {
 	uint64_t increment{};
-	uint64_t index{};
+	uint64_t i{};
 
 	uint64_t operator()() {
-		index += increment;
-		return index;
+		i += increment;
+		return i;
 	}
 };
 

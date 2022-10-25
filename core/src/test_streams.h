@@ -4,7 +4,7 @@
 
 namespace mixer {
 
-inline std::vector<test_factory> create_test_streams(const mixer& mixer, uint64_t n) {
+inline std::vector<test_factory> create_test_factories(const mixer& mixer, uint64_t n) {
 	const auto counter1 = [mixer, n]() {
 		return test_config{n, create_counter_stream(1), mixer};
 	};

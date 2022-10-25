@@ -53,7 +53,7 @@ inline test_result evaluate_rrc(const std::vector<test_factory>& test_factories)
 }
 
 inline test_result evaluate_rrc(const mixer& mixer, uint64_t n) {
-	return evaluate_rrc(create_test_streams(mixer, n));
+	return evaluate_rrc(create_test_factories(mixer, n));
 }
 
 template <typename T>
@@ -74,10 +74,10 @@ inline test_result evaluate(const std::vector<test_factory>& test_factories) {
 }
 
 inline test_result evaluate(const mixer& mixer, uint64_t n) {
-	return evaluate(create_test_streams(mixer, n));
+	return evaluate(create_test_factories(mixer, n));
 }
 
-inline test_result evaluate_trng(uint64_t n) {
+inline test_result evaluate_trng_rrc(uint64_t n) {
 	const auto shared_stream = create_data_stream("trng", get_trng_data());
 
 	const auto trng_mixer = mixer{
@@ -86,16 +86,7 @@ inline test_result evaluate_trng(uint64_t n) {
 			return shared_stream();
 		}
 	};
-
-	const auto factory = [&]()-> test_config {
-		return {n, shared_stream, trng_mixer};
-	};
-
-	std::vector<test_factory> factories;
-	for (size_t block = 0; block < 1024; ++block) {
-		factories.emplace_back(factory);
-	}
-	return evaluate(factories);
+	return evaluate_rrc(trng_mixer, n);
 }
 
 
