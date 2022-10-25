@@ -67,5 +67,12 @@ inline stream createStreamFromBinaryFile(const std::filesystem::path& path, int 
 	return {path.filename().string(), generated_stream{data}};
 }
 
+inline stream create_mixer_stream(const stream& source, const mixer& mixer) {
+	return {
+		mixer.name + "(" + source.name + ")",
+		[source, mixer]() { return mixer(source()); }
+	};
+}
+
 
 }
