@@ -10,7 +10,7 @@ namespace mixer {
 
 struct kolmogorov_stats {
 	double d_max;
-	std::size_t i_max;
+	uint64_t i_max;
 };
 
 struct kolmogorov_result {
