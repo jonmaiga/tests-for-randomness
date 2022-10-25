@@ -21,14 +21,13 @@ void build_trng() {
 
 int main(int argc, char** args) {
 	using namespace mixer;
-	//build_trng();
+
+	const auto trng_stream = create_stream_from_data("trng", get_trng_data());
+	const auto trng = create_mixer_from_stream("trng", trng_stream);
 
 	constexpr auto n = 1000;
-	const auto baseline = evaluate_trng_rrc(n);
-
 	result_analyzer analyzer;
-
-	analyzer.add(baseline);
+	analyzer.add(evaluate_rrc(trng, n));
 	analyzer.add(evaluate_rrc(mx3, n));
 	analyzer.add(evaluate_rrc(nasam, n));
 	analyzer.add(evaluate_rrc(xmxmxm, n));

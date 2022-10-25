@@ -6,10 +6,12 @@
 namespace mixer {
 
 
-const mixer identity = {
-	"identity", [](uint64_t x) {
-		return x;
-	}
+inline mixer create_mixer_from_stream(const std::string& name, const stream& source) {
+	return {
+		name, [&source](uint64_t) {
+			return source();
+		}
+	};
 };
 
 const mixer mx3 = {

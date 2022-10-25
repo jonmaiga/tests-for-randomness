@@ -7,7 +7,6 @@
 #include "avalanche.h"
 #include "kolmogorov.h"
 #include "rrc.h"
-#include "streams.h"
 #include "test_streams.h"
 
 namespace mixer {
@@ -76,18 +75,5 @@ inline test_result evaluate(const std::vector<test_factory>& test_factories) {
 inline test_result evaluate(const mixer& mixer, uint64_t n) {
 	return evaluate(create_test_factories(mixer, n));
 }
-
-inline test_result evaluate_trng_rrc(uint64_t n) {
-	const auto shared_stream = create_data_stream("trng", get_trng_data());
-
-	const auto trng_mixer = mixer{
-		"trng",
-		[&shared_stream](uint64_t) -> uint64_t {
-			return shared_stream();
-		}
-	};
-	return evaluate_rrc(trng_mixer, n);
-}
-
 
 }

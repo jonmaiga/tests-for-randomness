@@ -9,7 +9,6 @@
 namespace mixer {
 
 struct kolmogorov_stats {
-	uint64_t n;
 	double d_max;
 	std::size_t i_max;
 };
@@ -17,6 +16,7 @@ struct kolmogorov_stats {
 struct kolmogorov_result {
 	std::string stream_name;
 	std::string mixer_name;
+	uint64_t n;
 	kolmogorov_stats stats;
 };
 
@@ -35,11 +35,11 @@ inline kolmogorov_stats kolmogorov_smirnov_test(std::vector<double> data) {
 			max_index = i;
 		}
 	}
-	return {data.size(), max_distance, max_index};
+	return {max_distance, max_index};
 }
 
 inline kolmogorov_result kolmogorov_test(const uint64_t n, const stream& stream, const mixer& mixer) {
-	const auto mixer_stream = create_mixer_stream(stream, mixer);
+	const auto mixer_stream = create_stream_from_mixer(stream, mixer);
 	constexpr auto normalizer = static_cast<double>(std::numeric_limits<uint64_t>::max());
 	std::vector<double> data;
 	try {
@@ -50,7 +50,7 @@ inline kolmogorov_result kolmogorov_test(const uint64_t n, const stream& stream,
 	}
 	catch (const std::runtime_error&) {
 	}
-	return {stream.name, mixer.name, kolmogorov_smirnov_test(data)};
+	return {stream.name, mixer.name, data.size(), kolmogorov_smirnov_test(data)};
 }
 
 }

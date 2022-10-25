@@ -56,9 +56,9 @@ inline avalanche_stats max(const avalanche_stats& l, const avalanche_stats& r) {
 inline avalanche_result get_worst(const std::vector<avalanche_result>& results) {
 	avalanche_result worst{"-"};
 	for (const auto& rr : results) {
-		worst.mixer_name = rr.mixer_name;
-		worst.sac = max(worst.sac, rr.sac);
-		worst.bic = max(worst.bic, rr.bic);
+		if (rr.bic.max_bias > worst.bic.max_bias) {
+			worst = rr;
+		}
 	}
 	return worst;
 }
@@ -67,6 +67,7 @@ inline avalanche_result get_sum(const std::vector<avalanche_result>& results) {
 	avalanche_result sum{"-"};
 	for (const auto& result : results) {
 		sum.mixer_name = result.mixer_name;
+		sum.n += result.n;
 		sum.sac.max_bias += result.sac.max_bias;
 		sum.sac.mean_bias += result.sac.mean_bias;
 		sum.sac.std_dev_bias += result.sac.std_dev_bias;
@@ -93,9 +94,20 @@ inline kolmogorov_result get_sum(const std::vector<kolmogorov_result>& results) 
 		sum.mixer_name = rr.mixer_name;
 		sum.stats.d_max += rr.stats.d_max;
 		sum.stats.i_max += rr.stats.i_max;
-		sum.stats.n += rr.stats.n;
+		sum.n += rr.n;
 	}
 	return sum;
+}
+
+inline uint64_t sum_total_n(const test_result& r) {
+	uint64_t total = 0;
+	for (const auto& ar : r.avalanche_results) {
+		total += ar.n;
+	}
+	for (const auto& ksr : r.ks_results) {
+		total += ksr.n;
+	}
+	return total;
 }
 
 
@@ -103,13 +115,19 @@ class result_analyzer {
 
 public:
 	result_analyzer() :
-		runtime_table({"mixer", "stream", "sac_std_bias", "sac_avg_bias", "sac_max_bias", "bic_std_bias", "bic_avg_bias", "bic_max_bias", "n"}) {
+		runtime_table({"mixer", "bic_max_bias", "bic_n", "ks_max", "ks_n"}) {
 	}
 
 	void add(const test_result& r) {
 		results.push_back(r);
-		add_worst(runtime_table, r);
-		std::cout << runtime_table.to_string() << "\n";
+		const auto aw = get_sum(r.avalanche_results);
+		const auto kw = get_sum(r.ks_results);
+		runtime_table
+			.col(aw.mixer_name)
+			.col(aw.bic.max_bias).col(aw.n)
+			.col(kw.stats.d_max).col(kw.n).row();
+		std::cout << runtime_table.to_string();
+		std::cout << "total n: " << sum_total_n(r) << "\n\n";
 	}
 
 	std::string summarize_avalanche() const {
@@ -145,7 +163,7 @@ public:
 			     .col(row.stream_name)
 			     .col(row.stats.d_max)
 			     .col(row.stats.i_max)
-			     .col(row.stats.n).row();
+			     .col(row.n).row();
 		}
 		return table.to_string();
 	}

@@ -50,7 +50,7 @@ inline const std::vector<uint64_t>& get_trng_data() {
 }
 
 
-inline stream create_data_stream(const std::string& name, const std::vector<uint64_t>& data) {
+inline stream create_stream_from_data(const std::string& name, const std::vector<uint64_t>& data) {
 	size_t index = 0;
 	return stream{
 		name, [index, &data]() mutable -> uint64_t {
@@ -62,7 +62,7 @@ inline stream create_data_stream(const std::string& name, const std::vector<uint
 	};
 }
 
-inline stream create_mixer_stream(const stream& source, const mixer& mixer) {
+inline stream create_stream_from_mixer(const stream& source, const mixer& mixer) {
 	return {
 		mixer.name + "(" + source.name + ")",
 		[source, mixer]() { return mixer(source()); }
