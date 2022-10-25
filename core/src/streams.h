@@ -50,12 +50,28 @@ inline stream create_gray_code(uint64_t d) {
 
 #undef FUNC
 
-inline stream createStreamFromBinaryFile(const std::filesystem::path& path, int n) {
-	auto data = readBinaryMustExist<uint64_t>(path.string());
-	if (n < data.size()) {
-		data.resize(n);
-	}
-	return {path.filename().string(), generated_stream{data}};
+inline const std::vector<uint64_t>& get_trng_data() {
+	static const auto trng_data = []() {
+		std::cout << "Reading trng stream from disk...";
+		const auto& data = readBinaryMustExist<uint64_t>(R"(C:\tmp\random.org\trng.bin)");
+		std::cout << " done!\n";
+		return data;
+	}();
+
+	return trng_data;
+}
+
+
+inline stream create_data_stream(const std::string& name, const std::vector<uint64_t>& data) {
+	size_t index = 0;
+	return stream{
+		name, [index, &data]() mutable -> uint64_t {
+			if (index >= data.size()) {
+				throw std::runtime_error("No more stream data.");
+			}
+			return data[index++];
+		}
+	};
 }
 
 inline stream create_mixer_stream(const stream& source, const mixer& mixer) {

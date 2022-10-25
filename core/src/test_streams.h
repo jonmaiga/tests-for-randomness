@@ -17,6 +17,9 @@ inline std::vector<test_factory> create_test_streams(const mixer& mixer, uint64_
 	const auto greycode8 = [mixer, n]() {
 		return test_config{n, create_gray_code(8), mixer};
 	};
+	//const auto trng = [mixer, n]() {
+	//	return test_config{n, create_data_stream("trng", get_trng_data()), mixer};
+	//};
 	return {counter1, greycode2, greycode4, greycode8};
 }
 

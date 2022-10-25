@@ -21,7 +21,7 @@ struct mixer {
 };
 
 struct test_config {
-	uint64_t n;
+	uint64_t n{};
 	stream stream;
 	mixer mixer;
 };

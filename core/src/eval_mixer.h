@@ -8,7 +8,7 @@
 #include "kolmogorov.h"
 #include "rrc.h"
 #include "streams.h"
-#include "tests.h"
+#include "test_streams.h"
 
 namespace mixer {
 
@@ -78,19 +78,7 @@ inline test_result evaluate(const mixer& mixer, uint64_t n) {
 }
 
 inline test_result evaluate_trng(uint64_t n) {
-	std::cout << "Reading trng stream from disk...";
-	const auto data = readBinaryMustExist<uint64_t>(R"(C:\tmp\random.org\trng.bin)");
-	std::cout << " done!\n";
-
-	size_t index = 0;
-	const auto shared_stream = stream{
-		"trng-stream", [index, &data]() mutable -> uint64_t {
-			if (index >= data.size()) {
-				throw std::runtime_error("No more stream data.");
-			}
-			return data[index++];
-		}
-	};
+	const auto shared_stream = create_data_stream("trng", get_trng_data());
 
 	const auto trng_mixer = mixer{
 		"trng",
