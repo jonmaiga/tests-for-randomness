@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "test/avalanche.h"
+#include "test/basic.h"
 #include "test/chi2.h"
 #include "test/kolmogorov.h"
 #include "rrc.h"
@@ -18,6 +19,7 @@ using test = const std::function<T(uint64_t n, const stream&, const mixer&)>;
 struct test_result {
 	std::string name;
 	std::vector<avalanche_result> avalanche_results;
+	std::vector<basic_result> basic_results;
 	std::vector<kolmogorov_result> ks_results;
 	std::vector<chi2_result> chi2_results;
 };
@@ -51,6 +53,7 @@ std::vector<T> evaluate_rrc(const test<T>& test, const std::vector<test_factory>
 inline test_result evaluate_rrc(const std::vector<test_factory>& test_factories) {
 	test_result results{"rrc"};
 	results.avalanche_results = evaluate_rrc<avalanche_result>(avalanche_test, test_factories);
+	results.basic_results = evaluate_rrc<basic_result>(basic_test, test_factories);
 	results.ks_results = evaluate_rrc<kolmogorov_result>(kolmogorov_test, test_factories);
 	results.chi2_results = evaluate_rrc<chi2_result>(chi2_test, test_factories);
 	return results;

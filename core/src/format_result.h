@@ -63,6 +63,20 @@ inline avalanche_result get_worst(const std::vector<avalanche_result>& results) 
 	return worst;
 }
 
+inline basic_result get_worst(const std::vector<basic_result>& results) {
+	basic_result worst;
+	double worstDev = 0;
+	for (const auto& rr : results) {
+		const double dev = std::abs(rr.stats.mean - 0.5);
+		if (dev > worstDev) {
+			worst = rr;
+			worstDev = dev;
+		}
+	}
+	return worst;
+}
+
+
 inline kolmogorov_result get_worst(const std::vector<kolmogorov_result>& results) {
 	kolmogorov_result worst{};
 	for (const auto& rr : results) {
@@ -82,6 +96,19 @@ inline chi2_result get_worst(const std::vector<chi2_result>& results) {
 	}
 	return worst;
 }
+
+inline basic_result get_sum(const std::vector<basic_result>& results) {
+	basic_result sum{"-"};
+	for (const auto& rr : results) {
+		sum.mixer_name = rr.mixer_name;
+		sum.stats.mean += rr.stats.mean;
+		sum.stats.variance += rr.stats.variance;
+		sum.stats.median += rr.stats.median;
+		sum.stats.n += rr.stats.n;
+	}
+	return sum;
+}
+
 
 inline avalanche_result get_sum(const std::vector<avalanche_result>& results) {
 	avalanche_result sum{"-"};
@@ -136,16 +163,18 @@ class result_analyzer {
 
 public:
 	result_analyzer() :
-		runtime_table({"mixer", "bic_max", "ks_max", "chi2"}) {
+		runtime_table({"mixer", "mean", "bic_max", "ks_max", "chi2"}) {
 	}
 
 	void add(const test_result& r) {
 		results.push_back(r);
 		const auto aw = get_sum(r.avalanche_results);
+		const auto bs = get_sum(r.basic_results);
 		const auto kw = get_sum(r.ks_results);
 		const auto ch = get_worst(r.chi2_results);
 		runtime_table
 			.col(aw.mixer_name)
+			.col(bs.stats.mean)
 			.col(aw.bic.max_bias)
 			.col(kw.stats.d_max)
 			.col(ch.stats.chi2)
@@ -163,14 +192,41 @@ public:
 			return l.bic.max_bias < r.bic.max_bias;
 		});
 
-		Table table({"mixer", "stream", 
+		Table table({
+			"mixer", "stream",
 			"sac_std_bias", "sac_avg_bias", "sac_max_bias",
-			"bic_std_bias", "bic_avg_bias", "bic_max_bias", "n"});
+			"bic_std_bias", "bic_avg_bias", "bic_max_bias", "n"
+		});
 		for (const auto& row : rows) {
 			add_avalanche_result(table, row);
 		}
 		return table.to_string();
 	}
+
+	std::string summarize_basic() const {
+		std::vector<basic_result> rows;
+		for (const auto& result : results) {
+			rows.push_back(get_sum(result.basic_results));
+		}
+
+		std::sort(rows.begin(), rows.end(), [](const basic_result& l, const basic_result& r) {
+			return std::abs(l.stats.mean - 0.5) < std::abs(r.stats.mean - 0.5);
+		});
+
+		Table table({"mixer", "stream", "mean", "variance", "median", "n"});
+		for (const auto& row : rows) {
+			table
+				.col(row.mixer_name)
+				.col(row.stream_name)
+				.col(row.stats.mean)
+				.col(row.stats.variance)
+				.col(row.stats.median)
+				.col(row.stats.n)
+				.row();
+		}
+		return table.to_string();
+	}
+
 
 	std::string summarize_ks() const {
 		std::vector<kolmogorov_result> rows;

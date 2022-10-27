@@ -22,7 +22,7 @@ void write_stream(const mixer& m, uint64_t n) {
 	for (uint64_t i = 0; i < n; ++i) {
 		data.push_back(m(i));
 	}
-	auto from = reinterpret_cast<char*>(data.data());
+	const auto from = reinterpret_cast<char*>(data.data());
 	const std::string data_str(from, from + data.size() * sizeof(uint64_t));
 	write(R"(/Users/jonkagstrom/root/github/bit_mixer_evaluation/mx3.bin)", data_str);
 }
@@ -34,7 +34,7 @@ inline void run_tests() {
 	const auto trng = create_mixer_from_stream("trng", trng_stream);
 
 	const test_method test = evaluate_rrc;
-	constexpr auto n = 1000;
+	constexpr auto n = 5000;
 
 	result_analyzer analyzer;
 
@@ -51,6 +51,7 @@ inline void run_tests() {
 	analyzer.add(test(fast_hash, n));
 
 	std::cout << analyzer.summarize_avalanche() << "\n";
+	std::cout << analyzer.summarize_basic() << "\n";
 	std::cout << analyzer.summarize_ks() << "\n";
 	std::cout << analyzer.summarize_chi2() << "\n";
 }
