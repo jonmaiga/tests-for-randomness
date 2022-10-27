@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "avalanche.h"
-#include "chi2.h"
-#include "kolmogorov.h"
+#include "test/avalanche.h"
+#include "test/chi2.h"
+#include "test/kolmogorov.h"
 #include "rrc.h"
 #include "test_streams.h"
 
