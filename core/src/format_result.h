@@ -5,19 +5,6 @@
 
 namespace mixer {
 
-inline Table& add_avalanche_stats(Table& table, const avalanche_stats& stats) {
-	return table.col(stats.std_dev_bias).
-	             col(stats.mean_bias).
-	             col(stats.max_bias);
-}
-
-inline Table& add_avalanche_result(Table& table, const avalanche_result& result) {
-	table.col(result.mixer_name).col(result.stream_name);
-	add_avalanche_stats(table, result.sac);
-	add_avalanche_stats(table, result.bic);
-	return table.col(result.n).row();
-}
-
 inline double get_worst(const avalanche_result& result) { return result.bic.max_bias; }
 inline double get_worst(const basic_result& result) { return result.stats.mean; }
 inline double get_worst(const chi2_result& result) { return result.stats.chi2; }
@@ -34,53 +21,49 @@ T get_worst(const std::vector<T>& results) {
 	return worst;
 }
 
-inline basic_result get_sum(const std::vector<basic_result>& results) {
-	basic_result sum{"-"};
-	for (const auto& rr : results) {
-		sum.mixer_name = rr.mixer_name;
-		sum.stats.mean += rr.stats.mean;
-		sum.stats.variance += rr.stats.variance;
-		sum.stats.median += rr.stats.median;
-		sum.n += rr.n;
-	}
-	return sum;
+inline avalanche_result& operator+=(avalanche_result& l, const avalanche_result& r) {
+	l.n += r.n;
+	l.sac.max_bias += r.sac.max_bias;
+	l.sac.mean_bias += r.sac.mean_bias;
+	l.sac.std_dev_bias += r.sac.std_dev_bias;
+	l.bic.max_bias += r.bic.max_bias;
+	l.bic.mean_bias += r.bic.mean_bias;
+	l.bic.std_dev_bias += r.bic.std_dev_bias;
+	return l;
 }
 
+inline basic_result& operator+=(basic_result& l, const basic_result& r) {
+	l.n += r.n;
+	l.stats.mean += r.stats.mean;
+	l.stats.variance += r.stats.variance;
+	l.stats.median += r.stats.median;
+	return l;
+}
 
-inline avalanche_result get_sum(const std::vector<avalanche_result>& results) {
-	avalanche_result sum{"-"};
+inline kolmogorov_result& operator+=(kolmogorov_result& l, const kolmogorov_result& r) {
+	l.n += r.n;
+	l.stats.d_max += r.stats.d_max;
+	l.stats.i_max += r.stats.i_max;
+	return l;
+}
+
+inline chi2_result& operator+=(chi2_result& l, const chi2_result& r) {
+	l.n += r.n;
+	l.stats.chi2 += r.stats.chi2;
+	return l;
+}
+
+template <typename T>
+T get_sum(const std::vector<T>& results) {
+	T sum{"-", results.front().mixer_name};
 	for (const auto& result : results) {
-		sum.mixer_name = result.mixer_name;
-		sum.n += result.n;
-		sum.sac.max_bias += result.sac.max_bias;
-		sum.sac.mean_bias += result.sac.mean_bias;
-		sum.sac.std_dev_bias += result.sac.std_dev_bias;
-		sum.bic.max_bias += result.bic.max_bias;
-		sum.bic.mean_bias += result.bic.mean_bias;
-		sum.bic.std_dev_bias += result.bic.std_dev_bias;
+		sum += result;
 	}
 	return sum;
 }
 
-inline kolmogorov_result get_sum(const std::vector<kolmogorov_result>& results) {
-	kolmogorov_result sum{"-"};
-	for (const auto& rr : results) {
-		sum.mixer_name = rr.mixer_name;
-		sum.stats.d_max += rr.stats.d_max;
-		sum.stats.i_max += rr.stats.i_max;
-		sum.n += rr.n;
-	}
-	return sum;
-}
-
-inline chi2_result get_sum(const std::vector<chi2_result>& results) {
-	chi2_result sum{"-"};
-	for (const auto& rr : results) {
-		sum.mixer_name = rr.mixer_name;
-		sum.stats.chi2 += rr.stats.chi2;
-		sum.n += rr.n;
-	}
-	return sum;
+inline Table& add_avalanche_stats(Table& table, const avalanche_stats& stats) {
+	return table.col(stats.std_dev_bias).col(stats.mean_bias).col(stats.max_bias);
 }
 
 class result_analyzer {
@@ -92,10 +75,10 @@ public:
 
 	void add(const test_result& r) {
 		results.push_back(r);
-		const auto aw = get_worst(r.avalanche_results);
-		const auto bs = get_worst(r.basic_results);
-		const auto kw = get_worst(r.ks_results);
-		const auto ch = get_worst(r.chi2_results);
+		const auto aw = get_sum(r.avalanche_results);
+		const auto bs = get_sum(r.basic_results);
+		const auto kw = get_sum(r.ks_results);
+		const auto ch = get_sum(r.chi2_results);
 		runtime_table
 			.col(aw.mixer_name)
 			.col(bs.stats.mean)
@@ -122,7 +105,11 @@ public:
 			"bic_std_bias", "bic_avg_bias", "bic_max_bias", "n"
 		});
 		for (const auto& row : rows) {
-			add_avalanche_result(table, row);
+			table.col(row.mixer_name).col(row.stream_name);
+			add_avalanche_stats(table, row.sac);
+			add_avalanche_stats(table, row.bic);
+			table.col(row.n).row();
+
 		}
 		return table.to_string();
 	}

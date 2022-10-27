@@ -20,7 +20,7 @@ struct basic_result {
 inline basic_stats compute_basic_test(uint64_t n, const stream& stream) {
 	constexpr auto normalizer = static_cast<double>(std::numeric_limits<uint64_t>::max());
 
-	basic_stats stats{n};
+	basic_stats stats{};
 	std::vector<double> values;
 	values.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
