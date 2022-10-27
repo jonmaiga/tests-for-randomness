@@ -5,7 +5,6 @@
 namespace mixer {
 
 struct basic_stats {
-	uint64_t n{};
 	double mean{};
 	double variance{};
 	double median{};
@@ -14,6 +13,7 @@ struct basic_stats {
 struct basic_result {
 	std::string stream_name;
 	std::string mixer_name;
+	uint64_t n = 0;
 	basic_stats stats;
 };
 
@@ -43,6 +43,7 @@ inline basic_result basic_test(uint64_t n, const stream& stream, const mixer& mi
 	return {
 		stream.name,
 		mixer.name,
+		n,
 		compute_basic_test(n, create_stream_from_mixer(stream, mixer))
 	};
 }

@@ -18,45 +18,17 @@ inline Table& add_avalanche_result(Table& table, const avalanche_result& result)
 	return table.col(result.n).row();
 }
 
-inline avalanche_result get_worst(const std::vector<avalanche_result>& results) {
-	avalanche_result worst{"-"};
-	for (const auto& rr : results) {
-		if (rr.bic.max_bias > worst.bic.max_bias) {
-			worst = rr;
-		}
-	}
-	return worst;
-}
+inline double get_worst(const avalanche_result& result) { return result.bic.max_bias; }
+inline double get_worst(const basic_result& result) { return result.stats.mean; }
+inline double get_worst(const chi2_result& result) { return result.stats.chi2; }
+inline double get_worst(const kolmogorov_result& result) { return result.stats.d_max; }
 
-inline basic_result get_worst(const std::vector<basic_result>& results) {
-	basic_result worst;
-	double worstDev = 0;
-	for (const auto& rr : results) {
-		const double dev = std::abs(rr.stats.mean - 0.5);
-		if (dev > worstDev) {
-			worst = rr;
-			worstDev = dev;
-		}
-	}
-	return worst;
-}
-
-
-inline kolmogorov_result get_worst(const std::vector<kolmogorov_result>& results) {
-	kolmogorov_result worst{};
-	for (const auto& rr : results) {
-		if (rr.stats.d_max > worst.stats.d_max) {
-			worst = rr;
-		}
-	}
-	return worst;
-}
-
-inline chi2_result get_worst(const std::vector<chi2_result>& results) {
-	chi2_result worst{};
-	for (const auto& rr : results) {
-		if (rr.stats.chi2 > worst.stats.chi2) {
-			worst = rr;
+template <typename T>
+T get_worst(const std::vector<T>& results) {
+	T worst = results.front();
+	for (const auto& result : results) {
+		if (get_worst(result) > get_worst(worst)) {
+			worst = result;
 		}
 	}
 	return worst;
@@ -69,7 +41,7 @@ inline basic_result get_sum(const std::vector<basic_result>& results) {
 		sum.stats.mean += rr.stats.mean;
 		sum.stats.variance += rr.stats.variance;
 		sum.stats.median += rr.stats.median;
-		sum.stats.n += rr.stats.n;
+		sum.n += rr.n;
 	}
 	return sum;
 }
@@ -120,9 +92,9 @@ public:
 
 	void add(const test_result& r) {
 		results.push_back(r);
-		const auto aw = get_sum(r.avalanche_results);
-		const auto bs = get_sum(r.basic_results);
-		const auto kw = get_sum(r.ks_results);
+		const auto aw = get_worst(r.avalanche_results);
+		const auto bs = get_worst(r.basic_results);
+		const auto kw = get_worst(r.ks_results);
 		const auto ch = get_worst(r.chi2_results);
 		runtime_table
 			.col(aw.mixer_name)
@@ -173,7 +145,7 @@ public:
 				.col(row.stats.mean)
 				.col(row.stats.variance)
 				.col(row.stats.median)
-				.col(row.stats.n)
+				.col(row.n)
 				.row();
 		}
 		return table.to_string();
