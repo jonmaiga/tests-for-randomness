@@ -18,41 +18,6 @@ inline Table& add_avalanche_result(Table& table, const avalanche_result& result)
 	return table.col(result.n).row();
 }
 
-inline void add_worst(Table& table, const test_result& r) {
-	avalanche_result worst;
-	for (const auto& rr : r.avalanche_results) {
-		if (std::abs(rr.bic.max_bias) > std::abs(worst.bic.max_bias)) {
-			worst = rr;
-		}
-	}
-	add_avalanche_result(table, worst);
-}
-
-inline void add_all(Table& table, const test_result& r) {
-	auto rs = r.avalanche_results;
-	std::sort(rs.begin(), rs.end(), [](const avalanche_result& l, const avalanche_result& r) {
-		return l.bic.max_bias < r.bic.max_bias;
-	});
-
-	for (const auto& rr : rs) {
-		add_avalanche_result(table, rr);
-	}
-	std::cout << table.to_string() << "\n";
-}
-
-inline avalanche_stats max(const avalanche_stats& l, const avalanche_stats& r) {
-	avalanche_stats as;
-	as.max_bias = std::max(l.max_bias, r.max_bias);
-	as.std_dev_bias = std::max(l.std_dev_bias, r.std_dev_bias);
-	if (std::abs(l.mean_bias) > std::abs(r.mean_bias)) {
-		as.mean_bias = l.mean_bias;
-	}
-	else {
-		as.mean_bias = r.mean_bias;
-	}
-	return as;
-}
-
 inline avalanche_result get_worst(const std::vector<avalanche_result>& results) {
 	avalanche_result worst{"-"};
 	for (const auto& rr : results) {
@@ -145,19 +110,6 @@ inline chi2_result get_sum(const std::vector<chi2_result>& results) {
 	}
 	return sum;
 }
-
-
-inline uint64_t sum_total_n(const test_result& r) {
-	uint64_t total = 0;
-	for (const auto& ar : r.avalanche_results) {
-		total += ar.n;
-	}
-	for (const auto& ksr : r.ks_results) {
-		total += ksr.n;
-	}
-	return total;
-}
-
 
 class result_analyzer {
 
