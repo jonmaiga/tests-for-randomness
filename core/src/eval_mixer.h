@@ -18,6 +18,7 @@ using test = const std::function<T(uint64_t n, const stream&, const mixer&)>;
 
 struct test_result {
 	std::string name;
+	std::string mixer_name;
 	std::vector<avalanche_result> avalanche_results;
 	std::vector<basic_result> basic_results;
 	std::vector<kolmogorov_result> ks_results;
@@ -50,8 +51,8 @@ std::vector<T> evaluate_rrc(const test<T>& test, const std::vector<test_factory>
 	return results;
 }
 
-inline test_result evaluate_rrc(const std::vector<test_factory>& test_factories) {
-	test_result results{"rrc"};
+inline test_result evaluate_rrc(const std::string& mixer_name, const std::vector<test_factory>& test_factories) {
+	test_result results{"rrc", mixer_name};
 	results.avalanche_results = evaluate_rrc<avalanche_result>(avalanche_test, test_factories);
 	results.basic_results = evaluate_rrc<basic_result>(basic_test, test_factories);
 	results.ks_results = evaluate_rrc<kolmogorov_result>(kolmogorov_test, test_factories);
@@ -69,23 +70,23 @@ std::vector<T> evaluate(const test<T>& test, const std::vector<test_factory>& te
 	return results;
 }
 
-inline test_result evaluate(const std::vector<test_factory>& test_factories) {
-	test_result result{"single"};
+inline test_result evaluate(const std::string& mixer_name, const std::vector<test_factory>& test_factories) {
+	test_result result{"single", mixer_name};
 	result.avalanche_results = evaluate<avalanche_result>(avalanche_test, test_factories);
 	result.ks_results = evaluate<kolmogorov_result>(kolmogorov_test, test_factories);
 	result.chi2_results = evaluate<chi2_result>(chi2_test, test_factories);
+	result.basic_results = evaluate<basic_result>(basic_test, test_factories);
 	return result;
 }
 
 } // namespace internal
 
 inline test_result evaluate_rrc(const mixer& mixer, uint64_t n) {
-	return internal::evaluate_rrc(create_test_factories(mixer, n));
+	return internal::evaluate_rrc(mixer.name, create_test_factories(mixer, n));
 }
 
-
 inline test_result evaluate(const mixer& mixer, uint64_t n) {
-	return internal::evaluate(create_test_factories(mixer, n));
+	return internal::evaluate(mixer.name, create_test_factories(mixer, n));
 }
 
 }

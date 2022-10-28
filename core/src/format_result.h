@@ -87,7 +87,7 @@ public:
 		const auto kw = get_sum(r.ks_results);
 		const auto ch = get_sum(r.chi2_results);
 		runtime_table
-			.col(aw.mixer_name)
+			.col(r.mixer_name)
 			.col(bs.stats.mean)
 			.col(aw.bic.max_bias)
 			.col(kw.stats.d_max)
@@ -189,7 +189,7 @@ public:
 
 		const auto get_columns = [](const test_result& r) {
 			columns c;
-			c.name = r.basic_results.front().mixer_name;
+			c.name = r.mixer_name;
 			c.mean = get_sum(r.basic_results).stats.mean;
 			c.variance = get_sum(r.basic_results).stats.variance;
 			c.chi2 = get_sum(r.chi2_results).stats.chi2;
