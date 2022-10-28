@@ -7,6 +7,7 @@
 #include "test/avalanche.h"
 #include "test/basic.h"
 #include "test/chi2.h"
+#include "test/correlation.h"
 #include "test/kolmogorov.h"
 #include "rrc.h"
 #include "test_streams.h"
@@ -23,6 +24,7 @@ struct test_result {
 	std::vector<basic_result> basic_results;
 	std::vector<kolmogorov_result> ks_results;
 	std::vector<chi2_result> chi2_results;
+	std::vector<correlation_result> correlation_results;
 };
 
 namespace internal {
@@ -57,6 +59,7 @@ inline test_result evaluate_rrc(const std::string& mixer_name, const std::vector
 	results.basic_results = evaluate_rrc<basic_result>(basic_test, test_factories);
 	results.ks_results = evaluate_rrc<kolmogorov_result>(kolmogorov_test, test_factories);
 	results.chi2_results = evaluate_rrc<chi2_result>(chi2_test, test_factories);
+	results.correlation_results = evaluate_rrc<correlation_result>(correlation_mixer_test, test_factories);
 	return results;
 }
 
@@ -76,6 +79,7 @@ inline test_result evaluate(const std::string& mixer_name, const std::vector<tes
 	result.ks_results = evaluate<kolmogorov_result>(kolmogorov_test, test_factories);
 	result.chi2_results = evaluate<chi2_result>(chi2_test, test_factories);
 	result.basic_results = evaluate<basic_result>(basic_test, test_factories);
+	result.correlation_results = evaluate<correlation_result>(correlation_mixer_test, test_factories);
 	return result;
 }
 

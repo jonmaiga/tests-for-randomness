@@ -34,7 +34,7 @@ inline void run_tests() {
 	const auto trng = create_mixer_from_stream("trng", trng_stream);
 
 	const test_method test = evaluate_rrc;
-	constexpr auto n = 100;
+	constexpr auto n = 2000;
 
 	result_analyzer analyzer;
 
@@ -54,6 +54,8 @@ inline void run_tests() {
 	std::cout << analyzer.summarize_basic() << "\n";
 	std::cout << analyzer.summarize_ks() << "\n";
 	std::cout << analyzer.summarize_chi2() << "\n";
+	std::cout << analyzer.summarize_correlation() << "\n";
+	std::cout << analyzer.summarize_baseline_bias() << "\n";
 }
 
 }

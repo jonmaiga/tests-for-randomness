@@ -65,7 +65,7 @@ inline stream create_stream_from_data(const std::string& name, const std::vector
 inline stream create_stream_from_mixer(const stream& source, const mixer& mixer) {
 	return {
 		mixer.name + "(" + source.name + ")",
-		[source, mixer]() { return mixer(source()); }
+		[&source, mixer]() { return mixer(source()); }
 	};
 }
 
