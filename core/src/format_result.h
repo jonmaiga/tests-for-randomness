@@ -9,6 +9,7 @@ inline double get_worst(const avalanche_result& result) { return result.bic.max_
 inline double get_worst(const basic_result& result) { return result.stats.mean; }
 inline double get_worst(const chi2_result& result) { return result.stats.chi2; }
 inline double get_worst(const kolmogorov_result& result) { return result.stats.d_max; }
+inline double get_worst(const correlation_result& result) { return result.stats.pearson_r; }
 
 template <typename T>
 T get_worst(const std::vector<T>& results) {
@@ -56,6 +57,7 @@ inline chi2_result& operator+=(chi2_result& l, const chi2_result& r) {
 inline correlation_result& operator+=(correlation_result& l, const correlation_result& r) {
 	l.n += r.n;
 	l.stats.pearson_r += std::abs(r.stats.pearson_r);
+	l.stats.spearman_r += std::abs(r.stats.spearman_r);
 	return l;
 }
 
@@ -83,7 +85,7 @@ class result_analyzer {
 
 public:
 	result_analyzer() :
-		runtime_table({"mixer", "mean", "bic_max", "ks_max", "chi2", "pearson_r"}) {
+		runtime_table({"mixer", "mean", "bic_max", "ks_max", "chi2", "pearson_r", "spearman_r"}) {
 	}
 
 	void add(const test_result& r) {
@@ -100,6 +102,7 @@ public:
 			.col(kw.stats.d_max)
 			.col(ch.stats.chi2)
 			.col(pr.stats.pearson_r)
+			.col(pr.stats.spearman_r)
 			.row();
 		std::cout << runtime_table.to_string() << "\n";
 	}
@@ -212,6 +215,7 @@ public:
 			double ks{};
 			double avalanche{};
 			double pearson_r{};
+			double spearman_r{};
 		};
 
 		const auto get_columns = [](const test_result& r) {
@@ -223,6 +227,7 @@ public:
 			c.ks = get_sum(r.ks_results).stats.d_max;
 			c.avalanche = get_sum(r.avalanche_results).bic.max_bias;
 			c.pearson_r = get_sum(r.correlation_results).stats.pearson_r;
+			c.spearman_r = get_sum(r.correlation_results).stats.spearman_r;
 			return c;
 		};
 
@@ -238,12 +243,13 @@ public:
 				cols.ks / baseline.ks,
 				cols.avalanche / baseline.avalanche,
 				cols.pearson_r / baseline.pearson_r,
+				cols.spearman_r / baseline.spearman_r,
 			});
 		}
 
 		sort_rows<columns>(rows, [](const columns& row) { return row.pearson_r; });
 
-		Table table({"mixer", "mean", "variance", "chi2", "ks", "avalanche", "pearson_r"});
+		Table table({"mixer", "mean", "variance", "chi2", "ks", "avalanche", "pearson_r", "spearman_r"});
 		for (const auto& row : rows) {
 			table.col(row.name)
 			     .col(row.mean)
@@ -252,6 +258,7 @@ public:
 			     .col(row.ks)
 			     .col(row.avalanche)
 			     .col(row.pearson_r)
+			     .col(row.spearman_r)
 			     .row();
 		}
 		return table.to_string();
