@@ -177,6 +177,56 @@ public:
 		return table.to_string();
 	}
 
+	std::string summarize_baseline_bias() const {
+		struct columns {
+			std::string name;
+			double mean{};
+			double variance{};
+			double chi2{};
+			double ks{};
+			double avalanche{};
+		};
+
+		const auto get_columns = [](const test_result& r) {
+			columns c;
+			c.name = r.basic_results.front().mixer_name;
+			c.mean = get_sum(r.basic_results).stats.mean;
+			c.variance = get_sum(r.basic_results).stats.variance;
+			c.chi2 = get_sum(r.chi2_results).stats.chi2;
+			c.ks = get_sum(r.ks_results).stats.d_max;
+			c.avalanche = get_sum(r.avalanche_results).bic.max_bias;
+			return c;
+		};
+
+		const auto& baseline = get_columns(results.front());
+		std::vector<columns> rows;
+		for (const auto& result : results) {
+			const auto& cols = get_columns(result);
+			rows.push_back({
+				cols.name,
+				cols.mean / baseline.mean,
+				cols.variance / baseline.variance,
+				cols.chi2 / baseline.chi2,
+				cols.ks / baseline.ks,
+				cols.avalanche / baseline.avalanche,
+			});
+		}
+
+		sort_rows<columns>(rows, [](const columns& row) { return row.ks; });
+
+		Table table({"mixer", "mean", "variance", "chi2", "ks", "avalanche"});
+		for (const auto& row : rows) {
+			table.col(row.name)
+			     .col(row.mean)
+			     .col(row.variance)
+			     .col(row.chi2)
+			     .col(row.ks)
+			     .col(row.avalanche)
+			     .row();
+		}
+		return table.to_string();
+	}
+
 
 private:
 	Table runtime_table;
