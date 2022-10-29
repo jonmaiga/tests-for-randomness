@@ -9,6 +9,7 @@ inline double get_worst(const avalanche_stats& result) { return result.bic.max_b
 inline double get_worst(const basic_stats& result) { return result.mean; }
 inline double get_worst(const chi2_stats& result) { return result.chi2; }
 inline double get_worst(const kolmogorov_stats& result) { return result.d_max; }
+inline double get_worst(const anderson_darling_stats& result) { return result.A2; }
 inline double get_worst(const wald_wolfowitz_stats& result) { return result.z_score; }
 inline double get_worst(const correlation_stats& result) { return result.kendall_t; }
 
@@ -43,6 +44,11 @@ inline basic_stats& operator+=(basic_stats& l, const basic_stats& r) {
 inline kolmogorov_stats& operator+=(kolmogorov_stats& l, const kolmogorov_stats& r) {
 	l.d_max += r.d_max;
 	l.i_max += r.i_max;
+	return l;
+}
+
+inline anderson_darling_stats& operator+=(anderson_darling_stats& l, const anderson_darling_stats& r) {
+	l.A2 += std::abs(r.A2);
 	return l;
 }
 
@@ -87,7 +93,7 @@ class result_analyzer {
 
 public:
 	result_analyzer() :
-		runtime_table({"mixer", "mean", "avalanche", "chi2", "ks", "wald", "pearson_r", "spearman_r", "kendall_t"}) {
+		runtime_table({"mixer", "mean", "avalanche", "chi2", "ks", "a-d", "wald", "pearson_r", "spearman_r", "kendall_t"}) {
 	}
 
 	void add(const test_result& r) {
@@ -96,6 +102,7 @@ public:
 		const auto bs = get_sum(r.basic);
 		const auto ch = get_sum(r.chi2);
 		const auto ks = get_sum(r.ks);
+		const auto ad = get_sum(r.anderson_darling);
 		const auto ww = get_worst(r.ww);
 		const auto pr = get_sum(r.correlation);
 
@@ -105,6 +112,7 @@ public:
 			.col(aw.bic.max_bias)
 			.col(ch.chi2)
 			.col(ks.d_max)
+			.col(ad.A2)
 			.col(ww.z_score)
 			.col(pr.pearson_r)
 			.col(pr.spearman_r)
@@ -222,6 +230,7 @@ public:
 			double variance{};
 			double chi2{};
 			double ks{};
+			double ad{};
 			double ww{};
 			double avalanche{};
 			double pearson_r{};
@@ -236,6 +245,7 @@ public:
 			c.variance = get_sum(r.basic).variance;
 			c.chi2 = get_sum(r.chi2).chi2;
 			c.ks = get_sum(r.ks).d_max;
+			c.ad = get_sum(r.anderson_darling).A2;
 			c.ww = get_sum(r.ww).z_score;
 			c.avalanche = get_sum(r.avalanche).bic.max_bias;
 			c.pearson_r = get_sum(r.correlation).pearson_r;
@@ -254,6 +264,7 @@ public:
 				cols.variance / baseline.variance,
 				cols.chi2 / baseline.chi2,
 				cols.ks / baseline.ks,
+				cols.ad / baseline.ad,
 				cols.ww / baseline.ww,
 				cols.avalanche / baseline.avalanche,
 				cols.pearson_r / baseline.pearson_r,
@@ -262,10 +273,10 @@ public:
 			});
 		}
 
-		sort_rows<columns>(rows, [](const columns& row) { return row.ww; });
+		sort_rows<columns>(rows, [](const columns& row) { return row.ad; });
 
 		Table table({
-			"mixer", "mean", "variance", "chi2", "ks", "wald",
+			"mixer", "mean", "variance", "chi2", "ks", "a-d", "wald",
 			"avalanche", "pearson_r", "spearman_r", "kendall_t"
 		});
 		for (const auto& row : rows) {
@@ -274,6 +285,7 @@ public:
 			     .col(row.variance)
 			     .col(row.chi2)
 			     .col(row.ks)
+			     .col(row.ad)
 			     .col(row.ww)
 			     .col(row.avalanche)
 			     .col(row.pearson_r)

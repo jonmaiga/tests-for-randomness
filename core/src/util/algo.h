@@ -3,6 +3,7 @@
 #include <numeric>
 #include <vector>
 
+#include "bitwise.h"
 #include "math.h"
 
 namespace mixer {
