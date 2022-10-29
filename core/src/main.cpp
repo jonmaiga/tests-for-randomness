@@ -33,8 +33,8 @@ inline void run_tests() {
 	const auto trng_stream = create_stream_from_data("trng", get_trng_data());
 	const auto trng = create_mixer_from_stream("trng", trng_stream);
 
-	const test_method test = evaluate_rrc;
-	constexpr auto n = 3000;
+	const test_method test = evaluate;
+	constexpr auto n = 1000;
 
 	result_analyzer analyzer;
 

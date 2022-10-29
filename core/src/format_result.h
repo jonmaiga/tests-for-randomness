@@ -91,11 +91,11 @@ public:
 
 	void add(const test_result& r) {
 		results.push_back(r);
-		const auto aw = get_sum(r.avalanche_results);
-		const auto bs = get_sum(r.basic_results);
-		const auto kw = get_sum(r.ks_results);
-		const auto ch = get_sum(r.chi2_results);
-		const auto pr = get_worst(r.correlation_results);
+		const auto aw = get_sum(r.avalanche);
+		const auto bs = get_sum(r.basic);
+		const auto kw = get_sum(r.ks);
+		const auto ch = get_sum(r.chi2);
+		const auto pr = get_worst(r.correlation);
 		runtime_table
 			.col(r.mixer_name)
 			.col(bs.stats.mean)
@@ -112,7 +112,7 @@ public:
 	std::string summarize_avalanche() const {
 		std::vector<avalanche_result> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_sum(result.avalanche_results));
+			rows.push_back(get_sum(result.avalanche));
 		}
 
 		sort_rows<avalanche_result>(rows, [](const avalanche_result& r) { return r.bic.max_bias; });
@@ -134,7 +134,7 @@ public:
 	std::string summarize_basic() const {
 		std::vector<basic_result> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_sum(result.basic_results));
+			rows.push_back(get_sum(result.basic));
 		}
 		sort_rows<basic_result>(rows, [](const basic_result& r) { return std::abs(r.stats.mean - 0.5); });
 
@@ -156,7 +156,7 @@ public:
 	std::string summarize_ks() const {
 		std::vector<kolmogorov_result> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_sum(result.ks_results));
+			rows.push_back(get_sum(result.ks));
 		}
 		sort_rows<kolmogorov_result>(rows, [](const kolmogorov_result& r) { return r.stats.d_max; });
 
@@ -175,7 +175,7 @@ public:
 	std::string summarize_chi2() const {
 		std::vector<chi2_result> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_sum(result.chi2_results));
+			rows.push_back(get_sum(result.chi2));
 		}
 		sort_rows<chi2_result>(rows, [](const chi2_result& r) { return r.stats.chi2; });
 
@@ -193,7 +193,7 @@ public:
 	std::string summarize_correlation() const {
 		std::vector<correlation_result> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_sum(result.correlation_results));
+			rows.push_back(get_sum(result.correlation));
 		}
 		sort_rows<correlation_result>(rows, [](const correlation_result& r) { return r.stats.pearson_r; });
 
@@ -226,14 +226,14 @@ public:
 		const auto get_columns = [](const test_result& r) {
 			columns c;
 			c.name = r.mixer_name;
-			c.mean = get_sum(r.basic_results).stats.mean;
-			c.variance = get_sum(r.basic_results).stats.variance;
-			c.chi2 = get_sum(r.chi2_results).stats.chi2;
-			c.ks = get_sum(r.ks_results).stats.d_max;
-			c.avalanche = get_sum(r.avalanche_results).bic.max_bias;
-			c.pearson_r = get_sum(r.correlation_results).stats.pearson_r;
-			c.spearman_r = get_sum(r.correlation_results).stats.spearman_r;
-			c.kendall_t = get_sum(r.correlation_results).stats.kendall_t;
+			c.mean = get_sum(r.basic).stats.mean;
+			c.variance = get_sum(r.basic).stats.variance;
+			c.chi2 = get_sum(r.chi2).stats.chi2;
+			c.ks = get_sum(r.ks).stats.d_max;
+			c.avalanche = get_sum(r.avalanche).bic.max_bias;
+			c.pearson_r = get_sum(r.correlation).stats.pearson_r;
+			c.spearman_r = get_sum(r.correlation).stats.spearman_r;
+			c.kendall_t = get_sum(r.correlation).stats.kendall_t;
 			return c;
 		};
 
