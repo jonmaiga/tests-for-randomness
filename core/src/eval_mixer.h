@@ -16,7 +16,10 @@
 namespace mixer {
 
 template <typename T>
-using test = const std::function<T(uint64_t n, const stream&, const mixer&)>;
+using mixer_test = const std::function<T(uint64_t n, const stream&, const mixer&)>;
+
+template <typename T>
+using stream_test = const std::function<T(uint64_t n, const stream&)>;
 
 template <typename T>
 struct result {
@@ -42,7 +45,7 @@ struct test_result {
 namespace internal {
 
 template <typename T>
-std::vector<result<T>> evaluate(const test<T>& test, const std::vector<test_factory>& test_factories) {
+std::vector<result<T>> evaluate_mixer(const mixer_test<T>& test, const std::vector<test_factory>& test_factories) {
 	std::vector<result<T>> results;
 	for (const auto& factory : test_factories) {
 		const auto cfg = factory();
@@ -52,15 +55,28 @@ std::vector<result<T>> evaluate(const test<T>& test, const std::vector<test_fact
 	return results;
 }
 
+template <typename T>
+std::vector<result<T>> evaluate_stream(const stream_test<T>& test, const std::vector<test_factory>& test_factories) {
+	std::vector<result<T>> results;
+	for (const auto& factory : test_factories) {
+		const auto cfg = factory();
+		const auto r = test(cfg.n, create_stream_from_mixer(cfg.stream, cfg.mixer));
+		results.push_back({cfg.stream.name, cfg.mixer.name, r});
+	}
+	return results;
+}
+
+
 inline test_result evaluate(const std::string& mixer_name, const std::vector<test_factory>& test_factories) {
 	test_result result{"single", mixer_name};
-	result.basic = evaluate<basic_stats>(basic_test, test_factories);
-	result.chi2 = evaluate<chi2_stats>(chi2_test, test_factories);
-	result.ks = evaluate<kolmogorov_stats>(kolmogorov_test, test_factories);
-	result.anderson_darling = evaluate<anderson_darling_stats>(anderson_darling_test, test_factories);
-	result.ww = evaluate<wald_wolfowitz_stats>(wald_wolfowitz_test, test_factories);
-	result.avalanche = evaluate<avalanche_stats>(avalanche_mixer_test, test_factories);
-	result.correlation = evaluate<correlation_stats>(correlation_mixer_test, test_factories);
+	result.basic = evaluate_stream<basic_stats>(basic_test, test_factories);
+	result.chi2 = evaluate_stream<chi2_stats>(chi2_test, test_factories);
+	result.ks = evaluate_stream<kolmogorov_stats>(kolmogorov_test, test_factories);
+	result.anderson_darling = evaluate_stream<anderson_darling_stats>(anderson_darling_test, test_factories);
+	result.ww = evaluate_stream<wald_wolfowitz_stats>(wald_wolfowitz_test, test_factories);
+
+	result.avalanche = evaluate_mixer<avalanche_stats>(avalanche_mixer_test, test_factories);
+	result.correlation = evaluate_mixer<correlation_stats>(correlation_mixer_test, test_factories);
 	return result;
 }
 

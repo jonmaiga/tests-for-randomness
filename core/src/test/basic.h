@@ -27,10 +27,8 @@ inline basic_stats compute_basic_stats(uint64_t n, std::vector<double> values) {
 	return stats;
 }
 
-inline basic_stats basic_test(uint64_t n, const stream& stream, const mixer& mixer) {
-	return compute_basic_stats(
-		n,
-		get_normalized(n, create_stream_from_mixer(stream, mixer)));
+inline basic_stats basic_test(uint64_t n, const stream& stream) {
+	return compute_basic_stats(n, get_normalized(n, stream));
 }
 
 }

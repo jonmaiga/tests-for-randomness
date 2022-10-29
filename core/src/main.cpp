@@ -34,7 +34,7 @@ inline void run_tests() {
 	const auto trng = create_mixer_from_stream("trng", trng_stream);
 
 	const test_method test = test_rrc;
-	constexpr auto n = 5000;
+	constexpr auto n = 100;
 
 	std::cout << "n=" << n << "\n";
 	result_analyzer analyzer;

@@ -55,4 +55,16 @@ inline xys create_bit_flipped_xy(uint64_t n, const stream& source, const mixer& 
 	return {xs, ys};
 }
 
+inline uint64_t create_from_bit(const stream& source, int bit) {
+	uint64_t x = 0;
+	const uint64_t m = 1ull << bit;
+	for (int i = 0; i < 64; ++i) {
+		const auto v = source.next();
+		if (v & m != 0) {
+			x |= 1ull << i;
+		}
+	}
+	return x;
+}
+
 }

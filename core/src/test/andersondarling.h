@@ -23,9 +23,8 @@ inline anderson_darling_stats anderson_darling(std::vector<double> data) {
 	return {-n - sum / n};
 }
 
-inline anderson_darling_stats anderson_darling_test(const uint64_t n, const stream& stream, const mixer& mixer) {
-	const auto mixer_stream = create_stream_from_mixer(stream, mixer);
-	return anderson_darling(get_normalized(n, mixer_stream));
+inline anderson_darling_stats anderson_darling_test(const uint64_t n, const stream& stream) {
+	return anderson_darling(get_normalized(n, stream));
 }
 
 }

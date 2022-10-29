@@ -31,9 +31,8 @@ struct wald_wolfowitz_stats {
 	double z_score = 0;
 };
 
-inline wald_wolfowitz_stats wald_wolfowitz_test(const uint64_t n, const stream& stream, const mixer& mixer) {
-	const auto mixer_stream = create_stream_from_mixer(stream, mixer);
-	return {wald_wolfowitz(get_raw(n, mixer_stream))};
+inline wald_wolfowitz_stats wald_wolfowitz_test(const uint64_t n, const stream& stream) {
+	return {wald_wolfowitz(get_raw(n, stream))};
 }
 
 
