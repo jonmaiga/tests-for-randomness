@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "streams.h"
+#include "util/math.h"
 
 namespace mixer {
 

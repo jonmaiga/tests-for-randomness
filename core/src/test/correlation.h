@@ -1,9 +1,8 @@
 #pragma once
 
-#include "util/algo.h"
-#include "util/math.h"
 #include <string>
 #include <vector>
+#include "util/algo.h"
 
 namespace mixer {
 
@@ -72,25 +71,6 @@ inline double kendall_correlation(const std::vector<double>& xs, const std::vect
 		}
 	}
 	return static_cast<double>(is) / (std::sqrt(n1) * std::sqrt(n2));
-}
-
-struct xys {
-	std::vector<double> xs;
-	std::vector<double> ys;
-};
-
-inline xys create_bit_flipped_xy(uint64_t n, const stream& source, const mixer& mixer) {
-	std::vector<double> xs, ys;
-	for (uint64_t i = 0; i < n; ++i) {
-		const uint64_t v = source();
-		const uint64_t m = mixer(v);
-		const double x = normalize(m);
-		for (int bit = 0; bit < 64; ++bit) {
-			xs.push_back(x);
-			ys.push_back(normalize(mixer(flip_bit(m, bit))));
-		}
-	}
-	return {xs, ys};
 }
 
 inline double pearson_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {

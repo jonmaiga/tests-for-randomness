@@ -1,7 +1,7 @@
 #pragma once
 
 #include "streams.h"
-#include "util/math.h"
+#include "util/algo.h"
 
 namespace mixer {
 
@@ -18,15 +18,10 @@ struct basic_result {
 	basic_stats stats;
 };
 
-inline basic_stats compute_basic_test(uint64_t n, const stream& stream) {
-
+inline basic_stats compute_basic_stats(uint64_t n, std::vector<double> values) {
 	basic_stats stats{};
-	std::vector<double> values;
-	values.reserve(n);
-	for (uint64_t i = 0; i < n; ++i) {
-		const auto value = normalize(stream());
-		stats.mean += value;
-		values.push_back(value);
+	for (const auto v : values) {
+		stats.mean += v;
 	}
 	stats.mean /= static_cast<double>(n);
 
@@ -44,7 +39,8 @@ inline basic_result basic_test(uint64_t n, const stream& stream, const mixer& mi
 		stream.name,
 		mixer.name,
 		n,
-		compute_basic_test(n, create_stream_from_mixer(stream, mixer))
+		compute_basic_stats(n,
+		                    get_normalized(n, create_stream_from_mixer(stream, mixer)))
 	};
 }
 
