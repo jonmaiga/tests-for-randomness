@@ -9,6 +9,7 @@
 #include "test/chi2.h"
 #include "test/correlation.h"
 #include "test/kolmogorov.h"
+#include "test/waldwolfowitz.h"
 #include "test_streams.h"
 
 namespace mixer {
@@ -30,6 +31,7 @@ struct test_result {
 	std::vector<result<basic_stats>> basic;
 	std::vector<result<chi2_stats>> chi2;
 	std::vector<result<kolmogorov_stats>> ks;
+	std::vector<result<wald_wolfowitz_stats>> ww;
 
 	std::vector<result<avalanche_stats>> avalanche;
 	std::vector<result<correlation_stats>> correlation;
@@ -53,6 +55,7 @@ inline test_result evaluate(const std::string& mixer_name, const std::vector<tes
 	result.basic = evaluate<basic_stats>(basic_test, test_factories);
 	result.chi2 = evaluate<chi2_stats>(chi2_test, test_factories);
 	result.ks = evaluate<kolmogorov_stats>(kolmogorov_test, test_factories);
+	result.ww = evaluate<wald_wolfowitz_stats>(wald_wolfowitz_test, test_factories);
 	result.avalanche = evaluate<avalanche_stats>(avalanche_mixer_test, test_factories);
 	result.correlation = evaluate<correlation_stats>(correlation_mixer_test, test_factories);
 	return result;

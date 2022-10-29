@@ -17,6 +17,15 @@ std::vector<std::size_t> get_ranks(const std::vector<T>& vec, Compare& compare) 
 }
 
 
+inline std::vector<uint64_t> get_raw(uint64_t n, const stream& stream) {
+	std::vector<uint64_t> data;
+	data.reserve(n);
+	for (uint64_t i = 0; i < n; ++i) {
+		data.push_back(stream());
+	}
+	return data;
+}
+
 inline std::vector<double> get_normalized(uint64_t n, const stream& stream) {
 	std::vector<double> data;
 	data.reserve(n);

@@ -84,7 +84,7 @@ inline correlation_stats correlation_mixer_test(uint64_t n, const stream& source
 	return {
 		pearson_correlation_mixer_test(n, source, mixer),
 		spearman_correlation_mixer_test(n, source, mixer),
-		kendall_correlation_mixer_test(n, source, mixer)
+		0 //kendall_correlation_mixer_test(n, source, mixer)
 	};
 }
 

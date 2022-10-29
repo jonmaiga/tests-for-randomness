@@ -33,7 +33,7 @@ inline kolmogorov_stats kolmogorov_smirnov_test(std::vector<double> data) {
 
 inline kolmogorov_stats kolmogorov_test(const uint64_t n, const stream& stream, const mixer& mixer) {
 	const auto mixer_stream = create_stream_from_mixer(stream, mixer);
-	return kolmogorov_smirnov_test(get_normalized(n, stream));
+	return kolmogorov_smirnov_test(get_normalized(n, mixer_stream));
 }
 
 }
