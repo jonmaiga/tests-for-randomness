@@ -42,13 +42,9 @@ inline kolmogorov_result kolmogorov_test(const uint64_t n, const stream& stream,
 	const auto mixer_stream = create_stream_from_mixer(stream, mixer);
 	constexpr auto normalizer = static_cast<double>(std::numeric_limits<uint64_t>::max());
 	std::vector<double> data;
-	try {
-		for (uint64_t i = 0; i < n; ++i) {
-			const auto d = static_cast<double>(mixer_stream());
-			data.push_back(d / normalizer);
-		}
-	}
-	catch (const std::runtime_error&) {
+	for (uint64_t i = 0; i < n; ++i) {
+		const auto d = static_cast<double>(mixer_stream());
+		data.push_back(d / normalizer);
 	}
 	return {stream.name, mixer.name, data.size(), kolmogorov_smirnov_test(data)};
 }
