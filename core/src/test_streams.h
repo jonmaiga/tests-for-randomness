@@ -28,10 +28,10 @@ inline std::vector<test_factory> create_test_factories(const mixer& mixer, uint6
 	const auto greycode8 = [mixer, n]() {
 		return test_config{n, create_gray_code(8), mixer};
 	};
-	//const auto trng = [mixer, n]() {
-	//	return test_config{n, create_data_stream("trng", get_trng_data()), mixer};
-	//};
-	return {counter1, greycode2, greycode4, greycode8};
+	const auto trng = [mixer, n]() {
+		return test_config{n, create_stream_from_data("trng", get_trng_data()), mixer};
+	};
+	return {counter1, /*greycode2, greycode4, greycode8, trng*/};
 }
 
 inline std::vector<test_factory> create_rrc_test_factories(const mixer& mixer, uint64_t n) {
