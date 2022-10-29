@@ -20,7 +20,7 @@ struct avalanche_stats {
 	bias sac;
 };
 
-inline avalanche_stats avalanche_test(const uint64_t n, const stream& stream, const mixer& mixer) {
+inline avalanche_stats avalanche_mixer_test(const uint64_t n, const stream& stream, const mixer& mixer) {
 	uint64_t bic_matrix[64][64] = {{}};
 	uint64_t sac_count[64] = {};
 

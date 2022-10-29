@@ -26,11 +26,12 @@ struct result {
 struct test_result {
 	std::string name;
 	std::string mixer_name;
-	uint64_t n{};
-	std::vector<result<avalanche_stats>> avalanche;
+
 	std::vector<result<basic_stats>> basic;
-	std::vector<result<kolmogorov_stats>> ks;
 	std::vector<result<chi2_stats>> chi2;
+	std::vector<result<kolmogorov_stats>> ks;
+
+	std::vector<result<avalanche_stats>> avalanche;
 	std::vector<result<correlation_stats>> correlation;
 };
 
@@ -49,10 +50,10 @@ std::vector<result<T>> evaluate(const test<T>& test, const std::vector<test_fact
 
 inline test_result evaluate(const std::string& mixer_name, const std::vector<test_factory>& test_factories) {
 	test_result result{"single", mixer_name};
-	result.avalanche = evaluate<avalanche_stats>(avalanche_test, test_factories);
-	result.ks = evaluate<kolmogorov_stats>(kolmogorov_test, test_factories);
-	result.chi2 = evaluate<chi2_stats>(chi2_test, test_factories);
 	result.basic = evaluate<basic_stats>(basic_test, test_factories);
+	result.chi2 = evaluate<chi2_stats>(chi2_test, test_factories);
+	result.ks = evaluate<kolmogorov_stats>(kolmogorov_test, test_factories);
+	result.avalanche = evaluate<avalanche_stats>(avalanche_mixer_test, test_factories);
 	result.correlation = evaluate<correlation_stats>(correlation_mixer_test, test_factories);
 	return result;
 }
