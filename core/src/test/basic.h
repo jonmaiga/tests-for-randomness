@@ -11,13 +11,6 @@ struct basic_stats {
 	double median{};
 };
 
-struct basic_result {
-	std::string stream_name;
-	std::string mixer_name;
-	uint64_t n = 0;
-	basic_stats stats;
-};
-
 inline basic_stats compute_basic_stats(uint64_t n, std::vector<double> values) {
 	basic_stats stats{};
 	for (const auto v : values) {
@@ -34,14 +27,10 @@ inline basic_stats compute_basic_stats(uint64_t n, std::vector<double> values) {
 	return stats;
 }
 
-inline basic_result basic_test(uint64_t n, const stream& stream, const mixer& mixer) {
-	return {
-		stream.name,
-		mixer.name,
+inline basic_stats basic_test(uint64_t n, const stream& stream, const mixer& mixer) {
+	return compute_basic_stats(
 		n,
-		compute_basic_stats(n,
-		                    get_normalized(n, create_stream_from_mixer(stream, mixer)))
-	};
+		get_normalized(n, create_stream_from_mixer(stream, mixer)));
 }
 
 }

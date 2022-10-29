@@ -9,25 +9,21 @@
 
 namespace mixer {
 
-struct avalanche_stats {
+struct bias {
 	double max_bias = 0;
 	double mean_bias = 0;
 	double std_dev_bias = 0;
 };
 
-struct avalanche_result {
-	std::string stream_name;
-	std::string mixer_name;
-	uint64_t n{};
-	avalanche_stats bic;
-	avalanche_stats sac;
+struct avalanche_stats {
+	bias bic;
+	bias sac;
 };
 
-inline avalanche_result avalanche_test(const uint64_t n, const stream& stream, const mixer& mixer) {
+inline avalanche_stats avalanche_test(const uint64_t n, const stream& stream, const mixer& mixer) {
 	uint64_t bic_matrix[64][64] = {{}};
 	uint64_t sac_count[64] = {};
 
-	avalanche_result result{stream.name, mixer.name};
 	uint64_t actual = 0;
 	for (uint64_t i = 0; i < n; ++i) {
 		const auto x = stream();
@@ -43,7 +39,7 @@ inline avalanche_result avalanche_test(const uint64_t n, const stream& stream, c
 		++actual;
 	}
 
-	result.n = actual;
+	avalanche_stats result;
 	{
 		const double expected_bit_count = n / 2.;
 		for (auto& bin : bic_matrix) {

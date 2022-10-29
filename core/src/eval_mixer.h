@@ -16,35 +16,44 @@ namespace mixer {
 template <typename T>
 using test = const std::function<T(uint64_t n, const stream&, const mixer&)>;
 
+template <typename T>
+struct result {
+	std::string stream_name;
+	std::string mixer_name;
+	T stats;
+};
+
 struct test_result {
 	std::string name;
 	std::string mixer_name;
-	std::vector<avalanche_result> avalanche;
-	std::vector<basic_result> basic;
-	std::vector<kolmogorov_result> ks;
-	std::vector<chi2_result> chi2;
-	std::vector<correlation_result> correlation;
+	uint64_t n{};
+	std::vector<result<avalanche_stats>> avalanche;
+	std::vector<result<basic_stats>> basic;
+	std::vector<result<kolmogorov_stats>> ks;
+	std::vector<result<chi2_stats>> chi2;
+	std::vector<result<correlation_stats>> correlation;
 };
 
 namespace internal {
 
 template <typename T>
-std::vector<T> evaluate(const test<T>& test, const std::vector<test_factory>& test_factories) {
-	std::vector<T> results;
+std::vector<result<T>> evaluate(const test<T>& test, const std::vector<test_factory>& test_factories) {
+	std::vector<result<T>> results;
 	for (const auto& factory : test_factories) {
 		const auto cfg = factory();
-		results.push_back(test(cfg.n, cfg.stream, cfg.mixer));
+		const auto r = test(cfg.n, cfg.stream, cfg.mixer);
+		results.push_back({cfg.stream.name, cfg.mixer.name, r});
 	}
 	return results;
 }
 
 inline test_result evaluate(const std::string& mixer_name, const std::vector<test_factory>& test_factories) {
 	test_result result{"single", mixer_name};
-	result.avalanche = evaluate<avalanche_result>(avalanche_test, test_factories);
-	result.ks = evaluate<kolmogorov_result>(kolmogorov_test, test_factories);
-	result.chi2 = evaluate<chi2_result>(chi2_test, test_factories);
-	result.basic = evaluate<basic_result>(basic_test, test_factories);
-	result.correlation = evaluate<correlation_result>(correlation_mixer_test, test_factories);
+	result.avalanche = evaluate<avalanche_stats>(avalanche_test, test_factories);
+	result.ks = evaluate<kolmogorov_stats>(kolmogorov_test, test_factories);
+	result.chi2 = evaluate<chi2_stats>(chi2_test, test_factories);
+	result.basic = evaluate<basic_stats>(basic_test, test_factories);
+	result.correlation = evaluate<correlation_stats>(correlation_mixer_test, test_factories);
 	return result;
 }
 

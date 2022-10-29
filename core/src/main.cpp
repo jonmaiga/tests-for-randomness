@@ -33,11 +33,11 @@ inline void run_tests() {
 	const auto trng_stream = create_stream_from_data("trng", get_trng_data());
 	const auto trng = create_mixer_from_stream("trng", trng_stream);
 
-	const test_method test = test_rrc;
-	constexpr auto n = 100;
+	const test_method test = test_standard;
+	constexpr auto n = 1000;
 
+	std::cout << "n=" << n << "\n";
 	result_analyzer analyzer;
-
 	analyzer.add(test(trng, n));
 	analyzer.add(test(mx3, n));
 	analyzer.add(test(nasam, n));

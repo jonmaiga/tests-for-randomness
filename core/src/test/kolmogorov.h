@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <vector>
 
 #include "streams.h"
@@ -12,13 +11,6 @@ namespace mixer {
 struct kolmogorov_stats {
 	double d_max{};
 	uint64_t i_max{};
-};
-
-struct kolmogorov_result {
-	std::string stream_name;
-	std::string mixer_name;
-	uint64_t n{};
-	kolmogorov_stats stats;
 };
 
 inline kolmogorov_stats kolmogorov_smirnov_test(std::vector<double> data) {
@@ -39,12 +31,9 @@ inline kolmogorov_stats kolmogorov_smirnov_test(std::vector<double> data) {
 	return {max_distance, max_index};
 }
 
-inline kolmogorov_result kolmogorov_test(const uint64_t n, const stream& stream, const mixer& mixer) {
+inline kolmogorov_stats kolmogorov_test(const uint64_t n, const stream& stream, const mixer& mixer) {
 	const auto mixer_stream = create_stream_from_mixer(stream, mixer);
-	return {
-		stream.name, mixer.name, n,
-		kolmogorov_smirnov_test(get_normalized(n, stream))
-	};
+	return kolmogorov_smirnov_test(get_normalized(n, stream));
 }
 
 }

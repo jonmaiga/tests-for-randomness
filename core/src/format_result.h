@@ -5,25 +5,24 @@
 
 namespace mixer {
 
-inline double get_worst(const avalanche_result& result) { return result.bic.max_bias; }
-inline double get_worst(const basic_result& result) { return result.stats.mean; }
-inline double get_worst(const chi2_result& result) { return result.stats.chi2; }
-inline double get_worst(const kolmogorov_result& result) { return result.stats.d_max; }
-inline double get_worst(const correlation_result& result) { return result.stats.kendall_t; }
+inline double get_worst(const avalanche_stats& result) { return result.bic.max_bias; }
+inline double get_worst(const basic_stats& result) { return result.mean; }
+inline double get_worst(const chi2_stats& result) { return result.chi2; }
+inline double get_worst(const kolmogorov_stats& result) { return result.d_max; }
+inline double get_worst(const correlation_stats& result) { return result.kendall_t; }
 
 template <typename T>
-T get_worst(const std::vector<T>& results) {
-	T worst = results.front();
+T get_worst(const std::vector<result<T>>& results) {
+	T worst = results.front().stats;
 	for (const auto& result : results) {
-		if (get_worst(result) > get_worst(worst)) {
-			worst = result;
+		if (get_worst(result.stats) > get_worst(worst)) {
+			worst = result.stats;
 		}
 	}
 	return worst;
 }
 
-inline avalanche_result& operator+=(avalanche_result& l, const avalanche_result& r) {
-	l.n += r.n;
+inline avalanche_stats& operator+=(avalanche_stats& l, const avalanche_stats& r) {
 	l.sac.max_bias += r.sac.max_bias;
 	l.sac.mean_bias += r.sac.mean_bias;
 	l.sac.std_dev_bias += r.sac.std_dev_bias;
@@ -33,40 +32,36 @@ inline avalanche_result& operator+=(avalanche_result& l, const avalanche_result&
 	return l;
 }
 
-inline basic_result& operator+=(basic_result& l, const basic_result& r) {
-	l.n += r.n;
-	l.stats.mean += r.stats.mean;
-	l.stats.variance += r.stats.variance;
-	l.stats.median += r.stats.median;
+inline basic_stats& operator+=(basic_stats& l, const basic_stats& r) {
+	l.mean += r.mean;
+	l.variance += r.variance;
+	l.median += r.median;
 	return l;
 }
 
-inline kolmogorov_result& operator+=(kolmogorov_result& l, const kolmogorov_result& r) {
-	l.n += r.n;
-	l.stats.d_max += r.stats.d_max;
-	l.stats.i_max += r.stats.i_max;
+inline kolmogorov_stats& operator+=(kolmogorov_stats& l, const kolmogorov_stats& r) {
+	l.d_max += r.d_max;
+	l.i_max += r.i_max;
 	return l;
 }
 
-inline chi2_result& operator+=(chi2_result& l, const chi2_result& r) {
-	l.n += r.n;
-	l.stats.chi2 += r.stats.chi2;
+inline chi2_stats& operator+=(chi2_stats& l, const chi2_stats& r) {
+	l.chi2 += r.chi2;
 	return l;
 }
 
-inline correlation_result& operator+=(correlation_result& l, const correlation_result& r) {
-	l.n += r.n;
-	l.stats.pearson_r += std::abs(r.stats.pearson_r);
-	l.stats.spearman_r += std::abs(r.stats.spearman_r);
-	l.stats.kendall_t += std::abs(r.stats.kendall_t);
+inline correlation_stats& operator+=(correlation_stats& l, const correlation_stats& r) {
+	l.pearson_r += std::abs(r.pearson_r);
+	l.spearman_r += std::abs(r.spearman_r);
+	l.kendall_t += std::abs(r.kendall_t);
 	return l;
 }
 
 template <typename T>
-T get_sum(const std::vector<T>& results) {
-	T sum{"-", results.front().mixer_name};
+T get_sum(const std::vector<result<T>>& results) {
+	T sum;
 	for (const auto& result : results) {
-		sum += result;
+		sum += result.stats;
 	}
 	return sum;
 }
@@ -78,8 +73,8 @@ void sort_rows(std::vector<T>& rows, const std::function<double(const T&)>& fiel
 	});
 }
 
-inline Table& add_avalanche_stats(Table& table, const avalanche_stats& stats) {
-	return table.col(stats.std_dev_bias).col(stats.mean_bias).col(stats.max_bias);
+inline Table& add_avalanche_stats(Table& table, const bias& bias) {
+	return table.col(bias.std_dev_bias).col(bias.mean_bias).col(bias.max_bias);
 }
 
 class result_analyzer {
@@ -98,52 +93,53 @@ public:
 		const auto pr = get_worst(r.correlation);
 		runtime_table
 			.col(r.mixer_name)
-			.col(bs.stats.mean)
+			.col(bs.mean)
 			.col(aw.bic.max_bias)
-			.col(kw.stats.d_max)
-			.col(ch.stats.chi2)
-			.col(pr.stats.pearson_r)
-			.col(pr.stats.spearman_r)
-			.col(pr.stats.kendall_t)
+			.col(kw.d_max)
+			.col(ch.chi2)
+			.col(pr.pearson_r)
+			.col(pr.spearman_r)
+			.col(pr.kendall_t)
 			.row();
 		std::cout << runtime_table.to_string() << "\n";
 	}
 
 	std::string summarize_avalanche() const {
-		std::vector<avalanche_result> rows;
+		using T = result<avalanche_stats>;
+		std::vector<T> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_sum(result.avalanche));
+			rows.push_back({result.mixer_name, "-", get_sum(result.avalanche)});
 		}
 
-		sort_rows<avalanche_result>(rows, [](const avalanche_result& r) { return r.bic.max_bias; });
+		sort_rows<T>(rows, [](const T& r) { return r.stats.bic.max_bias; });
 
 		Table table({
-			"mixer", "stream", "n",
+			"mixer", "stream",
 			"sac_std_bias", "sac_avg_bias", "sac_max_bias",
 			"bic_std_bias", "bic_avg_bias", "bic_max_bias"
 		});
 		for (const auto& row : rows) {
-			table.col(row.mixer_name).col(row.stream_name).col(row.n);
-			add_avalanche_stats(table, row.sac);
-			add_avalanche_stats(table, row.bic);
+			table.col(row.mixer_name).col(row.stream_name);
+			add_avalanche_stats(table, row.stats.sac);
+			add_avalanche_stats(table, row.stats.bic);
 			table.row();
 		}
 		return table.to_string();
 	}
 
 	std::string summarize_basic() const {
-		std::vector<basic_result> rows;
+		using T = result<basic_stats>;
+		std::vector<T> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_sum(result.basic));
+			rows.push_back({result.mixer_name, "-", get_sum(result.basic)});
 		}
-		sort_rows<basic_result>(rows, [](const basic_result& r) { return std::abs(r.stats.mean - 0.5); });
+		sort_rows<T>(rows, [](const T& r) { return std::abs(r.stats.mean - 0.5); });
 
-		Table table({"mixer", "stream", "n", "mean", "variance", "median"});
+		Table table({"mixer", "stream", "mean", "variance", "median"});
 		for (const auto& row : rows) {
 			table
 				.col(row.mixer_name)
 				.col(row.stream_name)
-				.col(row.n)
 				.col(row.stats.mean)
 				.col(row.stats.variance)
 				.col(row.stats.median)
@@ -154,17 +150,17 @@ public:
 
 
 	std::string summarize_ks() const {
-		std::vector<kolmogorov_result> rows;
+		using T = result<kolmogorov_stats>;
+		std::vector<T> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_sum(result.ks));
+			rows.push_back({result.mixer_name, "-", get_sum(result.ks)});
 		}
-		sort_rows<kolmogorov_result>(rows, [](const kolmogorov_result& r) { return r.stats.d_max; });
+		sort_rows<T>(rows, [](const T& r) { return r.stats.d_max; });
 
-		Table table({"mixer", "stream", "n", "d", "index"});
+		Table table({"mixer", "stream", "d", "index"});
 		for (const auto& row : rows) {
 			table.col(row.mixer_name)
 			     .col(row.stream_name)
-			     .col(row.n)
 			     .col(row.stats.d_max)
 			     .col(row.stats.i_max)
 			     .row();
@@ -173,17 +169,17 @@ public:
 	}
 
 	std::string summarize_chi2() const {
-		std::vector<chi2_result> rows;
+		using T = result<chi2_stats>;
+		std::vector<T> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_sum(result.chi2));
+			rows.push_back({result.mixer_name, "-", get_sum(result.chi2)});
 		}
-		sort_rows<chi2_result>(rows, [](const chi2_result& r) { return r.stats.chi2; });
+		sort_rows<T>(rows, [](const T& r) { return r.stats.chi2; });
 
-		Table table({"mixer", "stream", "n", "chi2"});
+		Table table({"mixer", "stream", "chi2"});
 		for (const auto& row : rows) {
 			table.col(row.mixer_name)
 			     .col(row.stream_name)
-			     .col(row.n)
 			     .col(row.stats.chi2)
 			     .row();
 		}
@@ -191,17 +187,17 @@ public:
 	}
 
 	std::string summarize_correlation() const {
-		std::vector<correlation_result> rows;
+		using T = result<correlation_stats>;
+		std::vector<T> rows;
 		for (const auto& result : results) {
-			rows.push_back(get_sum(result.correlation));
+			rows.push_back({result.mixer_name, "-", get_sum(result.correlation)});
 		}
-		sort_rows<correlation_result>(rows, [](const correlation_result& r) { return r.stats.pearson_r; });
+		sort_rows<T>(rows, [](const T& r) { return r.stats.pearson_r; });
 
-		Table table({"mixer", "stream", "n", "pearson_r", "spearman_r", "kendall_t"});
+		Table table({"mixer", "stream", "pearson_r", "spearman_r", "kendall_t"});
 		for (const auto& row : rows) {
 			table.col(row.mixer_name)
 			     .col(row.stream_name)
-			     .col(row.n)
 			     .col(row.stats.pearson_r)
 			     .col(row.stats.spearman_r)
 			     .col(row.stats.kendall_t)
@@ -226,14 +222,14 @@ public:
 		const auto get_columns = [](const test_result& r) {
 			columns c;
 			c.name = r.mixer_name;
-			c.mean = get_sum(r.basic).stats.mean;
-			c.variance = get_sum(r.basic).stats.variance;
-			c.chi2 = get_sum(r.chi2).stats.chi2;
-			c.ks = get_sum(r.ks).stats.d_max;
+			c.mean = get_sum(r.basic).mean;
+			c.variance = get_sum(r.basic).variance;
+			c.chi2 = get_sum(r.chi2).chi2;
+			c.ks = get_sum(r.ks).d_max;
 			c.avalanche = get_sum(r.avalanche).bic.max_bias;
-			c.pearson_r = get_sum(r.correlation).stats.pearson_r;
-			c.spearman_r = get_sum(r.correlation).stats.spearman_r;
-			c.kendall_t = get_sum(r.correlation).stats.kendall_t;
+			c.pearson_r = get_sum(r.correlation).pearson_r;
+			c.spearman_r = get_sum(r.correlation).spearman_r;
+			c.kendall_t = get_sum(r.correlation).kendall_t;
 			return c;
 		};
 

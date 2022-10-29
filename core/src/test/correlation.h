@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <vector>
 #include "util/algo.h"
 
@@ -10,13 +9,6 @@ struct correlation_stats {
 	double pearson_r = 0;
 	double spearman_r = 0;
 	double kendall_t = 0;
-};
-
-struct correlation_result {
-	std::string stream_name;
-	std::string mixer_name;
-	uint64_t n = 0;
-	correlation_stats stats;
 };
 
 template <typename T>
@@ -88,14 +80,11 @@ inline double kendall_correlation_mixer_test(uint64_t n, const stream& source, c
 	return kendall_correlation(data.xs, data.ys);
 }
 
-inline correlation_result correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
+inline correlation_stats correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	return {
-		source.name, mixer.name, n,
-		{
-			pearson_correlation_mixer_test(n, source, mixer),
-			spearman_correlation_mixer_test(n, source, mixer),
-			kendall_correlation_mixer_test(n, source, mixer)
-		}
+		pearson_correlation_mixer_test(n, source, mixer),
+		spearman_correlation_mixer_test(n, source, mixer),
+		kendall_correlation_mixer_test(n, source, mixer)
 	};
 }
 
