@@ -5,6 +5,7 @@
 
 #include "streams.h"
 #include "types.h"
+#include "util/math.h"
 
 namespace mixer {
 
@@ -40,11 +41,9 @@ inline kolmogorov_stats kolmogorov_smirnov_test(std::vector<double> data) {
 
 inline kolmogorov_result kolmogorov_test(const uint64_t n, const stream& stream, const mixer& mixer) {
 	const auto mixer_stream = create_stream_from_mixer(stream, mixer);
-	constexpr auto normalizer = static_cast<double>(std::numeric_limits<uint64_t>::max());
 	std::vector<double> data;
 	for (uint64_t i = 0; i < n; ++i) {
-		const auto d = static_cast<double>(mixer_stream());
-		data.push_back(d / normalizer);
+		data.push_back(normalize(mixer_stream()));
 	}
 	return {stream.name, mixer.name, data.size(), kolmogorov_smirnov_test(data)};
 }

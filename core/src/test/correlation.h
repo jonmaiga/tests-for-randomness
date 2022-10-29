@@ -1,6 +1,7 @@
 #pragma once
 
 #include "util/algo.h"
+#include "util/math.h"
 #include <string>
 #include <vector>
 
@@ -79,15 +80,14 @@ struct xys {
 };
 
 inline xys create_bit_flipped_xy(uint64_t n, const stream& source, const mixer& mixer) {
-	constexpr auto normalizer = static_cast<double>(std::numeric_limits<uint64_t>::max());
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
 		const uint64_t v = source();
 		const uint64_t m = mixer(v);
-		const double x = m / normalizer;
+		const double x = normalize(m);
 		for (int bit = 0; bit < 64; ++bit) {
 			xs.push_back(x);
-			ys.push_back(mixer(flip_bit(m, bit)) / normalizer);
+			ys.push_back(normalize(mixer(flip_bit(m, bit))));
 		}
 	}
 	return {xs, ys};
