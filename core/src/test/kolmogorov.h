@@ -9,14 +9,14 @@
 namespace mixer {
 
 struct kolmogorov_stats {
-	double d_max;
-	uint64_t i_max;
+	double d_max{};
+	uint64_t i_max{};
 };
 
 struct kolmogorov_result {
 	std::string stream_name;
 	std::string mixer_name;
-	uint64_t n;
+	uint64_t n{};
 	kolmogorov_stats stats;
 };
 

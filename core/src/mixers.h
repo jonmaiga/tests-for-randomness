@@ -12,7 +12,7 @@ inline mixer create_mixer_from_stream(const std::string& name, const stream& sou
 			return source();
 		}
 	};
-};
+}
 
 const mixer mx3 = {
 	"mx3", [](uint64_t x) {

@@ -14,7 +14,7 @@ struct chi2_stats {
 struct chi2_result {
 	std::string stream_name;
 	std::string mixer_name;
-	uint64_t n;
+	uint64_t n{};
 	chi2_stats stats;
 };
 
