@@ -43,14 +43,18 @@ double pearson_correlation(const std::vector<T>& xs, const std::vector<T>& ys) {
 	return r;
 }
 
-inline double spearman_correlation(const std::vector<uint64_t>& xs, const std::vector<uint64_t>& ys) {
-	const auto cmp = [](uint64_t a, uint64_t b) { return a < b; };
+inline double spearman_correlation(const std::vector<double>& xs, const std::vector<double>& ys) {
+	const auto cmp = [](double a, double b) { return a < b; };
 	return pearson_correlation(get_ranks(xs, cmp), get_ranks(ys, cmp));
 }
 
-inline double pearson_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
-	constexpr auto normalizer = static_cast<double>(std::numeric_limits<uint64_t>::max());
+struct xys {
+	std::vector<double> xs;
+	std::vector<double> ys;
+};
 
+inline xys create_bit_flipped_xy(uint64_t n, const stream& source, const mixer& mixer) {
+	constexpr auto normalizer = static_cast<double>(std::numeric_limits<uint64_t>::max());
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
 		const uint64_t v = source();
@@ -61,20 +65,17 @@ inline double pearson_correlation_mixer_test(uint64_t n, const stream& source, c
 			ys.push_back(mixer(flip_bit(m, bit)) / normalizer);
 		}
 	}
-	return pearson_correlation(xs, ys);
+	return {xs, ys};
+}
+
+inline double pearson_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
+	const auto data = create_bit_flipped_xy(n, source, mixer);
+	return pearson_correlation(data.xs, data.ys);
 }
 
 inline double spearman_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
-	std::vector<uint64_t> xs, ys;
-	for (uint64_t i = 0; i < n; ++i) {
-		const uint64_t v = source();
-		const uint64_t m = mixer(v);
-		for (int bit = 0; bit < 64; ++bit) {
-			xs.push_back(m);
-			ys.push_back(mixer(flip_bit(m, bit)));
-		}
-	}
-	return spearman_correlation(xs, ys);
+	const auto data = create_bit_flipped_xy(n, source, mixer);
+	return spearman_correlation(data.xs, data.ys);
 }
 
 
