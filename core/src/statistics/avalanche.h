@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <optional>
 
 #include "util/bitwise.h"
 #include "types.h"

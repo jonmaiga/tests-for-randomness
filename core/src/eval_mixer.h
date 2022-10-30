@@ -4,13 +4,13 @@
 #include <string>
 #include <vector>
 
-#include "test/andersondarling.h"
-#include "test/avalanche.h"
-#include "test/basic.h"
-#include "test/chi2.h"
-#include "test/correlation.h"
-#include "test/kolmogorov.h"
-#include "test/waldwolfowitz.h"
+#include "statistics/andersondarling.h"
+#include "statistics/avalanche.h"
+#include "statistics/basic.h"
+#include "statistics/chi2.h"
+#include "statistics/correlation.h"
+#include "statistics/kolmogorov.h"
+#include "statistics/waldwolfowitz.h"
 #include "test_streams.h"
 
 namespace mixer {

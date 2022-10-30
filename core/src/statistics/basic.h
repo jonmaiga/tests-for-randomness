@@ -7,8 +7,9 @@ namespace mixer {
 
 struct basic_stats {
 	double mean{};
-	double variance{};
 	double median{};
+	double variance{};
+	double standard_deviation{};
 };
 
 inline basic_stats compute_basic_stats(uint64_t n, std::vector<double> values) {
@@ -17,13 +18,14 @@ inline basic_stats compute_basic_stats(uint64_t n, std::vector<double> values) {
 		stats.mean += v;
 	}
 	stats.mean /= static_cast<double>(n);
-
 	std::sort(values.begin(), values.end());
+	stats.median = values[values.size() / 2];
+
 	for (const auto v : values) {
 		stats.variance += (v - stats.mean) * (v - stats.mean);
 	}
 	stats.variance /= static_cast<double>(n);
-	stats.median = values[values.size() / 2];
+	stats.standard_deviation = std::sqrt(stats.variance);
 	return stats;
 }
 
