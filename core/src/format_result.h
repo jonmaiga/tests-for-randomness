@@ -89,14 +89,25 @@ inline table& add_avalanche_stats(table& table, const bias& bias) {
 	return table.col(bias.std_dev_bias).col(bias.mean_bias).col(bias.max_bias);
 }
 
-template<typename T>
-std::string t_test(const std::vector<T>& results) {
+template <typename T>
+std::string p_value_test(const std::vector<T>& results) {
 
 	int fails = 0;
 	for (const auto& r : results) {
-		//const auto uniform = get_uniform_stats(r.stats.n);
-		//const auto p = f_test(r.stats, uniform);
-		if (r.stats.p_value < 0.05) {
+		if (r.stats.p_value < 0.005) {
+			++fails;
+		}
+	}
+	return fails == 0 ? "OK" : "FAIL:" + std::to_string(fails);
+}
+
+inline std::string log_basic_test(
+	const std::vector<result<basic_stats>>& results,
+	const std::function<double(const basic_stats&, const basic_stats&)>& s) {
+	int fails = 0;
+	for (const auto& r : results) {
+		const auto p = s(r.stats, get_uniform_stats(r.stats.n));
+		if (p < 0.005) {
 			++fails;
 		}
 	}
@@ -107,7 +118,8 @@ class result_analyzer {
 
 public:
 	result_analyzer() :
-		runtime_table({"mixer", "mean", "t_test", "avalanche", "chi2", "ks", "a-d", "wald", "pearson_r", "spearman_r", "kendall_t"}) {
+		runtime_table({"mixer", "mean/var", "avalanche", "chi2", "ks", "a-d", "wald", "pearson_r", "spearman_r", "kendall_t"}),
+		test_table({"mixer", "z-test", "f-test", "t-test", "chi2-test", "ks-test", "ad-test"}) {
 	}
 
 	void add(const test_result& r) {
@@ -123,7 +135,6 @@ public:
 		runtime_table
 			.col(r.mixer_name)
 			.app(bs.mean).app("/").col(bs.variance)
-			.col(t_test(r.anderson_darling))
 			.col(aw.bic.max_bias)
 			.col(ch.chi2)
 			.col(ks.d_max)
@@ -133,7 +144,18 @@ public:
 			.col(pr.spearman_r)
 			.col(pr.kendall_t)
 			.row();
-		std::cout << runtime_table.to_string() << "\n";
+		//std::cout << runtime_table.to_string() << "\n";
+
+		test_table
+			.col(r.mixer_name)
+			.col(log_basic_test(r.basic, z_test))
+			.col(log_basic_test(r.basic, f_test))
+			.col(log_basic_test(r.basic, t_test))
+			.col(p_value_test(r.chi2))
+			.col(p_value_test(r.ks))
+			.col(p_value_test(r.anderson_darling))
+			.row();
+		std::cout << test_table.to_string() << "\n";
 
 		// Table full({"mixer", "stream", "ks"});
 		// for (const auto& result : r.ks) {
@@ -319,6 +341,7 @@ public:
 
 private:
 	table runtime_table;
+	table test_table;
 	std::vector<test_result> results;
 };
 
