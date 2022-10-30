@@ -5,11 +5,7 @@
 
 namespace mixer {
 
-struct wald_wolfowitz_stats {
-	double z_score = 0;
-};
-
-inline wald_wolfowitz_stats wald_wolfowitz(const std::vector<uint64_t>& data) {
+inline double wald_wolfowitz(const std::vector<uint64_t>& data) {
 	auto tmp = data;
 	sort(tmp.begin(), tmp.end());
 	const auto median = tmp[tmp.size() / 2];
@@ -25,14 +21,16 @@ inline wald_wolfowitz_stats wald_wolfowitz(const std::vector<uint64_t>& data) {
 			++runs;
 		}
 	}
+	return static_cast<double>(runs);
+
 	const double n = n_plus + n_minus;
 	const double expected_runs_mean = 2. * n_plus * n_minus / n + 1.;
 	const double expected_runs_variance = (expected_runs_mean - 1.) * (expected_runs_mean - 2.) / (n - 1.);
-	return {(runs - expected_runs_mean) / expected_runs_variance};
+	return (runs - expected_runs_mean) / expected_runs_variance;
 }
 
 inline std::vector<statistic> wald_wolfowitz_test(const uint64_t n, const stream& stream) {
-	return {{s_type::wald_wolfowitz, wald_wolfowitz(get_raw(n, stream)).z_score}};
+	return {{s_type::wald_wolfowitz_runs, wald_wolfowitz(get_raw(n, stream))}};
 }
 
 

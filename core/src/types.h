@@ -37,7 +37,7 @@ enum class s_type {
 	basic_variance,
 	chi2,
 	kolmogorov_smirnov,
-	wald_wolfowitz,
+	wald_wolfowitz_runs,
 	anderson_darling,
 
 	// mixer

@@ -23,7 +23,7 @@ inline basic_stats compute_basic_stats(const std::vector<double>& values) {
 	for (const auto v : values) {
 		stats.variance += (v - stats.mean) * (v - stats.mean);
 	}
-	stats.variance /= (stats.n - 1);
+	stats.variance /= stats.n;
 	return stats;
 }
 

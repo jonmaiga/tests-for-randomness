@@ -3,6 +3,7 @@
 #include <iostream>
 #include "util/table.h"
 #include "statistics/t_test.h"
+#include "util/algo.h"
 
 namespace mixer {
 
@@ -39,9 +40,42 @@ inline std::vector<double> to_statistics(const std::vector<result>& results) {
 }
 
 inline double z_score(s_type type, const test_result& results, const test_result& baseline) {
-	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
 	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
+	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
 	return z_test(r, b);
+}
+
+inline double sum_abs(const std::vector<result>& rs) {
+	double sum = 0;
+	for (const auto& r : rs) {
+		sum += std::abs(r.stats.value);
+	}
+	return sum;
+}
+
+inline double greatest_abs(const std::vector<result>& rs) {
+	double max = -100000;
+	for (const auto& r : rs) {
+		max = std::max(std::abs(r.stats.value), max);
+	}
+	return max;
+}
+
+
+inline void draw_histogram(const std::vector<result>& results) {
+	std::vector<uint64_t> bins(10);
+	const auto s = to_unity(to_statistics(results));
+	for (const auto r : s) {
+		const size_t index = r * (bins.size() - 1);
+		bins[index] ++;
+	}
+	for (const auto b : bins) {
+		for (int i = 0; i < b; ++i) {
+			std::cout << "*";
+		}
+		std::cout << "\n";
+	}
+	std::cout << "\n";
 }
 
 class result_analyzer {
@@ -52,7 +86,7 @@ public:
 			"mixer",
 			"basic-mean-z", "basic-variance-z",
 			"chi2-z", "ks-z", "ad-z", "ww-z",
-			"max_bias-z", "pearson-z"
+			"max_bias-z", "pearson-z", "spearman-z"
 		}) {
 	}
 
@@ -60,18 +94,22 @@ public:
 		results.push_back(r);
 
 		const auto baseline = results.front();
+		//const basic_stats ww = compute_basic_stats(to_statistics(r[s_type::wald_wolfowitz]));
 		test_table
 			.col(r.mixer_name)
 			.col(z_score(s_type::basic_mean, r, baseline))
-			.col(z_score(s_type::chi2, r, baseline))
-			.col(z_score(s_type::kolmogorov_smirnov, r, baseline))
-			.col(z_score(s_type::anderson_darling, r, baseline))
-			.col(z_score(s_type::wald_wolfowitz, r, baseline))
-			.col(z_score(s_type::avalanche_max_bias, r, baseline))
-			.col(z_score(s_type::pearson_r, r, baseline))
+			.col(z_score(s_type::basic_variance, r, baseline))
+			.col(z_score(s_type::chi2, r, baseline)) // normal?
+			.col(z_score(s_type::kolmogorov_smirnov, r, baseline)) // normal?
+			.col(z_score(s_type::anderson_darling, r, baseline)) // not normal
+			.col(z_score(s_type::wald_wolfowitz_runs, r, baseline))
+			.col(sum_abs(r[s_type::avalanche_max_bias]))
+			.col(sum_abs(r[s_type::pearson_r]))
+			.col(sum_abs(r[s_type::spearman_r]))
 			.row();
 		std::cout << test_table.to_string() << "\n";
 
+		//draw_histogram(r[s_type::anderson_darling]);
 		// Table full({"mixer", "stream", "ks"});
 		// for (const auto& result : r.ks) {
 		// 	full.col(result.mixer_name).col(result.stream_name).col(result.stats.d_max).row();

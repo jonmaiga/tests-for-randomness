@@ -41,6 +41,19 @@ inline std::vector<double> get_normalized(uint64_t n, const stream& stream) {
 	return data;
 }
 
+inline std::vector<double> to_unity(const std::vector<double>& values) {
+	std::vector<double> data;
+	data.reserve(values.size());
+	const auto max = *std::max_element(values.begin(), values.end());
+	const auto min = *std::min_element(values.begin(), values.end());
+	const double d = max == min ? 1 : max - min;
+	for (const auto v : values) {
+		data.push_back((v - min) / d);
+	}
+	return data;
+}
+
+
 struct xys {
 	std::vector<double> xs;
 	std::vector<double> ys;
