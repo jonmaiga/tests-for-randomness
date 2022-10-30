@@ -84,9 +84,9 @@ public:
 	result_analyzer() :
 		test_table({
 			"mixer",
-			"basic-mean-z", "basic-variance-z",
+			"mean-z", "variance-z",
 			"chi2-z", "ks-z", "ad-z", "ww-z",
-			"max_bias-z", "pearson-z", "spearman-z"
+			"max_bias", "pearson", "spearman"
 		}) {
 	}
 
@@ -99,7 +99,7 @@ public:
 			.col(r.mixer_name)
 			.col(z_score(s_type::basic_mean, r, baseline))
 			.col(z_score(s_type::basic_variance, r, baseline))
-			.col(z_score(s_type::chi2, r, baseline)) // normal?
+			.col(z_score(s_type::chi2, r, baseline)) // not normal
 			.col(z_score(s_type::kolmogorov_smirnov, r, baseline)) // normal?
 			.col(z_score(s_type::anderson_darling, r, baseline)) // not normal
 			.col(z_score(s_type::wald_wolfowitz_runs, r, baseline))
@@ -109,7 +109,7 @@ public:
 			.row();
 		std::cout << test_table.to_string() << "\n";
 
-		//draw_histogram(r[s_type::anderson_darling]);
+		//draw_histogram(r[s_type::kolmogorov_smirnov]);
 		// Table full({"mixer", "stream", "ks"});
 		// for (const auto& result : r.ks) {
 		// 	full.col(result.mixer_name).col(result.stream_name).col(result.stats.d_max).row();
