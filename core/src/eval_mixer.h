@@ -49,10 +49,18 @@ std::vector<result<T>> evaluate_mixer(const mixer_test<T>& test, const std::vect
 	std::vector<result<T>> results;
 	for (const auto& factory : test_factories) {
 		const auto cfg = factory();
-		const auto r = test(cfg.n, cfg.stream, cfg.mixer);
-		results.push_back({cfg.stream.name, cfg.mixer.name, r});
+		const auto r = test(cfg.n, cfg.source, cfg.mixer);
+		results.push_back({cfg.source.name, cfg.mixer.name, r});
 	}
 	return results;
+}
+
+inline stream create_stream(const test_config& cfg) {
+	auto s = create_stream_from_mixer(cfg.source, cfg.mixer);
+	if (cfg.append_stream_factory) {
+		return cfg.append_stream_factory(s);
+	}
+	return s;
 }
 
 template <typename T>
@@ -60,8 +68,9 @@ std::vector<result<T>> evaluate_stream(const stream_test<T>& test, const std::ve
 	std::vector<result<T>> results;
 	for (const auto& factory : test_factories) {
 		const auto cfg = factory();
-		const auto r = test(cfg.n, create_stream_from_mixer(cfg.stream, cfg.mixer));
-		results.push_back({cfg.stream.name, cfg.mixer.name, r});
+		const auto s = create_stream(cfg);
+		const auto r = test(cfg.n, s);
+		results.push_back({s.name, cfg.mixer.name, r});
 	}
 	return results;
 }
@@ -69,6 +78,7 @@ std::vector<result<T>> evaluate_stream(const stream_test<T>& test, const std::ve
 
 inline test_result evaluate(const std::string& mixer_name, const std::vector<test_factory>& test_factories) {
 	test_result result{"single", mixer_name};
+
 	result.basic = evaluate_stream<basic_stats>(basic_test, test_factories);
 	result.chi2 = evaluate_stream<chi2_stats>(chi2_test, test_factories);
 	result.ks = evaluate_stream<kolmogorov_stats>(kolmogorov_test, test_factories);

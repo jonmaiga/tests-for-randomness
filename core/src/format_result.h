@@ -119,6 +119,12 @@ public:
 			.col(pr.kendall_t)
 			.row();
 		std::cout << runtime_table.to_string() << "\n";
+
+		// Table full({"mixer", "stream", "ks"});
+		// for (const auto& result : r.ks) {
+		// 	full.col(result.mixer_name).col(result.stream_name).col(result.stats.d_max).row();
+		// }
+		// std::cout << full.to_string() << "\n";
 	}
 
 	std::string summarize_avalanche() const {

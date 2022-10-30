@@ -60,7 +60,7 @@ inline uint64_t create_from_bit(const stream& source, int bit) {
 	const uint64_t m = 1ull << bit;
 	for (int i = 0; i < 64; ++i) {
 		const auto v = source.next();
-		if (v & m != 0) {
+		if (v & m) {
 			x |= 1ull << i;
 		}
 	}

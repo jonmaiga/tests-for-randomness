@@ -15,6 +15,16 @@ inline stream add_rrc(const stream& source, int rotation, rrc_type type) {
 	};
 }
 
+inline stream create_bit_permute_stream(const stream& source, int bit) {
+	const auto name = "bit-" + std::to_string(bit) + "(" + source.name + ")";
+	return {
+		name,
+		[source, bit]()-> uint64_t {
+			return create_from_bit(source, bit);
+		}
+	};
+}
+
 inline std::vector<test_factory> create_test_factories(const mixer& mixer, uint64_t n) {
 	const auto counter1 = [mixer, n]() {
 		return test_config{n, create_counter_stream(1), mixer};
@@ -31,7 +41,19 @@ inline std::vector<test_factory> create_test_factories(const mixer& mixer, uint6
 	const auto trng = [mixer, n]() {
 		return test_config{n, create_stream_from_data("trng", get_trng_data()), mixer};
 	};
-	return {counter1, /*greycode2, greycode4, greycode8, trng*/};
+
+	std::vector<test_factory> factories;
+	for (int bit = 0; bit < 64; ++bit) {
+		const auto post_mix_permute = [bit](const stream& source) {
+			return create_bit_permute_stream(source, bit);
+		};
+		const auto bit_factory = [=]()-> test_config {
+			return {n, create_counter_stream(1), mixer, post_mix_permute};
+		};
+		factories.emplace_back(bit_factory);
+	}
+
+	return factories; //{counter1, /*greycode2, greycode4, greycode8, trng*/};
 }
 
 inline std::vector<test_factory> create_rrc_test_factories(const mixer& mixer, uint64_t n) {
@@ -41,7 +63,7 @@ inline std::vector<test_factory> create_rrc_test_factories(const mixer& mixer, u
 			for (int rot = 0; rot < 64; ++rot) {
 				const auto rrc_factory = [=]()-> test_config {
 					const auto config = factory();
-					return {config.n, add_rrc(config.stream, rot, type), config.mixer};
+					return {config.n, add_rrc(config.source, rot, type), config.mixer, config.append_stream_factory};
 				};
 				factories.emplace_back(rrc_factory);
 			}

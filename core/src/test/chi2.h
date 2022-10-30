@@ -24,7 +24,8 @@ inline chi2_stats chi2_test(const uint64_t n, const stream& stream) {
 	std::vector<uint64_t> bins(static_cast<std::size_t>(1.88 * std::pow(n, 0.4)));
 	const auto binCount = static_cast<double>(bins.size());
 	for (uint64_t i = 0; i < n; ++i) {
-		bins[static_cast<std::size_t>(binCount * normalize(stream()))]++;
+		auto index = static_cast<std::size_t>(binCount * normalize(stream()));
+		bins[std::min(bins.size() - 1, index)]++;
 	}
 	const double expected_count = static_cast<double>(n) / binCount;
 	return compute_chi2_test(bins, expected_count);

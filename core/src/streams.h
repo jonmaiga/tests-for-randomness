@@ -5,8 +5,6 @@
 
 namespace mixer {
 
-using stream_factory = std::function<stream()>;
-
 struct counter_stream {
 	uint64_t increment{};
 	uint64_t i{};
@@ -55,9 +53,9 @@ inline stream create_stream_from_data(const std::string& name, const std::vector
 	return stream{
 		name, [index, &data]() mutable -> uint64_t {
 			if (index >= data.size()) {
-				throw std::runtime_error("No more stream data.");
+				//throw std::runtime_error("No more stream data.");
 			}
-			return data[index++];
+			return data[index++ % data.size()];
 		}
 	};
 }
