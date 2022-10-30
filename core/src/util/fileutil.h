@@ -27,7 +27,7 @@ std::size_t countFiles(const std::string& dir);
 template <typename T>
 std::vector<T> readBinaryMustExist(const std::string& path, size_t max_elements = -1) {
 	std::ifstream t(path, std::ios::binary);
-	assertion_2(t.good(), "Could not open file ", path);
+	assertion_2(t.good(), "Could not open file ", path.c_str());
 
 	t.seekg(0, std::ios::end);
 	size_t size = t.tellg();

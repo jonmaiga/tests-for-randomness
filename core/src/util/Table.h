@@ -75,7 +75,7 @@ public:
 		if (_current_column_index == _columns - 1) {
 			col();
 		}
-		assertion(_getRow().size() == _columns, "To few or many columns");
+		assertion(_rows.empty() || _getRow().size() == _columns, "To few or many columns");
 		_rows.emplace_back();
 		_current_column_index = 0;
 		return *this;

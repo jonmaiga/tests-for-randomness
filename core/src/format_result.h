@@ -89,13 +89,14 @@ inline table& add_avalanche_stats(table& table, const bias& bias) {
 	return table.col(bias.std_dev_bias).col(bias.mean_bias).col(bias.max_bias);
 }
 
-inline std::string t_test(const std::vector<result<basic_stats>>& results) {
+template<typename T>
+std::string t_test(const std::vector<T>& results) {
 
 	int fails = 0;
 	for (const auto& r : results) {
-		const auto uniform = get_uniform_stats(r.stats.n);
-		const auto p = z_test(r.stats, uniform);
-		if (p < 0.05) {
+		//const auto uniform = get_uniform_stats(r.stats.n);
+		//const auto p = f_test(r.stats, uniform);
+		if (r.stats.p_value < 0.05) {
 			++fails;
 		}
 	}
@@ -122,7 +123,7 @@ public:
 		runtime_table
 			.col(r.mixer_name)
 			.app(bs.mean).app("/").col(bs.variance)
-			.col(t_test(r.basic))
+			.col(t_test(r.anderson_darling))
 			.col(aw.bic.max_bias)
 			.col(ch.chi2)
 			.col(ks.d_max)

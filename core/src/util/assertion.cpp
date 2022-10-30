@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-namespace sdb::assertion {
+namespace mixer_internal {
 
 void __assertion(bool condition, const char* message, const char* conditionStr, const char* file, int line) {
 	if (!condition) {

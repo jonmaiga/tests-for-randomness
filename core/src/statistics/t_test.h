@@ -1,10 +1,8 @@
 #pragma once
 
-namespace mixer {
+#include "util/math.h"
 
-inline double normal_cdf(double x) {
-	return std::erfc(-x / std::sqrt(2)) / 2;
-}
+namespace mixer {
 
 inline basic_stats get_uniform_stats(double n) {
 	return {n, 0.5, 1. / 12.};

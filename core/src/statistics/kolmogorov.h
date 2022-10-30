@@ -11,6 +11,7 @@ namespace mixer {
 struct kolmogorov_stats {
 	double d_max{};
 	uint64_t i_max{};
+	double p_value{};
 };
 
 inline kolmogorov_stats kolmogorov_smirnov_test(std::vector<double> data) {
@@ -28,7 +29,8 @@ inline kolmogorov_stats kolmogorov_smirnov_test(std::vector<double> data) {
 			max_index = i;
 		}
 	}
-	return {max_distance, max_index};
+	const double p = kolmogorov_smirnov_probability(max_distance, n, 100);
+	return {max_distance, max_index, p};
 }
 
 inline kolmogorov_stats kolmogorov_test(const uint64_t n, const stream& stream) {
