@@ -27,8 +27,9 @@ inline basic_stats compute_basic_stats(const std::vector<double>& values) {
 	return stats;
 }
 
-inline basic_stats basic_test(uint64_t n, const stream& stream) {
-	return compute_basic_stats(get_normalized(n, stream));
+inline std::vector<statistic> basic_test(uint64_t n, const stream& stream) {
+	const auto stats = compute_basic_stats(get_normalized(n, stream));
+	return {{s_type::basic_mean, stats.mean}, {s_type::basic_variance, stats.variance}};
 }
 
 

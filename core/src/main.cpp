@@ -49,13 +49,6 @@ inline void run_tests() {
 	analyzer.add(test(murmur3, n));
 	analyzer.add(test(xxh3, n));
 	analyzer.add(test(fast_hash, n));
-
-	//std::cout << analyzer.summarize_avalanche() << "\n";
-	//std::cout << analyzer.summarize_basic() << "\n";
-	//std::cout << analyzer.summarize_ks() << "\n";
-	//std::cout << analyzer.summarize_chi2() << "\n";
-	//std::cout << analyzer.summarize_correlation() << "\n";
-	//std::cout << analyzer.summarize_baseline_bias() << "\n";
 }
 
 }

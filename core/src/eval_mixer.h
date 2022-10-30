@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -15,31 +16,32 @@
 
 namespace mixer {
 
-template <typename T>
-using mixer_test = const std::function<T(uint64_t n, const stream&, const mixer&)>;
+using mixer_test = const std::function<std::vector<statistic>(uint64_t n, const stream&, const mixer&)>;
+using stream_test = const std::function<std::vector<statistic>(uint64_t n, const stream&)>;
 
-template <typename T>
-using stream_test = const std::function<T(uint64_t n, const stream&)>;
-
-template <typename T>
 struct result {
 	std::string stream_name;
 	std::string mixer_name;
-	T stats;
+	statistic stats;
 };
 
+
 struct test_result {
+	using result_map = std::map<s_type, std::vector<result>>;
+
 	std::string name;
 	std::string mixer_name;
+	result_map results;
 
-	std::vector<result<basic_stats>> basic;
-	std::vector<result<chi2_stats>> chi2;
-	std::vector<result<kolmogorov_stats>> ks;
-	std::vector<result<anderson_darling_stats>> anderson_darling;
-	std::vector<result<wald_wolfowitz_stats>> ww;
+	void add(const std::vector<result>& rs) {
+		for (const auto& r : rs) {
+			results[r.stats.type].push_back(r);
+		}
+	}
 
-	std::vector<result<avalanche_stats>> avalanche;
-	std::vector<result<correlation_stats>> correlation;
+	const std::vector<result>& operator[](s_type type) const {
+		return results.find(type)->second;
+	}
 };
 
 namespace internal {
@@ -52,25 +54,25 @@ inline stream create_stream(const test_config& cfg) {
 	return s;
 }
 
-template <typename T>
-std::vector<result<T>> evaluate_mixer(const mixer_test<T>& test, const std::vector<test_factory>& test_factories) {
-	std::vector<result<T>> results;
+inline std::vector<result> evaluate_mixer(const mixer_test& test, const std::vector<test_factory>& test_factories) {
+	std::vector<result> results;
 	for (const auto& factory : test_factories) {
 		const auto cfg = factory();
-		const auto r = test(cfg.n, cfg.source, cfg.mixer);
-		results.push_back({cfg.source.name, cfg.mixer.name, r});
+		for (const auto& r : test(cfg.n, cfg.source, cfg.mixer)) {
+			results.push_back({cfg.source.name, cfg.mixer.name, r});
+		}
 	}
 	return results;
 }
 
-template <typename T>
-std::vector<result<T>> evaluate_stream(const stream_test<T>& test, const std::vector<test_factory>& test_factories) {
-	std::vector<result<T>> results;
+inline std::vector<result> evaluate_stream(const stream_test& test, const std::vector<test_factory>& test_factories) {
+	std::vector<result> results;
 	for (const auto& factory : test_factories) {
 		const auto cfg = factory();
 		const auto s = create_stream(cfg);
-		const auto r = test(cfg.n, s);
-		results.push_back({s.name, cfg.mixer.name, r});
+		for (const auto& r : test(cfg.n, s)) {
+			results.push_back({s.name, cfg.mixer.name, r});
+		}
 	}
 	return results;
 }
@@ -78,14 +80,15 @@ std::vector<result<T>> evaluate_stream(const stream_test<T>& test, const std::ve
 inline test_result evaluate(const std::string& mixer_name, const std::vector<test_factory>& test_factories) {
 	test_result result{"single", mixer_name};
 
-	result.basic = evaluate_stream<basic_stats>(basic_test, test_factories);
-	result.chi2 = evaluate_stream<chi2_stats>(chi2_test, test_factories);
-	result.ks = evaluate_stream<kolmogorov_stats>(kolmogorov_test, test_factories);
-	result.anderson_darling = evaluate_stream<anderson_darling_stats>(anderson_darling_test, test_factories);
-	result.ww = evaluate_stream<wald_wolfowitz_stats>(wald_wolfowitz_test, test_factories);
+	result.add(evaluate_stream(basic_test, test_factories));
+	result.add(evaluate_stream(chi2_test, test_factories));
+	result.add(evaluate_stream(kolmogorov_test, test_factories));
+	result.add(evaluate_stream(anderson_darling_test, test_factories));
+	result.add(evaluate_stream(wald_wolfowitz_test, test_factories));
 
-	result.avalanche = evaluate_mixer<avalanche_stats>(avalanche_mixer_test, test_factories);
-	result.correlation = evaluate_mixer<correlation_stats>(correlation_mixer_test, test_factories);
+	result.add(evaluate_mixer(avalanche_mixer_test, test_factories));
+	result.add(evaluate_mixer(pearson_correlation_mixer_test, test_factories));
+	result.add(evaluate_mixer(spearman_correlation_mixer_test, test_factories));
 	return result;
 }
 

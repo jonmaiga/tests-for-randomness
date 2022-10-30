@@ -31,8 +31,8 @@ inline wald_wolfowitz_stats wald_wolfowitz(const std::vector<uint64_t>& data) {
 	return {(runs - expected_runs_mean) / expected_runs_variance};
 }
 
-inline wald_wolfowitz_stats wald_wolfowitz_test(const uint64_t n, const stream& stream) {
-	return wald_wolfowitz(get_raw(n, stream));
+inline std::vector<statistic> wald_wolfowitz_test(const uint64_t n, const stream& stream) {
+	return {{s_type::wald_wolfowitz, wald_wolfowitz(get_raw(n, stream)).z_score}};
 }
 
 

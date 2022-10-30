@@ -8,6 +8,11 @@
 
 namespace mixer {
 
+template <typename Container, typename ContainerRhs>
+void append(Container& destination, const ContainerRhs& source) {
+	destination.insert(destination.end(), source.begin(), source.end());
+}
+
 template <typename T, typename Compare>
 std::vector<std::size_t> get_ranks(const std::vector<T>& vec, Compare& compare) {
 	std::vector<std::size_t> p(vec.size());

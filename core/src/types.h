@@ -32,4 +32,25 @@ struct test_config {
 
 using test_factory = std::function<test_config()>;
 
+enum class s_type {
+	basic_mean,
+	basic_variance,
+	chi2,
+	kolmogorov_smirnov,
+	wald_wolfowitz,
+	anderson_darling,
+
+	// mixer
+	avalanche_max_bias,
+	pearson_r,
+	spearman_r,
+	kendall_tau,
+};
+
+struct statistic {
+	s_type type;
+	double value{};
+};
+
+
 }

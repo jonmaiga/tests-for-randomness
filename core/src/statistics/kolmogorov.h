@@ -33,8 +33,8 @@ inline kolmogorov_stats kolmogorov_smirnov_test(std::vector<double> data) {
 	return {max_distance, max_index, p};
 }
 
-inline kolmogorov_stats kolmogorov_test(const uint64_t n, const stream& stream) {
-	return kolmogorov_smirnov_test(get_normalized(n, stream));
+inline std::vector<statistic> kolmogorov_test(const uint64_t n, const stream& stream) {
+	return {{s_type::kolmogorov_smirnov, kolmogorov_smirnov_test(get_normalized(n, stream)).d_max}};
 }
 
 }

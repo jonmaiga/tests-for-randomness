@@ -38,8 +38,8 @@ inline anderson_darling_stats anderson_darling(std::vector<double> data) {
 	return {A2, p_value(A2)};
 }
 
-inline anderson_darling_stats anderson_darling_test(const uint64_t n, const stream& stream) {
-	return anderson_darling(get_normalized(n, stream));
+inline std::vector<statistic> anderson_darling_test(const uint64_t n, const stream& stream) {
+	return {{s_type::anderson_darling, anderson_darling(get_normalized(n, stream)).A2}};
 }
 
 }

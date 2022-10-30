@@ -65,27 +65,19 @@ inline double kendall_correlation(const std::vector<double>& xs, const std::vect
 	return static_cast<double>(is) / (std::sqrt(n1) * std::sqrt(n2));
 }
 
-inline double pearson_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
+inline std::vector<statistic> pearson_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	const auto data = create_bit_flipped_xy(n, source, mixer);
-	return pearson_correlation(data.xs, data.ys);
+	return {{s_type::pearson_r, pearson_correlation(data.xs, data.ys)}};
 }
 
-inline double spearman_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
+inline std::vector<statistic> spearman_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	const auto data = create_bit_flipped_xy(n, source, mixer);
-	return spearman_correlation(data.xs, data.ys);
+	return {{s_type::spearman_r, spearman_correlation(data.xs, data.ys)}};
 }
 
-inline double kendall_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
+inline std::vector<statistic> kendall_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	const auto data = create_bit_flipped_xy(n, source, mixer);
-	return kendall_correlation(data.xs, data.ys);
-}
-
-inline correlation_stats correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
-	return {
-		pearson_correlation_mixer_test(n, source, mixer),
-		spearman_correlation_mixer_test(n, source, mixer),
-		0 //kendall_correlation_mixer_test(n, source, mixer)
-	};
+	return {{s_type::kendall_tau, kendall_correlation(data.xs, data.ys)}};
 }
 
 }
