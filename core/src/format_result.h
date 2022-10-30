@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "util/table.h"
+#include "statistics/t_test.h"
 
 namespace mixer {
 
@@ -37,7 +38,6 @@ inline avalanche_stats& operator+=(avalanche_stats& l, const avalanche_stats& r)
 inline basic_stats& operator+=(basic_stats& l, const basic_stats& r) {
 	l.mean += r.mean;
 	l.variance += r.variance;
-	l.median += r.median;
 	return l;
 }
 
@@ -89,17 +89,30 @@ inline table& add_avalanche_stats(table& table, const bias& bias) {
 	return table.col(bias.std_dev_bias).col(bias.mean_bias).col(bias.max_bias);
 }
 
+inline std::string t_test(const std::vector<result<basic_stats>>& results) {
+
+	int fails = 0;
+	for (const auto& r : results) {
+		const auto uniform = get_uniform_stats(r.stats.n);
+		const auto p = z_test(r.stats, uniform);
+		if (p < 0.05) {
+			++fails;
+		}
+	}
+	return fails == 0 ? "OK" : "FAIL:" + std::to_string(fails);
+}
+
 class result_analyzer {
 
 public:
 	result_analyzer() :
-		runtime_table({"mixer", "mean", "avalanche", "chi2", "ks", "a-d", "wald", "pearson_r", "spearman_r", "kendall_t"}) {
+		runtime_table({"mixer", "mean", "t_test", "avalanche", "chi2", "ks", "a-d", "wald", "pearson_r", "spearman_r", "kendall_t"}) {
 	}
 
 	void add(const test_result& r) {
 		results.push_back(r);
 		const auto aw = get_sum(r.avalanche);
-		const auto bs = get_sum(r.basic);
+		const auto bs = get_worst(r.basic);
 		const auto ch = get_sum(r.chi2);
 		const auto ks = get_sum(r.ks);
 		const auto ad = get_sum(r.anderson_darling);
@@ -108,7 +121,8 @@ public:
 
 		runtime_table
 			.col(r.mixer_name)
-			.col(bs.mean)
+			.app(bs.mean).app("/").col(bs.variance)
+			.col(t_test(r.basic))
 			.col(aw.bic.max_bias)
 			.col(ch.chi2)
 			.col(ks.d_max)
@@ -158,14 +172,13 @@ public:
 		}
 		sort_rows<T>(rows, [](const T& r) { return std::abs(r.stats.mean - 0.5); });
 
-		table table({"mixer", "stream", "mean", "variance", "median"});
+		table table({"mixer", "stream", "mean", "variance"});
 		for (const auto& row : rows) {
 			table
 				.col(row.mixer_name)
 				.col(row.stream_name)
 				.col(row.stats.mean)
 				.col(row.stats.variance)
-				.col(row.stats.median)
 				.row();
 		}
 		return table.to_string();

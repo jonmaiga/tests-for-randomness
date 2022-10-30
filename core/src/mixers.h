@@ -14,6 +14,13 @@ inline mixer create_mixer_from_stream(const std::string& name, const stream& sou
 	};
 }
 
+const mixer identity_mixer = {
+	"identity", [](uint64_t x) {
+		return x;
+	}
+};
+
+
 const mixer mx3 = {
 	"mx3", [](uint64_t x) {
 		constexpr uint64_t C = 0xbea225f9eb34556d;

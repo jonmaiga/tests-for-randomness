@@ -13,6 +13,10 @@ public:
 		row();
 	}
 
+	table& app(const char* text) {
+		return app(std::string(text));
+	}
+
 	table& app(const std::string& text) {
 		_current_column += text;
 		return *this;
