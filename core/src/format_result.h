@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include "util/Table.h"
+#include "util/table.h"
 
 namespace mixer {
 
@@ -85,7 +85,7 @@ void sort_rows(std::vector<T>& rows, const std::function<double(const T&)>& fiel
 	});
 }
 
-inline Table& add_avalanche_stats(Table& table, const bias& bias) {
+inline table& add_avalanche_stats(table& table, const bias& bias) {
 	return table.col(bias.std_dev_bias).col(bias.mean_bias).col(bias.max_bias);
 }
 
@@ -136,7 +136,7 @@ public:
 
 		sort_rows<T>(rows, [](const T& r) { return r.stats.bic.max_bias; });
 
-		Table table({
+		table table({
 			"mixer", "stream",
 			"sac_std_bias", "sac_avg_bias", "sac_max_bias",
 			"bic_std_bias", "bic_avg_bias", "bic_max_bias"
@@ -158,7 +158,7 @@ public:
 		}
 		sort_rows<T>(rows, [](const T& r) { return std::abs(r.stats.mean - 0.5); });
 
-		Table table({"mixer", "stream", "mean", "variance", "median"});
+		table table({"mixer", "stream", "mean", "variance", "median"});
 		for (const auto& row : rows) {
 			table
 				.col(row.mixer_name)
@@ -180,7 +180,7 @@ public:
 		}
 		sort_rows<T>(rows, [](const T& r) { return r.stats.d_max; });
 
-		Table table({"mixer", "stream", "d", "index"});
+		table table({"mixer", "stream", "d", "index"});
 		for (const auto& row : rows) {
 			table.col(row.mixer_name)
 			     .col(row.stream_name)
@@ -199,7 +199,7 @@ public:
 		}
 		sort_rows<T>(rows, [](const T& r) { return r.stats.chi2; });
 
-		Table table({"mixer", "stream", "chi2"});
+		table table({"mixer", "stream", "chi2"});
 		for (const auto& row : rows) {
 			table.col(row.mixer_name)
 			     .col(row.stream_name)
@@ -217,7 +217,7 @@ public:
 		}
 		sort_rows<T>(rows, [](const T& r) { return r.stats.pearson_r; });
 
-		Table table({"mixer", "stream", "pearson_r", "spearman_r", "kendall_t"});
+		table table({"mixer", "stream", "pearson_r", "spearman_r", "kendall_t"});
 		for (const auto& row : rows) {
 			table.col(row.mixer_name)
 			     .col(row.stream_name)
@@ -281,7 +281,7 @@ public:
 
 		sort_rows<columns>(rows, [](const columns& row) { return row.ad; });
 
-		Table table({
+		table table({
 			"mixer", "mean", "variance", "chi2", "ks", "a-d", "wald",
 			"avalanche", "pearson_r", "spearman_r", "kendall_t"
 		});
@@ -304,7 +304,7 @@ public:
 
 
 private:
-	Table runtime_table;
+	table runtime_table;
 	std::vector<test_result> results;
 };
 

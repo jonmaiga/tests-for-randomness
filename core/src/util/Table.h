@@ -2,9 +2,9 @@
 
 namespace mixer {
 
-class Table {
+class table {
 public:
-	Table(const std::vector<std::string>& headers) : _columns(headers.size()) {
+	table(const std::vector<std::string>& headers) : _columns(headers.size()) {
 		_spaces.resize(_columns);
 		row();
 		for (const auto& header : headers) {
@@ -13,53 +13,53 @@ public:
 		row();
 	}
 
-	Table& app(const std::string& text) {
+	table& app(const std::string& text) {
 		_current_column += text;
 		return *this;
 	}
 
-	Table& app(int i) {
+	table& app(int i) {
 		return app(std::to_string(i));
 	}
 
-	Table& app(uint64_t i) {
+	table& app(uint64_t i) {
 		return app(std::to_string(i));
 	}
 
-	Table& app(double d) {
+	table& app(double d) {
 		return app(std::to_string(d)); //(MathUtil.round(d, _decimals)));
 	}
 
-	Table& app(bool b) {
+	table& app(bool b) {
 		return app(b ? "true" : "false");
 	}
 
-	Table& col(int i) {
+	table& col(int i) {
 		app(i);
 		return col();
 	}
 
-	Table& col(uint64_t i) {
+	table& col(uint64_t i) {
 		app(i);
 		return col();
 	}
 
-	Table& col(double d) {
+	table& col(double d) {
 		app(d);
 		return col();
 	}
 
-	Table& col(bool b) {
+	table& col(bool b) {
 		app(b);
 		return col();
 	}
 
-	Table& col(const std::string& text) {
+	table& col(const std::string& text) {
 		app(text);
 		return col();
 	}
 
-	Table& col() {
+	table& col() {
 		_spaces[_current_column_index] = std::max(_spaces[_current_column_index], _current_column.size() + 2);
 		_getRow().push_back(_current_column);
 		++_current_column_index;
@@ -67,7 +67,7 @@ public:
 		return *this;
 	}
 
-	Table& row() {
+	table& row() {
 		if (_current_column_index == _columns - 1) {
 			col();
 		}
