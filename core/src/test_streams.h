@@ -2,6 +2,7 @@
 
 #include "rrc.h"
 #include "streams.h"
+#include "util/algo.h"
 
 
 namespace mixer {

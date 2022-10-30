@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include "util/assertion.h"
 #include "streams.h"
 #include "types.h"
 #include "util/algo.h"

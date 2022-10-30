@@ -6,19 +6,19 @@
 
 namespace mixer {
 
-inline double get_worst(const avalanche_stats& result) { return result.bic.max_bias; }
-inline double get_worst(const basic_stats& result) { return result.mean; }
-inline double get_worst(const chi2_stats& result) { return result.chi2; }
-inline double get_worst(const kolmogorov_stats& result) { return result.d_max; }
-inline double get_worst(const anderson_darling_stats& result) { return result.A2; }
-inline double get_worst(const wald_wolfowitz_stats& result) { return result.z_score; }
-inline double get_worst(const correlation_stats& result) { return result.kendall_t; }
+inline double get_most_relevant(const avalanche_stats& result) { return result.bic.max_bias; }
+inline double get_most_relevant(const basic_stats& result) { return result.variance; }
+inline double get_most_relevant(const chi2_stats& result) { return result.chi2; }
+inline double get_most_relevant(const kolmogorov_stats& result) { return result.d_max; }
+inline double get_most_relevant(const anderson_darling_stats& result) { return result.A2; }
+inline double get_most_relevant(const wald_wolfowitz_stats& result) { return result.z_score; }
+inline double get_most_relevant(const correlation_stats& result) { return result.pearson_r; }
 
 template <typename T>
 T get_worst(const std::vector<result<T>>& results) {
 	T worst = results.front().stats;
 	for (const auto& result : results) {
-		if (get_worst(result.stats) > get_worst(worst)) {
+		if (get_most_relevant(result.stats) > get_most_relevant(worst)) {
 			worst = result.stats;
 		}
 	}
@@ -114,12 +114,29 @@ inline std::string log_basic_test(
 	return fails == 0 ? "OK" : "FAIL:" + std::to_string(fails);
 }
 
+template <typename T>
+std::vector<double> to_statistics(const std::vector<result<T>>& results) {
+	std::vector<double> statistics;
+	statistics.reserve(results.size());
+	for (const auto& r : results) {
+		statistics.push_back(get_most_relevant(r.stats));
+	}
+	return statistics;
+}
+
+template <typename T>
+double z_score(const std::vector<result<T>>& results, const std::vector<result<T>>& baseline) {
+	const basic_stats r = compute_basic_stats(to_statistics(results));
+	const basic_stats b = compute_basic_stats(to_statistics(baseline));
+	return z_test(r, b);
+}
+
 class result_analyzer {
 
 public:
 	result_analyzer() :
 		runtime_table({"mixer", "mean/var", "avalanche", "chi2", "ks", "a-d", "wald", "pearson_r", "spearman_r", "kendall_t"}),
-		test_table({"mixer", "z-test", "f-test", "t-test", "chi2-test", "ks-test", "ad-test"}) {
+		test_table({"mixer", "basic-z", "chi2-z", "ks-z", "ad-z", "ww-z", "avalanche-z", "correlation-z"}) {
 	}
 
 	void add(const test_result& r) {
@@ -146,16 +163,29 @@ public:
 			.row();
 		//std::cout << runtime_table.to_string() << "\n";
 
+		const auto baseline = results.front();
 		test_table
 			.col(r.mixer_name)
-			.col(log_basic_test(r.basic, z_test))
-			.col(log_basic_test(r.basic, f_test))
-			.col(log_basic_test(r.basic, t_test))
-			.col(p_value_test(r.chi2))
-			.col(p_value_test(r.ks))
-			.col(p_value_test(r.anderson_darling))
+			.col(z_score(r.basic, baseline.basic))
+			.col(z_score(r.chi2, baseline.chi2))
+			.col(z_score(r.ks, baseline.ks))
+			.col(z_score(r.anderson_darling, baseline.anderson_darling))
+			.col(z_score(r.ww, baseline.ww))
+			.col(z_score(r.avalanche, baseline.avalanche))
+			.col(z_score(r.correlation, baseline.correlation))
 			.row();
 		std::cout << test_table.to_string() << "\n";
+
+		// test_table
+		// 	.col(r.mixer_name)
+		// 	.col(log_basic_test(r.basic, z_test))
+		// 	.col(log_basic_test(r.basic, f_test))
+		// 	.col(log_basic_test(r.basic, t_test))
+		// 	.col(p_value_test(r.chi2))
+		// 	.col(p_value_test(r.ks))
+		// 	.col(p_value_test(r.anderson_darling))
+		// 	.row();
+		// std::cout << test_table.to_string() << "\n";
 
 		// Table full({"mixer", "stream", "ks"});
 		// for (const auto& result : r.ks) {

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "test_streams.h"
 #include "statistics/andersondarling.h"
 #include "statistics/avalanche.h"
 #include "statistics/basic.h"
@@ -11,7 +12,6 @@
 #include "statistics/correlation.h"
 #include "statistics/kolmogorov.h"
 #include "statistics/waldwolfowitz.h"
-#include "test_streams.h"
 
 namespace mixer {
 
@@ -44,6 +44,14 @@ struct test_result {
 
 namespace internal {
 
+inline stream create_stream(const test_config& cfg) {
+	auto s = create_stream_from_mixer(cfg.source, cfg.mixer);
+	if (cfg.append_stream_factory) {
+		return cfg.append_stream_factory(s);
+	}
+	return s;
+}
+
 template <typename T>
 std::vector<result<T>> evaluate_mixer(const mixer_test<T>& test, const std::vector<test_factory>& test_factories) {
 	std::vector<result<T>> results;
@@ -53,14 +61,6 @@ std::vector<result<T>> evaluate_mixer(const mixer_test<T>& test, const std::vect
 		results.push_back({cfg.source.name, cfg.mixer.name, r});
 	}
 	return results;
-}
-
-inline stream create_stream(const test_config& cfg) {
-	auto s = create_stream_from_mixer(cfg.source, cfg.mixer);
-	if (cfg.append_stream_factory) {
-		return cfg.append_stream_factory(s);
-	}
-	return s;
 }
 
 template <typename T>
@@ -74,7 +74,6 @@ std::vector<result<T>> evaluate_stream(const stream_test<T>& test, const std::ve
 	}
 	return results;
 }
-
 
 inline test_result evaluate(const std::string& mixer_name, const std::vector<test_factory>& test_factories) {
 	test_result result{"single", mixer_name};
