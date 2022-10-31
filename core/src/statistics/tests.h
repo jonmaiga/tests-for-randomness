@@ -1,6 +1,6 @@
 #pragma once
 
-#include "util/math.h"
+#include "distributions.h"
 
 namespace mixer {
 
