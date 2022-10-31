@@ -31,22 +31,24 @@ inline void run_tests() {
 	using test_method = std::function<test_result(const mixer&, uint64_t)>;
 
 	const auto trng_stream = create_stream_from_data("trng", get_trng_data());
-	const auto trng = create_mixer_from_stream("trng", trng_stream);
+	const auto trng1 = create_mixer_from_stream("trng1", trng_stream);
+	const auto trng2 = create_mixer_from_stream("trng2", trng_stream);
 
 	const test_method test = test_rrc;
-	constexpr auto n = 1000;
+	constexpr auto n = 100;
 
 	std::cout << "n=" << n << "\n";
 	result_analyzer analyzer;
-	analyzer.add(test(trng, n));
+	analyzer.add(test(trng1, n));
+	analyzer.add(test(trng2, n));
 	analyzer.add(test(mx3, n));
 	analyzer.add(test(nasam, n));
-	analyzer.add(test(xmx, n));
 	analyzer.add(test(xmxmxm, n));
 	analyzer.add(test(moremur, n));
 	analyzer.add(test(lea64, n));
 	analyzer.add(test(degski64, n));
 	analyzer.add(test(murmur3, n));
+	analyzer.add(test(xmx, n));
 	analyzer.add(test(xxh3, n));
 	analyzer.add(test(fast_hash, n));
 }
@@ -56,6 +58,7 @@ inline void run_tests() {
 int main(int argc, char** args) {
 	try {
 		//write_stream(mixer::mx3, 100000000ull);
+		std::cout.precision(3);
 		mixer::run_tests();
 	}
 	catch (std::runtime_error& e) {

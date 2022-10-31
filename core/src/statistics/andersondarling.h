@@ -8,12 +8,8 @@
 
 namespace mixer {
 
-struct anderson_darling_stats {
-	double A2{};
-	double p_value{};
-};
 
-inline double p_value(const double A2) {
+inline double anderson_darling_p_value_approximation(const double A2) {
 	// values from: A Modified Anderson-Darling Test for Uniformity
 	// exponential fit in mathematica, decays to quickly after A2 > 4
 	// const auto vs = {{1.2453, 0.250}, {1.6211, 0.150}, {1.9355, 0.100}, {2.4986, 0.050}, {3.0916, 0.025}, {3.9033, 0.010}, {4.5416, 0.005}, {6.0266, 0.001}};
@@ -22,7 +18,7 @@ inline double p_value(const double A2) {
 
 }
 
-inline anderson_darling_stats anderson_darling(std::vector<double> data) {
+inline double anderson_darling(std::vector<double> data) {
 	std::sort(data.begin(), data.end());
 	double sum = 0;
 	for (std::size_t i = 0; i < data.size(); ++i) {
@@ -35,11 +31,12 @@ inline anderson_darling_stats anderson_darling(std::vector<double> data) {
 	sum /= n;
 
 	const double A2 = -n - sum;
-	return {A2, p_value(A2)};
+	return A2;
 }
 
 inline std::vector<statistic> anderson_darling_test(const uint64_t n, const stream& stream) {
-	return {{s_type::anderson_darling, anderson_darling(get_normalized(n, stream)).A2}};
+	const auto A2 = anderson_darling(get_normalized(n, stream));
+	return {{s_type::anderson_darling, A2, anderson_darling_p_value_approximation(A2)}};
 }
 
 }

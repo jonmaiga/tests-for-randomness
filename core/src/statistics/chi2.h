@@ -3,24 +3,18 @@
 #include <vector>
 
 #include "streams.h"
-#include "util/chi2.h"
 #include "util/math.h"
 
 namespace mixer {
 
-struct chi2_stats {
-	double chi2{};
-	double p_value{};
-};
-
-inline chi2_stats compute_chi2_test(const std::vector<uint64_t>& bins, double expected_count) {
+inline double compute_chi2_test(const std::vector<uint64_t>& bins, double expected_count) {
 	double chi2 = 0;
 	for (const auto bin : bins) {
 		const double diff = static_cast<double>(bin) - expected_count;
 		chi2 += diff * diff / expected_count;
 	}
-	const auto df = static_cast<double>(bins.size() - 1);
-	return {chi2, gamma_q(df * .5, chi2 * 0.5)};
+
+	return chi2;
 }
 
 inline std::vector<statistic> chi2_test(const uint64_t n, const stream& stream) {
@@ -31,7 +25,9 @@ inline std::vector<statistic> chi2_test(const uint64_t n, const stream& stream) 
 		bins[std::min(bins.size() - 1, index)]++;
 	}
 	const double expected_count = static_cast<double>(n) / binCount;
-	return {{s_type::chi2, compute_chi2_test(bins, expected_count).chi2}};
+	const double chi2 = compute_chi2_test(bins, expected_count);
+	const auto df = static_cast<double>(bins.size() - 1);
+	return {{s_type::chi2, chi2, gamma_q(df * .5, chi2 * 0.5)}};
 }
 
 }

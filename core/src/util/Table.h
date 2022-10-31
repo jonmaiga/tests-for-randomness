@@ -1,4 +1,5 @@
 #pragma once
+#include <sstream>
 
 namespace mixer {
 
@@ -31,7 +32,9 @@ public:
 	}
 
 	table& app(double d) {
-		return app(std::to_string(d)); //(MathUtil.round(d, _decimals)));
+		std::ostringstream oss;
+		oss << /*std::setprecision(4) << std::noshowpoint <<*/ d;
+		return app(oss.str());
 	}
 
 	table& app(bool b) {
@@ -86,7 +89,7 @@ public:
 		for (const auto& row : _rows) {
 			int i = 0;
 			for (const auto& col : row) {
-				int spaces = _spaces[i] - col.size();
+				auto spaces = _spaces[i] - col.size();
 				sb.append(col);
 				while (spaces-- > 0) {
 					sb += " ";

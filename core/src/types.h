@@ -50,6 +50,7 @@ enum class s_type {
 struct statistic {
 	s_type type;
 	double value{};
+	std::optional<double> p_value;
 };
 
 

@@ -7,19 +7,7 @@
 
 namespace mixer {
 
-template <typename T>
-void sort_rows(std::vector<T>& rows, const std::function<double(const T&)>& field) {
-	std::sort(rows.begin(), rows.end(), [field](const T& l, const T& r) {
-		return field(l) < field(r);
-	});
-}
-
-inline table& add_avalanche_stats(table& table, const bias& bias) {
-	return table.col(bias.std_dev_bias).col(bias.mean_bias).col(bias.max_bias);
-}
-
-template <typename T>
-std::string p_value_test(const std::vector<T>& results) {
+inline std::string p_value_test(const std::vector<result>& results) {
 
 	int fails = 0;
 	for (const auto& r : results) {
@@ -42,19 +30,19 @@ inline std::vector<double> to_statistics(const std::vector<result>& results) {
 inline double z_score(s_type type, const test_result& results, const test_result& baseline) {
 	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
 	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
-	return z_test(r, b);
+	return z_test(r.n, r.mean, b.mean);
 }
 
 inline double t_score(s_type type, const test_result& results, const test_result& baseline) {
 	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
 	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
-	return t_test(r, b);
+	return t_test(r.n, r.mean, r.variance, b.n, b.mean, b.variance);
 }
 
 inline double f_score(s_type type, const test_result& results, const test_result& baseline) {
 	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
 	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
-	return f_test(r, b);
+	return f_test(r.n, r.variance, b.n, b.variance);
 }
 
 
@@ -95,11 +83,15 @@ class result_analyzer {
 
 public:
 	result_analyzer() :
-		test_table({
+		sample_table({
 			"mixer",
 			"mean-z", "variance-z",
 			"chi2-tfz", "ks-z", "ad-z", "ww-z",
 			"max_bias", "pearson", "spearman"
+		}),
+		p_table({
+			"mixer",
+			"mean-p", "variance-p", "chi2-p", "ks-p", "ad-p", "ww-p"
 		}) {
 	}
 
@@ -108,7 +100,7 @@ public:
 
 		const auto b = results.front();
 		//const basic_stats ww = compute_basic_stats(to_statistics(r[s_type::wald_wolfowitz]));
-		test_table
+		sample_table
 			.col(r.mixer_name)
 			.col(z_score(s_type::basic_mean, r, b))
 			//.col(z_score(s_type::basic_variance, r, b))
@@ -121,7 +113,20 @@ public:
 			.col(sum_abs(r[s_type::pearson_r]))
 			.col(sum_abs(r[s_type::spearman_r]))
 			.row();
-		std::cout << test_table.to_string() << "\n";
+		//std::cout << sample_table.to_string() << "\n";
+
+
+		p_table
+			.col(r.mixer_name)
+			.col(p_value_test(r[s_type::basic_mean]))
+			.col(p_value_test(r[s_type::basic_variance]))
+			.col(p_value_test(r[s_type::chi2]))
+			.col(p_value_test(r[s_type::kolmogorov_smirnov]))
+			.col(p_value_test(r[s_type::anderson_darling]))
+			.col(p_value_test(r[s_type::wald_wolfowitz_runs]))
+			.row();
+
+		std::cout << p_table.to_string() << "\n";
 
 		//draw_histogram(r[s_type::kolmogorov_smirnov]);
 		// Table full({"mixer", "stream", "ks"});
@@ -132,7 +137,8 @@ public:
 	}
 
 private:
-	table test_table;
+	table sample_table;
+	table p_table;
 	std::vector<test_result> results;
 };
 
