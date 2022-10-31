@@ -154,9 +154,9 @@ double gamma_regularized(double s, double z) {
 
 
 //https://github.com/odelalleau/PLearn/blob/76684e2a2af134859be2ef621e84af0dbd838f2e/plearn/math/stats_utils.cc
-double kolmogorov_smirnov_probability(double D, double N, int conv) {
+double kolmogorov_smirnov_cdf(double D, double df, int conv) {
 	double res = 0.0;
-	const double sn = sqrt(N);
+	const double sn = sqrt(df);
 	const double ks = D * (sn + 0.12 + 0.11 / sn);
 	const double ks2 = ks * ks;
 	for (int k = 1; k <= conv; k++) {

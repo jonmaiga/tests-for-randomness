@@ -33,6 +33,6 @@ inline double chi2_distribution_cdf(double chi2, double df) {
 	return gamma_regularized(.5 * df, .5 * chi2);
 }
 
-double kolmogorov_smirnov_probability(double D, double N, int conv);
+double kolmogorov_smirnov_cdf(double D, double df, int conv);
 
 }
