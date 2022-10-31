@@ -7,17 +7,6 @@
 
 namespace mixer {
 
-inline std::string p_value_test(const std::vector<result>& results) {
-
-	int fails = 0;
-	for (const auto& r : results) {
-		if (r.stats.p_value < 0.005) {
-			++fails;
-		}
-	}
-	return fails == 0 ? "OK" : "FAIL:" + std::to_string(fails);
-}
-
 inline std::vector<double> to_statistics(const std::vector<result>& results) {
 	std::vector<double> statistics;
 	statistics.reserve(results.size());
@@ -27,12 +16,61 @@ inline std::vector<double> to_statistics(const std::vector<result>& results) {
 	return statistics;
 }
 
+inline std::vector<double> to_p_values(const std::vector<result>& results) {
+	std::vector<double> statistics;
+	statistics.reserve(results.size());
+	for (const auto& r : results) {
+		if (auto p_value = r.stats.p_value) {
+			statistics.push_back(*p_value);
+		}
+	}
+	return statistics;
+}
+
+inline void draw_histogram(const std::vector<double>& data) {
+	std::vector<uint64_t> bins(30);
+	uint64_t max_count = 0;
+	for (const auto r : data) {
+		const size_t index = r * (bins.size() - 1);
+		bins[index] ++;
+		max_count = std::max(bins[index], max_count);
+	}
+	const double scale = std::min(1., 80. / static_cast<double>(max_count));
+	for (const auto b : bins) {
+		for (int i = 0; i < scale * b; ++i) {
+			std::cout << "*";
+		}
+		std::cout << "\n";
+	}
+	std::cout << "\n";
+}
+
+inline std::string p_value_test(const std::vector<result>& results) {
+	draw_histogram(to_p_values(results));
+	const auto s = compute_chi2(to_p_values(results));
+	const auto p_value = chi2_distribution_cdf(s.chi2, s.df);
+	std::cout << "chi2: " << s.chi2 << " p-value: " << p_value << "\n\n";
+
+	if (p_value < 0.25) {
+		return "FAIL";
+	}
+	return "OK";
+	int fails = 0;
+	for (const auto& r : results) {
+		if (r.stats.p_value < 0.005) {
+			++fails;
+		}
+	}
+	return fails == 0 ? "OK" : "FAIL:" + std::to_string(fails);
+}
+
+
 inline double z_score(s_type type, const test_result& results, const test_result& baseline) {
 	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
 	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
 	return z_test(r.n, r.mean, b.mean, b.variance);
 }
-	
+
 inline double t_score(s_type type, const test_result& results, const test_result& baseline) {
 	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
 	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
@@ -62,22 +100,6 @@ inline double greatest_abs(const std::vector<result>& rs) {
 	return max;
 }
 
-
-inline void draw_histogram(const std::vector<result>& results) {
-	std::vector<uint64_t> bins(10);
-	const auto s = to_unity(to_statistics(results));
-	for (const auto r : s) {
-		const size_t index = r * (bins.size() - 1);
-		bins[index] ++;
-	}
-	for (const auto b : bins) {
-		for (int i = 0; i < b; ++i) {
-			std::cout << "*";
-		}
-		std::cout << "\n";
-	}
-	std::cout << "\n";
-}
 
 class result_analyzer {
 
