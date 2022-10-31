@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include "util/assertion.h"
+
 
 inline double normal_cdf(double z) {
 	static const double sqrt_2 = std::sqrt(2);
@@ -18,6 +20,7 @@ constexpr double STOP = 1.0e-8;
 constexpr double TINY = 1.0e-30;
 
 inline double incomplete_beta(double a, double b, double x) {
+	assertion(x > 0 && x < 1., "incomplete beta out of range");
 	if (x < 0.0 || x > 1.0) return INFINITY;
 
 	/*The continued fraction converges nicely for x < (a+1)/(a+b+2)*/
