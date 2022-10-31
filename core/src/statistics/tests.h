@@ -31,7 +31,7 @@ inline double f_test(double a_n, double a_variance, double b_n, double b_varianc
 	const auto df1 = (a_nom ? a_n : b_n) - 1;
 	const auto df2 = (a_nom ? b_n : a_n) - 1;
 	const auto x = df2 / (df2 + df1 * f);
-	return 2. * incomplete_beta(0.5 * df2, 0.5 * df1, x);
+	return 2. * beta_regularized(0.5 * df2, 0.5 * df1, x);
 }
 
 inline double f_test(double n, double a_variance, double b_variance) {

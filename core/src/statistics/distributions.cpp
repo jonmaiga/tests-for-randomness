@@ -7,13 +7,13 @@ namespace mixer {
 constexpr double STOP = 1.0e-8;
 constexpr double TINY = 1.0e-30;
 
-double incomplete_beta(double a, double b, double x) {
+double beta_regularized(double a, double b, double x) {
 	assertion(x >= 0 && x <= 1., "incomplete beta out of range");
 	if (x < 0.0 || x > 1.0) return INFINITY;
 
 	/*The continued fraction converges nicely for x < (a+1)/(a+b+2)*/
 	if (x > (a + 1.0) / (a + b + 2.0)) {
-		return (1.0 - incomplete_beta(b, a, 1.0 - x)); /*Use the fact that beta is symmetrical.*/
+		return (1.0 - beta_regularized(b, a, 1.0 - x)); /*Use the fact that beta is symmetrical.*/
 	}
 
 	/*Find the first part before the continued fraction.*/
