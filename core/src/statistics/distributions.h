@@ -5,7 +5,7 @@
 namespace mixer {
 
 double beta_regularized(double a, double b, double x);
-double gamma_q(double s, double z);
+double gamma_regularized(double s, double z);
 
 inline double normal_cdf(double z) {
 	static const double sqrt_2 = std::sqrt(2);

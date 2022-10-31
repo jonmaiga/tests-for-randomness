@@ -27,7 +27,7 @@ inline std::vector<statistic> chi2_test(const uint64_t n, const stream& stream) 
 	const double expected_count = static_cast<double>(n) / binCount;
 	const double chi2 = compute_chi2_test(bins, expected_count);
 	const auto df = static_cast<double>(bins.size() - 1);
-	return {{s_type::chi2, chi2, gamma_q(df * .5, chi2 * 0.5)}};
+	return {{s_type::chi2, chi2, gamma_regularized(df * .5, chi2 * 0.5)}};
 }
 
 }

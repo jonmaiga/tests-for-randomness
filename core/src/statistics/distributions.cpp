@@ -148,7 +148,7 @@ double kf_gammaq(double s, double z) {
 	return z <= 1. || z < s ? 1. - _kf_gammap(s, z) : _kf_gammaq(s, z);
 }
 
-double gamma_q(double s, double z) {
+double gamma_regularized(double s, double z) {
 	return kf_gammap(s, z);
 }
 

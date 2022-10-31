@@ -24,7 +24,7 @@ TEST(two_tailed_normal_cdf, basic) {
 	EXPECT_NEAR(two_tailed_normal_cdf(10), 0., 1e-4);
 }
 
-TEST(incomplete_beta, basic) {
+TEST(regularized_beta, basic) {
 	EXPECT_NEAR(beta_regularized(1, 1, 1), 1., 1e-4);
 	EXPECT_NEAR(beta_regularized(0.01, 0.01, 0.5), .5, 1e-4);
 	EXPECT_NEAR(beta_regularized(0.01, 0.02, 0.5), .6667, 1e-4);
@@ -33,6 +33,13 @@ TEST(incomplete_beta, basic) {
 	EXPECT_NEAR(beta_regularized(10, 12, 0.99), 1, 1e-4);
 	EXPECT_NEAR(beta_regularized(12, 10, 0.99), 1., 1e-4);
 	EXPECT_NEAR(beta_regularized(900, 1024, 0.23), 0, 1e-4);
+}
+
+TEST(gamma_regularized, basic) {
+	EXPECT_NEAR(1.-gamma_regularized(1, 1), 0.3678, 1e-4);
+	EXPECT_NEAR(1.-gamma_regularized(4, 0.88), 0.9875, 1e-4);
+	EXPECT_NEAR(1.-gamma_regularized(40, 3.88), 1, 1e-4);
+	EXPECT_NEAR(1.-gamma_regularized(0.5, 2.111), 0.03995, 1e-4);
 }
 
 TEST(students_t_cdf, basic) {
