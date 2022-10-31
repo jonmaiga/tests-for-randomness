@@ -30,7 +30,7 @@ inline double f_distribution_cdf(double f, double d1, double d2) {
 
 inline double chi2_distribution_cdf(double chi2, double df) {
 	// found here: https://en.wikipedia.org/wiki/Chi-squared_distribution
-	return gamma_regularized(.5 * df, .5 * chi2);
+	return 1. - gamma_regularized(.5 * df, .5 * chi2);
 }
 
 double kolmogorov_smirnov_cdf(double D, double df, int conv);
