@@ -1,8 +1,15 @@
 #pragma once
 
+#include <cmath>
 
-inline double normal_cdf(double x) {
-	return std::erfc(-x / std::sqrt(2)) / 2;
+
+inline double normal_cdf(double z) {
+	static const double sqrt_2 = std::sqrt(2);
+	return std::erfc(-z / sqrt_2) / 2.;
+}
+
+inline double two_tailed_normal_cdf(double z) {
+	return 2. * normal_cdf(-std::abs(z));
 }
 
 
