@@ -35,4 +35,10 @@ TEST(incomplete_beta, basic) {
 	EXPECT_NEAR(incomplete_beta(900, 1024, 0.23), 0, 1e-4);
 }
 
+TEST(students_t_cdf, basic) {
+	EXPECT_NEAR(student_t_cdf(1, 5), 0.3632, 1e-4);
+	EXPECT_NEAR(student_t_cdf(1.1, 120), 0.2735, 1e-4);
+	EXPECT_NEAR(student_t_cdf(0.615227, 4), 0.571683, 1e-4); // matches mma TTest
+}
+
 }

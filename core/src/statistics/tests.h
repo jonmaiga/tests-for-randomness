@@ -10,8 +10,7 @@ inline double t_test(
 	const double df = a_n + b_n - 2;
 	const double var = ((a_n - 1) * a_variance + (b_n - 1) * b_variance) / df;
 	const double t = (a_mean - b_mean) / std::sqrt(var * (1. / a_n + 1. / b_n));
-	const double x = (t + sqrt(t * t + df)) / (2.0 * sqrt(t * t + df));
-	return incomplete_beta_(.5 * df, .5 * df, x);
+	return student_t_cdf(t, df);
 }
 
 inline double t_test(double n,
