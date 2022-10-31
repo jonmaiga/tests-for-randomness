@@ -34,8 +34,8 @@ inline std::vector<statistic> basic_test(uint64_t n, const stream& stream) {
 	const auto stats = compute_basic_stats(get_normalized(n, stream));
 
 	return {
-		{s_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, 0.5)},
-		{s_type::basic_variance, stats.variance, z_test(stats.n, stats.variance, 1. / 12.)}
+		{s_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1./12.)},
+		{s_type::basic_variance, stats.variance, z_test(stats.n, stats.variance, .5, 1. / 12.)}
 	};
 }
 

@@ -30,7 +30,7 @@ inline std::vector<double> to_statistics(const std::vector<result>& results) {
 inline double z_score(s_type type, const test_result& results, const test_result& baseline) {
 	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
 	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
-	return z_test(r.n, r.mean, b.mean);
+	return z_test(r.n, r.mean, b.mean, b.variance);
 }
 
 inline double t_score(s_type type, const test_result& results, const test_result& baseline) {

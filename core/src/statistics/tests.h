@@ -11,13 +11,13 @@ inline double t_test(
 	const double var = ((a_n - 1) * a_variance + (b_n - 1) * b_variance) / df;
 	const double t = (a_mean - b_mean) / std::sqrt(var * (1. / a_n + 1. / b_n));
 	const double x = (t + sqrt(t * t + df)) / (2.0 * sqrt(t * t + df));
-	return incomplete_beta(df / 2.0, df / 2.0, x);
+	return 2. * incomplete_beta(df / 2.0, df / 2.0, x);
 }
 
-inline double z_test(double n, double mean, double population_mean) {
-	const auto se = population_mean / std::sqrt(n);
+inline double z_test(double n, double mean, double population_mean, double population_variance) {
+	const auto se = std::sqrt(population_variance / n);
 	const auto z = (mean - population_mean) / se;
-	return 2. * normal_cdf(-std::abs(z));
+	return two_tailed_normal_cdf(z);
 }
 
 inline double f_test(double a_n, double a_variance, double b_n, double b_variance) {
