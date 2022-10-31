@@ -11,7 +11,13 @@ inline double t_test(
 	const double var = ((a_n - 1) * a_variance + (b_n - 1) * b_variance) / df;
 	const double t = (a_mean - b_mean) / std::sqrt(var * (1. / a_n + 1. / b_n));
 	const double x = (t + sqrt(t * t + df)) / (2.0 * sqrt(t * t + df));
-	return 2. * incomplete_beta(df / 2.0, df / 2.0, x);
+	return incomplete_beta_(.5 * df, .5 * df, x);
+}
+
+inline double t_test(double n,
+                     double a_mean, double a_variance,
+                     double b_mean, double b_variance) {
+	return t_test(n, a_mean, a_variance, n, b_mean, b_variance);
 }
 
 inline double z_test(double n, double mean, double population_mean, double population_variance) {
@@ -23,9 +29,14 @@ inline double z_test(double n, double mean, double population_mean, double popul
 inline double f_test(double a_n, double a_variance, double b_n, double b_variance) {
 	const auto a_nom = a_variance > b_variance;
 	const auto f = a_nom ? a_variance / b_variance : b_variance / a_variance;
-	const auto df1 = a_nom ? a_n - 1 : b_n - 1;
-	const auto df2 = a_nom ? b_n - 1 : a_n - 1;
-	return 2. * incomplete_beta(0.5 * df2, 0.5 * df1, df2 / (df2 + df1 * f));
+	const auto df1 = (a_nom ? a_n : b_n) - 1;
+	const auto df2 = (a_nom ? b_n : a_n) - 1;
+	const auto x = df2 / (df2 + df1 * f);
+	return 2. * incomplete_beta(0.5 * df2, 0.5 * df1, x);
+}
+
+inline double f_test(double n, double a_variance, double b_variance) {
+	return f_test(n, a_variance, n, b_variance);
 }
 
 }

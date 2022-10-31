@@ -67,6 +67,13 @@ inline double incomplete_beta(double a, double b, double x) {
 	return INFINITY; /*Needed more loops, did not converge.*/
 }
 
+inline double incomplete_beta_(double a, double b, double x) {
+	if (x > (a + 1.0) / (a + b + 2.0)) {
+		return (1.0 - incomplete_beta(b, a, 1.0 - x)); /*Use the fact that beta is symmetrical.*/
+	}
+	return 2 * incomplete_beta(a, b, x);
+}
+
 // gamma from: https://github.com/samtools/htslib/blob/develop/kfunc.c
 inline double kf_lgamma(double z) {
 	double x = 0;

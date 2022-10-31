@@ -32,11 +32,11 @@ inline double z_score(s_type type, const test_result& results, const test_result
 	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
 	return z_test(r.n, r.mean, b.mean, b.variance);
 }
-
+	
 inline double t_score(s_type type, const test_result& results, const test_result& baseline) {
 	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
 	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
-	return t_test(r.n, r.mean, r.variance, b.n, b.mean, b.variance);
+	return t_test(r.n, r.mean, r.variance, b.mean, b.variance);
 }
 
 inline double f_score(s_type type, const test_result& results, const test_result& baseline) {

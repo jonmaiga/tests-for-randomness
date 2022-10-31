@@ -14,11 +14,10 @@ struct basic_stats {
 };
 
 inline basic_stats compute_basic_stats(const std::vector<double>& values) {
-	basic_stats stats{};
+	basic_stats stats{static_cast<double>(values.size())};
 	for (const auto v : values) {
 		stats.mean += v;
 	}
-	stats.n = static_cast<double>(values.size());
 	stats.mean /= stats.n;
 
 	for (const auto v : values) {
@@ -34,8 +33,8 @@ inline std::vector<statistic> basic_test(uint64_t n, const stream& stream) {
 	const auto stats = compute_basic_stats(get_normalized(n, stream));
 
 	return {
-		{s_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1./12.)},
-		{s_type::basic_variance, stats.variance, z_test(stats.n, stats.variance, .5, 1. / 12.)}
+		{s_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1. / 12.)},
+		{s_type::basic_variance, stats.variance, z_test(stats.n, stats.variance, 1. / 12., 1. / 12.)}
 	};
 }
 
