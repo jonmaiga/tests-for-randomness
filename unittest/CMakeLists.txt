@@ -1,0 +1,8 @@
+project(mixer-unittest)
+enable_testing()
+include_directories(test/)
+add_subdirectory("../googletest-release-1.12.1" "googletest-release-1.12.1")
+file(GLOB_RECURSE SOURCES "../core/src/*.*" "src/*.*")
+set(SOURCE ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCE})
+target_link_libraries(${PROJECT_NAME} mixer-core gtest_main ${CXX_FILESYSTEM_LIBRARIES})

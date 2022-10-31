@@ -1,0 +1,5 @@
+project(mixer-test)
+file(GLOB_RECURSE SOURCES "src/*.*")
+set(SOURCE ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCE})
+target_link_libraries(${PROJECT_NAME} mixer-core ${CXX_FILESYSTEM_LIBRARIES})
