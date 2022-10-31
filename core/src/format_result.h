@@ -45,6 +45,19 @@ inline double z_score(s_type type, const test_result& results, const test_result
 	return z_test(r, b);
 }
 
+inline double t_score(s_type type, const test_result& results, const test_result& baseline) {
+	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
+	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
+	return t_test(r, b);
+}
+
+inline double f_score(s_type type, const test_result& results, const test_result& baseline) {
+	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
+	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
+	return f_test(r, b);
+}
+
+
 inline double sum_abs(const std::vector<result>& rs) {
 	double sum = 0;
 	for (const auto& r : rs) {
@@ -85,7 +98,7 @@ public:
 		test_table({
 			"mixer",
 			"mean-z", "variance-z",
-			"chi2-z", "ks-z", "ad-z", "ww-z",
+			"chi2-tfz", "ks-z", "ad-z", "ww-z",
 			"max_bias", "pearson", "spearman"
 		}) {
 	}
@@ -93,16 +106,17 @@ public:
 	void add(const test_result& r) {
 		results.push_back(r);
 
-		const auto baseline = results.front();
+		const auto b = results.front();
 		//const basic_stats ww = compute_basic_stats(to_statistics(r[s_type::wald_wolfowitz]));
 		test_table
 			.col(r.mixer_name)
-			.col(z_score(s_type::basic_mean, r, baseline))
-			.col(z_score(s_type::basic_variance, r, baseline))
-			.col(z_score(s_type::chi2, r, baseline)) // not normal
-			.col(z_score(s_type::kolmogorov_smirnov, r, baseline)) // normal?
-			.col(z_score(s_type::anderson_darling, r, baseline)) // not normal
-			.col(z_score(s_type::wald_wolfowitz_runs, r, baseline))
+			.col(z_score(s_type::basic_mean, r, b))
+			//.col(z_score(s_type::basic_variance, r, b))
+			.app(t_score(s_type::basic_variance, r, b)).app("/").app(f_score(s_type::basic_variance, r, b)).app("/").col(z_score(s_type::basic_variance, r, b))
+			.app(t_score(s_type::chi2, r, b)).app("/").app(f_score(s_type::chi2, r, b)).app("/").col(z_score(s_type::chi2, r, b)) // not normal
+			.col(z_score(s_type::kolmogorov_smirnov, r, b)) // normal?
+			.col(z_score(s_type::anderson_darling, r, b)) // not normal
+			.col(z_score(s_type::wald_wolfowitz_runs, r, b))
 			.col(sum_abs(r[s_type::avalanche_max_bias]))
 			.col(sum_abs(r[s_type::pearson_r]))
 			.col(sum_abs(r[s_type::spearman_r]))
