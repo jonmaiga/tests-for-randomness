@@ -22,6 +22,12 @@ inline double student_t_cdf(double t, double df) {
 	return beta_regularized(.5 * df, .5, xt);
 }
 
+inline double f_distribution_cdf(double f, double d1, double d2) {
+	// found here: https://en.wikipedia.org/wiki/F-distribution
+	const double xt = d1 * f / (d1 * f + d2);
+	return beta_regularized(.5 * d1, .5 * d2, xt);
+}
+
 double kolmogorov_smirnov_probability(double D, double N, int conv);
 
 }
