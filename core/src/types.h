@@ -53,5 +53,11 @@ struct statistic {
 	std::optional<double> p_value;
 };
 
+struct result {
+	std::string stream_name;
+	std::string mixer_name;
+	statistic stats;
+};
+
 
 }

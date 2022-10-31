@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include "util/table.h"
-#include "statistics/t_test.h"
+#include "statistics/tests.h"
 #include "util/algo.h"
 
 namespace mixer {

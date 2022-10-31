@@ -19,13 +19,6 @@ namespace mixer {
 using mixer_test = const std::function<std::vector<statistic>(uint64_t n, const stream&, const mixer&)>;
 using stream_test = const std::function<std::vector<statistic>(uint64_t n, const stream&)>;
 
-struct result {
-	std::string stream_name;
-	std::string mixer_name;
-	statistic stats;
-};
-
-
 struct test_result {
 	using result_map = std::map<s_type, std::vector<result>>;
 
