@@ -56,7 +56,7 @@ TEST(chi2_distribution_cdf, basic) {
 	EXPECT_NEAR(chi2_distribution_cdf(0.1, 5), 0.0001623, 1e-4); // matches mma CDF(chi2)
 	EXPECT_NEAR(chi2_distribution_cdf(10.1, 5), 0.9275, 1e-4); // matches mma CDF(chi2)
 	EXPECT_NEAR(chi2_distribution_cdf(13.1, 3.3), 0.994, 1e-4); // matches mma CDF(chi2)
-	EXPECT_NEAR(chi2_distribution_cdf(3.71429, 4), 0.446, 1e-4); // does not matches mma this is given chi2 statistic
+	EXPECT_NEAR(chi2_distribution_cdf(3.71429, 4), 0.5539, 1e-4); // does not matches mma this is given chi2 statistic (0.446052)
 }
 
 TEST(kolmogorov_smirnov_cdf, basic) {
