@@ -20,10 +20,7 @@ inline double anderson_darling(std::vector<double> normalized_data) {
 	}
 
 	const auto n = static_cast<double>(normalized_data.size());
-	sum /= n;
-
-	const double A2 = -n - sum;
-	return A2;
+	return -n - sum / n;
 }
 
 inline std::vector<statistic> anderson_darling_test(const uint64_t n, const stream& stream) {

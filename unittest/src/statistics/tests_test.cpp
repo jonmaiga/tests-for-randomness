@@ -13,6 +13,11 @@ TEST(z_test, basic) {
 	EXPECT_NEAR(z_test(10, 0.55, 0.5, 0.2), 0.7236, 1e-4);
 }
 
+TEST(z_test, no_variance) {
+	EXPECT_NEAR(z_test(10, 0, 0, 0), 0, 1e-4);
+}
+
+
 TEST(t_test, basic) {
 	EXPECT_NEAR(t_test(10, 0.5, 0.1*0.1, 0.5, 0.1*0.1), 1., 1e-4);
 	EXPECT_NEAR(t_test(10, 0.49, 0.1*0.1, 0.5, 0.1*0.1), .8255, 1e-4);

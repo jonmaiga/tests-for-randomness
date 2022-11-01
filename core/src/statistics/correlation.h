@@ -73,8 +73,8 @@ inline double correlation_p_value(double r, double n) {
 inline std::vector<statistic> pearson_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	const auto data = create_bit_flipped_xy(n, source, mixer);
 	const auto correlation = pearson_correlation(data.xs, data.ys);
-
-	return {{s_type::pearson_r, correlation}};
+	const auto p_value = correlation_p_value(correlation, data.xs.size());
+	return {{s_type::pearson_r, correlation, p_value}};
 }
 
 inline std::vector<statistic> spearman_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {

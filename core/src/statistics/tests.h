@@ -1,6 +1,7 @@
 #pragma once
 
 #include "distributions.h"
+#include "util/math.h"
 
 namespace mixer {
 
@@ -20,6 +21,10 @@ inline double t_test(double n,
 }
 
 inline double z_test(double n, double mean, double population_mean, double population_variance) {
+	if (is_near(population_variance, 0)) {
+		// todo: optional
+		return 0;
+	}
 	const auto se = std::sqrt(population_variance / n);
 	const auto z = (mean - population_mean) / se;
 	return two_tailed_normal_cdf(z);

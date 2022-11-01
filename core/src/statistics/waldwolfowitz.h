@@ -39,6 +39,9 @@ inline wald_wolfowitz_stats wald_wolfowitz(const std::vector<double>& data) {
 inline double wald_wolfowitz_p_value(wald_wolfowitz_stats s) {
 	// info https://support.sas.com/kb/33/092.html
 	const double n = s.n_plus + s.n_minus;
+	if (is_near(n, 0)) {
+		return 0;
+	}
 	const double expected_runs_mean = 2. * s.n_plus * s.n_minus / n + 1.;
 	const double expected_runs_variance = (expected_runs_mean - 1.) * (expected_runs_mean - 2.);
 	return z_test(n - 1, s.runs, expected_runs_mean, expected_runs_variance);

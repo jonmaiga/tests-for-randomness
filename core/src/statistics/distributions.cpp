@@ -1,6 +1,9 @@
 #include "distributions.h"
 
+#include <algorithm>
+
 #include "util/assertion.h"
+#include "util/math.h"
 
 namespace mixer {
 // https://github.com/codeplea/incbeta
@@ -230,7 +233,9 @@ double AndersonDarlingPValue(int n, double z) {
 }
 
 double anderson_darling_cdf(double A2, double df) {
-	return AndersonDarlingPValue(df, A2);
+	const auto p = std::clamp(AndersonDarlingPValue(df, A2), 0., 1.);
+	assertion(is_valid(p), "anderson darling cdf is not valid");
+	return p;
 }
 
 
