@@ -43,10 +43,10 @@ inline std::vector<double> get_normalized64(uint64_t n, const stream& stream) {
 	return data;
 }
 
-inline std::vector<double> normalize_to_uniform(const std::vector<double>& data) {
+template <typename T>
+std::vector<double> normalize_to_uniform(const std::vector<T>& data) {
 	const double min_value = *std::min_element(data.begin(), data.end());
 	const double max_value = *std::max_element(data.begin(), data.end());
-	assertion(min_value < max_value, "min max error");
 	std::vector<double> ns;
 	ns.reserve(data.size());
 	for (const auto v : data) {

@@ -18,7 +18,6 @@ inline bool is_valid_normal(double d) {
 	return !std::isinf(d) && !std::isnan(d) && d >= 0 && d <= 1;
 }
 
-
 inline double normalize(double x, double x_min, double x_max, double epsilon = 1e-6) {
 	assertion(x_min <= x_max, "min greater than max");
 	if (is_near(x_min, x_max)) return .5;

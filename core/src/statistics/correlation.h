@@ -38,8 +38,9 @@ inline double pearson_correlation(const std::vector<double>& xs, const std::vect
 inline double spearman_correlation(const std::vector<double>& xs, const std::vector<double>& ys) {
 	// @attn get_ranks does not handle non-unique data
 	const auto cmp = [](double a, double b) { return a < b; };
-	//return pearson_correlation(get_ranks(xs, cmp), get_ranks(ys, cmp));
-	return 0;
+	return pearson_correlation(
+		normalize_to_uniform(get_ranks(xs, cmp)),
+		normalize_to_uniform(get_ranks(ys, cmp)));
 }
 
 inline double kendall_correlation(const std::vector<double>& xs, const std::vector<double>& ys) {
@@ -79,7 +80,10 @@ inline std::vector<statistic> pearson_correlation_mixer_test(uint64_t n, const s
 
 inline std::vector<statistic> spearman_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	const auto data = create_bit_flipped_xy(n, source, mixer);
-	return {{s_type::spearman_r, spearman_correlation(data.xs, data.ys)}};
+	const auto rho = spearman_correlation(data.xs, data.ys);
+	const auto p_value = correlation_p_value(rho, data.xs.size());
+	assertion(is_valid_normal(p_value), "is");
+	return {{s_type::spearman_r, rho, p_value}};
 }
 
 inline std::vector<statistic> kendall_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
