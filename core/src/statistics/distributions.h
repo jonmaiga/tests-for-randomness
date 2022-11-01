@@ -35,4 +35,6 @@ inline double chi2_distribution_cdf(double chi2, double df) {
 
 double kolmogorov_smirnov_cdf(double D, double df, int conv);
 
+double anderson_darling_cdf(double A2, double df);
+
 }

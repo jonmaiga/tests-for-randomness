@@ -2,32 +2,24 @@
 
 #include <vector>
 
+#include "distributions.h"
 #include "streams.h"
 #include "types.h"
 #include "util/algo.h"
 
 namespace mixer {
 
-
-inline double anderson_darling_p_value_approximation(const double A2) {
-	// values from: A Modified Anderson-Darling Test for Uniformity
-	// exponential fit in mathematica, decays to quickly after A2 > 4
-	// const auto vs = {{1.2453, 0.250}, {1.6211, 0.150}, {1.9355, 0.100}, {2.4986, 0.050}, {3.0916, 0.025}, {3.9033, 0.010}, {4.5416, 0.005}, {6.0266, 0.001}};
-	const auto p_approximate = 1.2523881776721628 * std::exp(-1.2989101557411682 * A2);
-	return std::min(std::max(0., p_approximate), 1.);
-
-}
-
-inline double anderson_darling(std::vector<double> data) {
-	std::sort(data.begin(), data.end());
+inline double anderson_darling(std::vector<double> normalized_data) {
+	std::sort(normalized_data.begin(), normalized_data.end());
 	double sum = 0;
-	for (std::size_t i = 0; i < data.size(); ++i) {
+	for (std::size_t i = 0; i < normalized_data.size(); ++i) {
+		assertion(normalized_data[i] > 0 && normalized_data[i] < 1, "normalized data no normalized?");
 		sum += (2. * i + 1.) * (
-			std::log(data[i]) +
-			std::log(1. - data[data.size() - 1 - i]));
+			std::log(normalized_data[i]) +
+			std::log(1. - normalized_data[normalized_data.size() - 1 - i]));
 	}
 
-	const auto n = static_cast<double>(data.size());
+	const auto n = static_cast<double>(normalized_data.size());
 	sum /= n;
 
 	const double A2 = -n - sum;
@@ -35,8 +27,8 @@ inline double anderson_darling(std::vector<double> data) {
 }
 
 inline std::vector<statistic> anderson_darling_test(const uint64_t n, const stream& stream) {
-	const auto A2 = anderson_darling(get_normalized(n, stream));
-	return {{s_type::anderson_darling, A2, anderson_darling_p_value_approximation(A2)}};
+	const auto A2 = anderson_darling(get_normalized64(n, stream));
+	return {{s_type::anderson_darling, A2, anderson_darling_cdf(A2, n - 1)}};
 }
 
 }

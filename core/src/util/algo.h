@@ -33,13 +33,25 @@ inline std::vector<uint64_t> get_raw(uint64_t n, const stream& stream) {
 	return data;
 }
 
-inline std::vector<double> get_normalized(uint64_t n, const stream& stream) {
+inline std::vector<double> get_normalized64(uint64_t n, const stream& stream) {
 	std::vector<double> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
-		data.push_back(normalize64(stream()));
+		data.push_back(clamp_exclusive_01(normalize64(stream())));
 	}
 	return data;
+}
+
+inline std::vector<double> normalize_to_uniform(const std::vector<double>& data) {
+	const double min_value = *std::min_element(data.begin(), data.end());
+	const double max_value = *std::max_element(data.begin(), data.end());
+	assertion(min_value < max_value, "min max error");
+	std::vector<double> ns;
+	ns.reserve(data.size());
+	for (const auto v : data) {
+		ns.push_back(clamp_exclusive_01((v - min_value) / (max_value - min_value)));
+	}
+	return ns;
 }
 
 inline std::vector<double> to_unity(const std::vector<double>& values) {
