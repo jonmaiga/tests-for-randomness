@@ -28,7 +28,7 @@ inline chi2_stats compute_chi2(const std::vector<double>& normalized_data) {
 		const double diff = static_cast<double>(bin) - expected_count;
 		chi2 += diff * diff / expected_count;
 	}
-	return {chi2, bins.size() - 1};
+	return {chi2, bin_count - 1};
 }
 
 
