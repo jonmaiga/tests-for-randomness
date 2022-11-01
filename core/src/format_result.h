@@ -3,7 +3,7 @@
 #include <iostream>
 #include "util/table.h"
 #include "statistics/tests.h"
-#include "util/algo.h"
+#include "statistics/fishersmethod.h"
 
 namespace mixer {
 
@@ -30,8 +30,12 @@ inline std::vector<double> to_p_values(const std::vector<result>& results) {
 inline void draw_histogram(const std::vector<double>& data) {
 	std::vector<uint64_t> bins(30);
 	uint64_t max_count = 0;
-	for (const auto r : data) {
-		const size_t index = r * (bins.size() - 1);
+	const double min_value = *std::min_element(data.begin(), data.end());
+	const double max_value = *std::max_element(data.begin(), data.end());
+	assertion(min_value < max_value, "min max error");
+	for (auto r : data) {
+		r = (r - min_value) / (max_value - min_value);
+		const size_t index = std::min(static_cast<size_t>(r * bins.size()), bins.size() - 1);
 		bins[index] ++;
 		max_count = std::max(bins[index], max_count);
 	}
@@ -46,15 +50,29 @@ inline void draw_histogram(const std::vector<double>& data) {
 }
 
 inline std::string p_value_test(const std::vector<result>& results) {
-	draw_histogram(to_p_values(results));
-	const auto s = compute_chi2(to_p_values(results));
-	const auto p_value = chi2_distribution_cdf(s.chi2, s.df);
-	std::cout << "chi2: " << s.chi2 << " p-value: " << p_value << "\n\n";
 
-	if (p_value < 0.25) {
-		return "FAIL";
+	//for (auto v : to_p_values(results)) {
+	//std::cout << v << ", ";
+	//}
+	//std::cout << "\n\n";
+
+	// const auto st = compute_basic_stats(to_p_values(results));
+	draw_histogram(to_p_values(results));
+	draw_histogram(to_statistics(results));
+	//const auto s = compute_chi2(to_p_values(results));
+	//const auto p_value = chi2_distribution_cdf(s.chi2, s.df);
+	// std::cout << "stat mean: " << st.mean << " stat var: " << st.variance << "\n";
+	// std::cout << "chi2: " << s.chi2 << " p-value: " << p_value << "\n\n";
+
+	//const auto s = kolmogorov_smirnov_test(to_p_values(results));
+	//const auto p_value = kolmogorov_smirnov_cdf(s, results.size()-1, 100);
+
+	const auto p_value = fishers_combined_probabilities(to_p_values(results));
+	std::cout << "p_value:" << p_value << "\n";
+	if (p_value < 0.005) {
+		return "FAIL:" + std::to_string(p_value);
 	}
-	return "OK";
+	return "OK: " + std::to_string(p_value);;
 	int fails = 0;
 	for (const auto& r : results) {
 		if (r.stats.p_value < 0.005) {
@@ -113,7 +131,7 @@ public:
 		}),
 		p_table({
 			"mixer",
-			"mean-p", "variance-p", "chi2-p", "ks-p", "ad-p", "ww-p"
+			"mean-p", "chi2-p", "ks-p", "ad-p", "ww-p"
 		}) {
 	}
 
@@ -141,7 +159,6 @@ public:
 		p_table
 			.col(r.mixer_name)
 			.col(p_value_test(r[s_type::basic_mean]))
-			.col(p_value_test(r[s_type::basic_variance]))
 			.col(p_value_test(r[s_type::chi2]))
 			.col(p_value_test(r[s_type::kolmogorov_smirnov]))
 			.col(p_value_test(r[s_type::anderson_darling]))
