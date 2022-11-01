@@ -37,7 +37,7 @@ inline std::vector<double> get_normalized64(uint64_t n, const stream& stream) {
 	std::vector<double> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
-		data.push_back(clamp_exclusive_01(normalize64(stream())));
+		data.push_back(normalize64(stream()));
 	}
 	return data;
 }
@@ -49,23 +49,10 @@ inline std::vector<double> normalize_to_uniform(const std::vector<double>& data)
 	std::vector<double> ns;
 	ns.reserve(data.size());
 	for (const auto v : data) {
-		ns.push_back(clamp_exclusive_01((v - min_value) / (max_value - min_value)));
+		ns.push_back(normalize(v, min_value, max_value));
 	}
 	return ns;
 }
-
-inline std::vector<double> to_unity(const std::vector<double>& values) {
-	std::vector<double> data;
-	data.reserve(values.size());
-	const auto max = *std::max_element(values.begin(), values.end());
-	const auto min = *std::min_element(values.begin(), values.end());
-	const double d = max == min ? 1 : max - min;
-	for (const auto v : values) {
-		data.push_back((v - min) / d);
-	}
-	return data;
-}
-
 
 struct xys {
 	std::vector<double> xs;
