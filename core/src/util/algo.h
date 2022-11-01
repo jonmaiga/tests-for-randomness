@@ -5,6 +5,7 @@
 
 #include "bitwise.h"
 #include "math.h"
+#include "types.h"
 
 namespace mixer {
 
@@ -36,7 +37,7 @@ inline std::vector<double> get_normalized(uint64_t n, const stream& stream) {
 	std::vector<double> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
-		data.push_back(normalize(stream()));
+		data.push_back(normalize64(stream()));
 	}
 	return data;
 }
@@ -64,10 +65,10 @@ inline xys create_bit_flipped_xy(uint64_t n, const stream& source, const mixer& 
 	for (uint64_t i = 0; i < n; ++i) {
 		const uint64_t v = source();
 		const uint64_t m = mixer(v);
-		const double x = normalize(m);
+		const double x = normalize64(m);
 		for (int bit = 0; bit < 64; ++bit) {
 			xs.push_back(x);
-			ys.push_back(normalize(mixer(flip_bit(m, bit))));
+			ys.push_back(normalize64(mixer(flip_bit(m, bit))));
 		}
 	}
 	return {xs, ys};

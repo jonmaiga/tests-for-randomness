@@ -1,7 +1,13 @@
 #pragma once
 
+#include <algorithm>
+#include <cmath>
 #include <vector>
+
+#include "basic.h"
 #include "util/algo.h"
+#include "distributions.h"
+#include "types.h"
 
 namespace mixer {
 
@@ -12,16 +18,21 @@ struct wald_wolfowitz_stats {
 };
 
 inline wald_wolfowitz_stats wald_wolfowitz(const std::vector<uint64_t>& data) {
+	if (data.empty()) {
+		return {};
+	}
 	auto tmp = data;
 	sort(tmp.begin(), tmp.end());
-	const auto median = tmp[tmp.size() / 2];
+	const auto median = get_median(tmp);
 
 	uint64_t n_plus = 0;
 	uint64_t n_minus = 0;
-	uint64_t runs = 0;
+	uint64_t runs = 1;
 	bool is_current_run_greater = data[0] > median;
-	for (unsigned long long v : data) {
-		v > median ? n_plus++ : n_minus++;
+	for (const auto v : data) {
+		if (v != median) {
+			v > median ? n_plus++ : n_minus++;
+		}
 		if (v > median != is_current_run_greater) {
 			is_current_run_greater = !is_current_run_greater;
 			++runs;

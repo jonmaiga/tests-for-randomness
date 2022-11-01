@@ -7,6 +7,16 @@
 
 namespace mixer {
 
+template <typename T>
+double get_median(const std::vector<T>& sorted) {
+	assertion(!sorted.empty(), "median in empty vector");
+	const auto s = sorted.size();
+	if (s % 2 == 1) {
+		return sorted[s / 2];
+	}
+	return (sorted[(s-1) / 2] + sorted[(s-1) / 2 + 1]) / 2.;
+}
+
 struct basic_stats {
 	double n{};
 	double mean{};
