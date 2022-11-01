@@ -36,7 +36,7 @@ struct basic_stats {
 
 inline basic_stats compute_basic_stats(const std::vector<double>& values) {
 	basic_stats stats{static_cast<double>(values.size())};
-	stats.mean /= get_mean(values);
+	stats.mean = get_mean(values);
 	for (const auto v : values) {
 		stats.variance += (v - stats.mean) * (v - stats.mean);
 	}
