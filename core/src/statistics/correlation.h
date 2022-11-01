@@ -11,13 +11,12 @@ struct correlation_stats {
 	double kendall_t = 0;
 };
 
-template <typename T>
-double pearson_correlation(const std::vector<T>& xs, const std::vector<T>& ys) {
+inline double pearson_correlation(const std::vector<double>& xs, const std::vector<double>& ys) {
 	const auto n = xs.size();
 	double x_mean = 0, y_mean = 0;
 	for (uint64_t i = 0; i < n; ++i) {
-		x_mean += static_cast<double>(xs[i]);
-		y_mean += static_cast<double>(ys[i]);
+		x_mean += xs[i];
+		y_mean += ys[i];
 	}
 	x_mean /= n;
 	y_mean /= n;
@@ -26,20 +25,20 @@ double pearson_correlation(const std::vector<T>& xs, const std::vector<T>& ys) {
 	double sum_ys = 0;
 	double sum_xy = 0;
 	for (std::size_t i = 0; i < n; ++i) {
-		const double x_dev = static_cast<double>(xs[i]) - x_mean;
-		const double y_dev = static_cast<double>(ys[i]) - y_mean;
+		const double x_dev = xs[i] - x_mean;
+		const double y_dev = ys[i] - y_mean;
 		sum_xs += x_dev * x_dev;
 		sum_ys += y_dev * y_dev;
 		sum_xy += x_dev * y_dev;
 	}
-	const double r = sum_xy / (std::sqrt(sum_xs) * std::sqrt(sum_ys));
-	return r;
+	return sum_xy / (std::sqrt(sum_xs) * std::sqrt(sum_ys));
 }
 
 inline double spearman_correlation(const std::vector<double>& xs, const std::vector<double>& ys) {
 	// @attn get_ranks does not handle non-unique data
 	const auto cmp = [](double a, double b) { return a < b; };
-	return pearson_correlation(get_ranks(xs, cmp), get_ranks(ys, cmp));
+	//return pearson_correlation(get_ranks(xs, cmp), get_ranks(ys, cmp));
+	return 0;
 }
 
 inline double kendall_correlation(const std::vector<double>& xs, const std::vector<double>& ys) {
@@ -67,7 +66,8 @@ inline double kendall_correlation(const std::vector<double>& xs, const std::vect
 
 inline std::vector<statistic> pearson_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	const auto data = create_bit_flipped_xy(n, source, mixer);
-	return {{s_type::pearson_r, pearson_correlation(data.xs, data.ys)}};
+	const auto correlation = pearson_correlation(data.xs, data.ys);
+	return {{s_type::pearson_r, correlation}};
 }
 
 inline std::vector<statistic> spearman_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
