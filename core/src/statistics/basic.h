@@ -19,7 +19,7 @@ double get_median(const std::vector<T>& sorted) {
 
 template <typename T>
 double get_mean(const std::vector<T>& values) {
-	assertion(!data.empty(), "mean in empty vector");
+	assertion(!values.empty(), "mean in empty vector");
 	double sum = 0;
 	for (const auto v : values) {
 		sum += v;
