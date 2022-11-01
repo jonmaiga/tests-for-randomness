@@ -45,6 +45,7 @@ TEST(waldwolfowitz, two_runs_2) {
 	EXPECT_EQ(ww.runs, 2);
 	EXPECT_EQ(ww.n_plus, 3);
 	EXPECT_EQ(ww.n_minus, 5);
+	EXPECT_NEAR(wald_wolfowitz_p_value(ww), 0.02347, 1e-4);
 }
 
 

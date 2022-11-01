@@ -46,12 +46,12 @@ inline wald_wolfowitz_stats wald_wolfowitz(const std::vector<uint64_t>& data) {
 }
 
 inline double wald_wolfowitz_p_value(wald_wolfowitz_stats s) {
+	// p-values get an u-shape for trng, suggesting that the variance is greater than expected.
 	// info https://support.sas.com/kb/33/092.html
 	const double n = s.n_plus + s.n_minus;
 	const double expected_runs_mean = 2. * s.n_plus * s.n_minus / n + 1.;
-	const double expected_runs_variance = (expected_runs_mean - 1.) * (expected_runs_mean - 2.) / (n - 1.);
-	const double Z = (s.runs - expected_runs_mean) / std::sqrt(expected_runs_variance);
-	return normal_cdf(Z);
+	const double expected_runs_variance = (expected_runs_mean - 1.) * (expected_runs_mean - 2.);
+	return z_test(n - 1, s.runs, expected_runs_mean, expected_runs_variance);
 }
 
 inline std::vector<statistic> wald_wolfowitz_test(const uint64_t n, const stream& stream) {
