@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include "distributions.h"
 #include "util/algo.h"
 
 namespace mixer {
@@ -64,9 +65,15 @@ inline double kendall_correlation(const std::vector<double>& xs, const std::vect
 	return static_cast<double>(is) / (std::sqrt(n1) * std::sqrt(n2));
 }
 
+inline double correlation_p_value(double r, double n) {
+	const double t = std::abs(r * std::sqrt((n - 2) / (1 - r * r)));
+	return student_t_cdf(t, n - 2);
+}
+
 inline std::vector<statistic> pearson_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	const auto data = create_bit_flipped_xy(n, source, mixer);
 	const auto correlation = pearson_correlation(data.xs, data.ys);
+
 	return {{s_type::pearson_r, correlation}};
 }
 
