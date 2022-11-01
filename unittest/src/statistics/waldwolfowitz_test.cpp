@@ -32,7 +32,6 @@ TEST(waldwolfowitz, two_different) {
 	EXPECT_EQ(ww.n_minus, 1);
 }
 
-
 TEST(waldwolfowitz, two_runs) {
 	const auto ww = wald_wolfowitz({1, 1, 1, 2, 2, 2});
 	EXPECT_EQ(ww.runs, 2);
@@ -43,9 +42,9 @@ TEST(waldwolfowitz, two_runs) {
 TEST(waldwolfowitz, two_runs_2) {
 	const auto ww = wald_wolfowitz({3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1});
 	EXPECT_EQ(ww.runs, 2);
-	EXPECT_EQ(ww.n_plus, 3);
+	EXPECT_EQ(ww.n_plus, 6);
 	EXPECT_EQ(ww.n_minus, 5);
-	EXPECT_NEAR(wald_wolfowitz_p_value(ww), 0.02347, 1e-4);
+	EXPECT_NEAR(wald_wolfowitz_p_value(ww), 0.004266, 1e-4);
 }
 
 
