@@ -44,7 +44,8 @@ enum class s_type {
 	anderson_darling,
 
 	// mixer
-	avalanche_max_bias,
+	avalanche_sac,
+	avalanche_bic,
 	pearson_r,
 	spearman_r,
 	kendall_tau,
