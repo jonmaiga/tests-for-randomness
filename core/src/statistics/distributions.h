@@ -28,6 +28,11 @@ inline double f_distribution_cdf(double f, double d1, double d2) {
 	return beta_regularized(.5 * d1, .5 * d2, xt);
 }
 
+
+inline double chi2_distribution_normal_approximation_cdf(double chi2, double df) {
+	return 1. - 0.5 * (1 + std::erf((chi2 - df) / (2 * std::sqrt(df))));
+}
+
 inline double chi2_distribution_cdf(double chi2, double df) {
 	// found here: https://en.wikipedia.org/wiki/Chi-squared_distribution
 	return 1. - gamma_regularized(.5 * df, .5 * chi2);

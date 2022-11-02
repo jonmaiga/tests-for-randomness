@@ -44,15 +44,20 @@ inline std::vector<double> get_normalized64(uint64_t n, const stream& stream) {
 }
 
 template <typename T>
-std::vector<double> normalize_to_uniform(const std::vector<T>& data) {
-	const double min_value = *std::min_element(data.begin(), data.end());
-	const double max_value = *std::max_element(data.begin(), data.end());
+std::vector<double> normalize_to_uniform(const std::vector<T>& data, T min_value, T max_value) {
 	std::vector<double> ns;
 	ns.reserve(data.size());
 	for (const auto v : data) {
 		ns.push_back(normalize(v, min_value, max_value));
 	}
 	return ns;
+}
+
+template <typename T>
+std::vector<double> normalize_to_uniform(const std::vector<T>& data) {
+	return normalize_to_uniform(data,
+	                            *std::min_element(data.begin(), data.end()),
+	                            *std::max_element(data.begin(), data.end()));
 }
 
 struct xys {

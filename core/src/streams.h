@@ -48,8 +48,19 @@ inline const std::vector<uint64_t>& get_trng_data() {
 	return trng_data;
 }
 
-
 inline stream create_stream_from_data(const std::string& name, const std::vector<uint64_t>& data) {
+	size_t index = 0;
+	return stream{
+		name, [index, data]() mutable -> uint64_t {
+			if (index >= data.size()) {
+				//throw std::runtime_error("No more stream data.");
+			}
+			return data[index++ % data.size()];
+		}
+	};
+}
+
+inline stream create_stream_from_data_by_ref(const std::string& name, const std::vector<uint64_t>& data) {
 	size_t index = 0;
 	return stream{
 		name, [index, &data]() mutable -> uint64_t {

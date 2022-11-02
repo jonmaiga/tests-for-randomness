@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
+#include "chi2.h"
 #include "util/bitwise.h"
 #include "types.h"
 
@@ -68,5 +69,39 @@ inline std::vector<statistic> avalanche_mixer_test(const uint64_t n, const strea
 	return {{s_type::avalanche_max_bias, result.bic.max_bias}};
 }
 
+inline std::vector<uint64_t> run_avalanche(uint64_t n, const stream& stream, const mixer& mixer) {
+	std::vector<uint64_t> bit_counts(64 * 64);
+	for (uint64_t i = 0; i < n; ++i) {
+		const auto x = stream();
+		const uint64_t h0 = mixer(x);
+		for (std::size_t j = 0; j < 64; j++) {
+			const uint64_t change = h0 ^ mixer(flip_bit(x, j));
+			for (std::size_t k = 0; k < 64; k++) {
+				const int bit = (change >> k) & 1;
+				bit_counts[j * 64ull + k] += bit;
+			}
+		}
+	}
+	return bit_counts;
+}
+
+inline std::vector<statistic> avalanche_mixer_test2(uint64_t n, const stream& stream, const mixer& mixer) {
+	const auto bic_counts = run_avalanche(n, stream, mixer);
+
+	double bic_score = 0;
+	double chi2 = 0;
+	constexpr double p = 0.5;
+	const double expected_count = n * p;
+	const double binomial_to_normal = n * p * (1. - p);
+	for (const double bit_count : bic_counts) {
+		bic_score += std::abs(2. * static_cast<double>(bit_count) / n - 1.);
+		const double diff = (bit_count - expected_count);
+		chi2 += diff * diff / binomial_to_normal;
+	}
+	bic_score = 1. - bic_score / n;
+
+	const double p_value = chi2_distribution_cdf(chi2, 64 * 64 - 1);
+	return {{s_type::avalanche_max_bias, bic_score, p_value}};
+}
 
 }

@@ -11,5 +11,4 @@ inline uint64_t flip_bit(uint64_t i, int bit) {
 	return i ^ (1ull << bit);
 }
 
-
 }
