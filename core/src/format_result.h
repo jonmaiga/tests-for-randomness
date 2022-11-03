@@ -51,10 +51,10 @@ inline std::string p_value_test(const std::vector<result>& results) {
 	}
 
 	const auto st = compute_basic_stats(to_statistics(results));
-	if (results.front().stats.type == s_type::avalanche_sac) {
-		// for (auto v : to_statistics(results)) {
-		// 	std::cout << v << ", ";
-		// }
+	if (results.front().stats.type == s_type::chi2) {
+		//for (auto v : to_statistics(results)) {
+		//	std::cout << v << ", ";
+		//}
 		//std::cout << "\n\n";
 
 		const auto st = compute_basic_stats(to_statistics(results));
@@ -65,9 +65,9 @@ inline std::string p_value_test(const std::vector<result>& results) {
 
 	const auto p_value = fishers_combined_probabilities(to_p_values(results));
 	if (p_value < 0.005) {
-		return "FAIL:" + std::to_string(st.mean);
+		return "FAIL:" + std::to_string(p_value);
 	}
-	return "OK: " + std::to_string(st.mean);
+	return "OK: " + std::to_string(p_value);
 }
 
 
@@ -119,35 +119,17 @@ public:
 		}),
 		p_table({
 			"mixer",
-			"mean-p", "chi2-p", "ks-p", "ad-p", "ww-p", "r-p", "s-p", "sac", "bic"
+			"mean", "variance", "chi2", "ks", "ad", "ww", "pearson", "spearman", "sac", "bic"
 		}) {
 	}
 
 	void add(const test_result& r) {
 		results.push_back(r);
 
-		const auto b = results.front();
-		//const basic_stats ww = compute_basic_stats(to_statistics(r[s_type::wald_wolfowitz]));
-		/*
-		sample_table
-			.col(r.mixer_name)
-			.col(z_score(s_type::basic_mean, r, b))
-			//.col(z_score(s_type::basic_variance, r, b))
-			.app(t_score(s_type::basic_variance, r, b)).app("/").app(f_score(s_type::basic_variance, r, b)).app("/").col(z_score(s_type::basic_variance, r, b))
-			.app(t_score(s_type::chi2, r, b)).app("/").app(f_score(s_type::chi2, r, b)).app("/").col(z_score(s_type::chi2, r, b)) // not normal
-			.col(z_score(s_type::kolmogorov_smirnov, r, b)) // normal?
-			.col(z_score(s_type::anderson_darling, r, b)) // not normal
-			.col(z_score(s_type::wald_wolfowitz_runs, r, b))
-			.col(sum_abs(r[s_type::avalanche_bic]))
-			.col(sum_abs(r[s_type::pearson_r]))
-			.col(sum_abs(r[s_type::spearman_r]))
-			.row();*/
-		//std::cout << sample_table.to_string() << "\n";
-
-
 		p_table
 			.col(r.mixer_name)
 			.col(p_value_test(r[s_type::basic_mean]))
+			.col(p_value_test(r[s_type::basic_variance]))
 			.col(p_value_test(r[s_type::chi2]))
 			.col(p_value_test(r[s_type::kolmogorov_smirnov]))
 			.col(p_value_test(r[s_type::anderson_darling]))
