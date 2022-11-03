@@ -119,7 +119,7 @@ public:
 		}),
 		p_table({
 			"mixer",
-			"mean-p", "chi2-p", "ks-p", "ad-p", "ww-p", "r-p", "s-p", "sac", "a-m-p"
+			"mean-p", "chi2-p", "ks-p", "ad-p", "ww-p", "r-p", "s-p", "sac", "bic"
 		}) {
 	}
 
