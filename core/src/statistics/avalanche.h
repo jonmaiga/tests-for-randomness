@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cmath>
 
 #include "chi2.h"
@@ -9,67 +10,78 @@
 namespace mixer {
 
 struct avalanche_stats {
-	double score{};
 	double chi2{};
 	double df{};
 };
 
-using avalanche_callback = std::function<void(std::size_t, std::size_t, int)>;
-
-inline void avalanche_generate(uint64_t n,
-                               const stream& stream,
-                               const mixer& mixer,
-                               const avalanche_callback& callback) {
-
+inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream& stream, const mixer& mixer) {
+	std::vector<uint64_t> sac(64);
 	for (uint64_t i = 0; i < n; ++i) {
 		const auto x = stream();
 		const uint64_t h0 = mixer(x);
 		for (std::size_t j = 0; j < 64; j++) {
-			const uint64_t change = h0 ^ mixer(flip_bit(x, j));
-			for (std::size_t k = 0; k < 64; k++) {
-				const int bit = (change >> k) & 1;
-				callback(j, k, bit);
-			}
+			const auto change = h0 ^ mixer(flip_bit(x, j));
+			sac[__popcnt64(change)] ++;
 		}
 	}
-}
-
-inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream& stream, const mixer& mixer) {
-	std::vector<uint64_t> bit_counts(64);
-	avalanche_generate(n, stream, mixer, [&bit_counts](std::size_t, std::size_t k, int bit) {
-		bit_counts[k] += bit;
-	});
-	return bit_counts;
+	return sac;
 }
 
 inline std::vector<uint64_t> avalanche_generate_bic(uint64_t n, const stream& stream, const mixer& mixer) {
-	std::vector<uint64_t> bit_counts(64 * 64);
-	avalanche_generate(n, stream, mixer, [&bit_counts](std::size_t j, std::size_t k, int bit) {
-		bit_counts[j * 64ull + k] += bit;
-	});
-	return bit_counts;
+	std::vector<uint64_t> bic(4096);
+	for (uint64_t i = 0; i < n; ++i) {
+		const auto x = stream();
+		const uint64_t h0 = mixer(x);
+		for (std::size_t j = 0; j < 64; j++) {
+			const auto change = h0 ^ mixer(flip_bit(x, j));
+			for (std::size_t k = 0; k < 64; k++) {
+				const int bit = (change >> k) & 1;
+				bic[j * 64ull + k] += bit;
+			}
+		}
+	}
+	return bic;
 }
 
-inline avalanche_stats compute_avalanche_stats(const double n, const std::vector<uint64_t>& bit_counts) {
-	double score = 0;
+inline avalanche_stats compute_avalanche_sac_stats(const double n, const std::vector<uint64_t>& bit_counts) {
+	const double total_count = n * 64;
+	double chi2 = 0;
+	double df = 0;
+	for (std::size_t i = 0; i < 64; ++i) {
+		const double p = binomial_pdf(64, .5, i);
+		const double expected_count = total_count * p;
+		if (expected_count < 5) continue;
+		const double diff = (bit_counts[i] - expected_count);
+		chi2 += diff * diff / expected_count;
+		df++;
+	}
+	return {chi2, df-1};
+}
+
+inline avalanche_stats compute_avalanche_bic_stats(const double n, const std::vector<uint64_t>& bit_counts) {
 	double chi2 = 0;
 	constexpr double p = 0.5;
 	const double expected_count = n * p;
 	const double binomial_to_normal = n * p * (1. - p);
 	for (const double bit_count : bit_counts) {
-		score += std::abs(2. * static_cast<double>(bit_count) / n - 1.);
 		const double diff = (bit_count - expected_count);
 		chi2 += diff * diff / binomial_to_normal;
 	}
-	score = 1. - score / n;
-	return {score, chi2, static_cast<double>(bit_counts.size() - 1)};
+	return {chi2, static_cast<double>(bit_counts.size() - 1)};
 }
 
-inline std::vector<statistic> avalanche_mixer_test(uint64_t n, const stream& stream, const mixer& mixer) {
-	const auto bic_counts = avalanche_generate_bic(n, stream, mixer);
-	const auto bic_stats = compute_avalanche_stats(n, bic_counts);
-	const auto p_value = chi2_distribution_cdf(bic_stats.chi2, bic_stats.df);
-	return {{s_type::avalanche_bic, bic_stats.score, p_value}};
+inline std::vector<statistic> avalanche_mixer_sac_test(uint64_t n, const stream& stream, const mixer& mixer) {
+	const auto counts = avalanche_generate_sac(n, stream, mixer);
+	const auto stats = compute_avalanche_sac_stats(n, counts);
+	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
+	return {{s_type::avalanche_sac, stats.chi2, p_value}};
+}
+
+inline std::vector<statistic> avalanche_mixer_bic_test(uint64_t n, const stream& stream, const mixer& mixer) {
+	const auto counts = avalanche_generate_bic(n, stream, mixer);
+	const auto stats = compute_avalanche_bic_stats(n, counts);
+	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
+	return {{s_type::avalanche_bic, stats.chi2, p_value}};
 }
 
 }

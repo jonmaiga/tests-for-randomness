@@ -42,6 +42,13 @@ TEST(gamma_regularized, basic) {
 	EXPECT_NEAR(1.-gamma_regularized(0.5, 2.111), 0.03995, 1e-4);
 }
 
+TEST(binomial_pdf, basic) {
+	EXPECT_NEAR(binomial_pdf(40, 0.5, 20), 0.1253, 1e-4);
+	EXPECT_NEAR(binomial_pdf(1, 0, 0), 1, 1e-4);
+	EXPECT_NEAR(binomial_pdf(1, 1, 0), 0, 1e-4);
+}
+
+
 TEST(students_t_cdf, basic) {
 	EXPECT_NEAR(student_t_cdf(1, 5), 0.3632, 1e-4);
 	EXPECT_NEAR(student_t_cdf(1.1, 120), 0.2735, 1e-4);

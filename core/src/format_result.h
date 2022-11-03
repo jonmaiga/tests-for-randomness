@@ -46,38 +46,28 @@ inline void draw_histogram(const std::vector<double>& data) {
 }
 
 inline std::string p_value_test(const std::vector<result>& results) {
+	if (results.empty()) {
+		return "N/A";
+	}
 
-
-	if (results.front().stats.type == s_type::avalanche_max_bias) {
+	const auto st = compute_basic_stats(to_statistics(results));
+	if (results.front().stats.type == s_type::avalanche_sac) {
 		// for (auto v : to_statistics(results)) {
 		// 	std::cout << v << ", ";
 		// }
-		
 		//std::cout << "\n\n";
+
 		const auto st = compute_basic_stats(to_statistics(results));
 		draw_histogram(to_p_values(results));
 		draw_histogram(to_statistics(results));
-		//const auto s = compute_chi2(to_p_values(results));
-		//const auto p_value = chi2_distribution_cdf(s.chi2, s.df);
 		std::cout << "stat mean: " << st.mean << " stat var: " << st.variance << "\n";
-		// std::cout << "chi2: " << s.chi2 << " p-value: " << p_value << "\n\n";
 	}
 
-	//const auto s = kolmogorov_smirnov_test(to_p_values(results));
-	//const auto p_value = kolmogorov_smirnov_cdf(s, results.size()-1, 100);
 	const auto p_value = fishers_combined_probabilities(to_p_values(results));
-	std::cout << "p_value:" << p_value << "\n";
 	if (p_value < 0.005) {
-		return "FAIL:" + std::to_string(p_value);
+		return "FAIL:" + std::to_string(st.mean);
 	}
-	return "OK: " + std::to_string(p_value);
-	int fails = 0;
-	for (const auto& r : results) {
-		if (r.stats.p_value < 0.005) {
-			++fails;
-		}
-	}
-	return fails == 0 ? "OK" : "FAIL:" + std::to_string(fails);
+	return "OK: " + std::to_string(st.mean);
 }
 
 
@@ -129,7 +119,7 @@ public:
 		}),
 		p_table({
 			"mixer",
-			"mean-p", "chi2-p", "ks-p", "ad-p", "ww-p", "r-p", "s-p", "a-m-p"
+			"mean-p", "chi2-p", "ks-p", "ad-p", "ww-p", "r-p", "s-p", "sac", "a-m-p"
 		}) {
 	}
 
@@ -138,6 +128,7 @@ public:
 
 		const auto b = results.front();
 		//const basic_stats ww = compute_basic_stats(to_statistics(r[s_type::wald_wolfowitz]));
+		/*
 		sample_table
 			.col(r.mixer_name)
 			.col(z_score(s_type::basic_mean, r, b))
@@ -147,10 +138,10 @@ public:
 			.col(z_score(s_type::kolmogorov_smirnov, r, b)) // normal?
 			.col(z_score(s_type::anderson_darling, r, b)) // not normal
 			.col(z_score(s_type::wald_wolfowitz_runs, r, b))
-			.col(sum_abs(r[s_type::avalanche_max_bias]))
+			.col(sum_abs(r[s_type::avalanche_bic]))
 			.col(sum_abs(r[s_type::pearson_r]))
 			.col(sum_abs(r[s_type::spearman_r]))
-			.row();
+			.row();*/
 		//std::cout << sample_table.to_string() << "\n";
 
 
@@ -163,7 +154,8 @@ public:
 			.col(p_value_test(r[s_type::wald_wolfowitz_runs]))
 			.col(p_value_test(r[s_type::pearson_r]))
 			.col(p_value_test(r[s_type::spearman_r]))
-			.col(p_value_test(r[s_type::avalanche_max_bias]))
+			.col(p_value_test(r[s_type::avalanche_sac]))
+			.col(p_value_test(r[s_type::avalanche_bic]))
 			.row();
 
 		std::cout << p_table.to_string() << "\n";

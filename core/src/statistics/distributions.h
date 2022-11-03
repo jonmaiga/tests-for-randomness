@@ -38,6 +38,14 @@ inline double chi2_distribution_cdf(double chi2, double df) {
 	return 1. - gamma_regularized(.5 * df, .5 * chi2);
 }
 
+inline double binomial_coefficient(int n, int k) {
+	return 1 / ((n + 1) * std::beta(n - k + 1, k + 1));
+}
+
+inline double binomial_pdf(double n, double p, double k) {
+	return binomial_coefficient(n, k) * std::pow(p, k) * std::pow((1 - p), n - k);
+}
+
 double kolmogorov_smirnov_cdf(double D, double df, int conv);
 
 double anderson_darling_cdf(double A2, double df);

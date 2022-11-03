@@ -37,7 +37,9 @@ struct test_result {
 	}
 
 	const std::vector<result>& operator[](s_type type) const {
-		return results.find(type)->second;
+		static const std::vector<result> empty;
+		const auto it = results.find(type);
+		return it != results.end() ? it->second : empty;
 	}
 };
 
@@ -83,7 +85,8 @@ inline test_result evaluate(const std::string& mixer_name, const std::vector<tes
 	result.add(evaluate_stream(anderson_darling_test, test_factories));
 	result.add(evaluate_stream(wald_wolfowitz_test, test_factories));
 
-	result.add(evaluate_mixer(avalanche_mixer_test, test_factories));
+	result.add(evaluate_mixer(avalanche_mixer_sac_test, test_factories));
+	result.add(evaluate_mixer(avalanche_mixer_bic_test, test_factories));
 	result.add(evaluate_mixer(pearson_correlation_mixer_test, test_factories));
 	result.add(evaluate_mixer(spearman_correlation_mixer_test, test_factories));
 	return result;

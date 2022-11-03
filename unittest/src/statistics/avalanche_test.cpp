@@ -12,7 +12,7 @@ TEST(avalanche, sac_no_change) {
 	for (const auto v : bit_counts) {
 		h += mx3(v);
 	}
-	EXPECT_EQ(h, 7766637459189417547ull);
+	EXPECT_EQ(h, 6509219795431304364ull);
 }
 
 TEST(avalanche, bic_no_change) {
