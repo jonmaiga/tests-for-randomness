@@ -152,7 +152,7 @@ double kf_gammaq(double s, double z) {
 }
 
 double gamma_regularized(double s, double z) {
-	return kf_gammap(s, z);
+	return 1. - kf_gammap(s, z);
 }
 
 

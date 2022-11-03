@@ -5,26 +5,28 @@
 namespace mixer {
 
 TEST(normal_cdf, basic) {
+	// matches mma CDF[NormalDistribution[]], x]
 	EXPECT_NEAR(normal_cdf(-10), 0., 1e-4);
-	EXPECT_NEAR(normal_cdf(-1.644), 0.05, 1e-4);
+	EXPECT_NEAR(normal_cdf(-1.644), 0.0500, 1e-4);
 	EXPECT_NEAR(normal_cdf(-1), 0.1586, 1e-4);
 	EXPECT_NEAR(normal_cdf(0), .5000, 1e-4);
 	EXPECT_NEAR(normal_cdf(1), 0.8413, 1e-4);
-	EXPECT_NEAR(normal_cdf(1.644), 0.95, 1e-4);
+	EXPECT_NEAR(normal_cdf(1.644), 0.9500, 1e-4);
 	EXPECT_NEAR(normal_cdf(10), 1., 1e-4);
 }
 
-TEST(two_tailed_normal_cdf, basic) {
-	EXPECT_NEAR(two_tailed_normal_cdf(-10), 0., 1e-4);
-	EXPECT_NEAR(two_tailed_normal_cdf(-1.64485), 0.1, 1e-4);
-	EXPECT_NEAR(two_tailed_normal_cdf(-1), 0.3173, 1e-4);
-	EXPECT_NEAR(two_tailed_normal_cdf(0), 1, 1e-4);
-	EXPECT_NEAR(two_tailed_normal_cdf(1), 0.3173, 1e-4);
-	EXPECT_NEAR(two_tailed_normal_cdf(1.64485), 0.1, 1e-4);
-	EXPECT_NEAR(two_tailed_normal_cdf(10), 0., 1e-4);
+TEST(normal_two_tailed_cdf, basic) {
+	EXPECT_NEAR(normal_two_tailed_cdf(-10), 0., 1e-4);
+	EXPECT_NEAR(normal_two_tailed_cdf(-1.64485), 0.1, 1e-4);
+	EXPECT_NEAR(normal_two_tailed_cdf(-1), 0.3173, 1e-4);
+	EXPECT_NEAR(normal_two_tailed_cdf(0), 1, 1e-4);
+	EXPECT_NEAR(normal_two_tailed_cdf(1), 0.3173, 1e-4);
+	EXPECT_NEAR(normal_two_tailed_cdf(1.64485), 0.1, 1e-4);
+	EXPECT_NEAR(normal_two_tailed_cdf(10), 0., 1e-4);
 }
 
 TEST(regularized_beta, basic) {
+	// matches mma BetaRegularized[...]
 	EXPECT_NEAR(beta_regularized(1, 1, 1), 1., 1e-4);
 	EXPECT_NEAR(beta_regularized(0.01, 0.01, 0.5), .5, 1e-4);
 	EXPECT_NEAR(beta_regularized(0.01, 0.02, 0.5), .6667, 1e-4);
@@ -36,13 +38,15 @@ TEST(regularized_beta, basic) {
 }
 
 TEST(gamma_regularized, basic) {
-	EXPECT_NEAR(1.-gamma_regularized(1, 1), 0.3678, 1e-4);
-	EXPECT_NEAR(1.-gamma_regularized(4, 0.88), 0.9875, 1e-4);
-	EXPECT_NEAR(1.-gamma_regularized(40, 3.88), 1, 1e-4);
-	EXPECT_NEAR(1.-gamma_regularized(0.5, 2.111), 0.03995, 1e-4);
+	// matches mma GammaRegularized[...]
+	EXPECT_NEAR(gamma_regularized(1, 1), 0.3678, 1e-4);
+	EXPECT_NEAR(gamma_regularized(4, 0.88), 0.9875, 1e-4);
+	EXPECT_NEAR(gamma_regularized(40, 3.88), 1, 1e-4);
+	EXPECT_NEAR(gamma_regularized(0.5, 2.111), 0.03995, 1e-4);
 }
 
 TEST(binomial_pdf, basic) {
+	// matches mma PDF[BinomialDistribution[...], x]
 	EXPECT_NEAR(binomial_pdf(40, 0.5, 20), 0.1253, 1e-4);
 	EXPECT_NEAR(binomial_pdf(1, 0, 0), 1, 1e-4);
 	EXPECT_NEAR(binomial_pdf(1, 1, 0), 0, 1e-4);
@@ -50,6 +54,7 @@ TEST(binomial_pdf, basic) {
 
 
 TEST(students_t_cdf, basic) {
+	// does not match mma CDF[StudentTDistribution[...], x]
 	EXPECT_NEAR(student_t_cdf(1, 5), 0.3632, 1e-4);
 	EXPECT_NEAR(student_t_cdf(1.1, 120), 0.2735, 1e-4);
 	EXPECT_NEAR(student_t_cdf(0.615227, 4), 0.571683, 1e-4); // matches mma TTest (given t-score)
@@ -60,10 +65,12 @@ TEST(f_distribution_cdf, basic) {
 }
 
 TEST(chi2_distribution_cdf, basic) {
-	EXPECT_NEAR(chi2_distribution_cdf(0.1, 5), 1-0.0001623, 1e-4); // matches mma CDF(chi2)
-	EXPECT_NEAR(chi2_distribution_cdf(10.1, 5), 1-0.9275, 1e-4); // matches mma CDF(chi2)
-	EXPECT_NEAR(chi2_distribution_cdf(13.1, 3.3), 1-0.994, 1e-4); // matches mma CDF(chi2)
-	EXPECT_NEAR(chi2_distribution_cdf(3.71429, 4), 0.446052, 1e-4); // matches mma PearsonChiSquareTest given chi2 statistic (p=0.446052)
+	// https://en.wikipedia.org/wiki/Chi-squared_distribution#Computational_methods
+	// matches mma CDF[ChiSquareDistribution[...], x]
+	EXPECT_NEAR(chi2_distribution_cdf(0.1, 5), 0.0001623, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(10.1, 5), 0.9275, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(13.1, 3.3), 0.994, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(3.71429, 4), 0.5539, 1e-4);
 }
 
 TEST(kolmogorov_smirnov_cdf, basic) {

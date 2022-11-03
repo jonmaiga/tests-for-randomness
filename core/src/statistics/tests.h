@@ -27,7 +27,7 @@ inline double z_test(double n, double mean, double population_mean, double popul
 	}
 	const auto se = std::sqrt(population_variance / n);
 	const auto z = (mean - population_mean) / se;
-	return two_tailed_normal_cdf(z);
+	return normal_two_tailed_cdf(z);
 }
 
 inline double f_test(double a_n, double a_variance, double b_n, double b_variance) {
