@@ -27,6 +27,15 @@ double get_mean(const std::vector<T>& values) {
 	return sum / static_cast<double>(values.size());
 }
 
+template <typename T>
+double get_variance(const std::vector<T>& values, double mean) {
+	assertion(values.size() > 1, "at least two elements required to calculate variance");
+	double sum = 0;
+	for (const auto v : values) {
+		sum += (v - mean) * (v - mean);
+	}
+	return sum / static_cast<double>(values.size() - 1);
+}
 
 struct basic_stats {
 	double n{};
@@ -37,10 +46,7 @@ struct basic_stats {
 inline basic_stats compute_basic_stats(const std::vector<double>& values) {
 	basic_stats stats{static_cast<double>(values.size())};
 	stats.mean = get_mean(values);
-	for (const auto v : values) {
-		stats.variance += (v - stats.mean) * (v - stats.mean);
-	}
-	stats.variance /= stats.n;
+	stats.variance = get_variance(values, stats.mean);
 	return stats;
 }
 
@@ -50,12 +56,16 @@ inline std::vector<statistic> basic_test(uint64_t n, const stream& stream) {
 
 	// not sure what to do with variance, for large sample sizes it may be enough with z-test
 	// p-values for z_test(stats.n, stats.variance, 1./15., 1./15.) looks normally distributed
-
+	n *= 4;
 	const auto ns = get_normalized64(n, stream);
 	const auto stats = compute_basic_stats(ns);
+	//const auto var_x2 = (n - 1) * stats.variance / (1. / 12.);
+	//const auto p_value = chi2_distribution_cdf(var_x2, n - 1);
+	const auto p_value = f_test(stats.n, stats.variance, 1./12.);
+
 	return {
 		{s_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1. / 12.)},
-		{s_type::basic_variance, stats.variance}
+		{s_type::basic_variance, stats.variance, p_value}
 	};
 }
 
