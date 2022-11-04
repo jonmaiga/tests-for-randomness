@@ -51,7 +51,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 	}
 
 	const auto st = compute_basic_stats(to_statistics(results));
-	if (results.front().stats.type == s_type::chi2) {
+	if (results.front().stats.type == s_type::basic_variance) {
 		//for (auto v : to_statistics(results)) {
 		//	std::cout << v << ", ";
 		//}
@@ -64,7 +64,8 @@ inline std::string p_value_test(const std::vector<result>& results) {
 	}
 
 	const auto p_value = fishers_combined_probabilities(to_p_values(results));
-	if (p_value < 0.005) {
+	const auto a = 0.005;
+	if (p_value < a || p_value > 1. - a) {
 		return "FAIL:" + std::to_string(p_value);
 	}
 	return "OK: " + std::to_string(p_value);

@@ -53,19 +53,23 @@ inline basic_stats compute_basic_stats(const std::vector<double>& values) {
 inline std::vector<statistic> basic_test(uint64_t n, const stream& stream) {
 	// mean from uniform is approximately normal
 	// https://stats.stackexchange.com/questions/458341/what-distribution-does-the-mean-of-a-random-sample-from-a-uniform-distribution-f
-
-	// not sure what to do with variance, for large sample sizes it may be enough with z-test
-	// p-values for z_test(stats.n, stats.variance, 1./15., 1./15.) looks normally distributed
-	n *= 4;
 	const auto ns = get_normalized64(n, stream);
 	const auto stats = compute_basic_stats(ns);
-	//const auto var_x2 = (n - 1) * stats.variance / (1. / 12.);
-	//const auto p_value = chi2_distribution_cdf(var_x2, n - 1);
-	const auto p_value = f_test(stats.n, stats.variance, 1./12.);
+
+	// not sure what to do with variance, can't get p values uniformly distributed.
+	// https://www.youtube.com/watch?v=V4Rm4UQHij0 sampling dist of variance is not normal!
+	// We can't use this for variance since it's sampling is non normal!
+	// https://stats.stackexchange.com/questions/121662/why-is-the-sampling-distribution-of-variance-a-chi-squared-distribution
+	//constexpr auto pop_var = 1. / 12.;
+	//const auto var_x2 = (n - 1) * stats.variance / pop_var;
+	//const auto p_value = chi2_distribution_normal_approximation_cdf(var_x2, n - 1);
+	//const auto p_value = f_test(stats.n, stats.variance, population_variance);
+	//const auto pop_var_var = 2 * pop_var * pop_var / (n - 1);
+	//const auto p_value = z_test(stats.n, stats.variance, pop_var, pop_var_var);
 
 	return {
 		{s_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1. / 12.)},
-		{s_type::basic_variance, stats.variance, p_value}
+		{s_type::basic_variance, stats.variance}
 	};
 }
 

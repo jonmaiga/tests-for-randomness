@@ -78,5 +78,4 @@ TEST(kolmogorov_smirnov_cdf, basic) {
 	EXPECT_NEAR(kolmogorov_smirnov_cdf(0.4, 5, 1000), 0.3128, 1e-4); // boost have a theta function maybe use that (doesn't match mma right now 0.8095)
 }
 
-
 }
