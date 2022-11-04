@@ -82,13 +82,14 @@ inline std::vector<statistic> spearman_correlation_mixer_test(uint64_t n, const 
 	const auto data = create_bit_flipped_xy(n, source, mixer);
 	const auto rho = spearman_correlation(data.xs, data.ys);
 	const auto p_value = correlation_p_value(rho, data.xs.size());
-	assertion(is_valid_normal(p_value), "is");
 	return {{s_type::spearman_r, rho, p_value}};
 }
 
 inline std::vector<statistic> kendall_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	const auto data = create_bit_flipped_xy(n, source, mixer);
-	return {{s_type::kendall_tau, kendall_correlation(data.xs, data.ys)}};
+	const auto tau = kendall_correlation(data.xs, data.ys);
+	const auto p_value = correlation_p_value(tau, data.xs.size());
+	return {{s_type::kendall_tau, tau, p_value}};
 }
 
 }

@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+#include "testutil.h"
+
 namespace mixer {
 
 TEST(waldwolfowitz, empty) {
@@ -45,6 +47,13 @@ TEST(waldwolfowitz, two_runs_2) {
 	EXPECT_EQ(ww.n_plus, 6);
 	EXPECT_EQ(ww.n_minus, 5);
 	EXPECT_NEAR(wald_wolfowitz_p_value(ww), 0.004266, 1e-4);
+}
+
+TEST(waldwolfowitz, no_change) {
+	const auto r = wald_wolfowitz_test(50, test_stream());
+	EXPECT_EQ(r.size(), 1);
+	EXPECT_NEAR(r.front().value, 27, 1e-4);
+	EXPECT_NEAR(*r.front().p_value, 0.7659, 1e-4);
 }
 
 

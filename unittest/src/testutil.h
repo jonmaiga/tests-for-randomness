@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mixers.h"
+#include "streams.h"
 
 namespace mixer {
 
