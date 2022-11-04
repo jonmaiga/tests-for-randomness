@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cctype>
 #include <numeric>
 #include <vector>
 
@@ -79,6 +80,15 @@ inline xys create_bit_flipped_xy(uint64_t n, const stream& source, const mixer& 
 	return {xs, ys};
 }
 
+inline xys create_serial_xy(uint64_t n, const stream& source, const mixer& mixer) {
+	std::vector<double> xs, ys;
+	for (uint64_t i = 0; i < n; ++i) {
+		xs.push_back(normalize64(mixer(source())));
+		ys.push_back(normalize64(mixer(source())));
+	}
+	return {xs, ys};
+}
+
 inline uint64_t create_from_bit(const stream& source, int bit) {
 	uint64_t x = 0;
 	const uint64_t m = 1ull << bit;
@@ -90,5 +100,18 @@ inline uint64_t create_from_bit(const stream& source, int bit) {
 	}
 	return x;
 }
+
+inline bool contains(const std::string& str, const std::string& toFind) {
+	return str.find(toFind) != std::string::npos;
+}
+
+inline bool containsIgnoreCase(const std::string& str, const std::string& toFind) {
+	auto it = std::search(str.begin(), str.end(), toFind.begin(), toFind.end(), [](char ch1, char ch2) {
+		                      return std::tolower(ch1) == std::tolower(ch2);
+	                      }
+	);
+	return it != str.end();
+}
+
 
 }
