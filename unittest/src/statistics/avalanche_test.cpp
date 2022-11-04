@@ -3,25 +3,31 @@
 #include <gtest/gtest.h>
 
 #include "mixers.h"
+#include "testutil.h"
 
 namespace mixer {
 
+TEST(avalanche, sac_data_no_change) {
+	EXPECT_EQ(hash64(avalanche_generate_sac(10, test_stream(), mx3)), 15512756382040012752ull);
+}
+
+TEST(avalanche, bic_data_no_change) {
+	EXPECT_EQ(hash64(avalanche_generate_bic(10, test_stream(), mx3)), 13882906137123132453ull);
+}
+
 TEST(avalanche, sac_no_change) {
-	const auto bit_counts = avalanche_generate_sac(10, create_counter_stream(1), mx3);
-	uint64_t h = 0;
-	for (const auto v : bit_counts) {
-		h += mx3(v);
-	}
-	EXPECT_EQ(h, 6509219795431304364ull);
+	const auto r = avalanche_mixer_sac_test(50, test_stream(), mx3);
+	EXPECT_EQ(r.size(), 1);
+	EXPECT_NEAR(r.front().value,  22.4233, 1e-4);
+	EXPECT_NEAR(*r.front().p_value, 0.4348, 1e-4);
 }
 
 TEST(avalanche, bic_no_change) {
-	const auto bit_counts = avalanche_generate_bic(10, create_counter_stream(1), mx3);
-	uint64_t h = 0;
-	for (const auto v : bit_counts) {
-		h += mx3(v);
-	}
-	EXPECT_EQ(h, 7466099936495255145ull);
+	const auto r = avalanche_mixer_bic_test(50, test_stream(), mx3);
+	EXPECT_EQ(r.size(), 1);
+	EXPECT_NEAR(r.front().value,  3939.200, 1e-4);
+	EXPECT_NEAR(*r.front().p_value, 0.9588, 1e-4);
 }
+
 
 }

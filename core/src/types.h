@@ -37,7 +37,6 @@ using test_factory = std::function<test_config()>;
 
 enum class s_type {
 	basic_mean,
-	basic_variance,
 	chi2,
 	kolmogorov_smirnov,
 	wald_wolfowitz_runs,

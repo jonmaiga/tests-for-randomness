@@ -52,9 +52,6 @@ inline stream create_stream_from_data(const std::string& name, const std::vector
 	size_t index = 0;
 	return stream{
 		name, [index, data]() mutable -> uint64_t {
-			if (index >= data.size()) {
-				//throw std::runtime_error("No more stream data.");
-			}
 			return data[index++ % data.size()];
 		}
 	};
@@ -64,15 +61,19 @@ inline stream create_stream_from_data_by_ref(const std::string& name, const std:
 	size_t index = 0;
 	return stream{
 		name, [index, &data]() mutable -> uint64_t {
-			if (index >= data.size()) {
-				//throw std::runtime_error("No more stream data.");
-			}
 			return data[index++ % data.size()];
 		}
 	};
 }
 
 inline stream create_stream_from_mixer(const stream& source, const mixer& mixer) {
+	return {
+		mixer.name + "(" + source.name + ")",
+		[source, mixer]() { return mixer(source()); }
+	};
+}
+
+inline stream create_stream_from_mixer_by_ref(const stream& source, const mixer& mixer) {
 	return {
 		mixer.name + "(" + source.name + ")",
 		[&source, mixer]() { return mixer(source()); }

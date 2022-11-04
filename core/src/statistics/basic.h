@@ -28,25 +28,27 @@ double get_mean(const std::vector<T>& values) {
 }
 
 template <typename T>
-double get_variance(const std::vector<T>& values, double mean) {
+double get_sum_of_squares(const std::vector<T>& values, double mean) {
 	assertion(values.size() > 1, "at least two elements required to calculate variance");
 	double sum = 0;
 	for (const auto v : values) {
 		sum += (v - mean) * (v - mean);
 	}
-	return sum / static_cast<double>(values.size() - 1);
+	return sum;
 }
 
 struct basic_stats {
 	double n{};
 	double mean{};
-	double variance{};
+	double sum_of_squares{};
+	double variance() const { return sum_of_squares / n; }
+	double sample_variance() const { return sum_of_squares / (n - 1); }
 };
 
 inline basic_stats compute_basic_stats(const std::vector<double>& values) {
 	basic_stats stats{static_cast<double>(values.size())};
 	stats.mean = get_mean(values);
-	stats.variance = get_variance(values, stats.mean);
+	stats.sum_of_squares = get_sum_of_squares(values, stats.mean);
 	return stats;
 }
 
@@ -68,8 +70,7 @@ inline std::vector<statistic> basic_test(uint64_t n, const stream& stream) {
 	//const auto p_value = z_test(stats.n, stats.variance, pop_var, pop_var_var);
 
 	return {
-		{s_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1. / 12.)},
-		{s_type::basic_variance, stats.variance}
+		{s_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1. / 12.)}
 	};
 }
 

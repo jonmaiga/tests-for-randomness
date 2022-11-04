@@ -51,7 +51,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 	}
 
 	const auto st = compute_basic_stats(to_statistics(results));
-	if (results.front().stats.type == s_type::basic_variance) {
+	if (results.front().stats.type == s_type::basic_mean) {
 		//for (auto v : to_statistics(results)) {
 		//	std::cout << v << ", ";
 		//}
@@ -60,7 +60,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		const auto st = compute_basic_stats(to_statistics(results));
 		draw_histogram(to_p_values(results));
 		draw_histogram(to_statistics(results));
-		std::cout << "stat mean: " << st.mean << " stat var: " << st.variance << "\n";
+		std::cout << "stat mean: " << st.mean << " stat var: " << st.variance() << "\n";
 	}
 
 	const auto p_value = fishers_combined_probabilities(to_p_values(results));
@@ -75,19 +75,19 @@ inline std::string p_value_test(const std::vector<result>& results) {
 inline double z_score(s_type type, const test_result& results, const test_result& baseline) {
 	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
 	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
-	return z_test(r.n, r.mean, b.mean, b.variance);
+	return z_test(r.n, r.mean, b.mean, b.variance());
 }
 
 inline double t_score(s_type type, const test_result& results, const test_result& baseline) {
 	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
 	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
-	return t_test(r.n, r.mean, r.variance, b.mean, b.variance);
+	return t_test(r.n, r.mean, r.variance(), b.mean, b.variance());
 }
 
 inline double f_score(s_type type, const test_result& results, const test_result& baseline) {
 	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
 	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
-	return f_test(r.n, r.variance, b.n, b.variance);
+	return f_test(r.n, r.variance(), b.n, b.variance());
 }
 
 
@@ -112,25 +112,17 @@ class result_analyzer {
 
 public:
 	result_analyzer() :
-		sample_table({
-			"mixer",
-			"mean-z", "variance-z",
-			"chi2-tfz", "ks-z", "ad-z", "ww-z",
-			"max_bias", "pearson", "spearman"
-		}),
 		p_table({
 			"mixer",
-			"mean", "variance", "chi2", "ks", "ad", "ww", "pearson", "spearman", "sac", "bic"
+			"mean", "chi2", "ks", "ad", "ww", "pearson", "spearman", "sac", "bic"
 		}) {
 	}
 
 	void add(const test_result& r) {
 		results.push_back(r);
-
 		p_table
 			.col(r.mixer_name)
 			.col(p_value_test(r[s_type::basic_mean]))
-			.col(p_value_test(r[s_type::basic_variance]))
 			.col(p_value_test(r[s_type::chi2]))
 			.col(p_value_test(r[s_type::kolmogorov_smirnov]))
 			.col(p_value_test(r[s_type::anderson_darling]))
@@ -142,17 +134,9 @@ public:
 			.row();
 
 		std::cout << p_table.to_string() << "\n";
-
-		//draw_histogram(r[s_type::kolmogorov_smirnov]);
-		// Table full({"mixer", "stream", "ks"});
-		// for (const auto& result : r.ks) {
-		// 	full.col(result.mixer_name).col(result.stream_name).col(result.stats.d_max).row();
-		// }
-		// std::cout << full.to_string() << "\n";
 	}
 
 private:
-	table sample_table;
 	table p_table;
 	std::vector<test_result> results;
 };
