@@ -37,8 +37,13 @@ public:
 		return app(oss.str());
 	}
 
-	table& app(bool b) {
+	table& app_bool(bool b) {
 		return app(b ? "true" : "false");
+	}
+
+	table& col(const std::string& text) {
+		app(text);
+		return col();
 	}
 
 	table& col(int i) {
@@ -56,13 +61,8 @@ public:
 		return col();
 	}
 
-	table& col(bool b) {
-		app(b);
-		return col();
-	}
-
-	table& col(const std::string& text) {
-		app(text);
+	table& col_bool(bool b) {
+		app_bool(b);
 		return col();
 	}
 

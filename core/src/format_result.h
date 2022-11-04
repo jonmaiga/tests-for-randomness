@@ -123,16 +123,18 @@ public:
 		std::cout << p_table.to_string() << "\n";
 	}
 
-	void summarize(const tags& mixer_tags, const tags& stream_tags) const {
+	std::vector<result> query(const tags& mixer_tags, const tags& stream_tags) const {
 		auto results = find_by_mixer_name(_flatten(), mixer_tags);
 		results = find_by_stream_name(results, stream_tags);
-
 		std::sort(results.begin(), results.end(), [](const result& a, const result& b) {
 			return a.stats.p_value < b.stats.p_value;
 		});
+		return results;
+	}
 
+	void list_results(const tags& mixer_tags, const tags& stream_tags) const {
 		table t({"mixer", "stream", "statistic", "value", "p_value"});
-		for (const auto& r : results) {
+		for (const auto& r : query(mixer_tags, stream_tags)) {
 			if (r.stats.p_value > 0.05 && r.stats.p_value < 0.95) continue;
 			t.col(r.mixer_name).
 			  col(r.stream_name).
@@ -144,7 +146,76 @@ public:
 		std::cout << t.to_string() << "\n";
 	}
 
+	void summarize_fails(const tags& stream_tags) const {
+		tags mixer_tags;
+		for (const auto& tr : test_results) {
+			mixer_tags.push_back(tr.mixer_name);
+		}
+		summarize_fails(mixer_tags, stream_tags);
+	}
+
+	void summarize_fails(const tags& mixer_tags, const tags& stream_tags) const {
+		// todo: clean this up
+		std::vector<fail_summary> summaries;
+		if (stream_tags.empty()) {
+			for (const auto& mixer_tag : mixer_tags) {
+				if (const auto s = get_fail_summary({mixer_tag}, {})) {
+					summaries.push_back(*s);
+				}
+			}
+		}
+		else if (mixer_tags.empty()) {
+			for (const auto& stream_tag : stream_tags) {
+				if (const auto s = get_fail_summary({}, {stream_tag})) {
+					summaries.push_back(*s);
+				}
+			}
+		}
+		else {
+			for (const auto& mixer_tag : mixer_tags) {
+				for (const auto& stream_tag : stream_tags) {
+					if (const auto s = get_fail_summary({mixer_tag}, {stream_tag})) {
+						summaries.push_back(*s);
+					}
+				}
+			}
+		}
+		std::sort(summaries.begin(), summaries.end(), [](const fail_summary& a, const fail_summary& b) {
+			return a.percent() < b.percent();
+		});
+
+		table t({"mixer", "stream", "total", "# fails", "% fails"});
+		for (const auto& s : summaries) {
+			t.col(s.mixer_tag).col(s.stream_tag).col(s.total).col(s.fails).col(s.percent()).row();
+		}
+		std::cout << t.to_string() << "\n";
+	}
+
+
 private:
+	struct fail_summary {
+		std::string mixer_tag;
+		std::string stream_tag;
+		double fails{};
+		double total{};
+		double percent() const { return fails / total; }
+	};
+
+	std::optional<fail_summary> get_fail_summary(const tags& mixer_tags, const tags& stream_tags) const {
+		const auto& r = query(mixer_tags, stream_tags);
+		if (r.empty()) return {};
+		double fails = 0;
+		for (const auto pv : to_p_values(r)) {
+			if (pv < 0.005 || pv > 1 - 0.005) {
+				fails += 1;
+			}
+		}
+		const auto mixer_tag = mixer_tags.empty() ? "*" : join(mixer_tags, ",");
+		const auto stream_tag = stream_tags.empty() ? "*" : join(stream_tags, ",");
+		return fail_summary{mixer_tag, stream_tag, fails, static_cast<double>(r.size())};
+	}
+
+
 	std::vector<result> _flatten() const {
 		std::vector<result> rs;
 		for (const auto& ts : test_results) {

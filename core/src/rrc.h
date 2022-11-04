@@ -34,23 +34,12 @@ inline uint64_t permute(uint64_t c, int rot, rrc_type type) {
 	return 0;
 }
 
-inline rrc_type next_rrc(rrc_type type) {
-	switch (type) {
-	case rrc_type::identity: return rrc_type::reverse;
-	case rrc_type::reverse: return rrc_type::complement;
-	case rrc_type::complement: return rrc_type::reverse_complement;
-	case rrc_type::reverse_complement: return rrc_type::identity;
-	}
-	assertion(false, "unknown type");
-	return rrc_type::identity;
-}
-
 inline std::string to_string(rrc_type type) {
 	switch (type) {
 	case rrc_type::identity: return "identity";
 	case rrc_type::reverse: return "reverse";
 	case rrc_type::complement: return "complement";
-	case rrc_type::reverse_complement: return "reverse_complement";
+	case rrc_type::reverse_complement: return "reverse_co";
 	}
 	assertion(false, "unknown type");
 	return "unknown";

@@ -35,12 +35,12 @@ inline void run_tests() {
 	const auto trng2 = create_mixer_from_stream("trng2", trng_stream);
 
 	const test_method test = test_rrc;
-	constexpr auto n = 300;
+	constexpr auto n = 1000;
 
 	std::cout << "n=" << n << "\n";
 	result_analyzer analyzer;
 	analyzer.add(test(trng1, n));
-	analyzer.add(test(trng2, n));
+	//analyzer.add(test(trng2, n));
 	analyzer.add(test(mx3, n));
 	analyzer.add(test(nasam, n));
 
@@ -53,6 +53,24 @@ inline void run_tests() {
 	analyzer.add(test(xmx, n));
 	analyzer.add(test(xxh3, n));
 	analyzer.add(test(fast_hash, n));
+
+	analyzer.summarize_fails({}, {
+		                         "trng",
+		                         "counter-1",
+		                         "graycode-",
+		                         // "graycode-4",
+		                         // "graycode-8",
+		                         "bit-",
+		                         // "reverse-",
+		                         // "identity-",
+		                         // "complement-",
+		                         // "reverse_co-"
+	                         });
+
+	analyzer.summarize_fails({});
+
+
+	std::cout << "done.";
 }
 
 }

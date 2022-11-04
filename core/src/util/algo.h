@@ -113,5 +113,14 @@ inline bool containsIgnoreCase(const std::string& str, const std::string& toFind
 	return it != str.end();
 }
 
+inline std::string join(const std::vector<std::string>& strs, const std::string& delimiter) {
+	std::string r;
+	for (const auto& s : strs) {
+		if (s.empty()) continue;
+		if (!r.empty()) r += delimiter;
+		r += s;
+	}
+	return r;
+}
 
 }
