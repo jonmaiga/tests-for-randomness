@@ -29,9 +29,7 @@ struct test_result {
 	void add(const std::vector<result>& rs) {
 		for (const auto& r : rs) {
 			assertion(is_valid(r.stats.value), "a statistic is not valid");
-			if (const auto p = r.stats.p_value) {
-				assertion(is_valid_normal(*p), "a p-value is not valid or normal");
-			}
+			assertion(is_valid_normal(r.stats.p_value), "a p-value is not valid or normal");
 			results[r.stats.type].push_back(r);
 		}
 	}

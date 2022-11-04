@@ -20,9 +20,7 @@ inline std::vector<double> to_p_values(const std::vector<result>& results) {
 	std::vector<double> statistics;
 	statistics.reserve(results.size());
 	for (const auto& r : results) {
-		if (auto p_value = r.stats.p_value) {
-			statistics.push_back(*p_value);
-		}
+		statistics.push_back(r.stats.p_value);
 	}
 	return statistics;
 }
@@ -50,7 +48,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		return "N/A";
 	}
 
-	if (results.front().stats.type == s_type::avalanche_sac) {
+	if (results.front().stats.type == s_type::sac) {
 		const auto st = basic_stats(to_statistics(results));
 		draw_histogram(to_p_values(results));
 		draw_histogram(to_statistics(results));
@@ -118,8 +116,8 @@ public:
 			.col(p_value_test(r[s_type::wald_wolfowitz_runs]))
 			.col(p_value_test(r[s_type::pearson_r]))
 			.col(p_value_test(r[s_type::spearman_r]))
-			.col(p_value_test(r[s_type::avalanche_sac]))
-			.col(p_value_test(r[s_type::avalanche_bic]))
+			.col(p_value_test(r[s_type::sac]))
+			.col(p_value_test(r[s_type::bic]))
 			.row();
 
 		std::cout << p_table.to_string() << "\n";
@@ -128,26 +126,21 @@ public:
 	void summarize(const tags& mixer_tags, const tags& stream_tags) const {
 		auto results = find_by_mixer_name(_flatten(), mixer_tags);
 		results = find_by_stream_name(results, stream_tags);
+
 		std::sort(results.begin(), results.end(), [](const result& a, const result& b) {
-			if (a.stats.p_value && b.stats.p_value) {
-				return *a.stats.p_value < *b.stats.p_value;
-			}
-			return a.stats.value < b.stats.value;
+			return a.stats.p_value < b.stats.p_value;
 		});
-		table t({"mixer", "stream", "stat", "p_value"});
+
+		table t({"mixer", "stream", "statistic", "value", "p_value"});
 		for (const auto& r : results) {
+			if (r.stats.p_value > 0.05 && r.stats.p_value < 0.95) continue;
 			t.col(r.mixer_name).
 			  col(r.stream_name).
-			  col(r.stats.value);
-			if (const auto pv = r.stats.p_value) {
-				t.col(*pv);
-			}
-			else {
-				t.col(std::string("NA"));
-			}
-			t.row();
+			  col(get_meta(r.stats.type).name).
+			  col(r.stats.value).
+			  col(r.stats.p_value).
+			  row();
 		}
-
 		std::cout << t.to_string() << "\n";
 	}
 

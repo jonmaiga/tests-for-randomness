@@ -3,6 +3,8 @@
 #include <functional>
 #include <optional>
 
+#include "util/assertion.h"
+
 namespace mixer {
 
 struct stream {
@@ -43,17 +45,37 @@ enum class s_type {
 	anderson_darling,
 
 	// mixer
-	avalanche_sac,
-	avalanche_bic,
+	sac,
+	bic,
 	pearson_r,
 	spearman_r,
 	kendall_tau,
+
+	size
+};
+
+struct statistic_meta {
+	s_type type;
+	std::string name;
+};
+
+const std::vector<statistic_meta> all_metas = {
+	{s_type::basic_mean, "mean"},
+	{s_type::chi2, "chi2"},
+	{s_type::kolmogorov_smirnov, "kolmogorov-smirnov"},
+	{s_type::wald_wolfowitz_runs, "wald-wolfowitz runs"},
+	{s_type::anderson_darling, "anderson_darling"},
+	{s_type::sac, "sac"},
+	{s_type::bic, "bic"},
+	{s_type::pearson_r, "pearson r"},
+	{s_type::spearman_r, "spearman rho"},
+	{s_type::kendall_tau, "kendall tau"}
 };
 
 struct statistic {
 	s_type type;
 	double value{};
-	std::optional<double> p_value;
+	double p_value{};
 };
 
 struct result {
@@ -61,6 +83,16 @@ struct result {
 	std::string mixer_name;
 	statistic stats;
 };
+
+inline statistic_meta get_meta(s_type type) {
+	for (const auto& meta : all_metas) {
+		if (meta.type == type) {
+			return meta;
+		}
+	}
+	assertion(false, "could not find meta");
+	return {};
+}
 
 
 }

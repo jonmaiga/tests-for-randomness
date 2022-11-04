@@ -19,14 +19,14 @@ TEST(avalanche, sac_no_change) {
 	const auto r = avalanche_mixer_sac_test(50, test_stream(), mx3);
 	EXPECT_EQ(r.size(), 1);
 	EXPECT_NEAR(r.front().value,  22.4233, 1e-4);
-	EXPECT_NEAR(*r.front().p_value, 0.4348, 1e-4);
+	EXPECT_NEAR(r.front().p_value, 0.4348, 1e-4);
 }
 
 TEST(avalanche, bic_no_change) {
 	const auto r = avalanche_mixer_bic_test(50, test_stream(), mx3);
 	EXPECT_EQ(r.size(), 1);
 	EXPECT_NEAR(r.front().value,  3939.200, 1e-4);
-	EXPECT_NEAR(*r.front().p_value, 0.9588, 1e-4);
+	EXPECT_NEAR(r.front().p_value, 0.9588, 1e-4);
 }
 
 
