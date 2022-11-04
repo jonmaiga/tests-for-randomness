@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include "util/table.h"
-#include "statistics/tests.h"
 #include "statistics/fishersmethod.h"
 
 namespace mixer {
@@ -70,43 +69,6 @@ inline std::string p_value_test(const std::vector<result>& results) {
 	}
 	return "OK: " + std::to_string(p_value);
 }
-
-
-inline double z_score(s_type type, const test_result& results, const test_result& baseline) {
-	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
-	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
-	return z_test(r.n, r.mean, b.mean, b.variance());
-}
-
-inline double t_score(s_type type, const test_result& results, const test_result& baseline) {
-	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
-	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
-	return t_test(r.n, r.mean, r.variance(), b.mean, b.variance());
-}
-
-inline double f_score(s_type type, const test_result& results, const test_result& baseline) {
-	const basic_stats b = compute_basic_stats(to_statistics(baseline[type]));
-	const basic_stats r = compute_basic_stats(to_statistics(results[type]));
-	return f_test(r.n, r.variance(), b.n, b.variance());
-}
-
-
-inline double sum_abs(const std::vector<result>& rs) {
-	double sum = 0;
-	for (const auto& r : rs) {
-		sum += std::abs(r.stats.value);
-	}
-	return sum;
-}
-
-inline double greatest_abs(const std::vector<result>& rs) {
-	double max = -100000;
-	for (const auto& r : rs) {
-		max = std::max(std::abs(r.stats.value), max);
-	}
-	return max;
-}
-
 
 class result_analyzer {
 
