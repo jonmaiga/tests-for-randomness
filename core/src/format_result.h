@@ -49,14 +49,14 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		return "N/A";
 	}
 
-	const auto st = compute_basic_stats(to_statistics(results));
+	const auto st = basic_stats(to_statistics(results));
 	if (results.front().stats.type == s_type::basic_mean) {
 		//for (auto v : to_statistics(results)) {
 		//	std::cout << v << ", ";
 		//}
 		//std::cout << "\n\n";
 
-		const auto st = compute_basic_stats(to_statistics(results));
+		const auto st = basic_stats(to_statistics(results));
 		draw_histogram(to_p_values(results));
 		draw_histogram(to_statistics(results));
 		std::cout << "stat mean: " << st.mean << " stat var: " << st.variance() << "\n";

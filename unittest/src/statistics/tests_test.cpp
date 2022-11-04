@@ -37,8 +37,8 @@ TEST(f_test, basic) {
 TEST(ztf_test, from_data) {
 	const auto data1 = {.61, .43, .51, .49, .49};
 	const auto data2 = {.41, .55, .54, .45, .49};
-	const auto s1 = compute_basic_stats(data1);
-	const auto s2 = compute_basic_stats(data2);
+	const auto s1 = basic_stats(data1);
+	const auto s2 = basic_stats(data2);
 
 	EXPECT_NEAR(z_test(s1.n, s1.mean, s2.mean, s2.variance()), 0.4481, 1e-4); // same as mma with population params
 	EXPECT_NEAR(f_test(s1.n, s1.variance(), s2.n, s2.variance()), 0.8543, 1e-4);

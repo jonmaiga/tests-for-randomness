@@ -12,7 +12,7 @@ struct correlation_stats {
 	double kendall_t = 0;
 };
 
-inline double pearson_correlation(const std::vector<double>& xs, const std::vector<double>& ys) {
+inline double pearson_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
 	const auto n = xs.size();
 	double x_mean = 0, y_mean = 0;
 	for (uint64_t i = 0; i < n; ++i) {
@@ -35,15 +35,15 @@ inline double pearson_correlation(const std::vector<double>& xs, const std::vect
 	return sum_xy / (std::sqrt(sum_xs) * std::sqrt(sum_ys));
 }
 
-inline double spearman_correlation(const std::vector<double>& xs, const std::vector<double>& ys) {
+inline double spearman_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
 	// @attn get_ranks does not handle non-unique data
 	const auto cmp = [](double a, double b) { return a < b; };
-	return pearson_correlation(
+	return pearson_correlation_stats(
 		normalize_to_uniform(get_ranks(xs, cmp)),
 		normalize_to_uniform(get_ranks(ys, cmp)));
 }
 
-inline double kendall_correlation(const std::vector<double>& xs, const std::vector<double>& ys) {
+inline double kendall_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
 	const size_t n = xs.size();
 	uint64_t n1 = 0, n2 = 0;
 	int64_t is = 0;
@@ -73,21 +73,21 @@ inline double correlation_p_value(double r, double n) {
 
 inline std::vector<statistic> pearson_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	const auto data = create_bit_flipped_xy(n, source, mixer);
-	const auto correlation = pearson_correlation(data.xs, data.ys);
+	const auto correlation = pearson_correlation_stats(data.xs, data.ys);
 	const auto p_value = correlation_p_value(correlation, data.xs.size());
 	return {{s_type::pearson_r, correlation, p_value}};
 }
 
 inline std::vector<statistic> spearman_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	const auto data = create_bit_flipped_xy(n, source, mixer);
-	const auto rho = spearman_correlation(data.xs, data.ys);
+	const auto rho = spearman_correlation_stats(data.xs, data.ys);
 	const auto p_value = correlation_p_value(rho, data.xs.size());
 	return {{s_type::spearman_r, rho, p_value}};
 }
 
 inline std::vector<statistic> kendall_correlation_mixer_test(uint64_t n, const stream& source, const mixer& mixer) {
 	const auto data = create_bit_flipped_xy(n, source, mixer);
-	const auto tau = kendall_correlation(data.xs, data.ys);
+	const auto tau = kendall_correlation_stats(data.xs, data.ys);
 	const auto p_value = correlation_p_value(tau, data.xs.size());
 	return {{s_type::kendall_tau, tau, p_value}};
 }

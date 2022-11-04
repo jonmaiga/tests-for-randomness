@@ -37,7 +37,7 @@ double get_sum_of_squares(const std::vector<T>& values, double mean) {
 	return sum;
 }
 
-struct basic_stats {
+struct basic_statistics {
 	double n{};
 	double mean{};
 	double sum_of_squares{};
@@ -45,8 +45,8 @@ struct basic_stats {
 	double sample_variance() const { return sum_of_squares / (n - 1); }
 };
 
-inline basic_stats compute_basic_stats(const std::vector<double>& values) {
-	basic_stats stats{static_cast<double>(values.size())};
+inline basic_statistics basic_stats(const std::vector<double>& values) {
+	basic_statistics stats{static_cast<double>(values.size())};
 	stats.mean = get_mean(values);
 	stats.sum_of_squares = get_sum_of_squares(values, stats.mean);
 	return stats;
@@ -56,7 +56,7 @@ inline std::vector<statistic> basic_test(uint64_t n, const stream& stream) {
 	// mean from uniform is approximately normal
 	// https://stats.stackexchange.com/questions/458341/what-distribution-does-the-mean-of-a-random-sample-from-a-uniform-distribution-f
 	const auto ns = get_normalized64(n, stream);
-	const auto stats = compute_basic_stats(ns);
+	const auto stats = basic_stats(ns);
 
 	// not sure what to do with variance, can't get p values uniformly distributed.
 	// https://www.youtube.com/watch?v=V4Rm4UQHij0 sampling dist of variance is not normal!
