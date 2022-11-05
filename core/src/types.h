@@ -2,6 +2,8 @@
 
 #include <functional>
 #include <optional>
+#include <string>
+#include <vector>
 
 #include "util/assertion.h"
 
@@ -59,7 +61,7 @@ struct statistic_meta {
 	std::string name;
 };
 
-const std::vector<statistic_meta> all_metas = {
+const auto all_metas = std::vector<statistic_meta>{
 	{s_type::basic_mean, "mean"},
 	{s_type::chi2, "chi2"},
 	{s_type::kolmogorov_smirnov, "kolmogorov-smirnov"},

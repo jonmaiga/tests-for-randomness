@@ -37,8 +37,16 @@ inline double chi2_distribution_cdf(double chi2, double df) {
 	return gamma_regularized(.5 * df, .5 * chi2);
 }
 
+inline double beta(double a, double b) {
+#ifdef __STDCPP_MATH_SPEC_FUNCS__
+	return std::beta(a, b);
+#else
+	return std::tgamma(a) * std::tgamma(b) / std::tgamma(a + b);
+#endif
+}
+
 inline double binomial_coefficient(int n, int k) {
-	return 1 / ((n + 1) * std::beta(n - k + 1, k + 1));
+	return 1 / ((n + 1) * beta(n - k + 1, k + 1));
 }
 
 inline double binomial_pdf(double n, double p, double k) {

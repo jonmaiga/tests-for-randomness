@@ -76,7 +76,9 @@ double kf_lgamma(double z) {
 	return log(x) - 5.58106146679532777 - z + (z - 0.5) * log(z + 6.5);
 }
 
+#ifndef M_SQRT2
 constexpr double M_SQRT2 = 1.4142135623730950488016887242096980785696718753769480731766797379;
+#endif
 
 double kf_erfc(double x) {
 	const double p0 = 220.2068679123761;

@@ -37,14 +37,12 @@ TEST(spearman_correlation, p_value) {
 	EXPECT_NEAR(correlation_p_value(0.5952, 6), 0.2126, 1e-4); // 0.1195 not agreeing with mma rank test
 }
 
-
 TEST(pearson_correlation, no_change) {
 	const auto r = pearson_correlation_mixer_test(50, test_stream(), mx3);
 	EXPECT_EQ(r.size(), 1);
 	EXPECT_NEAR(r.front().value,  0.01087, 1e-4);
 	EXPECT_NEAR(r.front().p_value, 0.5384, 1e-4);
 }
-
 
 TEST(spearman_correlation, no_change) {
 	const auto r = spearman_correlation_mixer_test(50, test_stream(), mx3);

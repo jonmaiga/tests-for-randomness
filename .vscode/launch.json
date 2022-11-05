@@ -8,8 +8,15 @@
             "name": "(lldb) evaluate",
             "type": "lldb",
             "request": "launch",
-            "program": "${workspaceFolder}/cmake/core/mixer_eval-core",
-            "cwd": "${workspaceFolder}/cmake/core/",
+            "program": "${workspaceFolder}/cmake/test/mixer-test",
+            "cwd": "${workspaceFolder}/cmake/test/",
+          },
+          {
+            "name": "(lldb) unittest",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake/unittest/mixer-unittest",
+            "cwd": "${workspaceFolder}/cmake/unittest/",
           },
     ]
 }
