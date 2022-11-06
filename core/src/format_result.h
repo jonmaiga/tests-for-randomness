@@ -57,7 +57,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 	const auto p_value = fishers_combined_probabilities(to_p_values(results));
 	constexpr auto a = 0.005;
 	if (p_value < a || p_value > 1. - a) {
-		return "!!:" + std::to_string(p_value);
+		return "!!: " + std::to_string(p_value);
 	}
 	return "OK: " + std::to_string(p_value);
 }
@@ -206,7 +206,8 @@ private:
 		if (r.empty()) return {};
 		double fails = 0;
 		for (const auto pv : to_p_values(r)) {
-			if (pv < 0.005 || pv > 1 - 0.005) {
+			constexpr auto a = 0.005;
+			if (pv < a || pv > 1. - a) {
 				fails += 1;
 			}
 		}
