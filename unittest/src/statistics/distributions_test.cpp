@@ -45,6 +45,16 @@ TEST(gamma_regularized, basic) {
 	EXPECT_NEAR(gamma_regularized(0.5, 2.111), 0.03995, 1e-4);
 }
 
+TEST(beta, basic) {
+	// matches mma Beta[...] (wolframalpha)
+	EXPECT_NEAR(beta(1, 1), 1, 1e-4);
+	EXPECT_NEAR(beta(0.5, 1), 2, 1e-4);
+	EXPECT_NEAR(beta(0.25, 0.25), 7.4163, 1e-4);
+	EXPECT_NEAR(beta(50.25, .25), 1.3643, 1e-4);
+	EXPECT_NEAR(beta(64, .5), 0.2219, 1e-4);
+	EXPECT_NEAR(beta(6400, .5), 0.02215, 1e-4);
+}
+
 TEST(binomial_pdf, basic) {
 	// matches mma PDF[BinomialDistribution[...], x]
 	EXPECT_NEAR(binomial_pdf(40, 0.5, 20), 0.1253, 1e-4);

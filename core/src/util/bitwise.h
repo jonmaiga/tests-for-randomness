@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bit>
 
 namespace mixer {
 
