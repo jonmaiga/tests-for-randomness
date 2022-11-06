@@ -38,11 +38,8 @@ inline double chi2_distribution_cdf(double chi2, double df) {
 }
 
 inline double beta(double a, double b) {
-#ifdef __STDCPP_MATH_SPEC_FUNCS__
 	return std::beta(a, b);
-#else
-	return std::tgamma(a) * std::tgamma(b) / std::tgamma(a + b);
-#endif
+	// return exp((std::lgamma(a) + std::lgamma(b)) - std::lgamma(a + b));
 }
 
 inline double binomial_coefficient(int n, int k) {
