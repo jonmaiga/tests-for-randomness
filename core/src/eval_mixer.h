@@ -87,6 +87,7 @@ inline test_result evaluate(const std::string& mixer_name, const std::vector<tes
 	result.add(evaluate_mixer(avalanche_mixer_bic_test, test_factories));
 	result.add(evaluate_mixer(pearson_correlation_mixer_test, test_factories));
 	result.add(evaluate_mixer(spearman_correlation_mixer_test, test_factories));
+	//result.add(evaluate_mixer(kendall_correlation_mixer_test, test_factories));
 	return result;
 }
 
