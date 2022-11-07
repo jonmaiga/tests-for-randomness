@@ -4,14 +4,14 @@
 
 #include "format_result.h"
 #include "util/random.h"
-#include "util/sffs.h"
+#include "util/sffsutils.h"
 
 namespace mixer {
 
 static thread_local random rnd;
 
 inline double sffs_fitness_test(const mixer& mixer) {
-	const auto r = test_rrc(mixer, 100);
+	const auto r = test_rrc(mixer, 5);
 	auto pvs = to_p_values(r[s_type::sac]);
 	append(pvs, to_p_values(r[s_type::chi2]));
 	const auto pv = fishers_combined_probabilities(pvs);
@@ -86,8 +86,8 @@ inline config get_mx3_config() {
 	seed.set(29, 12, 6);
 	seed.set(33, 18, 6);
 	seed.set(0xbea225f9eb34556d, 24, 64);
-	seed.set(0xe9846af9b1a615dull, 98, 64);
-	seed.set(0x9E6C63D0676A9A99ull, 98 + 64, 64);
+	seed.set(0xe9846af9b1a615dull, 24 + 64, 64);
+	seed.set(0x9E6C63D0676A9A99ull, 24 + 64 + 64, 64);
 	return {bits, seed, fitness, to_str, to_arr_str};
 }
 
@@ -96,11 +96,11 @@ inline void start_tune(const std::string& name, const config& config) {
 	std::cout << name << " " << config.bits << " bits\n";
 	std::cout << "===========================\n";
 	std::cout << "Baseline fitness: " << sffs_fitness_test(mx3) << "\n";
-	const auto result = run_sffs(config, true);
-	std::stringstream trial_out;
-	trial_out << to_string(result, config.to_arr_str) << "\n";
-	trial_out << config.to_string(result.data);
-	std::cout << trial_out.str();
+	const auto result = run_sffs(config, create_sffs_printer(config.to_arr_str));
+	std::stringstream ss;
+	ss << to_string(result, config.to_arr_str) << "\n";
+	ss << config.to_string(result.data);
+	std::cout << ss.str();
 }
 
 inline void run_search() {

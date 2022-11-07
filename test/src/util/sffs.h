@@ -1,8 +1,6 @@
 #pragma once
 
-#include <iostream>
 #include <map>
-#include <sstream>
 
 #include "bit_vector.h"
 #include "sffs_types.h"
@@ -14,15 +12,7 @@ struct sffs_state {
 	double score = 100000000;
 };
 
-inline std::string to_string(const sffs_state& s, const bit_vector_to_string& to_arr_str) {
-	std::stringstream ss;
-	ss << "(" << s.data.count() << "): " << to_string(s.data);
-	if (to_arr_str) {
-		ss << " [  " << to_arr_str(s.data) << " ]";
-	}
-	ss << " : " << s.score;
-	return ss.str();
-}
+using sffs_callback = std::function<void(int k, const sffs_state& new_state, const sffs_state& old_state)>;
 
 inline sffs_state get_state(const config& config, const sffs_state& current_state, bool is_forward) {
 	sffs_state best;
@@ -39,7 +29,6 @@ inline sffs_state get_state(const config& config, const sffs_state& current_stat
 	return best;
 }
 
-
 inline sffs_state get_forward_state(const config& config, const sffs_state& current_state) {
 	return get_state(config, current_state, true);
 }
@@ -48,20 +37,16 @@ inline sffs_state get_backward_state(const config& config, const sffs_state& cur
 	return get_state(config, current_state, false);
 }
 
-inline sffs_state run_sffs(const config& config, bool verbose) {
+inline sffs_state run_sffs(const config& config, const sffs_callback& callback) {
 	std::map<int, sffs_state> ks;
 	const bit_vector init_bits(config.bits);
-	//ks[0] = state{init_bits, config.f(init_bits)};
-	double best_score = std::numeric_limits<double>::max();
-	int min = 0;
-	int max = config.bits;
+	const int min = 0;
+	const int max = config.bits;
 	int k = 0;
 	if (config.seed.size() != 0) {
 		const double seed_score = config.fitness(config.seed);
-		best_score = seed_score;
 		ks[config.seed.count()] = {config.seed, seed_score};
 		k = config.seed.count();
-		std::cout << "seed@" << k << "        " << to_string(config.seed) << " (" << seed_score << ")\n";
 	}
 
 	while (k < max) {
@@ -72,16 +57,8 @@ inline sffs_state run_sffs(const config& config, bool verbose) {
 				ks[k + 1] = new_fwd_state;
 			}
 			++k;
-			if (verbose) {
-				std::cout << "fwd: " << k << ": " << to_string(new_fwd_state, config.to_arr_str) << " vs " << old_fwd_state.score;
-				if (new_fwd_state.score < best_score) {
-					std::cout << "*";
-					best_score = new_fwd_state.score;
-				}
-				std::cout << "\n";
-			}
-			else if (old_fwd_state.data.size() == 0) {
-				std::cout << "." << std::flush;
+			if (callback) {
+				callback(k, new_fwd_state, old_fwd_state);
 			}
 		}
 
@@ -91,21 +68,12 @@ inline sffs_state run_sffs(const config& config, bool verbose) {
 			if (old_bwd_state.data.size() == 0 || new_bwd_state.score < old_bwd_state.score) {
 				ks[k - 1] = new_bwd_state;
 				--k;
-				if (verbose) {
-					std::cout << "bwd: " << k << ": " << to_string(new_bwd_state, config.to_arr_str) << " < " << old_bwd_state.score;
-					if (new_bwd_state.score < best_score) {
-						std::cout << "*";
-						best_score = new_bwd_state.score;
-					}
-					std::cout << "\n";
+				if (callback) {
+					callback(k, new_bwd_state, old_bwd_state);
 				}
 			}
 			else break;
 		}
-	}
-
-	if (!verbose) {
-		std::cout << "\n";
 	}
 
 	sffs_state best;
