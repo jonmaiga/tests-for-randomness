@@ -25,6 +25,16 @@ inline std::vector<double> to_p_values(const std::vector<result>& results) {
 	return statistics;
 }
 
+inline uint64_t count_fails(const std::vector<double>& p_values, double alpha) {
+	uint64_t fails = 0;
+	for (const auto pv : p_values) {
+		if (pv < alpha || pv > 1. - alpha) {
+			fails += 1;
+		}
+	}
+	return fails;
+}
+
 inline void draw_histogram(const std::vector<double>& data) {
 	std::vector<uint64_t> bins(30);
 	uint64_t max_count = 0;
@@ -56,10 +66,11 @@ inline std::string p_value_test(const std::vector<result>& results) {
 	}
 	const auto p_value = fishers_combined_probabilities(to_p_values(results));
 	constexpr auto a = 0.005;
+	const auto fails = " (" + std::to_string(count_fails(to_p_values(results), a)) + ")";
 	if (p_value < a || p_value > 1. - a) {
-		return "!!: " + std::to_string(p_value);
+		return "!!: " + std::to_string(p_value) + fails;
 	}
-	return "OK: " + std::to_string(p_value);
+	return "OK: " + std::to_string(p_value) + fails;
 }
 
 using tags = std::vector<std::string>;
