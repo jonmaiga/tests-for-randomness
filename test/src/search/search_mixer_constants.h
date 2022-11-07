@@ -11,10 +11,12 @@ namespace mixer {
 static thread_local random rnd;
 
 inline double sffs_fitness_test(const mixer& mixer) {
-	const auto r = test_rrc(mixer, 5);
-	auto pvs = to_p_values(r[s_type::sac]);
-	append(pvs, to_p_values(r[s_type::chi2]));
-	const auto pv = fishers_combined_probabilities(pvs);
+	const auto r = test_rrc(mixer, 200);
+	std::vector<double> all;
+	for (const auto tr : r.results) {
+		all.push_back(fishers_combined_probabilities(to_p_values(tr.second)));
+	}
+	const double pv = fishers_combined_probabilities(all);
 	return 2 * std::abs(pv - 0.5);
 }
 
@@ -41,41 +43,41 @@ inline config get_mx3_config() {
 
 	auto factory = [](const bit_vector& bits) {
 		return [c=constants(bits)](uint64_t x) {
-			constexpr uint64_t C = 0xbea225f9eb34556d;
+			const uint64_t C = c.m1; //0xbea225f9eb34556d;
 			x ^= (x >> c.C1);
-			x *= c.m1;
+			x *= C;
 			x ^= (x >> c.C2);
-			x *= c.m2;
+			x *= C;
 			x ^= (x >> c.C3);
-			x *= c.m3;
+			x *= C;
 			x ^= (x >> c.C4);
 			return x;
 		};
 	};
 
-	auto to_str = [factory](const bit_vector& bits) {
-		constexpr uint64_t C = 0xbea225f9eb34556d;
+	auto to_str = [](const bit_vector& bits) {
+		
 		const constants c(bits);
+		const uint64_t C = c.m1; //0xbea225f9eb34556d;
 		std::stringstream ss;
 		ss << "    x ^= x >> " << c.C1 << ";\n";
-		ss << "    x *= " << c.m1 << "ull;\n";
+		ss << "    x *= " << C << "ull;\n";
 		ss << "    x ^= x >> " << c.C2 << ";\n";
-		ss << "    x *= " << c.m2 << "ull;\n";
+		ss << "    x *= " << C << "ull;\n";
 		ss << "    x ^= x >> " << c.C3 << ";\n";
-		ss << "    x *= " << c.m3 << "ull;\n";
+		ss << "    x *= " << C << "ull;\n";
 		ss << "    x ^= x >> " << c.C4 << ";\n";
-		ss << "tune\n"; // << evaluate_1d(rnd, factory(bits), 10000000) << "\n";
 		return ss.str();
 	};
 
 	auto to_arr_str = [](const bit_vector& bits) {
-		constants c(bits);
+		const constants c(bits);
 		std::stringstream ss;
 		ss << c.C1 << ", " << c.C2 << ", " << c.C3 << ", " << c.C4;
 		return ss.str();
 	};
 
-	constexpr int bits = 24 + 64 + 64 + 64;
+	constexpr int bits = 24 + 64; // + 64 + 64 + 64;
 	const auto fitness = [factory](const bit_vector& bits) {
 		const auto m = mixer{"mx3", factory(bits)};
 		return sffs_fitness_test(m);
@@ -86,8 +88,8 @@ inline config get_mx3_config() {
 	seed.set(29, 12, 6);
 	seed.set(33, 18, 6);
 	seed.set(0xbea225f9eb34556d, 24, 64);
-	seed.set(0xe9846af9b1a615dull, 24 + 64, 64);
-	seed.set(0x9E6C63D0676A9A99ull, 24 + 64 + 64, 64);
+	//seed.set(0xe9846af9b1a615dull, 24 + 64, 64);
+	//seed.set(0x9E6C63D0676A9A99ull, 24 + 64 + 64, 64);
 	return {bits, seed, fitness, to_str, to_arr_str};
 }
 
