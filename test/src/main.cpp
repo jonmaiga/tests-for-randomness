@@ -3,6 +3,9 @@
 #include "format_result.h"
 #include "mixers.h"
 
+#include "search/search_mixer_constants.h"
+#include "util/sffs.h"
+
 namespace mixer {
 
 void build_trng() {
@@ -35,7 +38,7 @@ inline void run_tests() {
 	const auto trng2 = create_mixer_from_stream("trng2", trng_stream);
 
 	const test_method test = test_rrc;
-	constexpr auto n = 1000;
+	constexpr auto n = 100;
 
 	std::cout << "n=" << n << "\n";
 	result_analyzer analyzer;
@@ -66,10 +69,7 @@ inline void run_tests() {
 		                         // "complement-",
 		                         // "reverse_co-"
 	                         });
-
 	analyzer.summarize_fails({});
-
-
 	std::cout << "done.";
 }
 
@@ -77,9 +77,10 @@ inline void run_tests() {
 
 int main(int argc, char** args) {
 	try {
-		//write_stream(mixer::mx3, 100000000ull);
 		std::cout.precision(3);
+
 		mixer::run_tests();
+		//mixer::run_search();
 	}
 	catch (std::runtime_error& e) {
 		std::cout << "ERROR: " << e.what() << "\n";

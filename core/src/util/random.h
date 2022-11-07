@@ -1,8 +1,8 @@
 #pragma once
+
 #include <random>
 
-
-namespace hash {
+namespace mixer {
 
 class random {
 public:
@@ -19,6 +19,5 @@ private:
 	uint64_t _counter;
 	std::random_device rd;
 };
-
 
 }
