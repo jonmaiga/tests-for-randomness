@@ -54,8 +54,8 @@ TEST(spearman_correlation, no_change) {
 TEST(kendall_correlation, no_change) {
 	const auto r = kendall_correlation_mixer_test(50, test_stream(), mx3);
 	EXPECT_EQ(r.size(), 1);
-	EXPECT_NEAR(r.front().value,  0.008103, 1e-4);
-	EXPECT_NEAR(r.front().p_value, 0.64677, 1e-4);
+	EXPECT_NEAR(r.front().value,  0.07265, 1e-4);
+	EXPECT_NEAR(r.front().p_value, 0.4565, 1e-4);
 }
 
 }
