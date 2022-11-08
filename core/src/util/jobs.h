@@ -28,6 +28,7 @@ void run_jobs(jobs<T> jobs,
 		return j;
 	};
 
+	num_threads = std::min(num_threads, static_cast<unsigned int>(jobs.size()));
 	std::vector<std::thread> threads;
 	for (unsigned int i = 0; i < num_threads; ++i) {
 		threads.emplace_back([&job_queue, &result_collector]() {
