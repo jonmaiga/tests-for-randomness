@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <cmath>
 
 #include "chi2.h"
@@ -19,7 +18,7 @@ inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream& st
 	for (uint64_t i = 0; i < n; ++i) {
 		const auto x = stream();
 		const uint64_t h0 = mixer(x);
-		for (std::size_t j = 0; j < 64; j++) {
+		for (int j = 0; j < 64; j++) {
 			const auto change = h0 ^ mixer(flip_bit(x, j));
 			sac[bit_count(change)] ++;
 		}
@@ -55,7 +54,7 @@ inline avalanche_stats compute_avalanche_sac_stats(const double n, const std::ve
 		chi2 += diff * diff / expected_count;
 		df++;
 	}
-	return {chi2, df-1};
+	return {chi2, df - 1};
 }
 
 inline avalanche_stats compute_avalanche_bic_stats(const double n, const std::vector<uint64_t>& bit_counts) {
