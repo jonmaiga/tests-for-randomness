@@ -15,7 +15,7 @@ struct avalanche_stats {
 };
 
 inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream& stream, const mixer& mixer) {
-	std::vector<uint64_t> sac(64);
+	std::vector<uint64_t> sac(65);
 	for (uint64_t i = 0; i < n; ++i) {
 		const auto x = stream();
 		const uint64_t h0 = mixer(x);
@@ -47,7 +47,7 @@ inline avalanche_stats compute_avalanche_sac_stats(const double n, const std::ve
 	const double total_count = n * 64;
 	double chi2 = 0;
 	double df = 0;
-	for (std::size_t i = 0; i < 64; ++i) {
+	for (std::size_t i = 0; i < 65; ++i) {
 		const double p = binomial_pdf(64, .5, i);
 		const double expected_count = total_count * p;
 		if (expected_count < 5) continue;
