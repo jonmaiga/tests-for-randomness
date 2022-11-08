@@ -12,6 +12,14 @@ struct correlation_stats {
 	double kendall_t = 0;
 };
 
+inline double adjust_correlation(double d) {
+	if (d >= -1 && d <= 1) return d;
+	if (is_near(d, -1)) return -1;
+	if (is_near(d, 1)) return 1;
+	assertion_2(false, "correlation is not within expected range:", std::to_string(d).c_str());
+	return d;
+}
+
 inline double pearson_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
 	const auto n = xs.size();
 	double x_mean = 0, y_mean = 0;
@@ -32,7 +40,10 @@ inline double pearson_correlation_stats(const std::vector<double>& xs, const std
 		sum_ys += y_dev * y_dev;
 		sum_xy += x_dev * y_dev;
 	}
-	return sum_xy / (std::sqrt(sum_xs) * std::sqrt(sum_ys));
+	if (is_near(sum_xs, 0) || is_near(sum_ys, 0)) {
+		return sum_xy < 0 ? -1 : 1;
+	}
+	return adjust_correlation(sum_xy / (std::sqrt(sum_xs) * std::sqrt(sum_ys)));
 }
 
 inline double spearman_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
@@ -63,7 +74,10 @@ inline double kendall_correlation_stats(const std::vector<double>& xs, const std
 			}
 		}
 	}
-	return static_cast<double>(is) / (std::sqrt(n1) * std::sqrt(n2));
+	if (n1 == 0 || n2 == 0) {
+		return is < 0 ? -1 : 1;
+	}
+	return adjust_correlation(static_cast<double>(is) / (std::sqrt(n1) * std::sqrt(n2)));
 }
 
 inline double correlation_p_value(double r, double n) {
