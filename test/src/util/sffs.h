@@ -15,17 +15,27 @@ struct sffs_state {
 using sffs_callback = std::function<void(int k, const sffs_state& new_state, const sffs_state& old_state)>;
 
 inline sffs_state get_state(const config& config, const sffs_state& current_state, bool is_forward) {
-	sffs_state best;
+	jobs<sffs_state> sffs_jobs;
 	for (int i = 0; i < config.bits; ++i) {
 		if (current_state.data.get_bit(i) == is_forward) continue;
 		auto test = current_state.data;
 		test.set_bit(i, is_forward);
-
-		const double score = config.fitness(test);
-		if (score < best.score) {
-			best = {test, score};
-		}
+		sffs_jobs.emplace_back([test, &config]() {
+				const double score = config.fitness(test);
+				return sffs_state{test, score};
+			}
+		);
 	}
+
+	sffs_state best;
+	const auto collector = [&best](const sffs_state& result) {
+		static std::mutex m;
+		std::lock_guard lg(m);
+		if (result.score < best.score) {
+			best = result;
+		}
+	};
+	run_jobs<sffs_state>(sffs_jobs, collector, std::thread::hardware_concurrency()-2);
 	return best;
 }
 
