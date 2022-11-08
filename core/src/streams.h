@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <mutex>
+
 #include "types.h"
 #include "util/fileutil.h"
 
@@ -48,19 +50,12 @@ inline const std::vector<uint64_t>& get_trng_data() {
 	return trng_data;
 }
 
-inline stream create_stream_from_data(const std::string& name, const std::vector<uint64_t>& data) {
-	size_t index = 0;
+inline stream create_stream_from_data_by_ref_thread_safe(const std::string& name, const std::vector<uint64_t>& data) {
+	std::size_t index = 0;
 	return stream{
-		name, [index, data]() mutable -> uint64_t {
-			return data[index++ % data.size()];
-		}
-	};
-}
-
-inline stream create_stream_from_data_by_ref(const std::string& name, const std::vector<uint64_t>& data) {
-	size_t index = 0;
-	return stream{
-		name, [index, &data]() mutable -> uint64_t {
+		name, [&data, index]() mutable -> uint64_t {
+			static std::mutex m;
+			std::lock_guard lg(m);
 			return data[index++ % data.size()];
 		}
 	};
@@ -72,13 +67,5 @@ inline stream create_stream_from_mixer(const stream& source, const mixer& mixer)
 		[source, mixer]() { return mixer(source()); }
 	};
 }
-
-inline stream create_stream_from_mixer_by_ref(const stream& source, const mixer& mixer) {
-	return {
-		mixer.name + "(" + source.name + ")",
-		[&source, mixer]() { return mixer(source()); }
-	};
-}
-
 
 }

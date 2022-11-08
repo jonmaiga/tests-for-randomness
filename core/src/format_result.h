@@ -58,7 +58,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		return "N/A";
 	}
 
-	if (results.front().stats.type == s_type::sac) {
+	if (results.front().stats.type == s_type::basic_mean) {
 		const auto st = basic_stats(to_statistics(results));
 		draw_histogram(to_p_values(results));
 		draw_histogram(to_statistics(results));
@@ -66,7 +66,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 	}
 	const auto p_value = fishers_combined_probabilities(to_p_values(results));
 	constexpr auto a = 0.005;
-	const auto fails = " (" + std::to_string(count_fails(to_p_values(results), a)) + ")";
+	const auto fails = ""; //" (" + std::to_string(count_fails(to_p_values(results), a)) + ")";
 	if (p_value < a || p_value > 1. - a) {
 		return "!!: " + std::to_string(p_value) + fails;
 	}
