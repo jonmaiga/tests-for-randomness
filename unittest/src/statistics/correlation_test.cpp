@@ -40,15 +40,15 @@ TEST(spearman_correlation, p_value) {
 TEST(pearson_correlation, no_change) {
 	const auto r = pearson_correlation_mixer_test(50, test_stream(), mx3);
 	EXPECT_EQ(r.size(), 1);
-	EXPECT_NEAR(r.front().value,  0.01087, 1e-4);
-	EXPECT_NEAR(r.front().p_value, 0.5384, 1e-4);
+	EXPECT_NEAR(r.front().value,  0.09843, 1e-4);
+	EXPECT_NEAR(r.front().p_value, 0.4964, 1e-4);
 }
 
 TEST(spearman_correlation, no_change) {
 	const auto r = spearman_correlation_mixer_test(50, test_stream(), mx3);
 	EXPECT_EQ(r.size(), 1);
-	EXPECT_NEAR(r.front().value,  -0.001934, 1e-4);
-	EXPECT_NEAR(r.front().p_value, 0.9128, 1e-4);
+	EXPECT_NEAR(r.front().value,  0.03923, 1e-4);
+	EXPECT_NEAR(r.front().p_value, 0.7867, 1e-4);
 }
 
 TEST(kendall_correlation, no_change) {
