@@ -44,7 +44,7 @@ struct test_result {
 namespace internal {
 
 inline stream create_stream(const test_config& cfg) {
-	auto s = create_stream_from_mixer_by_ref(cfg.source, cfg.mixer);
+	auto s = create_stream_from_mixer(cfg.source, cfg.mixer);
 	if (cfg.append_stream_factory) {
 		return cfg.append_stream_factory(s);
 	}

@@ -1,7 +1,7 @@
 #pragma once
 
+#include <atomic>
 #include <iostream>
-#include <mutex>
 
 #include "types.h"
 #include "util/fileutil.h"
@@ -51,11 +51,9 @@ inline const std::vector<uint64_t>& get_trng_data() {
 }
 
 inline stream create_stream_from_data_by_ref_thread_safe(const std::string& name, const std::vector<uint64_t>& data) {
-	std::size_t index = 0;
+	static std::atomic_size_t index = 0;
 	return stream{
-		name, [&data, index]() mutable -> uint64_t {
-			static std::mutex m;
-			std::lock_guard lg(m);
+		name, [&data]() -> uint64_t {
 			return data[index++ % data.size()];
 		}
 	};
