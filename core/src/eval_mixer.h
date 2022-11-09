@@ -82,12 +82,12 @@ inline test_result evaluate(const std::string& mixer_name, const std::vector<tes
 	result.add(evaluate_stream(kolmogorov_test, test_factories));
 	result.add(evaluate_stream(anderson_darling_test, test_factories));
 	result.add(evaluate_stream(wald_wolfowitz_test, test_factories));
+	result.add(evaluate_stream(pearson_correlation_test, test_factories));
+	result.add(evaluate_stream(spearman_correlation_test, test_factories));
+	result.add(evaluate_stream(kendall_correlation_test, test_factories));
 
 	result.add(evaluate_mixer(avalanche_mixer_sac_test, test_factories));
 	result.add(evaluate_mixer(avalanche_mixer_bic_test, test_factories));
-	result.add(evaluate_mixer(pearson_correlation_mixer_test, test_factories));
-	result.add(evaluate_mixer(spearman_correlation_mixer_test, test_factories));
-	//result.add(evaluate_mixer(kendall_correlation_mixer_test, test_factories));
 	return result;
 }
 

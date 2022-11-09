@@ -49,12 +49,12 @@ inline test_jobs create_test_jobs(const std::vector<test_factory>& test_factorie
 	append(jobs, create_stream_jobs(kolmogorov_test, test_factories));
 	append(jobs, create_stream_jobs(anderson_darling_test, test_factories));
 	append(jobs, create_stream_jobs(wald_wolfowitz_test, test_factories));
+	append(jobs, create_stream_jobs(pearson_correlation_test, test_factories));
+	append(jobs, create_stream_jobs(spearman_correlation_test, test_factories));
+	append(jobs, create_stream_jobs(kendall_correlation_test, test_factories));
 
 	append(jobs, create_mixer_jobs(avalanche_mixer_sac_test, test_factories));
 	append(jobs, create_mixer_jobs(avalanche_mixer_bic_test, test_factories));
-	append(jobs, create_mixer_jobs(pearson_correlation_mixer_test, test_factories));
-	append(jobs, create_mixer_jobs(spearman_correlation_mixer_test, test_factories));
-	//append(jobs, create_mixer_jobs(kendall_correlation_mixer_test, test_factories));
 	return jobs;
 }
 

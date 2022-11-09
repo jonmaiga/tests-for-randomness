@@ -80,11 +80,11 @@ inline xys create_bit_flipped_xy(uint64_t n, const stream& source, const mixer& 
 	return {xs, ys};
 }
 
-inline xys create_serial_xy(uint64_t n, const stream& source, const mixer& mixer) {
+inline xys create_serial_xy(uint64_t n, const stream& source) {
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
-		xs.push_back(normalize64(mixer(source())));
-		ys.push_back(normalize64(mixer(source())));
+		xs.push_back(normalize64(source()));
+		ys.push_back(normalize64(source()));
 	}
 	return {xs, ys};
 }
