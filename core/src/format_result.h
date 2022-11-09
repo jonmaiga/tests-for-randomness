@@ -66,11 +66,10 @@ inline std::string p_value_test(const std::vector<result>& results) {
 	}
 	const auto p_value = fishers_combined_probabilities(to_p_values(results));
 	constexpr auto a = 0.005;
-	const auto fails = ""; //" (" + std::to_string(count_fails(to_p_values(results), a)) + ")";
 	if (p_value < a || p_value > 1. - a) {
-		return "!!: " + std::to_string(p_value) + fails;
+		return "FAIL*";
 	}
-	return "OK: " + std::to_string(p_value) + fails;
+	return "PASS";
 }
 
 using tags = std::vector<std::string>;
@@ -112,7 +111,7 @@ public:
 	result_analyzer() :
 		p_table({
 			"mixer",
-			"mean", "chi2", "ks", "ad", "ww", "pearson", "spearman", "sac", "bic"
+			"mean", "chi2", "ks", "ad", "ww", "pearson", "spearman", "kendall", "sac", "bic"
 		}) {
 	}
 
@@ -127,6 +126,7 @@ public:
 			.col(p_value_test(r[s_type::wald_wolfowitz_runs]))
 			.col(p_value_test(r[s_type::pearson_r]))
 			.col(p_value_test(r[s_type::spearman_r]))
+			.col(p_value_test(r[s_type::kendall_tau]))
 			.col(p_value_test(r[s_type::sac]))
 			.col(p_value_test(r[s_type::bic]))
 			.row();

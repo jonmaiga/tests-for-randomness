@@ -85,7 +85,7 @@ inline test_result test_rrc_parallel(const mixer& mixer, uint64_t n, unsigned in
 		test_result.add(results);
 	};
 
-	const auto jobs = internal::create_test_jobs(create_rrc_test_factories(mixer, n));
+	const auto jobs = create_test_jobs(create_rrc_test_factories(mixer, n));
 	run_jobs<test_job_return>(jobs, collect_job_results, num_threads);
 	return test_result;
 }
