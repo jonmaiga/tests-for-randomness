@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <map>
 #include <optional>
 #include <string>
 #include <vector>
@@ -96,5 +97,29 @@ inline statistic_meta get_meta(s_type type) {
 	return {};
 }
 
+using mixer_test = const std::function<std::vector<statistic>(uint64_t n, const stream&, const mixer&)>;
+using stream_test = const std::function<std::vector<statistic>(uint64_t n, const stream&)>;
+
+struct test_result {
+	using result_map = std::map<s_type, std::vector<result>>;
+
+	std::string name;
+	std::string mixer_name;
+	result_map results;
+
+	void add(const std::vector<result>& rs) {
+		for (const auto& r : rs) {
+			assertion(is_valid(r.stats.value), "a statistic is not valid");
+			assertion(is_valid_normal(r.stats.p_value), "a p-value is not valid or normal");
+			results[r.stats.type].push_back(r);
+		}
+	}
+
+	const std::vector<result>& operator[](s_type type) const {
+		static const std::vector<result> empty;
+		const auto it = results.find(type);
+		return it != results.end() ? it->second : empty;
+	}
+};
 
 }

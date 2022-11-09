@@ -1,10 +1,9 @@
 #include <iostream>
-#include "eval_mixer.h"
+#include "eval_parallel.h"
 #include "format_result.h"
 #include "mixers.h"
 
 #include "search/search_mixer_constants.h"
-#include "util/sffs.h"
 
 namespace mixer {
 
@@ -33,17 +32,33 @@ void write_stream(const mixer& m, uint64_t n) {
 inline void run_tests() {
 	using test_method = std::function<test_result(const mixer&, uint64_t)>;
 
-	const auto trng_stream = create_stream_from_data_by_ref("trng", get_trng_data());
+	const auto trng_stream = create_stream_from_data_by_ref_thread_safe("trng", get_trng_data());
 	const auto trng1 = create_mixer_from_stream("trng1", trng_stream);
 	const auto trng2 = create_mixer_from_stream("trng2", trng_stream);
 
-	const test_method test = test_rrc;
-	constexpr auto n = 100;
+	const test_method test = test_rrc_parallel;
+	constexpr auto n = 500;
+
+	const mixer test_mixer = {
+		"test", [](uint64_t x) {
+			constexpr uint64_t C = 0xbea225f9eb34556d;
+			x ^= x >> 37;
+			x *= 16139256160673849215ull;
+			x ^= x >> 59;
+			x *= 18373938741426217439ull;
+			x ^= x >> 33;
+			x *= 16125138431304736415ull;
+			x ^= x >> 31;
+			return x;
+		}
+	};
 
 	std::cout << "n=" << n << "\n";
+
 	result_analyzer analyzer;
 	analyzer.add(test(trng1, n));
-	//analyzer.add(test(trng2, n));
+	analyzer.add(test(trng2, n));
+	analyzer.add(test(test_mixer, n));
 	analyzer.add(test(mx3, n));
 	analyzer.add(test(nasam, n));
 
@@ -56,10 +71,10 @@ inline void run_tests() {
 	analyzer.add(test(xmx, n));
 	analyzer.add(test(xxh3, n));
 	analyzer.add(test(fast_hash, n));
-
 	analyzer.summarize_fails({}, {
 		                         "trng",
 		                         "counter-1",
+								"counter-23",
 		                         "graycode-",
 		                         // "graycode-4",
 		                         // "graycode-8",
@@ -77,8 +92,6 @@ inline void run_tests() {
 
 int main(int argc, char** args) {
 	try {
-		std::cout.precision(3);
-
 		mixer::run_tests();
 		//mixer::run_search();
 	}
