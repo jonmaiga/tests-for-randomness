@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "util/assertion.h"
+#include "util/math.h"
 
 namespace mixer {
 
