@@ -20,13 +20,10 @@ inline bool is_valid_between_01(double d) {
 	return is_valid(d) && d >= 0 && d <= 1;
 }
 
-inline double rescale_to_01(double x, double x_min, double x_max, double epsilon = 1e-6) {
+inline double rescale_to_01(double x, double x_min, double x_max) {
 	assertion(x_min <= x_max, "min greater than max");
 	if (is_near(x_min, x_max)) return .5;
-	double s = (x - x_min) / (x_max - x_min);
-	s *= (1 - 2 * epsilon);
-	s += epsilon;
-	return s;
+	return (x - x_min) / (x_max - x_min);
 }
 
 inline double rescale64_to_01(uint64_t x) {

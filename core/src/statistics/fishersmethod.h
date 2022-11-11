@@ -9,9 +9,9 @@ namespace mixer {
 
 inline double fishers_combined_probabilities(const std::vector<double>& p_values) {
 	double sum = 0;
-	for (auto p : p_values) {
-		p = rescale_to_01(p, 0, 1);
-		sum += std::log(p);
+	for (const auto p : p_values) {
+		constexpr double min_p = 1e-16;
+		sum += std::log(std::max(min_p, p));
 	}
 	assertion(is_valid(sum), "fisher sum is not valid");
 	return chi2_distribution_cdf(-2. * sum, 2. * p_values.size());
