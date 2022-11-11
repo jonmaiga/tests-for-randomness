@@ -39,7 +39,7 @@ inline std::vector<statistic> chi2_test(const uint64_t n, const stream& stream) 
 	std::vector<double> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
-		data.push_back(normalize64(stream()));
+		data.push_back(rescale64_to_01(stream()));
 	}
 	const auto stat = chi2_stats(data);
 	return {{s_type::chi2, stat.chi2, chi2_distribution_cdf(stat.chi2, stat.df)}};

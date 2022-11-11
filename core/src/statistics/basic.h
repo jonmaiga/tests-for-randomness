@@ -55,7 +55,7 @@ inline basic_statistics basic_stats(const std::vector<double>& values) {
 inline std::vector<statistic> basic_test(uint64_t n, const stream& stream) {
 	// mean from uniform is approximately normal
 	// https://stats.stackexchange.com/questions/458341/what-distribution-does-the-mean-of-a-random-sample-from-a-uniform-distribution-f
-	const auto ns = get_normalized64(n, stream);
+	const auto ns = rescale64_to_01(n, stream);
 	const auto stats = basic_stats(ns);
 
 	// not sure what to do with variance, can't get p values uniformly distributed.

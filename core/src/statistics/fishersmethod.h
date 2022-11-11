@@ -10,7 +10,7 @@ namespace mixer {
 inline double fishers_combined_probabilities(const std::vector<double>& p_values) {
 	double sum = 0;
 	for (auto p : p_values) {
-		p = normalize(p, 0, 1);
+		p = rescale_to_01(p, 0, 1);
 		sum += std::log(p);
 	}
 	assertion(is_valid(sum), "fisher sum is not valid");

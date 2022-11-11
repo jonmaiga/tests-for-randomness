@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "distributions.h"
-#include "streams.h"
 #include "types.h"
 #include "util/algo.h"
 
@@ -24,7 +23,7 @@ inline double anderson_darling_stats(std::vector<double> normalized_data) {
 }
 
 inline std::vector<statistic> anderson_darling_test(const uint64_t n, const stream& stream) {
-	const auto A2 = anderson_darling_stats(get_normalized64(n, stream));
+	const auto A2 = anderson_darling_stats(rescale64_to_01(n, stream));
 	return {{s_type::anderson_darling, A2, anderson_darling_cdf(A2, n - 1)}};
 }
 

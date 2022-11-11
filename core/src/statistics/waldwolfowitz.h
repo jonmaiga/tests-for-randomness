@@ -48,7 +48,7 @@ inline double wald_wolfowitz_p_value(wald_wolfowitz_statistics s) {
 }
 
 inline std::vector<statistic> wald_wolfowitz_test(const uint64_t n, const stream& stream) {
-	const auto ww = wald_wolfowitz_stats(get_normalized64(n, stream));
+	const auto ww = wald_wolfowitz_stats(rescale64_to_01(n, stream));
 	return {
 		{s_type::wald_wolfowitz_runs, ww.runs, wald_wolfowitz_p_value(ww)}
 	};

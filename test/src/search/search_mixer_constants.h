@@ -11,7 +11,7 @@ namespace mixer {
 static thread_local random rnd;
 
 inline double sffs_fitness_test(const mixer& mixer) {
-	const auto r = test_rrc(mixer, 550);
+	const auto r = test_rrc(mixer, 500);
 	//  std::vector<double> pvs;
 	//  for (const auto& tr : r.results) {
 	//  	append(pvs, to_p_values(tr.second));
@@ -21,7 +21,7 @@ inline double sffs_fitness_test(const mixer& mixer) {
 
 	std::vector<double> all;
 	for (const auto& tr : r.results) {
-		all.push_back(fishers_combined_probabilities(normalize_to_uniform(to_p_values(tr.second))));
+		all.push_back(fishers_combined_probabilities(rescale_to_01(to_p_values(tr.second))));
 	}
 	const double pv = fishers_combined_probabilities(all);
 	return 2 * std::abs(pv - 0.5);
@@ -91,13 +91,13 @@ inline config get_mx3_config() {
 		return sffs_fitness_test(m);
 	};
 	auto seed = bit_vector(bits);
-	seed.set(37, 0, 6);
-	seed.set(59, 6, 6);
-	seed.set(33, 12, 6);
-	seed.set(31, 18, 6);
-	seed.set(16139256160673849215ull, 24, 64);
-	seed.set(18373938741426217439ull, 24 + 64, 64);
-	seed.set(16125138431304736415ull, 24 + 64 + 64, 64);
+	seed.set(32, 0, 6);
+	seed.set(29, 6, 6);
+	seed.set(32, 12, 6);
+	seed.set(29, 18, 6);
+	seed.set(0xbea225f9eb34556d, 24, 64);
+	seed.set(0xbea225f9eb34556d, 24 + 64, 64);
+	seed.set(0xbea225f9eb34556d, 24 + 64 + 64, 64);
 	return {bits, seed, fitness, to_str, to_arr_str};
 }
 

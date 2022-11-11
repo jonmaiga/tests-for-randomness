@@ -35,30 +35,30 @@ inline std::vector<uint64_t> get_raw(uint64_t n, const stream& stream) {
 	return data;
 }
 
-inline std::vector<double> get_normalized64(uint64_t n, const stream& stream) {
+inline std::vector<double> rescale64_to_01(uint64_t n, const stream& stream) {
 	std::vector<double> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
-		data.push_back(normalize64(stream()));
+		data.push_back(rescale64_to_01(stream()));
 	}
 	return data;
 }
 
 template <typename T>
-std::vector<double> normalize_to_uniform(const std::vector<T>& data, T min_value, T max_value) {
+std::vector<double> rescale_to_01(const std::vector<T>& data, T min_value, T max_value) {
 	std::vector<double> ns;
 	ns.reserve(data.size());
 	for (const auto v : data) {
-		ns.push_back(normalize(v, min_value, max_value));
+		ns.push_back(rescale_to_01(v, min_value, max_value));
 	}
 	return ns;
 }
 
 template <typename T>
-std::vector<double> normalize_to_uniform(const std::vector<T>& data) {
-	return normalize_to_uniform(data,
-	                            *std::min_element(data.begin(), data.end()),
-	                            *std::max_element(data.begin(), data.end()));
+std::vector<double> rescale_to_01(const std::vector<T>& data) {
+	return rescale_to_01(data,
+	                     *std::min_element(data.begin(), data.end()),
+	                     *std::max_element(data.begin(), data.end()));
 }
 
 struct xys {
@@ -71,10 +71,10 @@ inline xys create_bit_flipped_xy(uint64_t n, const stream& source, const mixer& 
 	for (uint64_t i = 0; i < n; ++i) {
 		const uint64_t v = source();
 		const uint64_t m = mixer(v);
-		const double x = normalize64(m);
+		const double x = rescale64_to_01(m);
 		for (int bit = 0; bit < 64; ++bit) {
 			xs.push_back(x);
-			ys.push_back(normalize64(mixer(flip_bit(m, bit))));
+			ys.push_back(rescale64_to_01(mixer(flip_bit(m, bit))));
 		}
 	}
 	return {xs, ys};
@@ -83,8 +83,8 @@ inline xys create_bit_flipped_xy(uint64_t n, const stream& source, const mixer& 
 inline xys create_serial_xy(uint64_t n, const stream& source) {
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
-		xs.push_back(normalize64(source()));
-		ys.push_back(normalize64(source()));
+		xs.push_back(rescale64_to_01(source()));
+		ys.push_back(rescale64_to_01(source()));
 	}
 	return {xs, ys};
 }

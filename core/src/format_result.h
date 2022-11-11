@@ -38,7 +38,7 @@ inline uint64_t count_fails(const std::vector<double>& p_values, double alpha) {
 inline void draw_histogram(const std::vector<double>& data) {
 	std::vector<uint64_t> bins(30);
 	uint64_t max_count = 0;
-	for (const auto r : normalize_to_uniform(data)) {
+	for (const auto r : rescale_to_01(data)) {
 		const size_t index = std::min(static_cast<size_t>(r * bins.size()), bins.size() - 1);
 		bins[index] ++;
 		max_count = std::max(bins[index], max_count);

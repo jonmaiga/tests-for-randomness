@@ -50,8 +50,8 @@ inline double spearman_correlation_stats(const std::vector<double>& xs, const st
 	// @attn get_ranks does not handle non-unique data
 	const auto cmp = [](double a, double b) { return a < b; };
 	return pearson_correlation_stats(
-		normalize_to_uniform(get_ranks(xs, cmp)),
-		normalize_to_uniform(get_ranks(ys, cmp)));
+		rescale_to_01(get_ranks(xs, cmp)),
+		rescale_to_01(get_ranks(ys, cmp)));
 }
 
 inline double kendall_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
