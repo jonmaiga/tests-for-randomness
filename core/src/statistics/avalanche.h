@@ -14,9 +14,13 @@ struct avalanche_stats {
 };
 
 inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream& stream, const mixer& mixer) {
+	// @attn, using x = stream() directly will make all mixers fail for all counter streams with increments
+	// of a power of 2, 1,2,4... I believe this is an error in the test rather than the mixers,
+	// maybe the bit flip causes too many duplicates and it becomes biased.
+	// This happens for +10 rounds of AES and Sha256 as well...
 	std::vector<uint64_t> sac(65);
 	for (uint64_t i = 0; i < n; ++i) {
-		const auto x = stream();
+		const auto x = mixer(stream());
 		const uint64_t h0 = mixer(x);
 		for (int j = 0; j < 64; j++) {
 			const auto change = h0 ^ mixer(flip_bit(x, j));
@@ -29,7 +33,7 @@ inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream& st
 inline std::vector<uint64_t> avalanche_generate_bic(uint64_t n, const stream& stream, const mixer& mixer) {
 	std::vector<uint64_t> bic(4096);
 	for (uint64_t i = 0; i < n; ++i) {
-		const auto x = stream();
+		const auto x = mixer(stream());
 		const uint64_t h0 = mixer(x);
 		for (std::size_t j = 0; j < 64; j++) {
 			const auto change = h0 ^ mixer(flip_bit(x, j));
