@@ -25,7 +25,7 @@ struct chi2_statistics {
 	double df{};
 };
 
-inline chi2_statistics chi2_from_bins(const std::vector<uint64_t>& bins, double expected_count) {
+inline chi2_statistics chi2_uniform_stats(const std::vector<uint64_t>& bins, double expected_count) {
 	double chi2 = 0;
 	for (const auto count : bins) {
 		const double diff = static_cast<double>(count) - expected_count;
@@ -37,7 +37,7 @@ inline chi2_statistics chi2_from_bins(const std::vector<uint64_t>& bins, double 
 inline chi2_statistics chi2_uniform_stats(const std::vector<double>& data01) {
 	const auto& bins = bin_data_for_chi2(data01);
 	const double expected_count = static_cast<double>(data01.size()) / static_cast<double>(bins.size());
-	return chi2_from_bins(bins, expected_count);
+	return chi2_uniform_stats(bins, expected_count);
 }
 
 inline std::vector<statistic> chi2_test(const uint64_t n, const stream& stream) {
