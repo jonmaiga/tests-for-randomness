@@ -13,8 +13,7 @@ struct chi2_statistics {
 	double df{};
 };
 
-template <typename T>
-chi2_statistics compute_chi2_from_bins(const std::vector<T>& bins, double expected_count) {
+inline chi2_statistics compute_chi2_from_bins(const std::vector<uint64_t>& bins, double expected_count) {
 	double chi2 = 0;
 	for (const auto bin : bins) {
 		const double diff = static_cast<double>(bin) - expected_count;
@@ -23,15 +22,15 @@ chi2_statistics compute_chi2_from_bins(const std::vector<T>& bins, double expect
 	return {chi2, static_cast<double>(bins.size() - 1)};
 }
 
-inline chi2_statistics chi2_stats(const std::vector<double>& normalized_data) {
-	const auto bin_count = static_cast<uint64_t>(std::ceil(2 * pow(normalized_data.size(), .4)));
+inline chi2_statistics chi2_stats(const std::vector<double>& data) {
+	const auto bin_count = static_cast<uint64_t>(std::ceil(2 * pow(data.size(), .4)));
 	std::vector<uint64_t> bins(bin_count);
 	const auto binCount = static_cast<double>(bins.size());
-	for (const auto v : normalized_data) {
+	for (const auto v : data) {
 		auto index = static_cast<std::size_t>(binCount * v);
 		bins[std::min(bins.size() - 1, index)]++;
 	}
-	const double expected_count = static_cast<double>(normalized_data.size()) / binCount;
+	const double expected_count = static_cast<double>(data.size()) / binCount;
 	return compute_chi2_from_bins(bins, expected_count);
 }
 
