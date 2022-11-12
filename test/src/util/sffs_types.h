@@ -4,12 +4,12 @@
 
 namespace mixer {
 
-using fitness = std::function<double(const bit_vector&)>;
+using fitness_function = std::function<double(const bit_vector&)>;
 using bit_vector_to_string = std::function<std::string(const bit_vector&)>;
 
 struct config {
 	int bits;
-	fitness fitness;
+	fitness_function fitness;
 	bit_vector_to_string to_string;
 	bit_vector_to_string to_arr_str;
 	std::optional<bit_vector> seed;
