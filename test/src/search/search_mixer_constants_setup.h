@@ -67,34 +67,24 @@ inline config get_mx3_config() {
 		const auto m = mixer{"mx3", factory(bits)};
 		return sffs_fitness_test(m);
 	};
-	auto seed = bit_vector(bits);
-	seed.set(32, 0, 6);
-	seed.set(29, 6, 6);
-	seed.set(32, 12, 6);
-	seed.set(29, 18, 6);
-	//seed.set(0xbea225f9eb34556d, 24, 64);
-	//seed.set(0xbea225f9eb34556d, 24 + 64, 64);
-	//seed.set(0xbea225f9eb34556d, 24 + 64 + 64, 64);
-	return {bits, seed, fitness, to_str, to_arr_str};
+	return {bits, fitness, to_str, to_arr_str};
 }
 
 inline config get_xmx_config() {
 	struct constants {
 		explicit constants(const bit_vector& bits) {
-			//m1 = bits.get(0, 64);
 			C1 = bits.get(0, 6);
 			C2 = bits.get(6, 6);
 			m1 = bits.get(12, 64);
 		}
 
-		uint64_t C1 = 32;
-		uint64_t C2 = 29;
+		uint64_t C1;
+		uint64_t C2;
 		uint64_t m1;
 	};
 
 	auto factory = [](const bit_vector& bits) {
 		return [c=constants(bits)](uint64_t x) {
-			const uint64_t C = 0xbea225f9eb34556d;
 			x ^= (x >> c.C1);
 			x *= c.m1;
 			x ^= (x >> c.C2);
@@ -103,9 +93,7 @@ inline config get_xmx_config() {
 	};
 
 	auto to_str = [](const bit_vector& bits) {
-
 		const constants c(bits);
-		const uint64_t C = 0xbea225f9eb34556d;
 		std::stringstream ss;
 		ss << "    x ^= x >> " << c.C1 << ";\n";
 		ss << "    x *= " << c.m1 << "ull;\n";
@@ -125,11 +113,7 @@ inline config get_xmx_config() {
 		const auto m = mixer{"xmx", factory(bits)};
 		return sffs_fitness_test(m);
 	};
-	auto seed = bit_vector(bits);
-	seed.set(5, 0, 6);
-	seed.set(1, 6, 6);
-	seed.set(2534203720592697647ull, 12, 64);
-	return {bits, seed, fitness, to_str, to_arr_str};
+	return {bits, fitness, to_str, to_arr_str};
 }
 
 inline void run_search() {
