@@ -35,8 +35,8 @@ using append_stream_factory = std::function<stream(const stream&)>;
 struct test_config {
 	uint64_t n{};
 	stream source;
-	mixer mixer;
-	append_stream_factory append_stream_factory;
+	mixer mix;
+	append_stream_factory stream_append_factory;
 };
 
 using test_factory = std::function<test_config()>;

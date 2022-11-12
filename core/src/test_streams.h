@@ -64,7 +64,7 @@ inline std::vector<test_factory> create_rrc_test_factories(const mixer& mixer, u
 			for (int rot = 0; rot < 64; ++rot) {
 				const auto rrc_factory = [=]()-> test_config {
 					const auto config = factory();
-					return {config.n, add_rrc(config.source, rot, type), config.mixer, config.append_stream_factory};
+					return {config.n, add_rrc(config.source, rot, type), config.mix, config.stream_append_factory};
 				};
 				factories.emplace_back(rrc_factory);
 			}

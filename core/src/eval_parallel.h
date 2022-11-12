@@ -23,9 +23,9 @@ using test_jobs = jobs<test_job_return>;
 namespace internal {
 
 inline stream create_stream(const test_config& cfg) {
-	auto s = create_stream_from_mixer(cfg.source, cfg.mixer);
-	if (cfg.append_stream_factory) {
-		return cfg.append_stream_factory(s);
+	auto s = create_stream_from_mixer(cfg.source, cfg.mix);
+	if (cfg.stream_append_factory) {
+		return cfg.stream_append_factory(s);
 	}
 	return s;
 }
@@ -38,7 +38,7 @@ inline test_jobs create_stream_jobs(const stream_test& test, const std::vector<t
 			std::vector<result> results;
 			const auto s = create_stream(cfg);
 			for (const auto& r : test(cfg.n, s)) {
-				results.push_back({cfg.source.name, cfg.mixer.name, r});
+				results.push_back({cfg.source.name, cfg.mix.name, r});
 			}
 			return results;
 		});
@@ -49,12 +49,12 @@ inline test_jobs create_stream_jobs(const stream_test& test, const std::vector<t
 inline test_jobs create_mixer_jobs(const mixer_test& test, const std::vector<test_factory>& test_factories) {
 	test_jobs js;
 	for (const auto& factory : test_factories) {
-		if (factory().append_stream_factory) continue;
+		if (factory().stream_append_factory) continue;
 		js.push_back([test, factory]() {
 			const auto cfg = factory();
 			std::vector<result> results;
-			for (const auto& r : test(cfg.n, cfg.source, cfg.mixer)) {
-				results.push_back({cfg.source.name, cfg.mixer.name, r});
+			for (const auto& r : test(cfg.n, cfg.source, cfg.mix)) {
+				results.push_back({cfg.source.name, cfg.mix.name, r});
 			}
 			return results;
 		});

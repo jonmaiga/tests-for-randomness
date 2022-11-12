@@ -3,7 +3,7 @@
 #include "format_result.h"
 #include "mixers.h"
 
-#include "search/search_mixer_constants.h"
+#include "search/search_mixer_constants_setup.h"
 
 namespace mixer {
 
@@ -37,18 +37,13 @@ inline void run_tests() {
 	const auto trng2 = create_mixer_from_stream("trng2", trng_stream);
 
 	const test_method test = test_rrc_parallel;
-	constexpr auto n = 500;
+	constexpr auto n = 10000;
 
 	const mixer test_mixer = {
 		"test", [](uint64_t x) {
-			constexpr uint64_t C = 0xbea225f9eb34556d;
-			x ^= x >> 37;
-			x *= 16139256160673849215ull;
-			x ^= x >> 59;
-			x *= 18373938741426217439ull;
-			x ^= x >> 33;
-			x *= 16125138431304736415ull;
-			x ^= x >> 31;
+			x ^= x >> 3;
+			x *= 17192186266073230512ull;
+			x ^= x >> 23;
 			return x;
 		}
 	};
@@ -58,7 +53,7 @@ inline void run_tests() {
 	result_analyzer analyzer;
 	analyzer.add(test(trng1, n));
 	analyzer.add(test(trng2, n));
-	analyzer.add(test(test_mixer, n));
+
 	analyzer.add(test(mx3, n));
 	analyzer.add(test(nasam, n));
 
@@ -68,13 +63,15 @@ inline void run_tests() {
 	analyzer.add(test(degski64, n));
 	analyzer.add(test(murmur3, n));
 
+	analyzer.add(test(test_mixer, n));
 	analyzer.add(test(xmx, n));
 	analyzer.add(test(xxh3, n));
 	analyzer.add(test(fast_hash, n));
+
 	analyzer.summarize_fails({}, {
 		                         "trng",
 		                         "counter-1",
-								"counter-23",
+		                         "counter-23",
 		                         "graycode-",
 		                         // "graycode-4",
 		                         // "graycode-8",
@@ -93,7 +90,7 @@ inline void run_tests() {
 int main(int argc, char** args) {
 	try {
 		mixer::run_tests();
-		//mixer::run_search();
+		mixer::run_search();
 	}
 	catch (std::runtime_error& e) {
 		std::cout << "ERROR: " << e.what() << "\n";
