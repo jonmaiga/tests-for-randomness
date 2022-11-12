@@ -8,17 +8,17 @@
 
 namespace mixer {
 
-inline double anderson_darling_stats(std::vector<double> normalized_data) {
-	std::sort(normalized_data.begin(), normalized_data.end());
+inline double anderson_darling_stats(std::vector<double> data01) {
+	std::ranges::sort(data01);
 	double sum = 0;
-	for (std::size_t i = 0; i < normalized_data.size(); ++i) {
-		assertion(normalized_data[i] > 0 && normalized_data[i] < 1, "normalized data no normalized?");
+	for (std::size_t i = 0; i < data01.size(); ++i) {
+		assertion(is_valid_between_01(data[i]), "anderson darling data not 0-1 or invalid");
 		sum += (2. * i + 1.) * (
-			std::log(normalized_data[i]) +
-			std::log(1. - normalized_data[normalized_data.size() - 1 - i]));
+			std::log(data01[i]) +
+			std::log(1. - data01[data01.size() - 1 - i]));
 	}
 
-	const auto n = static_cast<double>(normalized_data.size());
+	const auto n = static_cast<double>(data01.size());
 	return -n - sum / n;
 }
 

@@ -44,7 +44,7 @@ inline std::vector<uint64_t> avalanche_generate_bic(uint64_t n, const stream& st
 	return bic;
 }
 
-inline avalanche_stats compute_avalanche_sac_stats(const double n, const std::vector<uint64_t>& bit_counts) {
+inline avalanche_stats avalanche_sac_stats(const double n, const std::vector<uint64_t>& bit_counts) {
 	const double total_count = n * 64;
 	double chi2 = 0;
 	double df = 0;
@@ -59,7 +59,7 @@ inline avalanche_stats compute_avalanche_sac_stats(const double n, const std::ve
 	return {chi2, df - 1};
 }
 
-inline avalanche_stats compute_avalanche_bic_stats(const double n, const std::vector<uint64_t>& bit_counts) {
+inline avalanche_stats avalanche_bic_stats(const double n, const std::vector<uint64_t>& bit_counts) {
 	double chi2 = 0;
 	constexpr double p = 0.5;
 	const double expected_count = n * p;
@@ -73,14 +73,14 @@ inline avalanche_stats compute_avalanche_bic_stats(const double n, const std::ve
 
 inline std::vector<statistic> avalanche_mixer_sac_test(uint64_t n, const stream& stream, const mixer& mixer) {
 	const auto counts = avalanche_generate_sac(n, stream, mixer);
-	const auto stats = compute_avalanche_sac_stats(n, counts);
+	const auto stats = avalanche_sac_stats(n, counts);
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
 	return {{s_type::sac, stats.chi2, p_value}};
 }
 
 inline std::vector<statistic> avalanche_mixer_bic_test(uint64_t n, const stream& stream, const mixer& mixer) {
 	const auto counts = avalanche_generate_bic(n, stream, mixer);
-	const auto stats = compute_avalanche_bic_stats(n, counts);
+	const auto stats = avalanche_bic_stats(n, counts);
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
 	return {{s_type::bic, stats.chi2, p_value}};
 }

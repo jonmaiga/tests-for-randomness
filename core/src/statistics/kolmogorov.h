@@ -3,14 +3,13 @@
 #include <vector>
 
 #include "distributions.h"
-#include "streams.h"
 #include "types.h"
 #include "util/algo.h"
 
 namespace mixer {
 
 inline double kolmogorov_smirnov_stats(std::vector<double> data) {
-	std::sort(data.begin(), data.end());
+	std::ranges::sort(data);
 	const auto n = static_cast<double>(data.size());
 	double max_distance = 0;
 	for (std::size_t i = 0; i < data.size(); ++i) {
