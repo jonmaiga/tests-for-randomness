@@ -31,4 +31,11 @@ inline double rescale64_to_01(uint64_t x) {
 	return rescale_to_01(static_cast<double>(x) / normalizer, 0, 1);
 }
 
+inline double log_safe(double x) {
+	assertion(is_valid(x), "x is not valid");
+	assertion(x >= 0, "negative x to log");
+	constexpr double min_p = 1e-16;
+	return std::log(std::max(min_p, x));
+}
+
 }

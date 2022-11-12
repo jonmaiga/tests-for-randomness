@@ -13,9 +13,9 @@ inline double anderson_darling_stats(std::vector<double> data01) {
 	double sum = 0;
 	for (std::size_t i = 0; i < data01.size(); ++i) {
 		assertion(is_valid_between_01(data01[i]), "anderson darling data not 0-1 or invalid");
-		sum += (2. * i + 1.) * (
-			std::log(data01[i]) +
-			std::log(1. - data01[data01.size() - 1 - i]));
+		const double a = data01[i];
+		const double b = data01[data01.size() - 1 - i];
+		sum += (2. * i + 1.) * (log_safe(a) + log_safe(1. - b));
 	}
 
 	const auto n = static_cast<double>(data01.size());
