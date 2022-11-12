@@ -58,18 +58,22 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		return "N/A";
 	}
 
-	if (results.front().stats.type == s_type::basic_mean) {
+	if (results.front().stats.type == s_type::wald_wolfowitz_runs) {
 		const auto st = basic_stats(to_statistics(results));
 		draw_histogram(to_p_values(results));
 		draw_histogram(to_statistics(results));
 		std::cout << "stat mean: " << st.mean << " stat var: " << st.variance() << "\n";
 	}
-	const auto p_value = fishers_combined_probabilities(to_p_values(results));
+	//const auto p_value = fishers_combined_probabilities(to_p_values(results));
+	const auto p_values = to_p_values(results);
+	const auto ks_stat = kolmogorov_smirnov_stats(p_values);
+	const auto p_value = kolmogorov_smirnov_cdf(ks_stat, p_values.size() - 1, 100);
 	constexpr auto a = 0.005;
+	const auto fails = "(" + std::to_string(count_fails(p_values, a)) + ")";
 	if (p_value < a || p_value > 1. - a) {
-		return "FAIL*";
+		return "FAIL*" + fails;
 	}
-	return "PASS";
+	return "PASS " + fails;
 }
 
 using tags = std::vector<std::string>;

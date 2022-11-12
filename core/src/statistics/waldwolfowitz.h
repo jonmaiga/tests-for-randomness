@@ -11,7 +11,8 @@ struct wald_wolfowitz_statistics {
 	double n_minus{};
 };
 
-inline wald_wolfowitz_statistics wald_wolfowitz_stats(const std::vector<double>& data) {
+template<typename T>
+wald_wolfowitz_statistics wald_wolfowitz_stats(const std::vector<T>& data) {
 	if (data.empty()) {
 		return {};
 	}
@@ -21,10 +22,11 @@ inline wald_wolfowitz_statistics wald_wolfowitz_stats(const std::vector<double>&
 	uint64_t runs = 1;
 	bool is_current_run_greater = data[0] > cutoff;
 	for (const auto v : data) {
+		const auto is_greater = v > cutoff;
 		if (v != cutoff) {
-			v > cutoff ? n_plus++ : n_minus++;
+			is_greater ? n_plus++ : n_minus++;
 		}
-		if (v > cutoff != is_current_run_greater) {
+		if (is_greater != is_current_run_greater) {
 			is_current_run_greater = !is_current_run_greater;
 			++runs;
 		}
@@ -48,7 +50,7 @@ inline double wald_wolfowitz_p_value(wald_wolfowitz_statistics s) {
 }
 
 inline std::vector<statistic> wald_wolfowitz_test(const uint64_t n, const stream& stream) {
-	const auto ww = wald_wolfowitz_stats(rescale64_to_01(n, stream));
+	const auto ww = wald_wolfowitz_stats(get_raw(n, stream));
 	return {
 		{s_type::wald_wolfowitz_runs, ww.runs, wald_wolfowitz_p_value(ww)}
 	};
