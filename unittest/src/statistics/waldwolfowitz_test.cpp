@@ -44,16 +44,16 @@ TEST(waldwolfowitz, two_runs) {
 TEST(waldwolfowitz, two_runs_2) {
 	const auto ww = wald_wolfowitz_stats<double>({3, 3, 3, 2, 2, 2, 1, 1, 1, 1, 1});
 	EXPECT_EQ(ww.runs, 2);
-	EXPECT_EQ(ww.n_plus, 6);
+	EXPECT_EQ(ww.n_plus, 3);
 	EXPECT_EQ(ww.n_minus, 5);
-	EXPECT_NEAR(wald_wolfowitz_p_value(ww), 0.004266, 1e-4);
+	EXPECT_NEAR(wald_wolfowitz_p_value(ww), 0.01543, 1e-4);
 }
 
 TEST(waldwolfowitz, no_change) {
 	const auto r = wald_wolfowitz_test(50, test_stream());
 	EXPECT_EQ(r.size(), 1);
-	EXPECT_NEAR(r.front().value, 27, 1e-4);
-	EXPECT_NEAR(r.front().p_value, 0.7659, 1e-4);
+	EXPECT_NEAR(r.front().value, 21, 1e-4);
+	EXPECT_NEAR(r.front().p_value, 0.5581, 1e-4);
 }
 
 }
