@@ -35,7 +35,7 @@ inline sffs_state get_state(const config& config, const sffs_state& current_stat
 			best = result;
 		}
 	};
-	run_jobs<sffs_state>(sffs_jobs, collector, std::thread::hardware_concurrency()-2);
+	run_jobs<sffs_state>(sffs_jobs, collector, std::thread::hardware_concurrency() - 2);
 	return best;
 }
 
@@ -49,15 +49,16 @@ inline sffs_state get_backward_state(const config& config, const sffs_state& cur
 
 inline sffs_state run_sffs(const config& config, const sffs_callback& callback) {
 	std::map<int, sffs_state> ks;
-	const bit_vector init_bits(config.bits);
+	bit_vector init_bits(config.bits);
+	if (const auto& seed = config.seed) {
+		init_bits = *seed;
+	}
 	const int min = 0;
 	const int max = config.bits;
-	int k = 0;
-	if (config.seed.size() != 0) {
-		const double seed_score = config.fitness(config.seed);
-		ks[config.seed.count()] = {config.seed, seed_score};
-		k = config.seed.count();
-	}
+
+	const double seed_score = config.fitness(init_bits);
+	ks[init_bits.count()] = {init_bits, seed_score};
+	int k = init_bits.count();
 
 	while (k < max) {
 		{

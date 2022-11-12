@@ -118,7 +118,7 @@ inline config get_xmx_config() {
 
 inline void run_search() {
 	auto cfg = get_xmx_config();
-	cfg.seed = find_seed(cfg);
+	cfg.seed = find_seed(cfg, 30);
 	start_search("xmx", cfg);
 }
 

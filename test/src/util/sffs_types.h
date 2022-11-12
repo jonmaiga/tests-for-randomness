@@ -12,7 +12,7 @@ struct config {
 	fitness fitness;
 	bit_vector_to_string to_string;
 	bit_vector_to_string to_arr_str;
-	bit_vector seed;
+	std::optional<bit_vector> seed;
 };
 
 }

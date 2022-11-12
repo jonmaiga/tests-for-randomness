@@ -28,10 +28,10 @@ inline bit_vector random_bit_vector(int bits) {
 	return bv;
 }
 
-inline bit_vector find_seed(const config& config) {
+inline bit_vector find_seed(const config& config, int tries) {
 	double best_score = std::numeric_limits<double>::max();
 	bit_vector best(config.bits);
-	for (int i = 0; i < 30; ++i) {
+	for (int i = 0; i < tries; ++i) {
 		bit_vector r = random_bit_vector(config.bits);
 		const double score = config.fitness(r);
 		if (score < best_score) {
@@ -49,8 +49,10 @@ inline void start_search(const std::string& name, const config& config) {
 	std::cout << "===========================\n";
 	std::cout << name << " " << config.bits << " bits\n";
 	std::cout << "===========================\n";
-	std::cout << config.to_string(config.seed) << "\n";
-	std::cout << "Baseline fitness: " << config.fitness(config.seed) << "\n";
+	if (const auto& seed = config.seed) {
+		std::cout << config.to_string(*seed) << "\n";
+		std::cout << "Baseline fitness: " << config.fitness(*seed) << "\n";
+	}
 	std::cout << "Trng fitness    : " << sffs_fitness_test(trng) << "\n";
 	const auto result = run_sffs(config, create_sffs_printer(config.to_arr_str));
 	std::stringstream ss;

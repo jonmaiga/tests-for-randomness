@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 namespace mixer {
 
 struct bit_vector {
