@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cmath>
-
 #include "chi2.h"
 #include "util/bitwise.h"
 #include "types.h"
