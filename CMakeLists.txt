@@ -3,6 +3,10 @@ set(CMAKE_CXX_STANDARD 20)
 project(bit_mixer_evaluation)
 link_directories(/usr/local/lib/)
 
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+set(THREADS_PREFER_PTHREAD_FLAG TRUE)
+find_package(Threads REQUIRED)
+
 include_directories(core/src)
 add_subdirectory(core/)
 add_subdirectory(test/)
