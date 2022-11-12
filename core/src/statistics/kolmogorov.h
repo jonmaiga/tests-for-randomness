@@ -8,14 +8,14 @@
 
 namespace mixer {
 
-inline double kolmogorov_smirnov_stats(std::vector<double> data) {
-	std::ranges::sort(data);
-	const auto n = static_cast<double>(data.size());
+inline double kolmogorov_smirnov_stats(std::vector<double> data01) {
+	std::sort(data01.begin(), data01.end());
+	const auto n = static_cast<double>(data01.size());
 	double max_distance = 0;
-	for (std::size_t i = 0; i < data.size(); ++i) {
+	for (std::size_t i = 0; i < data01.size(); ++i) {
 		const double e0 = i / n;
 		const double e1 = (i + 1) / n;
-		const double d = data[i];
+		const double d = data01[i];
 		const double distance = std::max(std::abs(e0 - d), std::abs(e1 - d));
 		max_distance = std::max(distance, max_distance);
 	}

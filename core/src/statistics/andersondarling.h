@@ -9,7 +9,7 @@
 namespace mixer {
 
 inline double anderson_darling_stats(std::vector<double> data01) {
-	std::ranges::sort(data01);
+	std::sort(data01.begin(), data01.end());
 	double sum = 0;
 	for (std::size_t i = 0; i < data01.size(); ++i) {
 		assertion(is_valid_between_01(data01[i]), "anderson darling data not 0-1 or invalid");
