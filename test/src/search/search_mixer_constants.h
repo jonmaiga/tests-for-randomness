@@ -4,7 +4,7 @@
 
 #include "format_result.h"
 #include "util/random.h"
-#include "util/sffsutils.h"
+#include "../util/sffsutils.h"
 
 namespace mixer {
 
