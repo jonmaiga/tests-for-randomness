@@ -12,7 +12,7 @@ inline double anderson_darling_stats(std::vector<double> data01) {
 	std::ranges::sort(data01);
 	double sum = 0;
 	for (std::size_t i = 0; i < data01.size(); ++i) {
-		assertion(is_valid_between_01(data[i]), "anderson darling data not 0-1 or invalid");
+		assertion(is_valid_between_01(data01[i]), "anderson darling data not 0-1 or invalid");
 		sum += (2. * i + 1.) * (
 			std::log(data01[i]) +
 			std::log(1. - data01[data01.size() - 1 - i]));
