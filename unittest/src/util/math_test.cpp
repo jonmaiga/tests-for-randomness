@@ -40,4 +40,8 @@ TEST(math, stirling_second_kind) {
 	EXPECT_EQ(stirling_second_kind(20, 11), 1900842429486);
 }
 
+TEST(math, tmp) {
+	auto r = tmp(5, 25);
+}
+
 }
