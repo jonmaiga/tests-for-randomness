@@ -28,4 +28,16 @@ TEST(math, snap_to_01) {
 	EXPECT_EQ(snap_to_01(0 + 1e-7), 0 + 1e-7);
 }
 
+TEST(math, stirling_second_kind) {
+	EXPECT_EQ(stirling_second_kind(0, 0), 1);
+	EXPECT_EQ(stirling_second_kind(0, 1), 0);
+	EXPECT_EQ(stirling_second_kind(1, 0), 0);
+	EXPECT_EQ(stirling_second_kind(1, 1), 1);
+	EXPECT_EQ(stirling_second_kind(4, 2), 7);
+	EXPECT_EQ(stirling_second_kind(4, 3), 6);
+	EXPECT_EQ(stirling_second_kind(20, 9), 12011282644725);
+	EXPECT_EQ(stirling_second_kind(20, 10), 5917584964655);
+	EXPECT_EQ(stirling_second_kind(20, 11), 1900842429486);
+}
+
 }

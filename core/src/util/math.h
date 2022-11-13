@@ -46,4 +46,14 @@ inline double snap_to_01(double x) {
 	return x;
 }
 
+inline uint64_t stirling_second_kind (int n, int k) {
+    if (n == 0 && k == 0) {
+		return 1;
+	}
+    else if (n == 0 || k == 0) {
+		return 0;
+	}
+    return k * stirling_second_kind(n - 1, k) + stirling_second_kind(n - 1, k - 1);
+}
+
 }
