@@ -122,6 +122,9 @@ double kf_gammaq(double s, double z) {
 }
 
 double gamma_regularized(double s, double z) {
+	if (is_near(s, 0) && is_near(z, 0)) {
+		return 0.;
+	}
 	return 1. - kf_gammap(s, z);
 }
 

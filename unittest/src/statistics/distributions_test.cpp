@@ -43,6 +43,9 @@ TEST(gamma_regularized, basic) {
 	EXPECT_NEAR(gamma_regularized(4, 0.88), 0.9875, 1e-4);
 	EXPECT_NEAR(gamma_regularized(40, 3.88), 1, 1e-4);
 	EXPECT_NEAR(gamma_regularized(0.5, 2.111), 0.03995, 1e-4);
+	EXPECT_NEAR(gamma_regularized(0, 1), 0, 1e-4);
+	EXPECT_NEAR(gamma_regularized(1, 0), 1, 1e-4);
+	EXPECT_NEAR(gamma_regularized(0, 0), 0, 1e-4);
 }
 
 TEST(beta, basic) {
@@ -81,6 +84,9 @@ TEST(chi2_distribution_cdf, basic) {
 	EXPECT_NEAR(chi2_distribution_cdf(10.1, 5), 1-0.9275, 1e-4);
 	EXPECT_NEAR(chi2_distribution_cdf(13.1, 3.3), 1-0.994, 1e-4);
 	EXPECT_NEAR(chi2_distribution_cdf(3.71429, 4), 1-0.5539, 1e-4);
+
+	EXPECT_NEAR(chi2_distribution_cdf(0, 5), 1-0, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(0, 0), 0, 1e-4);
 }
 
 TEST(kolmogorov_smirnov_cdf, basic) {
