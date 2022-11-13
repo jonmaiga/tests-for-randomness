@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <numeric>
 #include <vector>
 
 #include "distributions.h"
@@ -12,7 +13,7 @@ namespace mixer {
 inline std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, const std::vector<double>& data01) {
 	std::vector<uint64_t> gaps(max_gap_size + 1);
 
-	std::size_t current_gap = 0;
+	uint64_t current_gap = 0;
 	for (const auto v : data01) {
 		if (v >= a && v < b) {
 			gaps[std::min(current_gap, max_gap_size)] ++;
