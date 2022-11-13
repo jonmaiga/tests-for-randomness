@@ -60,7 +60,7 @@ inline gap_statistics gap_stats(const std::vector<double>& data01) {
 		df += 1;
 	}
 
-	return {chi2, df - 1};
+	return {chi2, std::max(df - 1, 0.)};
 }
 
 inline std::vector<statistic> gap_test(uint64_t n, const stream& stream) {
