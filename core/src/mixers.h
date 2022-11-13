@@ -69,6 +69,19 @@ const mixer murmur3 = {
 	}
 };
 
+
+const mixer split_mix = {
+	"splitmix", [](uint64_t x) {
+		x ^= x >> 30;
+		x *= 0xbf58476d1ce4e5b9;
+		x ^= x >> 27;
+		x *= 0x94d049bb133111eb;
+		x ^= x >> 31;
+		return x;
+	}
+};
+
+
 const mixer nasam = {
 	"nasam", [](uint64_t x) {
 		x ^= ror64(x, 25) ^ ror64(x, 47);

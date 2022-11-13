@@ -58,7 +58,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		return "N/A";
 	}
 
-	if (results.front().stats.type == s_type::wald_wolfowitz_runs) {
+	if (results.front().stats.type == s_type::gap) {
 		const auto st = basic_stats(to_statistics(results));
 		draw_histogram(to_p_values(results));
 		draw_histogram(to_statistics(results));
@@ -71,9 +71,9 @@ inline std::string p_value_test(const std::vector<result>& results) {
 	constexpr auto a = 0.005;
 	const auto fails = "(" + std::to_string(count_fails(p_values, a)) + ")";
 	if (p_value < a || p_value > 1. - a) {
-		return "FAIL*" + fails;
+		return "F*" + fails;
 	}
-	return "PASS " + fails;
+	return "P " + fails;
 }
 
 using tags = std::vector<std::string>;
@@ -115,7 +115,7 @@ public:
 	result_analyzer() :
 		p_table({
 			"mixer",
-			"mean", "chi2", "ks", "ad", "ww", "pearson", "spearman", "kendall", "sac", "bic"
+			"mean", "chi2", "ks", "ad", "ww", "pearson", "spearman", "kendall", "gap", "sac", "bic"
 		}) {
 	}
 
@@ -131,6 +131,7 @@ public:
 			.col(p_value_test(r[s_type::pearson_r]))
 			.col(p_value_test(r[s_type::spearman_r]))
 			.col(p_value_test(r[s_type::kendall_tau]))
+			.col(p_value_test(r[s_type::gap]))
 			.col(p_value_test(r[s_type::sac]))
 			.col(p_value_test(r[s_type::bic]))
 			.row();

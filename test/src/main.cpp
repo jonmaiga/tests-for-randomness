@@ -61,6 +61,7 @@ inline void run_tests() {
 	analyzer.add(test(moremur, n));
 	analyzer.add(test(lea64, n));
 	analyzer.add(test(degski64, n));
+	analyzer.add(test(split_mix, n));
 	analyzer.add(test(murmur3, n));
 
 	analyzer.add(test(test_mixer, n));
@@ -90,7 +91,7 @@ inline void run_tests() {
 int main(int argc, char** args) {
 	try {
 		mixer::run_tests();
-		mixer::run_search();
+		//mixer::run_search();
 	}
 	catch (std::runtime_error& e) {
 		std::cout << "ERROR: " << e.what() << "\n";

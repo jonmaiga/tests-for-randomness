@@ -47,13 +47,14 @@ enum class s_type {
 	kolmogorov_smirnov,
 	wald_wolfowitz_runs,
 	anderson_darling,
+	pearson_r,
+	spearman_r,
+	kendall_tau,
+	gap,
 
 	// mixer
 	sac,
 	bic,
-	pearson_r,
-	spearman_r,
-	kendall_tau,
 
 	size
 };
