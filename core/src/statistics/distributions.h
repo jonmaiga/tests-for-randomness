@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include "util/math.h"
 
 namespace mixer {
 
@@ -34,6 +35,9 @@ inline double chi2_distribution_normal_approximation_cdf(double chi2, double df)
 
 inline double chi2_distribution_cdf(double chi2, double df) {
 	// found here: https://en.wikipedia.org/wiki/Chi-squared_distribution
+	if (is_near(df, 0)) { 
+		return 0;
+	}
 	return gamma_regularized(.5 * df, .5 * chi2);
 }
 
