@@ -3,6 +3,7 @@
 #include <set>
 #include <vector>
 
+#include "chi2.h"
 #include "distributions.h"
 #include "types.h"
 #include "util/algo.h"
@@ -46,28 +47,15 @@ inline std::vector<double> expected_probabilities(const uint64_t wanted_coupons,
 	return expected;
 }
 
-struct coupon_statistics {
-	double chi2{};
-	double df{};
-};
-
-inline coupon_statistics coupon_stats(const std::vector<double>& data01) {
+inline chi2_statistics coupon_stats(const std::vector<double>& data01) {
 	constexpr uint64_t wanted_coupons = 5;
 	constexpr uint64_t tracked_draws = 20;
 	const auto cc = collect_coupons(wanted_coupons, tracked_draws, data01);
+
 	const auto ps = expected_probabilities(wanted_coupons, tracked_draws);
 	assertion(cc.size() == ps.size(), "Unexpected size in coupons");
-
-	const auto total_count = std::accumulate(cc.begin(), cc.end(), 0ull, std::plus());
-	double chi2 = 0;
-	double df = 0;
-	for (std::size_t i = 0; i < cc.size(); ++i) {
-		const double expected_draws = ps[i] * total_count;
-		const double diff = static_cast<double>(cc[i]) - expected_draws;
-		chi2 += diff * diff / expected_draws;
-		df += 1;
-	}
-	return {chi2, std::max(df - 1, 0.)};
+	const auto total_count = accumulate(cc);
+	return chi2_stats(cc.size(), to_data(cc), mul(to_data(ps), to_data(total_count)));
 }
 
 inline std::vector<statistic> coupon_test(uint64_t n, const stream& stream) {

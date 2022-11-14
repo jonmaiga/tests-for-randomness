@@ -123,4 +123,9 @@ inline std::string join(const std::vector<std::string>& strs, const std::string&
 	return r;
 }
 
+template <typename T>
+typename T::value_type accumulate(const T& data) {
+	return std::accumulate(data.begin(), data.end(), 0ull, std::plus());
+}
+
 }

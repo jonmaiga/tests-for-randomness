@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "distributions.h"
-#include "streams.h"
 #include "util/algo.h"
 #include "util/math.h"
 
@@ -25,19 +24,24 @@ struct chi2_statistics {
 	double df{};
 };
 
-inline chi2_statistics chi2_uniform_stats(const std::vector<uint64_t>& bins, double expected_count) {
+inline chi2_statistics chi2_stats(std::size_t n, const data_fn& observed, const data_fn& expected) {
 	double chi2 = 0;
-	for (const auto count : bins) {
-		const double diff = static_cast<double>(count) - expected_count;
+	for (std::size_t i = 0; i < n; ++i) {
+		const double expected_count = expected(i);
+		const double diff = observed(i) - expected_count;
 		chi2 += diff * diff / expected_count;
 	}
-	return {chi2, static_cast<double>(bins.size() - 1)};
+	return {chi2, static_cast<double>(n - 1)};
+}
+
+inline chi2_statistics chi2_stats(const std::vector<uint64_t>& bins, double expected_count) {
+	return chi2_stats(bins.size(), to_data(bins), to_data(expected_count));
 }
 
 inline chi2_statistics chi2_uniform_stats(const std::vector<double>& data01) {
 	const auto& bins = bin_data_for_chi2(data01);
 	const double expected_count = static_cast<double>(data01.size()) / static_cast<double>(bins.size());
-	return chi2_uniform_stats(bins, expected_count);
+	return chi2_stats(bins, expected_count);
 }
 
 inline std::vector<statistic> chi2_test(const uint64_t n, const stream& stream) {

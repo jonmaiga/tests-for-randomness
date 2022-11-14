@@ -125,4 +125,28 @@ struct test_result {
 	}
 };
 
+using data_fn = std::function<double(std::size_t)>;
+
+template <typename T>
+data_fn to_data(const T& d) {
+	if constexpr (std::is_arithmetic<T>()) {
+		return [d](std::size_t) {
+			return static_cast<double>(d);
+		};
+
+	}
+	else {
+		return [&d](std::size_t i) {
+			return static_cast<double>(d[i]);
+		};
+	}
+}
+
+inline data_fn mul(const data_fn& a, const data_fn& b) {
+	return [&a, &b](std::size_t i) {
+		return a(i) * b(i);
+	};
+}
+
+
 }

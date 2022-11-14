@@ -4,6 +4,7 @@
 #include <numeric>
 #include <vector>
 
+#include "chi2.h"
 #include "distributions.h"
 #include "types.h"
 #include "util/algo.h"
@@ -12,7 +13,6 @@ namespace mixer {
 
 inline std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, const std::vector<double>& data01) {
 	std::vector<uint64_t> gaps(max_gap_size + 1);
-
 	uint64_t current_gap = 0;
 	for (const auto v : data01) {
 		if (v >= a && v < b) {
@@ -39,18 +39,13 @@ inline std::vector<double> generate_gap_probabilities(uint64_t max_gap_size, dou
 }
 
 
-struct gap_statistics {
-	double chi2{};
-	double df{};
-};
-
-inline gap_statistics gap_stats(const std::vector<double>& data01) {
+inline chi2_statistics gap_stats(const std::vector<double>& data01) {
 	constexpr uint64_t max_gap_size = 7;
 	double a = 0.35;
 	double b = 0.65;
 	const auto& ps = generate_gap_probabilities(max_gap_size, a, b);
 	const auto& gaps = generate_gaps(max_gap_size, a, b, data01);
-	const auto total_count = std::accumulate(gaps.begin(), gaps.end(), 0.);
+	const auto total_count = accumulate(gaps);
 	double chi2 = 0;
 	double df = 0;
 	for (std::size_t i = 0; i < gaps.size(); ++i) {
@@ -60,7 +55,6 @@ inline gap_statistics gap_stats(const std::vector<double>& data01) {
 		chi2 += diff * diff / expected_count;
 		df += 1;
 	}
-
 	return {chi2, std::max(df - 1, 0.)};
 }
 
