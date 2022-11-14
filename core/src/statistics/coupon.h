@@ -11,7 +11,7 @@ namespace mixer {
 
 inline std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t tracked_draws, const std::vector<double>& data01) {
 	std::set<uint64_t> coupons_collected;
-	std::vector<uint64_t> buckets(tracked_draws + 1);
+	std::vector<uint64_t> draws_histogram(tracked_draws + 1);
 	uint64_t draw_count = 0;
 	for (const auto& v : data01) {
 		auto coupon_id = std::min(static_cast<uint64_t>(wanted_coupons * v), wanted_coupons - 1);
@@ -22,13 +22,13 @@ inline std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t t
 
 		if (coupons_collected.size() == wanted_coupons) {
 			auto index = draw_count - wanted_coupons;
-			index = std::min(buckets.size() - 1, index);
-			buckets[index] ++;
+			index = std::min(draws_histogram.size() - 1, index);
+			draws_histogram[index] ++;
 			draw_count = 0;
 			coupons_collected = {};
 		}
 	}
-	return buckets;
+	return draws_histogram;
 }
 
 inline std::vector<double> expected_probabilities(const uint64_t d, const uint64_t t) {
