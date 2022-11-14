@@ -57,14 +57,4 @@ inline uint64_t stirling_second_kind (int n, int k) {
     return k * stirling_second_kind(n - 1, k) + stirling_second_kind(n - 1, k - 1);
 }
 
-inline std::vector<double> tmp(const uint64_t d, const uint64_t t) {
-	std::vector<double> expected(t-d);
-	double fac_d = std::tgamma(d);
-    for (int i = d; i < t; ++i) {
-        expected[i-d] = (fac_d / pow(d, i) * stirling_second_kind(i - 1, d - 1));
-	}
-    expected[t-d] = ((1 - fac_d / pow(d, (t - 1)) * stirling_second_kind(t - 1, d)));
-	return expected;
-}
-
 }
