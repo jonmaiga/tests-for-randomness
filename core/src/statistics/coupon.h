@@ -22,7 +22,7 @@ inline std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t t
 		}
 
 		if (coupons_collected.size() == wanted_coupons) {
-			auto index = draw_count - wanted_coupons;
+			std::size_t index = draw_count - wanted_coupons;
 			index = std::min(draws_histogram.size() - 1, index);
 			draws_histogram[index] ++;
 			draw_count = 0;
