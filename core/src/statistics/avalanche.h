@@ -6,11 +6,6 @@
 
 namespace mixer {
 
-struct avalanche_stats {
-	double chi2{};
-	double df{};
-};
-
 inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream& stream, const mixer& mixer) {
 	// @attn, using x = stream() directly will make all mixers fail for all counter streams with increments
 	// of a power of 2, 1,2,4... I believe this is an error in the test rather than the mixers,
@@ -51,7 +46,7 @@ inline chi2_statistics avalanche_sac_stats(const double n, const std::vector<uin
 	}, 5.);
 }
 
-inline avalanche_stats avalanche_bic_stats(const double n, const std::vector<uint64_t>& bit_counts) {
+inline chi2_statistics avalanche_bic_stats(const double n, const std::vector<uint64_t>& bit_counts) {
 	double chi2 = 0;
 	constexpr double p = 0.5;
 	const double expected_count = n * p;
