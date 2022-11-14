@@ -47,15 +47,10 @@ inline chi2_statistics avalanche_sac_stats(const double n, const std::vector<uin
 }
 
 inline chi2_statistics avalanche_bic_stats(const double n, const std::vector<uint64_t>& bit_counts) {
-	double chi2 = 0;
-	constexpr double p = 0.5;
-	const double expected_count = n * p;
-	const double binomial_to_normal = n * p * (1. - p);
-	for (const double bit_count : bit_counts) {
-		const double diff = (bit_count - expected_count);
-		chi2 += diff * diff / binomial_to_normal;
-	}
-	return {chi2, static_cast<double>(bit_counts.size() - 1)};
+	// we can esitmate binomial with normal
+	// chi2 = (o - e)^2/e = (o-n*p)^2/(n*p*(1-p))
+	// with p=0.5 we get chi2 = (2*o - n)^2 / n
+	return chi2_stats(bit_counts.size(), mul(to_data(bit_counts), to_data(2)), to_data(n));
 }
 
 inline std::vector<statistic> avalanche_mixer_sac_test(uint64_t n, const stream& stream, const mixer& mixer) {
