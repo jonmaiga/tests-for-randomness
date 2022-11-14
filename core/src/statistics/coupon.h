@@ -31,13 +31,14 @@ inline std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t t
 	return draws_histogram;
 }
 
-inline std::vector<double> expected_probabilities(const uint64_t d, const uint64_t t) {
+inline std::vector<double> expected_probabilities(const uint64_t wanted_coupons, const uint64_t tracked_draws) {
 	// from: https://www.cs.fsu.edu/~mascagni/Testing.pdf
 	std::vector<double> expected;
-	const double fac_d = std::tgamma(d + 1);
+	const double fac_d = std::tgamma(wanted_coupons + 1);
 	double sum = 0;
-	for (auto i = d; i < d + t; ++i) {
-		const double p = fac_d / pow(d, i) * stirling_second_kind(i - 1, d - 1);
+	for (auto i = wanted_coupons; i < wanted_coupons + tracked_draws; ++i) {
+		const double p = fac_d / pow(wanted_coupons, i) * stirling_second_kind(i - 1, wanted_coupons - 1);
+		assertion(is_valid_between_01(p), "unexpected coupon probability");
 		expected.push_back(p);
 		sum += p;
 	}

@@ -40,4 +40,17 @@ TEST(math, stirling_second_kind) {
 	EXPECT_EQ(stirling_second_kind(20, 11), 1900842429486);
 }
 
+TEST(math, stirling_second_kind_limits) {
+	EXPECT_EQ(stirling_second_kind(25, 5), 2436684974110751);
+	EXPECT_EQ(stirling_second_kind(25, 6), 37026417000002430);
+	EXPECT_EQ(stirling_second_kind(25, 7), 227832482998716310);
+	EXPECT_EQ(stirling_second_kind(25, 8), 690223721118368580);
+	EXPECT_EQ(stirling_second_kind(25, 9), 1167921451092973005);
+	EXPECT_EQ(stirling_second_kind(25, 10), 1203163392175387500);
+	EXPECT_EQ(stirling_second_kind(25, 11), 802355904438462660);
+	EXPECT_EQ(stirling_second_kind(25, 12), 362262620784874680);
+
+}
+
+
 }

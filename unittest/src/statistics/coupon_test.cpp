@@ -30,6 +30,17 @@ TEST(coupon, expected_probabilities) {
 	EXPECT_NEAR(ps[15], 0.0141, 1e-4);
 }
 
+TEST(coupon, expected_probabilities_10_20) {
+	const auto ps = expected_probabilities(10, 20);
+	EXPECT_EQ(ps.size(), 21);
+	EXPECT_NEAR(std::accumulate(ps.begin(), ps.end(), 0., std::plus()), 1, 1e-4);
+
+	// matches mma
+	EXPECT_NEAR(ps[0], 0.000362, 1e-4);
+	EXPECT_NEAR(ps[1], 0.001632, 1e-4);
+	EXPECT_NEAR(ps[15], 0.04377, 1e-4);
+}
+
 TEST(coupon, coupon_no_change) {
 	const auto r = coupon_test(10000, test_stream());
 	EXPECT_EQ(r.size(), 1);
