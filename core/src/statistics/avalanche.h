@@ -44,19 +44,11 @@ inline std::vector<uint64_t> avalanche_generate_bic(uint64_t n, const stream& st
 	return bic;
 }
 
-inline avalanche_stats avalanche_sac_stats(const double n, const std::vector<uint64_t>& bit_counts) {
+inline chi2_statistics avalanche_sac_stats(const double n, const std::vector<uint64_t>& bit_counts) {
 	const double total_count = n * 64;
-	double chi2 = 0;
-	double df = 0;
-	for (std::size_t i = 0; i < 65; ++i) {
-		const double p = binomial_pdf(64, .5, i);
-		const double expected_count = total_count * p;
-		if (expected_count < 5) continue;
-		const double diff = (bit_counts[i] - expected_count);
-		chi2 += diff * diff / expected_count;
-		df++;
-	}
-	return {chi2, df - 1};
+	return chi2_stats(bit_counts.size(), to_data(bit_counts), [total_count](std::size_t i) {
+		return total_count * binomial_pdf(64, .5, i);
+	}, 5.);
 }
 
 inline avalanche_stats avalanche_bic_stats(const double n, const std::vector<uint64_t>& bit_counts) {
