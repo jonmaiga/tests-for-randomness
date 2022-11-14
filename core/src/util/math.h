@@ -47,14 +47,19 @@ inline double snap_to_01(double x) {
 	return x;
 }
 
-inline uint64_t stirling_second_kind (int n, int k) {
-    if (n == 0 && k == 0) {
+inline uint64_t stirling_second_kind(int n, int k) {
+	if (n == 0 && k == 0) {
 		return 1;
 	}
-    else if (n == 0 || k == 0) {
+	if (n == 0 || k == 0) {
 		return 0;
 	}
-    return k * stirling_second_kind(n - 1, k) + stirling_second_kind(n - 1, k - 1);
+	return k * stirling_second_kind(n - 1, k) + stirling_second_kind(n - 1, k - 1);
+}
+
+inline double harmonic(double n) {
+	constexpr double EulerGamma = 0.5772156649015328606065120900824024310421593359399235988057672348;
+	return std::log(n) + EulerGamma + 1. / (2. * n);
 }
 
 }

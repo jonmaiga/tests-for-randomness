@@ -51,6 +51,7 @@ enum class s_type {
 	spearman_r,
 	kendall_tau,
 	gap,
+	coupon,
 
 	// mixer
 	sac,
