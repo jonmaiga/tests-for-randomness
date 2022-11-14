@@ -55,7 +55,11 @@ inline chi2_statistics coupon_stats(const std::vector<double>& data01) {
 	const auto ps = expected_probabilities(wanted_coupons, tracked_draws);
 	assertion(cc.size() == ps.size(), "Unexpected size in coupons");
 	const auto total_count = accumulate(cc);
-	return chi2_stats(cc.size(), to_data(cc), mul(to_data(ps), to_data(total_count)));
+	return chi2_stats(
+		cc.size(),
+		to_data(cc),
+		mul(to_data(ps), to_data(total_count)),
+		1.);
 }
 
 inline std::vector<statistic> coupon_test(uint64_t n, const stream& stream) {

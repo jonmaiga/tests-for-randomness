@@ -24,14 +24,17 @@ struct chi2_statistics {
 	double df{};
 };
 
-inline chi2_statistics chi2_stats(std::size_t n, const data_fn& observed, const data_fn& expected) {
+inline chi2_statistics chi2_stats(std::size_t n, const data_fn& observed, const data_fn& expected, double expected_threshold = 0) {
 	double chi2 = 0;
+	double df = 0;
 	for (std::size_t i = 0; i < n; ++i) {
 		const double expected_count = expected(i);
+		if (expected_count <= expected_threshold) continue;
 		const double diff = observed(i) - expected_count;
 		chi2 += diff * diff / expected_count;
+		df += 1;
 	}
-	return {chi2, static_cast<double>(n - 1)};
+	return {chi2, std::max(df - 1, 0.)};
 }
 
 inline chi2_statistics chi2_stats(const std::vector<uint64_t>& bins, double expected_count) {
