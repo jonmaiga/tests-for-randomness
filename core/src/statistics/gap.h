@@ -46,16 +46,11 @@ inline chi2_statistics gap_stats(const std::vector<double>& data01) {
 	const auto& ps = generate_gap_probabilities(max_gap_size, a, b);
 	const auto& gaps = generate_gaps(max_gap_size, a, b, data01);
 	const auto total_count = accumulate(gaps);
-	double chi2 = 0;
-	double df = 0;
-	for (std::size_t i = 0; i < gaps.size(); ++i) {
-		const double expected_count = ps[i] * total_count;
-		if (expected_count < 5) continue;
-		const double diff = static_cast<double>(gaps[i]) - expected_count;
-		chi2 += diff * diff / expected_count;
-		df += 1;
-	}
-	return {chi2, std::max(df - 1, 0.)};
+	return chi2_stats(
+		gaps.size(),
+		to_data(gaps),
+		mul(to_data(ps), to_data(total_count)),
+		5.);
 }
 
 inline std::vector<statistic> gap_test(uint64_t n, const stream& stream) {
