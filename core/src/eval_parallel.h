@@ -5,7 +5,7 @@
 #include <thread>
 #include <vector>
 
-#include "test_streams.h"
+#include "source_streams.h"
 #include "statistics/andersondarling.h"
 #include "statistics/avalanche.h"
 #include "statistics/basic.h"
