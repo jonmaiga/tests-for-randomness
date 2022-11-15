@@ -58,13 +58,14 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		return "N/A";
 	}
 
-	if (results.front().stats.type == s_type::divisibility) {
-		const auto st = basic_stats(to_statistics(results));
-		draw_histogram(to_p_values(results));
-		draw_histogram(to_statistics(results));
-		std::cout << "stat mean: " << st.mean << " stat var: " << st.variance() << "\n";
-	}
+	// if (results.front().stats.type == s_type::chi2) {
+	// 	const auto st = basic_stats(to_statistics(results));
+	// 	draw_histogram(to_p_values(results));
+	// 	draw_histogram(to_statistics(results));
+	// 	std::cout << "stat mean: " << st.mean << " stat var: " << st.variance() << "\n";
+	// }
 	//const auto p_value = fishers_combined_probabilities(to_p_values(results));
+
 	const auto p_values = to_p_values(results);
 	const auto ks_stat = kolmogorov_smirnov_stats(p_values);
 	const auto p_value = kolmogorov_smirnov_cdf(ks_stat, p_values.size() - 1, 100);
@@ -116,7 +117,7 @@ public:
 		p_table({
 			"mixer",
 			"mean", "chi2", "ks", "ad", "ww", "pearson",
-			"spearman", "kendall", "gap", "coupon", "div",
+			"spearman", "kendall", "gap", "coupon", "d2", "d3",
 			"sac", "bic"
 		}) {
 	}
@@ -135,7 +136,8 @@ public:
 			.col(p_value_test(r[s_type::kendall_tau]))
 			.col(p_value_test(r[s_type::gap]))
 			.col(p_value_test(r[s_type::coupon]))
-			.col(p_value_test(r[s_type::divisibility]))
+			.col(p_value_test(r[s_type::divisibility_2]))
+			.col(p_value_test(r[s_type::divisibility_3]))
 			.col(p_value_test(r[s_type::sac]))
 			.col(p_value_test(r[s_type::bic]))
 			.row();

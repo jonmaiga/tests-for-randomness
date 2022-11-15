@@ -49,25 +49,34 @@ inline std::vector<double> divisible_expected_probabilities(const uint64_t divis
 
 
 inline std::vector<statistic> divisibility_test(uint64_t n, const stream& stream) {
+	struct divisibility_test {
+		s_type type;
+		uint64_t divisor;
+	};
+
+	static std::vector<divisibility_test> sub_tests = {
+		{s_type::divisibility_2, 2},
+		{s_type::divisibility_3, 3},
+	};
+
 	const auto& data = get_raw(n, stream);
-	//constexpr uint64_t wanted = 7;
 
 	std::vector<statistic> results;
-	for (const uint64_t divisor : {2, 3, 5, 6, 7}) {
-		const auto wanted = 5;
-		const auto ps = divisible_expected_probabilities(divisor, wanted);
-		const auto collected = collect_divisible(divisor, wanted, ps.size(), data);
+	for (const auto test : sub_tests) {
+		constexpr auto wanted = 7;
+		const auto ps = divisible_expected_probabilities(test.divisor, wanted);
+		const auto collected = collect_divisible(test.divisor, wanted, ps.size(), data);
 		assertion(collected.size() == ps.size(), "Unexpected size in divisible");
 
 		const auto total_count = accumulate(collected);
 		const auto stats = chi2_stats(collected.size(), to_data(collected),
-			mul(to_data(ps), to_data(total_count)), 1.);
-		if (stats.df < 10.) {
+		                              mul(to_data(ps), to_data(total_count)), 1.);
+		if (stats.df < 5.) {
 			continue;
 		}
 		const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
 		assertion(is_valid_between_01(p_value), "bad p value");
-		results.emplace_back(s_type::divisibility, stats.chi2, p_value);
+		results.emplace_back(test.type, stats.chi2, p_value);
 	}
 	return results;
 }

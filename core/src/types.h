@@ -52,8 +52,9 @@ enum class s_type {
 	kendall_tau,
 	gap,
 	coupon,
-	divisibility,
-
+	divisibility_2,
+	divisibility_3,
+	
 	// mixer
 	sac,
 	bic,
