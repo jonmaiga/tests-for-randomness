@@ -39,23 +39,34 @@ inline std::vector<double> generate_gap_probabilities(double a, double b) {
 	return ps;
 }
 
-
-inline chi2_statistics gap_stats(const std::vector<double>& data01) {
-	double a = 0.35;
-	double b = 0.65;
-	const auto& ps = generate_gap_probabilities(a, b);
-	const auto& gaps = generate_gaps(ps.size(), a, b, data01);
-	const auto total_count = accumulate(gaps);
-	return chi2_stats(gaps.size(), to_data(gaps),
-	                  mul(to_data(ps), to_data(total_count)),
-	                  5.);
-}
-
 inline std::vector<statistic> gap_test(uint64_t n, const stream& stream) {
-	const auto stats = gap_stats(rescale64_to_01(n, stream));
-	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
-	assertion(is_valid_between_01(p_value), "bad p value");
-	return {{s_type::gap, stats.chi2, p_value}};
+	struct gap_test {
+		s_type type;
+		double a{};
+		double b{};
+	};
+
+	static std::vector<gap_test> sub_tests = {
+		{s_type::gap_low, 0, 0.33},
+		{s_type::gap_medium, 0.33, 0.66},
+		{s_type::gap_high, 0.66, 1},
+	};
+
+	const auto& data01 = rescale64_to_01(n, stream);
+	std::vector<statistic> results;
+	for (const auto& test : sub_tests) {
+		const auto& ps = generate_gap_probabilities(test.a, test.b);
+		const auto& gaps = generate_gaps(ps.size(), test.a, test.b, data01);
+		const auto total_count = accumulate(gaps);
+		const auto& stats = chi2_stats(gaps.size(), to_data(gaps),
+		                               mul(to_data(ps), to_data(total_count)),
+		                               1.);
+
+		const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
+		assertion(is_valid_between_01(p_value), "bad p value");
+		results.push_back({test.type, stats.chi2, p_value});
+	}
+	return results;
 }
 
 }

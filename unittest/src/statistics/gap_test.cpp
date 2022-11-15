@@ -34,9 +34,9 @@ TEST(gap, generate_gap_probabilities) {
 
 TEST(gap, no_change) {
 	const auto r = gap_test(1000, test_stream());
-	EXPECT_EQ(r.size(), 1);
-	EXPECT_NEAR(r.front().value, 3.8839, 1e-4);
-	EXPECT_NEAR(r.front().p_value, 0.7930, 1e-4);
+	EXPECT_EQ(r.size(), 3);
+	EXPECT_NEAR(r.front().value, 6.3867, 1e-4);
+	EXPECT_NEAR(r.front().p_value, 0.8953, 1e-4);
 }
 
 }
