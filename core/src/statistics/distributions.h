@@ -54,8 +54,10 @@ inline double binomial_pdf(uint64_t n, double p, uint64_t k) {
 	return binomial_coefficient(n, k) * std::pow(p, k) * std::pow((1 - p), n - k);
 }
 
-inline double negative_binomial_pdf(uint64_t r, double p, uint64_t k) {
-	return binomial_coefficient(k + r - 1, r - 1) * std::pow(1 - p, k) * std::pow(p, r);
+inline double negative_binomial_pdf(uint64_t successes, double p, uint64_t failures) {
+	return binomial_coefficient(failures + successes - 1, successes - 1) *
+		std::pow(1 - p, failures) *
+		std::pow(p, successes);
 }
 
 double kolmogorov_smirnov_cdf(double D, double df, int conv);
