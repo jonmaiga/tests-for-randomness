@@ -30,20 +30,14 @@ inline std::vector<test_factory> create_test_factories(const mixer& mixer, uint6
 	const auto counter1 = [mixer, n]() {
 		return test_config{n, create_counter_stream(1), mixer};
 	};
-	const auto greycode2 = [mixer, n]() {
+	const auto graycode2 = [mixer, n]() {
 		return test_config{n, create_gray_code(2), mixer};
-	};
-	const auto greycode4 = [mixer, n]() {
-		return test_config{n, create_gray_code(4), mixer};
-	};
-	const auto greycode8 = [mixer, n]() {
-		return test_config{n, create_gray_code(8), mixer};
 	};
 	const auto trng = [mixer, n]() {
 		return test_config{n, create_stream_from_data_by_ref_thread_safe("trng", get_trng_data()), mixer};
 	};
 
-	std::vector<test_factory> factories {counter1, greycode2, greycode4, greycode8};
+	std::vector<test_factory> factories {counter1, graycode2};
 	for (int bit = 0; bit < 64; ++bit) {
 		const auto post_mix_permute = [bit](const stream& source) {
 			return create_bit_isolation_stream(source, bit);
