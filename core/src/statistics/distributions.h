@@ -35,7 +35,7 @@ inline double chi2_distribution_normal_approximation_cdf(double chi2, double df)
 
 inline double chi2_distribution_cdf(double chi2, double df) {
 	// found here: https://en.wikipedia.org/wiki/Chi-squared_distribution
-	if (is_near(df, 0)) { 
+	if (is_near(df, 0)) {
 		return 0;
 	}
 	return gamma_regularized(.5 * df, .5 * chi2);
@@ -50,8 +50,12 @@ inline double binomial_coefficient(int n, int k) {
 	return 1 / ((n + 1) * beta(n - k + 1, k + 1));
 }
 
-inline double binomial_pdf(double n, double p, double k) {
+inline double binomial_pdf(uint64_t n, double p, uint64_t k) {
 	return binomial_coefficient(n, k) * std::pow(p, k) * std::pow((1 - p), n - k);
+}
+
+inline double negative_binomial_pdf(uint64_t r, double p, uint64_t k) {
+	return binomial_coefficient(k + r - 1, r - 1) * std::pow(1 - p, k) * std::pow(p, r);
 }
 
 double kolmogorov_smirnov_cdf(double D, double df, int conv);

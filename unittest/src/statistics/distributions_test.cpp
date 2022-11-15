@@ -65,6 +65,13 @@ TEST(binomial_pdf, basic) {
 	EXPECT_NEAR(binomial_pdf(1, 1, 0), 0, 1e-4);
 }
 
+TEST(negative_binomial_pdf, basic) {
+	// matches mma PDF[NegativeBinomialDistribution[...], x]
+	EXPECT_NEAR(negative_binomial_pdf(1, 0, 0), 0, 1e-4);
+	EXPECT_NEAR(negative_binomial_pdf(1, 1, 0), 1, 1e-4);
+	EXPECT_NEAR(negative_binomial_pdf(10, 0.5, 4), 0.0436, 1e-4);
+}
+
 
 TEST(students_t_cdf, basic) {
 	// does not match mma CDF[StudentTDistribution[...], x]
