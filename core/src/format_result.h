@@ -58,7 +58,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		return "N/A";
 	}
 
-	if (results.front().stats.type == s_type::coupon) {
+	if (results.front().stats.type == s_type::divisibility) {
 		const auto st = basic_stats(to_statistics(results));
 		draw_histogram(to_p_values(results));
 		draw_histogram(to_statistics(results));
@@ -115,7 +115,9 @@ public:
 	result_analyzer() :
 		p_table({
 			"mixer",
-			"mean", "chi2", "ks", "ad", "ww", "pearson", "spearman", "kendall", "gap", "coupon", "sac", "bic"
+			"mean", "chi2", "ks", "ad", "ww", "pearson",
+			"spearman", "kendall", "gap", "coupon", "div",
+			"sac", "bic"
 		}) {
 	}
 
@@ -133,6 +135,7 @@ public:
 			.col(p_value_test(r[s_type::kendall_tau]))
 			.col(p_value_test(r[s_type::gap]))
 			.col(p_value_test(r[s_type::coupon]))
+			.col(p_value_test(r[s_type::divisibility]))
 			.col(p_value_test(r[s_type::sac]))
 			.col(p_value_test(r[s_type::bic]))
 			.row();

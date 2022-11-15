@@ -37,7 +37,7 @@ inline void run_tests() {
 	const auto trng2 = create_mixer_from_stream("trng2", trng_stream);
 
 	const test_method test = test_rrc_parallel;
-	constexpr auto n = 10000;
+	constexpr auto n = 20000;
 
 	const mixer test_mixer = {
 		"test", [](uint64_t x) {
@@ -51,18 +51,18 @@ inline void run_tests() {
 	std::cout << "n=" << n << "\n";
 
 	result_analyzer analyzer;
-	analyzer.add(test(trng1, n));
-	analyzer.add(test(trng2, n));
+	//analyzer.add(test(trng1, n));
+	//analyzer.add(test(trng2, n));
 
 	analyzer.add(test(mx3, n));
 	analyzer.add(test(nasam, n));
 
 	analyzer.add(test(xmxmxm, n));
 	analyzer.add(test(moremur, n));
-	analyzer.add(test(lea64, n));
-	analyzer.add(test(degski64, n));
-	analyzer.add(test(split_mix, n));
-	analyzer.add(test(murmur3, n));
+	// analyzer.add(test(lea64, n));
+	// analyzer.add(test(degski64, n));
+	// analyzer.add(test(split_mix, n));
+	 analyzer.add(test(murmur3, n));
 
 	analyzer.add(test(test_mixer, n));
 	analyzer.add(test(xmx, n));

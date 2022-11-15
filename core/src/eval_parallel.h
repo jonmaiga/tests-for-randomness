@@ -12,6 +12,7 @@
 #include "statistics/chi2.h"
 #include "statistics/correlation.h"
 #include "statistics/coupon.h"
+#include "statistics/divisibility.h"
 #include "statistics/gap.h"
 #include "statistics/kolmogorov.h"
 #include "statistics/waldwolfowitz.h"
@@ -76,6 +77,7 @@ inline test_jobs create_test_jobs(const std::vector<test_factory>& test_factorie
 	append(jobs, create_stream_jobs(kendall_correlation_test, test_factories));
 	append(jobs, create_stream_jobs(gap_test, test_factories));
 	append(jobs, create_stream_jobs(coupon_test, test_factories));
+	append(jobs, create_stream_jobs(divisibility_test, test_factories));
 
 	append(jobs, create_mixer_jobs(avalanche_mixer_sac_test, test_factories));
 	append(jobs, create_mixer_jobs(avalanche_mixer_bic_test, test_factories));
