@@ -12,7 +12,7 @@ namespace mixer {
 
 inline std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t tracked_draws, const std::vector<double>& data01) {
 	std::set<uint64_t> coupons_collected;
-	std::vector<uint64_t> draws_histogram(tracked_draws + 1);
+	std::vector<uint64_t> draws_histogram(tracked_draws);
 	uint64_t draw_count = 0;
 	for (const auto& v : data01) {
 		auto coupon_id = std::min(static_cast<uint64_t>(wanted_coupons * v), wanted_coupons - 1);
@@ -32,16 +32,18 @@ inline std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t t
 	return draws_histogram;
 }
 
-inline std::vector<double> expected_probabilities(const uint64_t wanted_coupons, const uint64_t tracked_draws) {
+inline std::vector<double> expected_probabilities(const uint64_t wanted_coupons) {
 	// from: https://www.cs.fsu.edu/~mascagni/Testing.pdf
 	std::vector<double> expected;
 	const double fac_d = std::tgamma(wanted_coupons + 1);
 	double sum = 0;
-	for (auto i = wanted_coupons; i < wanted_coupons + tracked_draws; ++i) {
+	auto i = wanted_coupons;
+	while (sum < 0.99 && i < 30) {
 		const double p = fac_d / pow(wanted_coupons, i) * stirling_second_kind(i - 1, wanted_coupons - 1);
 		assertion(is_valid_between_01(p), "unexpected coupon probability");
 		expected.push_back(p);
 		sum += p;
+		++i;
 	}
 	expected.push_back(1. - sum);
 	return expected;
@@ -49,17 +51,12 @@ inline std::vector<double> expected_probabilities(const uint64_t wanted_coupons,
 
 inline chi2_statistics coupon_stats(const std::vector<double>& data01) {
 	constexpr uint64_t wanted_coupons = 5;
-	constexpr uint64_t tracked_draws = 20;
-	const auto cc = collect_coupons(wanted_coupons, tracked_draws, data01);
-
-	const auto ps = expected_probabilities(wanted_coupons, tracked_draws);
+	const auto ps = expected_probabilities(wanted_coupons);
+	const auto cc = collect_coupons(wanted_coupons, ps.size(), data01);
 	assertion(cc.size() == ps.size(), "Unexpected size in coupons");
+
 	const auto total_count = accumulate(cc);
-	return chi2_stats(
-		cc.size(),
-		to_data(cc),
-		mul(to_data(ps), to_data(total_count)),
-		1.);
+	return chi2_stats(cc.size(), to_data(cc), mul(to_data(ps), to_data(total_count)), 1.);
 }
 
 inline std::vector<statistic> coupon_test(uint64_t n, const stream& stream) {
