@@ -51,18 +51,18 @@ inline void run_tests() {
 	std::cout << "n=" << n << "\n";
 
 	result_analyzer analyzer;
-	//analyzer.add(test(trng1, n));
-	//analyzer.add(test(trng2, n));
+	analyzer.add(test(trng1, n));
+	analyzer.add(test(trng2, n));
 
 	analyzer.add(test(mx3, n));
 	analyzer.add(test(nasam, n));
 
 	analyzer.add(test(xmxmxm, n));
 	analyzer.add(test(moremur, n));
-	// analyzer.add(test(lea64, n));
-	// analyzer.add(test(degski64, n));
-	// analyzer.add(test(split_mix, n));
-	 analyzer.add(test(murmur3, n));
+	analyzer.add(test(lea64, n));
+	analyzer.add(test(degski64, n));
+	analyzer.add(test(split_mix, n));
+	analyzer.add(test(murmur3, n));
 
 	analyzer.add(test(test_mixer, n));
 	analyzer.add(test(xmx, n));
