@@ -50,6 +50,15 @@ inline const std::vector<uint64_t>& get_trng_data() {
 	return trng_data;
 }
 
+inline stream create_stream_from_data_by_ref(const std::string& name, const std::vector<uint64_t>& data) {
+	std::size_t index = 0;
+	return stream{
+		name, [&data, index]() mutable -> uint64_t {
+			return data[index++ % data.size()];
+		}
+	};
+}
+
 inline stream create_stream_from_data_by_ref_thread_safe(const std::string& name, const std::vector<uint64_t>& data) {
 	static std::atomic_size_t index = 0;
 	return stream{

@@ -34,10 +34,10 @@ inline std::vector<test_factory> create_test_factories(const mixer& mixer, uint6
 		return test_config{n, create_gray_code(2), mixer};
 	};
 	const auto trng = [mixer, n]() {
-		return test_config{n, create_stream_from_data_by_ref_thread_safe("trng", get_trng_data()), mixer};
+		return test_config{n, create_stream_from_data_by_ref("trng", get_trng_data()), mixer};
 	};
 
-	std::vector<test_factory> factories {counter1, graycode2};
+	std::vector<test_factory> factories {counter1, graycode2, trng};
 	for (int bit = 0; bit < 64; ++bit) {
 		const auto post_mix_permute = [bit](const stream& source) {
 			return create_bit_isolation_stream(source, bit);
