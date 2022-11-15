@@ -76,7 +76,7 @@ inline std::vector<statistic> divisibility_test(uint64_t n, const stream& stream
 		}
 		const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
 		assertion(is_valid_between_01(p_value), "bad p value");
-		results.emplace_back(test.type, stats.chi2, p_value);
+		results.push_back({test.type, stats.chi2, p_value});
 	}
 	return results;
 }
