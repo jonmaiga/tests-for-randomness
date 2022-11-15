@@ -117,7 +117,7 @@ public:
 		p_table({
 			"mixer",
 			"mean", "chi2", "ks", "ad", "ww", "pearson",
-			"spearman", "kendall", "gap", "coupon", "d2", "d3",
+			"spearman", "kendall", "g1", "g2", "g3", "coupon", "d2", "d3",
 			"sac", "bic"
 		}) {
 	}
@@ -134,7 +134,9 @@ public:
 			.col(p_value_test(r[s_type::pearson_r]))
 			.col(p_value_test(r[s_type::spearman_r]))
 			.col(p_value_test(r[s_type::kendall_tau]))
-			.col(p_value_test(r[s_type::gap]))
+			.col(p_value_test(r[s_type::gap_low]))
+			.col(p_value_test(r[s_type::gap_medium]))
+			.col(p_value_test(r[s_type::gap_high]))
 			.col(p_value_test(r[s_type::coupon]))
 			.col(p_value_test(r[s_type::divisibility_2]))
 			.col(p_value_test(r[s_type::divisibility_3]))
