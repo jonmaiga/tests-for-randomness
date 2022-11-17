@@ -56,6 +56,7 @@ enum class s_type {
 	coupon,
 	divisibility_2,
 	divisibility_3,
+	permutation,
 	
 	// mixer
 	sac,

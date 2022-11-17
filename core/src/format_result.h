@@ -58,12 +58,12 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		return "N/A";
 	}
 
-	// if (results.front().stats.type == s_type::chi2) {
-	// 	const auto st = basic_stats(to_statistics(results));
-	// 	draw_histogram(to_p_values(results));
-	// 	draw_histogram(to_statistics(results));
-	// 	std::cout << "stat mean: " << st.mean << " stat var: " << st.variance() << "\n";
-	// }
+	if (results.front().stats.type == s_type::permutation) {
+		const auto st = basic_stats(to_statistics(results));
+		draw_histogram(to_p_values(results));
+		draw_histogram(to_statistics(results));
+		std::cout << "stat mean: " << st.mean << " stat var: " << st.variance() << "\n";
+	}
 	//const auto p_value = fishers_combined_probabilities(to_p_values(results));
 
 	const auto p_values = to_p_values(results);
@@ -118,6 +118,7 @@ public:
 			"mixer",
 			"mean", "chi2", "ks", "ad", "ww", "pearson",
 			"spearman", "kendall", "g1", "g2", "g3", "coupon", "d2", "d3",
+			"perm",
 			"sac", "bic"
 		}) {
 	}
@@ -140,6 +141,7 @@ public:
 			.col(p_value_test(r[s_type::coupon]))
 			.col(p_value_test(r[s_type::divisibility_2]))
 			.col(p_value_test(r[s_type::divisibility_3]))
+			.col(p_value_test(r[s_type::permutation]))
 			.col(p_value_test(r[s_type::sac]))
 			.col(p_value_test(r[s_type::bic]))
 			.row();
