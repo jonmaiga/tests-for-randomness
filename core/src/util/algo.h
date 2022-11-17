@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <bitset>
 #include <cctype>
 #include <numeric>
 #include <vector>
@@ -145,30 +146,31 @@ inline void sliding_bit_window(
 	const std::function<void(uint64_t)>& callback) {
 
 	assertion(window_size >= 1 && window_size <= 63, "bad window size");
-	assertion(increments >= 1 && increments + window_size <= 63, "bad increments");
+	assertion(increments >= 1 && increments + window_size <= 64, "bad increments");
 
-	const uint64_t left_mask = (1ull << window_size) - 1;
+	std::bitset<128> left_mask;
+	left_mask |= (1ull << window_size) - 1;
 
-	for (std::size_t i = 0; i < data.size(); ++i) {
-		const uint64_t left_data = data[i];
-		for (int left_bit = 0; left_bit < 64; left_bit += increments) {
-			const auto left_value = (left_data >> left_bit) & left_mask;
-			const int right_bit = left_bit + window_size;
-			if (right_bit < 64) {
-				callback(left_value);
-				continue;
-			}
-			if (i + 1 == data.size()) {
-				callback(left_value);
-				break;
-			}
-
-			const auto right_data = data[i + 1];
-			const uint64_t right_mask = (1ull << right_bit) - 1ull;
-			const auto right_value = (right_data & right_mask) << (64 - left_bit);
-			callback(left_value | right_value);
+	std::bitset<128> bits;
+	bits |= data[0];
+	std::size_t i = 0;
+	int bits_left_to_consume = 64;
+	while (i < data.size()) {
+		while (bits_left_to_consume >= window_size) {
+			callback((bits & left_mask).to_ullong());
+			bits >>= increments;
+			bits_left_to_consume -= increments;
+		}
+		++ i;
+		if (i < data.size()) {
+			std::bitset<128> refill;
+			refill |= data[i];
+			refill <<= bits_left_to_consume;
+			bits |= refill;
+			bits_left_to_consume += 64;
 		}
 	}
 }
+
 
 }

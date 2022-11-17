@@ -5,12 +5,11 @@
 namespace mixer {
 
 inline std::vector<uint64_t> sliding_bit_window(const std::vector<uint64_t>& data,
-                                                int window_size) {
+                                                int window_size, int increments = 1) {
 	std::vector<uint64_t> r;
-	sliding_bit_window(data, window_size, 1, [&r](uint64_t v) { r.push_back(v); });
+	sliding_bit_window(data, window_size, increments, [&r](uint64_t v) { r.push_back(v); });
 	return r;
 }
-
 
 TEST(algo, sliding_bit_window) {
 	using T = std::vector<uint64_t>;
@@ -87,6 +86,33 @@ TEST(algo, sliding_bit_window_128bits_more) {
 		auto actual = sliding_bit_window({0, f}, 3);
 		EXPECT_EQ(actual, expected);
 	}
+}
+
+TEST(algo, sliding_bit_window_128bits_explicit) {
+	uint64_t left = 0b1110010101011011110001011100001000101010001010111110100010110111;
+	uint64_t right = 0b1001111011101110001101010111101111110110000110101011111100010001;
+
+	auto r = sliding_bit_window({left, right}, 7, 7);
+	EXPECT_EQ(r.size(), 18);
+	EXPECT_EQ(r[0], 0b0110111);
+	EXPECT_EQ(r[1], 0b1010001);
+	EXPECT_EQ(r[8], 0b1100101);
+	EXPECT_EQ(r[9], 0b0100011);
+	EXPECT_EQ(r[10], 0b1111100);
+	EXPECT_EQ(r[11], 0b1010101);
+	EXPECT_EQ(r[17], 0b0111101);
+}
+
+TEST(algo, sliding_bit_window_128bits_explicit_even) {
+	uint64_t left = 0b1110010101011011110001011100001000101010001010111110100010110111;
+	uint64_t right = 0b1001111011101110001101010111101111110110000110101011111100010001;
+
+	auto r = sliding_bit_window({left, right}, 16, 16);
+	EXPECT_EQ(r.size(), 8);
+	EXPECT_EQ(r[0], 0b1110100010110111);
+	EXPECT_EQ(r[3], 0b1110010101011011);
+	EXPECT_EQ(r[4], 0b1011111100010001);
+	EXPECT_EQ(r[7], 0b1001111011101110);
 }
 
 
