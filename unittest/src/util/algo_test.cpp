@@ -4,6 +4,14 @@
 
 namespace mixer {
 
+inline std::vector<uint64_t> sliding_bit_window(const std::vector<uint64_t>& data,
+                                                int window_size) {
+	std::vector<uint64_t> r;
+	sliding_bit_window(data, window_size, 1, [&r](uint64_t v) { r.push_back(v); });
+	return r;
+}
+
+
 TEST(algo, sliding_bit_window) {
 	using T = std::vector<uint64_t>;
 	EXPECT_EQ(sliding_bit_window({ 0 }, 1).size(), 64);

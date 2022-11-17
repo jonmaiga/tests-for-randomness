@@ -138,15 +138,15 @@ typename T::value_type accumulate(const T& data) {
 	return std::accumulate(data.begin(), data.end(), 0ull, std::plus());
 }
 
-inline std::vector<uint64_t> sliding_bit_window(
+inline void sliding_bit_window(
 	const std::vector<uint64_t>& data,
 	int window_size,
-	int increments = 1) {
+	int increments,
+	const std::function<void(uint64_t)>& callback) {
 
 	assertion(window_size >= 1 && window_size <= 63, "bad window size");
 	assertion(increments >= 1 && increments + window_size <= 63, "bad increments");
 
-	std::vector<uint64_t> r;
 	const uint64_t mask = (1ull << window_size) - 1;
 
 	for (std::size_t i = 0; i < data.size(); ++i) {
@@ -156,11 +156,11 @@ inline std::vector<uint64_t> sliding_bit_window(
 		for (int left_bit = 0; left_bit < 64; left_bit += increments) {
 			const int right_bit = left_bit + window_size;
 			if (right_bit < 64) {
-				r.push_back((v >> left_bit) & mask);
+				callback((v >> left_bit) & mask);
 				continue;
 			}
 			if (i + 1 == data.size()) {
-				r.push_back((v >> left_bit) & mask);
+				callback((v >> left_bit) & mask);
 				break;
 			}
 
@@ -169,11 +169,9 @@ inline std::vector<uint64_t> sliding_bit_window(
 			const uint64_t rm = (1ull << right_bit) - 1;
 			const auto b2 = (w & rm) << (64 - left_bit);
 			const auto q = b1 | b2;
-			r.push_back(q);
+			callback(q);
 		}
 	}
-
-	return r;
 }
 
 }
