@@ -147,29 +147,26 @@ inline void sliding_bit_window(
 	assertion(window_size >= 1 && window_size <= 63, "bad window size");
 	assertion(increments >= 1 && increments + window_size <= 63, "bad increments");
 
-	const uint64_t mask = (1ull << window_size) - 1;
+	const uint64_t left_mask = (1ull << window_size) - 1;
 
 	for (std::size_t i = 0; i < data.size(); ++i) {
-
-		const uint64_t v = data[i];
-
+		const uint64_t left_data = data[i];
 		for (int left_bit = 0; left_bit < 64; left_bit += increments) {
+			const auto left_value = (left_data >> left_bit) & left_mask;
 			const int right_bit = left_bit + window_size;
 			if (right_bit < 64) {
-				callback((v >> left_bit) & mask);
+				callback(left_value);
 				continue;
 			}
 			if (i + 1 == data.size()) {
-				callback((v >> left_bit) & mask);
+				callback(left_value);
 				break;
 			}
 
-			const auto b1 = (v >> left_bit) & mask;
-			const auto w = data[i + 1];
-			const uint64_t rm = (1ull << right_bit) - 1;
-			const auto b2 = (w & rm) << (64 - left_bit);
-			const auto q = b1 | b2;
-			callback(q);
+			const auto right_data = data[i + 1];
+			const uint64_t right_mask = (1ull << right_bit) - 1ull;
+			const auto right_value = (right_data & right_mask) << (64 - left_bit);
+			callback(left_value | right_value);
 		}
 	}
 }
