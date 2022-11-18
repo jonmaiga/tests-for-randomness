@@ -58,10 +58,10 @@ inline test_jobs create_mixer_jobs(const mixer_test& test, const std::vector<tes
 
 inline test_jobs create_test_jobs(const std::vector<test_factory>& test_factories) {
 	test_jobs jobs;
-	for (const auto test : stream_tests) {
+	for (const auto& test : stream_tests) {
 		append(jobs, create_stream_jobs(test, test_factories));
 	}
-	for (const auto test : mixer_tests) {
+	for (const auto& test : mixer_tests) {
 		append(jobs, create_mixer_jobs(test, test_factories));
 	}
 	return jobs;
