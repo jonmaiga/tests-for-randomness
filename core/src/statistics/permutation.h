@@ -13,12 +13,12 @@ inline std::vector<uint64_t> get_permutation_histogram(const std::vector<uint64_
 	return histogram;
 }
 
-inline std::vector<statistic> permutation_test(const uint64_t n, const stream& stream) {
+inline std::optional<statistic> permutation_test(const uint64_t n, const stream& stream) {
 	const auto histogram = get_permutation_histogram(get_raw(n, stream), 5);
 	const double expected_count = static_cast<double>(accumulate(histogram)) / histogram.size();
 	const auto stats = chi2_stats(histogram, expected_count);
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
-	return {{test_type::permutation, stats.chi2, p_value}};
+	return statistic{test_type::permutation, stats.chi2, p_value};
 }
 
 

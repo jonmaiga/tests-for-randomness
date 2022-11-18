@@ -29,8 +29,8 @@ inline test_jobs create_stream_jobs(const stream_test& test, const std::vector<t
 			const auto cfg = factory();
 			std::vector<result> results;
 			const auto s = create_stream(cfg);
-			for (const auto& r : test(cfg.n, s)) {
-				results.push_back({cfg.source.name, cfg.mix.name, r});
+			if (const auto& stat = test(cfg.n, s)) {
+				results.push_back({cfg.source.name, cfg.mix.name, *stat});
 			}
 			return results;
 		});
@@ -45,8 +45,8 @@ inline test_jobs create_mixer_jobs(const mixer_test& test, const std::vector<tes
 		js.push_back([test, factory]() {
 			const auto cfg = factory();
 			std::vector<result> results;
-			for (const auto& r : test(cfg.n, cfg.source, cfg.mix)) {
-				results.push_back({cfg.source.name, cfg.mix.name, r});
+			if (const auto& stat = test(cfg.n, cfg.source, cfg.mix)) {
+				results.push_back({cfg.source.name, cfg.mix.name, *stat});
 			}
 			return results;
 		});

@@ -48,7 +48,7 @@ inline std::vector<double> divisible_expected_probabilities(const uint64_t divis
 }
 
 
-inline std::vector<statistic> divisibility_test(uint64_t n, const stream& stream, test_type test, int divisor) {
+inline std::optional<statistic> divisibility_test(uint64_t n, const stream& stream, test_type test, int divisor) {
 	const auto& data = get_raw(n, stream);
 
 	constexpr auto wanted = 7;
@@ -64,7 +64,7 @@ inline std::vector<statistic> divisibility_test(uint64_t n, const stream& stream
 	}
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
 	assertion(is_valid_between_01(p_value), "bad p value");
-	return {{test, stats.chi2, p_value}};
+	return statistic{test, stats.chi2, p_value};
 }
 
 stream_test create_divisibility_test(test_type test, int divisor) {

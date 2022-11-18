@@ -52,14 +52,12 @@ inline basic_statistics basic_stats(const std::vector<double>& values) {
 	return stats;
 }
 
-inline std::vector<statistic> basic_test(uint64_t n, const stream& stream) {
+inline std::optional<statistic> basic_test(uint64_t n, const stream& stream) {
 	// mean from uniform is approximately normal
 	// https://stats.stackexchange.com/questions/458341/what-distribution-does-the-mean-of-a-random-sample-from-a-uniform-distribution-f
 	const auto ns = rescale64_to_01(n, stream);
 	const auto stats = basic_stats(ns);
-	return {
-		{test_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1. / 12.)}
-	};
+	return statistic{test_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1. / 12.)};
 }
 
 

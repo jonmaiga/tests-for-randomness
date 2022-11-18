@@ -1,7 +1,15 @@
 {
     "files.associations": {
         "vector": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "optional": "cpp",
+        "__split_buffer": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "string_view": "cpp"
     },
     "editor.tokenColorCustomizations": {
         "textMateRules": [

@@ -22,10 +22,10 @@ inline double kolmogorov_smirnov_stats(std::vector<double> data01) {
 	return max_distance;
 }
 
-inline std::vector<statistic> kolmogorov_test(const uint64_t n, const stream& stream) {
+inline std::optional<statistic> kolmogorov_test(const uint64_t n, const stream& stream) {
 	const auto max_distance = kolmogorov_smirnov_stats(rescale64_to_01(n, stream));
 	const auto p_value = kolmogorov_smirnov_cdf(max_distance, n, 100);
-	return {{test_type::kolmogorov_smirnov, max_distance, p_value}};
+	return statistic{test_type::kolmogorov_smirnov, max_distance, p_value};
 }
 
 }

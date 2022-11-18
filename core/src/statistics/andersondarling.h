@@ -23,9 +23,9 @@ inline double anderson_darling_stats(std::vector<double> data01) {
 	return -n - sum / n;
 }
 
-inline std::vector<statistic> anderson_darling_test(const uint64_t n, const stream& stream) {
+inline std::optional<statistic> anderson_darling_test(const uint64_t n, const stream& stream) {
 	const auto A2 = anderson_darling_stats(rescale64_to_01(n, stream));
-	return {{test_type::anderson_darling, A2, anderson_darling_cdf(A2, n - 1)}};
+	return statistic{test_type::anderson_darling, A2, anderson_darling_cdf(A2, n - 1)};
 }
 
 }

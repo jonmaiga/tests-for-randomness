@@ -18,9 +18,8 @@ TEST(chi2, basic) {
 
 TEST(chi2, no_change) {
 	const auto r = chi2_test(50, test_stream());
-	EXPECT_EQ(r.size(), 1);
-	EXPECT_NEAR(r.front().value,  4.7999, 1e-4);
-	EXPECT_NEAR(r.front().p_value, 0.8513, 1e-4);
+	EXPECT_NEAR(r->value,  4.7999, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.8513, 1e-4);
 }
 
 

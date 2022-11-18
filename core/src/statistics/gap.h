@@ -39,7 +39,7 @@ inline std::vector<double> generate_gap_probabilities(double a, double b) {
 	return ps;
 }
 
-inline std::vector<statistic> gap_test(uint64_t n, const stream& stream, test_type test, double a, double b) {
+inline std::optional<statistic> gap_test(uint64_t n, const stream& stream, test_type test, double a, double b) {
 	const auto& data01 = rescale64_to_01(n, stream);
 	const auto& ps = generate_gap_probabilities(a, b);
 	const auto& gaps = generate_gaps(ps.size(), a, b, data01);
@@ -50,7 +50,7 @@ inline std::vector<statistic> gap_test(uint64_t n, const stream& stream, test_ty
 
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
 	assertion(is_valid_between_01(p_value), "bad p value");
-	return {{test, stats.chi2, p_value}};
+	return statistic{test, stats.chi2, p_value};
 }
 
 stream_test create_gap_test(test_type test, double a, double b) {

@@ -22,13 +22,12 @@ TEST(divisibility, expected_probabilities) {
 
 TEST(divisibility, divisibility_no_change) {
 	auto r = divisibility_test(1000, test_stream(), test_type::divisibility_2, 2);
-	EXPECT_NEAR(r.front().value, 8.8334, 1e-4);
-	EXPECT_NEAR(r.front().p_value, 0.7854, 1e-4);
+	EXPECT_NEAR(r->value, 8.8334, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.7854, 1e-4);
 
 	r = divisibility_test(1000, test_stream(), test_type::divisibility_3, 3);
-	EXPECT_NEAR(r.front().value, 10.1544, 1e-4);
-	EXPECT_NEAR(r.front().p_value, 0.8970, 1e-4);
-
+	EXPECT_NEAR(r->value, 10.1544, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.8970, 1e-4);
 }
 
 }
