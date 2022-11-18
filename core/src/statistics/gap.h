@@ -12,7 +12,7 @@ namespace mixer {
 
 inline std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, const std::vector<double>& data01) {
 	std::vector<uint64_t> gaps(max_gap_size);
-	uint64_t current_gap = 0;
+	std::size_t current_gap = 0;
 	for (const auto v : data01) {
 		if (v >= a && v < b) {
 			gaps[std::min(current_gap, gaps.size() - 1)] ++;
