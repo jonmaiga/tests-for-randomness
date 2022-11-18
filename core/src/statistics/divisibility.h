@@ -48,38 +48,29 @@ inline std::vector<double> divisible_expected_probabilities(const uint64_t divis
 }
 
 
-inline std::vector<statistic> divisibility_test(uint64_t n, const stream& stream) {
-	struct divisibility_test {
-		test_type type;
-		uint64_t divisor;
-	};
-
-	static std::vector<divisibility_test> sub_tests = {
-		{test_type::divisibility_2, 2},
-		{test_type::divisibility_3, 3},
-	};
-
+inline std::vector<statistic> divisibility_test(uint64_t n, const stream& stream, test_type test, int divisor) {
 	const auto& data = get_raw(n, stream);
 
-	std::vector<statistic> results;
-	for (const auto test : sub_tests) {
-		constexpr auto wanted = 7;
-		const auto ps = divisible_expected_probabilities(test.divisor, wanted);
-		const auto collected = collect_divisible(test.divisor, wanted, ps.size(), data);
-		assertion(collected.size() == ps.size(), "Unexpected size in divisible");
+	constexpr auto wanted = 7;
+	const auto ps = divisible_expected_probabilities(divisor, wanted);
+	const auto collected = collect_divisible(divisor, wanted, ps.size(), data);
+	assertion(collected.size() == ps.size(), "Unexpected size in divisible");
 
-		const auto total_count = accumulate(collected);
-		const auto stats = chi2_stats(collected.size(), to_data(collected),
-		                              mul(to_data(ps), to_data(total_count)), 1.);
-		if (stats.df < 5.) {
-			continue;
-		}
-		const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
-		assertion(is_valid_between_01(p_value), "bad p value");
-		results.push_back({test.type, stats.chi2, p_value});
+	const auto total_count = accumulate(collected);
+	const auto stats = chi2_stats(collected.size(), to_data(collected),
+									mul(to_data(ps), to_data(total_count)), 1.);
+	if (stats.df < 5.) {
+		return {};
 	}
-	return results;
+	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
+	assertion(is_valid_between_01(p_value), "bad p value");
+	return {{test, stats.chi2, p_value}};
 }
 
+stream_test create_divisibility_test(test_type test, int divisor) {
+	return [test, divisor](uint64_t n, const stream& stream) {
+		return divisibility_test(n, stream, test, divisor);
+	};
+}
 
 }

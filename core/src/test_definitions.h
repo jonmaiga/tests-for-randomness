@@ -28,7 +28,8 @@ const std::vector<stream_test> stream_tests = {
 	create_gap_test(test_type::gap_medium, 0.33, 0.66),
 	create_gap_test(test_type::gap_high, 0.66, 1),
 	coupon_test,
-	divisibility_test,
+	create_divisibility_test(test_type::divisibility_2, 2),
+	create_divisibility_test(test_type::divisibility_3, 3),
 	permutation_test
 };
 
