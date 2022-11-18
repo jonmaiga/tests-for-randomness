@@ -9,12 +9,10 @@
 #include "test_definitions.h"
 #include "util/jobs.h"
 
-namespace mixer {
+namespace mixer {namespace internal {
 
 using test_job_return = std::vector<result>;
 using test_jobs = jobs<test_job_return>;
-
-namespace internal {
 
 inline stream create_stream(const test_config& cfg) {
 	auto s = create_stream_from_mixer(cfg.source, cfg.mix);
