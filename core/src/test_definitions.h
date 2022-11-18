@@ -24,7 +24,9 @@ const std::vector<stream_test> stream_tests = {
 	pearson_correlation_test,
 	spearman_correlation_test,
 	kendall_correlation_test,
-	gap_test,
+	create_gap_test(test_type::gap_low, 0, 0.33),
+	create_gap_test(test_type::gap_medium, 0.33, 0.66),
+	create_gap_test(test_type::gap_high, 0.66, 1),
 	coupon_test,
 	divisibility_test,
 	permutation_test
