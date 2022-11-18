@@ -1,4 +1,4 @@
-#include <test/permutation.h>
+#include <statistics/permutation.h>
 
 #include <gtest/gtest.h>
 

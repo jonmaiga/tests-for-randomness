@@ -15,8 +15,8 @@
 #include "statistics/divisibility.h"
 #include "statistics/gap.h"
 #include "statistics/kolmogorov.h"
+#include "statistics/permutation.h"
 #include "statistics/waldwolfowitz.h"
-#include "test/permutation.h"
 #include "util/jobs.h"
 
 namespace mixer {
