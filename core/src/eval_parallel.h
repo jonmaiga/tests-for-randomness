@@ -6,17 +6,7 @@
 #include <vector>
 
 #include "source_streams.h"
-#include "statistics/andersondarling.h"
-#include "statistics/avalanche.h"
-#include "statistics/basic.h"
-#include "statistics/chi2.h"
-#include "statistics/correlation.h"
-#include "statistics/coupon.h"
-#include "statistics/divisibility.h"
-#include "statistics/gap.h"
-#include "statistics/kolmogorov.h"
-#include "statistics/permutation.h"
-#include "statistics/waldwolfowitz.h"
+#include "test_definitions.h"
 #include "util/jobs.h"
 
 namespace mixer {
@@ -68,21 +58,12 @@ inline test_jobs create_mixer_jobs(const mixer_test& test, const std::vector<tes
 
 inline test_jobs create_test_jobs(const std::vector<test_factory>& test_factories) {
 	test_jobs jobs;
-	append(jobs, create_stream_jobs(basic_test, test_factories));
-	append(jobs, create_stream_jobs(chi2_test, test_factories));
-	append(jobs, create_stream_jobs(kolmogorov_test, test_factories));
-	append(jobs, create_stream_jobs(anderson_darling_test, test_factories));
-	append(jobs, create_stream_jobs(wald_wolfowitz_test, test_factories));
-	append(jobs, create_stream_jobs(pearson_correlation_test, test_factories));
-	append(jobs, create_stream_jobs(spearman_correlation_test, test_factories));
-	append(jobs, create_stream_jobs(kendall_correlation_test, test_factories));
-	append(jobs, create_stream_jobs(gap_test, test_factories));
-	append(jobs, create_stream_jobs(coupon_test, test_factories));
-	append(jobs, create_stream_jobs(divisibility_test, test_factories));
-	append(jobs, create_stream_jobs(permutation_test, test_factories));
-
-	append(jobs, create_mixer_jobs(avalanche_mixer_sac_test, test_factories));
-	append(jobs, create_mixer_jobs(avalanche_mixer_bic_test, test_factories));
+	for (const auto test : stream_tests) {
+		append(jobs, create_stream_jobs(test, test_factories));
+	}
+	for (const auto test : mixer_tests) {
+		append(jobs, create_mixer_jobs(test, test_factories));
+	}
 	return jobs;
 }
 
