@@ -70,7 +70,7 @@ inline std::vector<statistic> basic_test(uint64_t n, const stream& stream) {
 	//const auto p_value = z_test(stats.n, stats.variance, pop_var, pop_var_var);
 
 	return {
-		{s_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1. / 12.)}
+		{test_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1. / 12.)}
 	};
 }
 

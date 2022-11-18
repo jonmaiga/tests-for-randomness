@@ -55,14 +55,14 @@ inline std::vector<statistic> avalanche_mixer_sac_test(uint64_t n, const stream&
 	const auto counts = avalanche_generate_sac(n, stream, mixer);
 	const auto stats = avalanche_sac_stats(n, counts);
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
-	return {{s_type::sac, stats.chi2, p_value}};
+	return {{test_type::sac, stats.chi2, p_value}};
 }
 
 inline std::vector<statistic> avalanche_mixer_bic_test(uint64_t n, const stream& stream, const mixer& mixer) {
 	const auto counts = avalanche_generate_bic(n, stream, mixer);
 	const auto stats = avalanche_bic_stats(n, counts);
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
-	return {{s_type::bic, stats.chi2, p_value}};
+	return {{test_type::bic, stats.chi2, p_value}};
 }
 
 }

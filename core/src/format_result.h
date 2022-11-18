@@ -58,7 +58,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		return "N/A";
 	}
 
-	if (results.front().stats.type == s_type::permutation) {
+	if (results.front().stats.type == test_type::permutation) {
 		const auto st = basic_stats(to_statistics(results));
 		draw_histogram(to_p_values(results));
 		draw_histogram(to_statistics(results));
@@ -127,23 +127,23 @@ public:
 		test_results.push_back(r);
 		p_table
 			.col(r.mixer_name)
-			.col(p_value_test(r[s_type::basic_mean]))
-			.col(p_value_test(r[s_type::chi2]))
-			.col(p_value_test(r[s_type::kolmogorov_smirnov]))
-			.col(p_value_test(r[s_type::anderson_darling]))
-			.col(p_value_test(r[s_type::wald_wolfowitz_runs]))
-			.col(p_value_test(r[s_type::pearson_r]))
-			.col(p_value_test(r[s_type::spearman_r]))
-			.col(p_value_test(r[s_type::kendall_tau]))
-			.col(p_value_test(r[s_type::gap_low]))
-			.col(p_value_test(r[s_type::gap_medium]))
-			.col(p_value_test(r[s_type::gap_high]))
-			.col(p_value_test(r[s_type::coupon]))
-			.col(p_value_test(r[s_type::divisibility_2]))
-			.col(p_value_test(r[s_type::divisibility_3]))
-			.col(p_value_test(r[s_type::permutation]))
-			.col(p_value_test(r[s_type::sac]))
-			.col(p_value_test(r[s_type::bic]))
+			.col(p_value_test(r[test_type::basic_mean]))
+			.col(p_value_test(r[test_type::chi2]))
+			.col(p_value_test(r[test_type::kolmogorov_smirnov]))
+			.col(p_value_test(r[test_type::anderson_darling]))
+			.col(p_value_test(r[test_type::wald_wolfowitz_runs]))
+			.col(p_value_test(r[test_type::pearson_r]))
+			.col(p_value_test(r[test_type::spearman_r]))
+			.col(p_value_test(r[test_type::kendall_tau]))
+			.col(p_value_test(r[test_type::gap_low]))
+			.col(p_value_test(r[test_type::gap_medium]))
+			.col(p_value_test(r[test_type::gap_high]))
+			.col(p_value_test(r[test_type::coupon]))
+			.col(p_value_test(r[test_type::divisibility_2]))
+			.col(p_value_test(r[test_type::divisibility_3]))
+			.col(p_value_test(r[test_type::permutation]))
+			.col(p_value_test(r[test_type::sac]))
+			.col(p_value_test(r[test_type::bic]))
 			.row();
 
 		std::cout << p_table.to_string() << "\n";

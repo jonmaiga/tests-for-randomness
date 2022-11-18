@@ -89,14 +89,14 @@ inline std::vector<statistic> pearson_correlation_test(uint64_t n, const stream&
 	const auto data = create_serial_xy(n, source);
 	const auto correlation = pearson_correlation_stats(data.xs, data.ys);
 	const auto p_value = correlation_p_value(correlation, data.xs.size());
-	return {{s_type::pearson_r, correlation, p_value}};
+	return {{test_type::pearson_r, correlation, p_value}};
 }
 
 inline std::vector<statistic> spearman_correlation_test(uint64_t n, const stream& source) {
 	const auto data = create_serial_xy(n, source);
 	const auto rho = spearman_correlation_stats(data.xs, data.ys);
 	const auto p_value = correlation_p_value(rho, data.xs.size());
-	return {{s_type::spearman_r, rho, p_value}};
+	return {{test_type::spearman_r, rho, p_value}};
 }
 
 inline std::vector<statistic> kendall_correlation_test(uint64_t n, const stream& source) {
@@ -105,7 +105,7 @@ inline std::vector<statistic> kendall_correlation_test(uint64_t n, const stream&
 	const auto var = ((4. * n + 10.) / (9. * n * (n - 1.)));
 	const auto z = tau / std::sqrt(var);
 	const auto p_value = normal_two_tailed_cdf(z);
-	return {{s_type::kendall_tau, tau, p_value}};
+	return {{test_type::kendall_tau, tau, p_value}};
 }
 
 }

@@ -41,7 +41,17 @@ struct test_config {
 
 using test_factory = std::function<test_config()>;
 
-enum class s_type {
+enum class statistic_type {
+	z_score,
+	chi2,
+	kolmogorov_smirnov_d,
+	anderson_darling_A2,
+	pearson_r,
+	spearman_r,
+	kendall_tau
+};
+
+enum class test_type {
 	basic_mean,
 	chi2,
 	kolmogorov_smirnov,
@@ -66,25 +76,25 @@ enum class s_type {
 };
 
 struct statistic_meta {
-	s_type type;
+	test_type type;
 	std::string name;
 };
 
 const auto all_metas = std::vector<statistic_meta>{
-	{s_type::basic_mean, "mean"},
-	{s_type::chi2, "chi2"},
-	{s_type::kolmogorov_smirnov, "kolmogorov-smirnov"},
-	{s_type::wald_wolfowitz_runs, "wald-wolfowitz runs"},
-	{s_type::anderson_darling, "anderson_darling"},
-	{s_type::sac, "sac"},
-	{s_type::bic, "bic"},
-	{s_type::pearson_r, "pearson r"},
-	{s_type::spearman_r, "spearman rho"},
-	{s_type::kendall_tau, "kendall tau"}
+	{test_type::basic_mean, "mean"},
+	{test_type::chi2, "chi2"},
+	{test_type::kolmogorov_smirnov, "kolmogorov-smirnov"},
+	{test_type::wald_wolfowitz_runs, "wald-wolfowitz runs"},
+	{test_type::anderson_darling, "anderson_darling"},
+	{test_type::sac, "sac"},
+	{test_type::bic, "bic"},
+	{test_type::pearson_r, "pearson r"},
+	{test_type::spearman_r, "spearman rho"},
+	{test_type::kendall_tau, "kendall tau"}
 };
 
 struct statistic {
-	s_type type;
+	test_type type;
 	double value{};
 	double p_value{};
 };
@@ -95,7 +105,7 @@ struct result {
 	statistic stats;
 };
 
-inline statistic_meta get_meta(s_type type) {
+inline statistic_meta get_meta(test_type type) {
 	for (const auto& meta : all_metas) {
 		if (meta.type == type) {
 			return meta;
@@ -109,7 +119,7 @@ using mixer_test = const std::function<std::vector<statistic>(uint64_t n, const 
 using stream_test = const std::function<std::vector<statistic>(uint64_t n, const stream&)>;
 
 struct test_result {
-	using result_map = std::map<s_type, std::vector<result>>;
+	using result_map = std::map<test_type, std::vector<result>>;
 
 	std::string name;
 	std::string mixer_name;
@@ -123,7 +133,7 @@ struct test_result {
 		}
 	}
 
-	const std::vector<result>& operator[](s_type type) const {
+	const std::vector<result>& operator[](test_type type) const {
 		static const std::vector<result> empty;
 		const auto it = results.find(type);
 		return it != results.end() ? it->second : empty;

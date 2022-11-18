@@ -41,15 +41,15 @@ inline std::vector<double> generate_gap_probabilities(double a, double b) {
 
 inline std::vector<statistic> gap_test(uint64_t n, const stream& stream) {
 	struct gap_test {
-		s_type type;
+		test_type type;
 		double a{};
 		double b{};
 	};
 
 	static std::vector<gap_test> sub_tests = {
-		{s_type::gap_low, 0, 0.33},
-		{s_type::gap_medium, 0.33, 0.66},
-		{s_type::gap_high, 0.66, 1},
+		{test_type::gap_low, 0, 0.33},
+		{test_type::gap_medium, 0.33, 0.66},
+		{test_type::gap_high, 0.66, 1},
 	};
 
 	const auto& data01 = rescale64_to_01(n, stream);

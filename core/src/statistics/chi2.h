@@ -49,7 +49,7 @@ inline chi2_statistics chi2_uniform_stats(const std::vector<double>& data01) {
 
 inline std::vector<statistic> chi2_test(const uint64_t n, const stream& stream) {
 	const auto stat = chi2_uniform_stats(rescale64_to_01(n, stream));
-	return {{s_type::chi2, stat.chi2, chi2_distribution_cdf(stat.chi2, stat.df)}};
+	return {{test_type::chi2, stat.chi2, chi2_distribution_cdf(stat.chi2, stat.df)}};
 }
 
 }

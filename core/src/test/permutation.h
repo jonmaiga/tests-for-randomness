@@ -18,7 +18,7 @@ inline std::vector<statistic> permutation_test(const uint64_t n, const stream& s
 	const double expected_count = static_cast<double>(accumulate(histogram)) / histogram.size();
 	const auto stats = chi2_stats(histogram, expected_count);
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
-	return {{s_type::permutation, stats.chi2, p_value}};
+	return {{test_type::permutation, stats.chi2, p_value}};
 }
 
 

@@ -50,13 +50,13 @@ inline std::vector<double> divisible_expected_probabilities(const uint64_t divis
 
 inline std::vector<statistic> divisibility_test(uint64_t n, const stream& stream) {
 	struct divisibility_test {
-		s_type type;
+		test_type type;
 		uint64_t divisor;
 	};
 
 	static std::vector<divisibility_test> sub_tests = {
-		{s_type::divisibility_2, 2},
-		{s_type::divisibility_3, 3},
+		{test_type::divisibility_2, 2},
+		{test_type::divisibility_3, 3},
 	};
 
 	const auto& data = get_raw(n, stream);
