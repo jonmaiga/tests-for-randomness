@@ -7,13 +7,14 @@
 namespace mixer {
 
 TEST(chi2, basic) {
+	using T = std::vector<double>;
 	// same as mma
-	EXPECT_EQ(chi2_uniform_stats({0.1}).chi2, 1);
-	EXPECT_EQ(chi2_uniform_stats({0.1}).df, 1);
-	EXPECT_EQ(chi2_uniform_stats({0.1, 0.1, 0.1, 0.1}).chi2, 12);
-	EXPECT_EQ(chi2_uniform_stats({0.1, 0.1, 0.1, 0.1}).df, 3);
-	EXPECT_NEAR(chi2_uniform_stats({0.1, 0.2, 0.3, 0.4, 0.5, 0.4, 0.8}).chi2, 3.71428, 1e-4);
-	EXPECT_EQ(chi2_uniform_stats({0.1, 0.2, 0.3, 0.4, 0.5, 0.4, 0.8}).df, 4);
+	EXPECT_EQ(chi2_uniform_stats<T>({0.1}).chi2, 1);
+	EXPECT_EQ(chi2_uniform_stats<T>({0.1}).df, 1);
+	EXPECT_EQ(chi2_uniform_stats<T>({0.1, 0.1, 0.1, 0.1}).chi2, 12);
+	EXPECT_EQ(chi2_uniform_stats<T>({0.1, 0.1, 0.1, 0.1}).df, 3);
+	EXPECT_NEAR(chi2_uniform_stats<T>({0.1, 0.2, 0.3, 0.4, 0.5, 0.4, 0.8}).chi2, 3.71428, 1e-4);
+	EXPECT_EQ(chi2_uniform_stats<T>({0.1, 0.2, 0.3, 0.4, 0.5, 0.4, 0.8}).df, 4);
 }
 
 TEST(chi2, no_change) {

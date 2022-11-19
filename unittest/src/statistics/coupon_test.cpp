@@ -8,15 +8,16 @@
 namespace mixer {
 
 TEST(coupon, collect_coupons) {
+	using D = std::vector<double>;
 	using T = std::vector<uint64_t>;
-	EXPECT_EQ(collect_coupons(0, 0, {}), (T{ }));
-	EXPECT_EQ(collect_coupons(0, 1, { 0.5 }), (T{ 0}));
+	EXPECT_EQ(collect_coupons<D>(0, 0, D{}), (T{ }));
+	EXPECT_EQ(collect_coupons<D>(0, 1, { 0.5 }), (T{0}));
 
-	EXPECT_EQ(collect_coupons(1, 1, {}), (T{ 0 }));
-	EXPECT_EQ(collect_coupons(1, 1, { .5 }), (T{ 1 }));
+	EXPECT_EQ(collect_coupons<D>(1, 1, D{}), (T{ 0 }));
+	EXPECT_EQ(collect_coupons<D>(1, 1, { .5 }), (T{ 1 }));
 
-	EXPECT_EQ(collect_coupons(2, 2, {0.3, 0.4, 0.7}), (T{0, 1}));
-	EXPECT_EQ(collect_coupons(2, 2, {0.3, 0.7, 0.4, 0.7}), (T{2, 0}));
+	EXPECT_EQ(collect_coupons<D>(2, 2, {0.3, 0.4, 0.7}), (T{0, 1}));
+	EXPECT_EQ(collect_coupons<D>(2, 2, {0.3, 0.7, 0.4, 0.7}), (T{2, 0}));
 }
 
 TEST(coupon, expected_probabilities) {

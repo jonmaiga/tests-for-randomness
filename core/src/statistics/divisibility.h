@@ -11,7 +11,9 @@
 
 namespace mixer {
 
-inline std::vector<uint64_t> collect_divisible(uint64_t divisor, uint64_t wanted, uint64_t tracked, const std::vector<uint64_t>& data) {
+template<typename T>
+inline std::vector<uint64_t> collect_divisible(uint64_t divisor, uint64_t wanted, uint64_t tracked, const T& data) {
+	static_assert(std::is_integral_v<typename T::value_type>);
 	std::set<uint64_t> coupons_collected;
 	std::vector<uint64_t> draws_histogram(tracked);
 	uint64_t draw_count = 0;

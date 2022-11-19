@@ -7,19 +7,23 @@
 namespace mixer {
 
 TEST(gap, generate_gaps) {
-	EXPECT_EQ(generate_gaps(2, 0, 1, {}), (std::vector<uint64_t>{0, 0}));
-	EXPECT_EQ(generate_gaps(2, 0, 1, {0.5}), (std::vector<uint64_t>{1, 0}));
-	EXPECT_EQ(generate_gaps(2, 0, 1, {0.25, 0.75}), (std::vector<uint64_t>{2, 0}));
+	using T = std::vector<double>;
+	using U = std::vector<uint64_t>;
+	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {}), (U{0, 0}));
+	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {0.5}), (U{1, 0}));
+	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {0.25, 0.75}), (U{2, 0}));
 
-	EXPECT_EQ(generate_gaps(2, 0, .5, {0.25, 0.75}), (std::vector<uint64_t>{1, 0}));
-	EXPECT_EQ(generate_gaps(2, 0, .5, {0.75, 0.25}), (std::vector<uint64_t>{0, 1}));
-	EXPECT_EQ(generate_gaps(2, 0, .5, {0.75, 0.25, 0.5, 0.25}), (std::vector<uint64_t>{0, 2}));
-	EXPECT_EQ(generate_gaps(2, 0, .5, {0.25, 0.75, 0.25, 0.5, 0.25}), (std::vector<uint64_t>{1, 2}));
-	EXPECT_EQ(generate_gaps(2, .5, .6, {0.25, 0.5}), (std::vector<uint64_t>{0, 1}));
+	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.25, 0.75}), (U{1, 0}));
+	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.75, 0.25}), (U{0, 1}));
+	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.75, 0.25, 0.5, 0.25}), (U{0, 2}));
+	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.25, 0.75, 0.25, 0.5, 0.25}), (U{1, 2}));
+	EXPECT_EQ(generate_gaps<T>(2, .5, .6, {0.25, 0.5}), (U{0, 1}));
 }
 
 TEST(gap, generate_too_large_gaps) {
-	EXPECT_EQ(generate_gaps(2, .5, .6, {0.25, 0.35, 0.52, 0.25, 0.35, 0.52}), (std::vector<uint64_t>{0, 2}));
+	using T = std::vector<double>;
+	using U = std::vector<uint64_t>;
+	EXPECT_EQ(generate_gaps<T>(2, .5, .6, {0.25, 0.35, 0.52, 0.25, 0.35, 0.52}), (U{0, 2}));
 }
 
 TEST(gap, generate_gap_probabilities) {

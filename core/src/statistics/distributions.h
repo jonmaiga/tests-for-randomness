@@ -42,8 +42,8 @@ inline double chi2_distribution_cdf(double chi2, double df) {
 }
 
 inline double beta(double a, double b) {
-	return std::beta(a, b);
-	// return exp((std::lgamma(a) + std::lgamma(b)) - std::lgamma(a + b));
+	//return std::beta(a, b);
+	return exp((std::lgamma(a) + std::lgamma(b)) - std::lgamma(a + b));
 }
 
 inline double binomial_coefficient(int n, int k) {

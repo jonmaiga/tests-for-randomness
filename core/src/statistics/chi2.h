@@ -8,7 +8,9 @@
 
 namespace mixer {
 
-inline std::vector<uint64_t> bin_data_for_chi2(const std::vector<double>& data01) {
+template<typename T>
+inline std::vector<uint64_t> bin_data_for_chi2(const T& data01) {
+	static_assert(std::is_floating_point_v<typename T::value_type>);
 	std::vector<uint64_t> bins(static_cast<uint64_t>(std::ceil(2 * pow(data01.size(), .4))));
 	const auto bin_count = static_cast<double>(bins.size());
 	for (const auto v : data01) {
@@ -41,7 +43,9 @@ inline chi2_statistics chi2_stats(const std::vector<uint64_t>& bins, double expe
 	return chi2_stats(bins.size(), to_data(bins), to_data(expected_count));
 }
 
-inline chi2_statistics chi2_uniform_stats(const std::vector<double>& data01) {
+template<typename T>
+inline chi2_statistics chi2_uniform_stats(const T& data01) {
+	static_assert(std::is_floating_point_v<typename T::value_type>);
 	const auto& bins = bin_data_for_chi2(data01);
 	const double expected_count = static_cast<double>(data01.size()) / static_cast<double>(bins.size());
 	return chi2_stats(bins, expected_count);

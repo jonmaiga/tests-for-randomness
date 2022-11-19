@@ -5,7 +5,9 @@
 
 namespace mixer {
 
-inline std::vector<uint64_t> get_permutation_histogram(const std::vector<uint64_t>& data, int window_size) {
+template<typename T>
+inline std::vector<uint64_t> get_permutation_histogram(const T& data, int window_size) {
+	static_assert(std::is_integral_v<typename T::value_type>);
 	std::vector<uint64_t> histogram(1ull << window_size);
 	sliding_bit_window(data, window_size, window_size, [&histogram](uint64_t v) {
 		histogram[v] ++;

@@ -9,9 +9,9 @@ namespace mixer {
 
 TEST(divisibility, collect_divisbility) {
 	using T = std::vector<uint64_t>;
-	EXPECT_EQ(collect_divisible(2, 1, 4, {1,3,5,2,4}), T({1,0,0,1}));
-	EXPECT_EQ(collect_divisible(2, 1, 4, {1,3,5,2,4,6}), T({2,0,0,1}));
-	EXPECT_EQ(collect_divisible(2, 1, 4, {1,3,5,1,1,4}), T({0,0,0,1}));
+	EXPECT_EQ(collect_divisible<T>(2, 1, 4, {1,3,5,2,4}), T({1,0,0,1}));
+	EXPECT_EQ(collect_divisible<T>(2, 1, 4, {1,3,5,2,4,6}), T({2,0,0,1}));
+	EXPECT_EQ(collect_divisible<T>(2, 1, 4, {1,3,5,1,1,4}), T({0,0,0,1}));
 }
 
 TEST(divisibility, expected_probabilities) {

@@ -10,7 +10,9 @@
 
 namespace mixer {
 
-inline std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, const std::vector<double>& data01) {
+template<typename T>
+inline std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, const T& data01) {
+	static_assert(std::is_floating_point_v<typename T::value_type>);
 	std::vector<uint64_t> gaps(max_gap_size);
 	std::size_t current_gap = 0;
 	for (const auto v : data01) {

@@ -10,7 +10,9 @@
 
 namespace mixer {
 
-inline std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t tracked_draws, const std::vector<double>& data01) {
+template<typename T>
+inline std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t tracked_draws, const T& data01) {
+	static_assert(std::is_floating_point_v<typename T::value_type>);
 	std::set<uint64_t> coupons_collected;
 	std::vector<uint64_t> draws_histogram(tracked_draws);
 	uint64_t draw_count = 0;
