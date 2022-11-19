@@ -53,7 +53,7 @@ inline std::optional<statistic> gap_test(uint64_t n, const stream& stream, test_
 	return statistic{test, stats.chi2, p_value};
 }
 
-stream_test create_gap_test(test_type test, double a, double b) {
+inline stream_test create_gap_test(test_type test, double a, double b) {
 	return [test, a, b](uint64_t n, const stream& stream) {
 		return gap_test(n, stream, test, a, b);
 	};

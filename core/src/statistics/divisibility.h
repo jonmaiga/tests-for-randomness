@@ -67,7 +67,7 @@ inline std::optional<statistic> divisibility_test(uint64_t n, const stream& stre
 	return statistic{test, stats.chi2, p_value};
 }
 
-stream_test create_divisibility_test(test_type test, int divisor) {
+inline stream_test create_divisibility_test(test_type test, int divisor) {
 	return [test, divisor](uint64_t n, const stream& stream) {
 		return divisibility_test(n, stream, test, divisor);
 	};
