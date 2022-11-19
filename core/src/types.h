@@ -6,19 +6,12 @@
 #include <string>
 #include <vector>
 
+#include "stream.h"
 #include "util/assertion.h"
 #include "util/math.h"
 
 namespace mixer {
 
-struct stream {
-	std::string name;
-	std::function<uint64_t()> next;
-
-	uint64_t operator()() const {
-		return next();
-	}
-};
 
 struct mixer {
 	std::string name;
@@ -67,7 +60,7 @@ enum class test_type {
 	divisibility_2,
 	divisibility_3,
 	permutation,
-	
+
 	// mixer
 	sac,
 	bic,
@@ -146,7 +139,6 @@ data_fn to_data(const T& d) {
 		return [d](std::size_t) {
 			return static_cast<double>(d);
 		};
-
 	}
 	else {
 		return [&d](std::size_t i) {
