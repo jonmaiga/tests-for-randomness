@@ -17,7 +17,6 @@ public:
 
 class stream_iterator {
 public:
-	using difference_type = std::ptrdiff_t;
 	using value_type = uint64_t;
 
 	explicit stream_iterator(stream stream, uint64_t n, uint64_t index = 0)
@@ -68,6 +67,14 @@ public:
 
 	stream_iterator end() const {
 		return stream_iterator(s, n, n);
+	}
+
+	std::size_t size() const {
+		return n;
+	}
+
+	bool empty() const {
+		return n == 0;
 	}
 
 private:
