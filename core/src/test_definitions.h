@@ -34,7 +34,7 @@ const std::vector<stream_test_definition> stream_tests = {
 	{test_type::gap_high, create_gap_test(0.66, 1)},
 	{test_type::coupon, coupon_test},
 	{test_type::divisibility_2, create_divisibility_test(2)},
-	{test_type::divisibility_2, create_divisibility_test(3)},
+	{test_type::divisibility_3, create_divisibility_test(3)},
 	{test_type::permutation, permutation_test}
 };
 
