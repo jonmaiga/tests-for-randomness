@@ -12,7 +12,7 @@
 namespace mixer {
 
 template<typename T>
-inline std::vector<uint64_t> collect_divisible(uint64_t divisor, uint64_t wanted, uint64_t tracked, const T& data) {
+std::vector<uint64_t> collect_divisible(uint64_t divisor, uint64_t wanted, uint64_t tracked, const T& data) {
 	static_assert(std::is_integral_v<typename T::value_type>);
 	std::set<uint64_t> coupons_collected;
 	std::vector<uint64_t> draws_histogram(tracked);
@@ -51,11 +51,9 @@ inline std::vector<double> divisible_expected_probabilities(const uint64_t divis
 
 
 inline std::optional<statistic> divisibility_test(uint64_t n, const stream_uint64& stream, test_type test, int divisor) {
-	const auto& data = get_raw(n, stream);
-
 	constexpr auto wanted = 7;
 	const auto ps = divisible_expected_probabilities(divisor, wanted);
-	const auto collected = collect_divisible(divisor, wanted, ps.size(), data);
+	const auto collected = collect_divisible(divisor, wanted, ps.size(), ranged_stream(stream, n));
 	assertion(collected.size() == ps.size(), "Unexpected size in divisible");
 
 	const auto total_count = accumulate(collected);

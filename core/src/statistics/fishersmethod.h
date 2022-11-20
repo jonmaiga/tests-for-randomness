@@ -8,7 +8,7 @@
 namespace mixer {
 
 template<typename T>
-inline double fishers_combined_probabilities(const T& p_values) {
+double fishers_combined_probabilities(const T& p_values) {
 	static_assert(std::is_floating_point_v<typename T::value_type>);
 	double sum = 0;
 	for (const auto p : p_values) {

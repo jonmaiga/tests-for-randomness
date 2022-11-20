@@ -5,13 +5,14 @@
 
 #include "chi2.h"
 #include "distributions.h"
+#include "streams.h"
 #include "types.h"
 #include "util/algo.h"
 
 namespace mixer {
 
-template<typename T>
-inline std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, const T& data01) {
+template <typename T>
+std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, const T& data01) {
 	static_assert(std::is_floating_point_v<typename T::value_type>);
 	std::vector<uint64_t> gaps(max_gap_size);
 	std::size_t current_gap = 0;
@@ -41,14 +42,13 @@ inline std::vector<double> generate_gap_probabilities(double a, double b) {
 	return ps;
 }
 
-inline std::optional<statistic> gap_test(uint64_t n, const stream_uint64& stream, test_type test, double a, double b) {
-	const auto& data01 = rescale64_to_01(n, stream);
+inline std::optional<statistic> gap_test(uint64_t n, const stream_uint64& source, test_type test, double a, double b) {
 	const auto& ps = generate_gap_probabilities(a, b);
-	const auto& gaps = generate_gaps(ps.size(), a, b, data01);
+	const auto& gaps = generate_gaps(ps.size(), a, b, ranged_stream(rescale64_to_01(source), n));
 	const auto total_count = accumulate(gaps);
 	const auto& stats = chi2_stats(gaps.size(), to_data(gaps),
-									mul(to_data(ps), to_data(total_count)),
-									1.);
+	                               mul(to_data(ps), to_data(total_count)),
+	                               1.);
 
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
 	assertion(is_valid_between_01(p_value), "bad p value");
