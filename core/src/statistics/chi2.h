@@ -53,7 +53,7 @@ inline chi2_statistics chi2_uniform_stats(const T& data01) {
 
 inline std::optional<statistic> chi2_test(const uint64_t n, const stream_uint64& stream) {
 	const auto stat = chi2_uniform_stats(rescale64_to_01(n, stream));
-	return statistic{test_type::chi2, stat.chi2, chi2_distribution_cdf(stat.chi2, stat.df)};
+	return statistic{statistic_type::chi2, stat.chi2, chi2_distribution_cdf(stat.chi2, stat.df)};
 }
 
 }

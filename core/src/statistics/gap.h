@@ -52,7 +52,7 @@ inline std::optional<statistic> gap_test(uint64_t n, const stream_uint64& source
 
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
 	assertion(is_valid_between_01(p_value), "bad p value");
-	return statistic{test, stats.chi2, p_value};
+	return statistic{statistic_type::chi2, stats.chi2, p_value};
 }
 
 inline stream_test create_gap_test(test_type test, double a, double b) {

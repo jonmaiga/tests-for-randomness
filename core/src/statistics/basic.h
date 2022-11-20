@@ -56,7 +56,7 @@ inline std::optional<statistic> basic_test(uint64_t n, stream_uint64 stream) {
 	// mean from uniform is approximately normal
 	// https://stats.stackexchange.com/questions/458341/what-distribution-does-the-mean-of-a-random-sample-from-a-uniform-distribution-f
 	const auto stats = basic_stats(ranged_stream(rescale64_to_01(stream), n));
-	return statistic{test_type::basic_mean, stats.mean, z_test(stats.n, stats.mean, .5, 1. / 12.)};
+	return statistic{statistic_type::z_score, stats.mean, z_test(stats.n, stats.mean, .5, 1. / 12.)};
 }
 
 

@@ -53,7 +53,7 @@ inline double wald_wolfowitz_p_value(wald_wolfowitz_statistics s) {
 
 inline std::optional<statistic> wald_wolfowitz_test(const uint64_t n, const stream_uint64& stream) {
 	const auto ww = wald_wolfowitz_stats(get_raw(n, stream));
-	return statistic{test_type::wald_wolfowitz_runs, ww.runs, wald_wolfowitz_p_value(ww)};
+	return statistic{statistic_type::z_score, ww.runs, wald_wolfowitz_p_value(ww)};
 }
 
 

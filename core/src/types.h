@@ -87,7 +87,7 @@ const auto all_metas = std::vector<statistic_meta>{
 };
 
 struct statistic {
-	test_type type;
+	statistic_type type;
 	double value{};
 	double p_value{};
 };
@@ -95,6 +95,7 @@ struct statistic {
 struct result {
 	std::string stream_name;
 	std::string mixer_name;
+	test_type type;
 	statistic stats;
 };
 
@@ -121,7 +122,7 @@ struct test_result {
 	void add(const result& r) {
 		assertion(is_valid(r.stats.value), "a statistic is not valid");
 		assertion(is_valid_between_01(r.stats.p_value), "a p-value is not valid or normal");
-		results[r.stats.type].push_back(r);
+		results[r.type].push_back(r);
 	}
 
 	const std::vector<result>& operator[](test_type type) const {

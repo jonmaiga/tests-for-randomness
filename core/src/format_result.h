@@ -58,7 +58,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		return "N/A";
 	}
 
-	if (results.front().stats.type == test_type::permutation) {
+	if (results.front().type == test_type::permutation) {
 		const auto st = basic_stats(to_statistics(results));
 		draw_histogram(to_p_values(results));
 		draw_histogram(to_statistics(results));
@@ -164,7 +164,7 @@ public:
 			if (r.stats.p_value > 0.05 && r.stats.p_value < 0.95) continue;
 			t.col(r.mixer_name).
 			  col(r.stream_name).
-			  col(get_meta(r.stats.type).name).
+			  col(get_meta(r.type).name).
 			  col(r.stats.value).
 			  col(r.stats.p_value).
 			  row();

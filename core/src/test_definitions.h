@@ -15,27 +15,38 @@
 
 namespace mixer {
 
-const std::vector<stream_test> stream_tests = {
-	basic_test,
-	chi2_test,
-	kolmogorov_test,
-	anderson_darling_test,
-	wald_wolfowitz_test,
-	pearson_correlation_test,
-	spearman_correlation_test,
-	kendall_correlation_test,
-	create_gap_test(test_type::gap_low, 0, 0.33),
-	create_gap_test(test_type::gap_medium, 0.33, 0.66),
-	create_gap_test(test_type::gap_high, 0.66, 1),
-	coupon_test,
-	create_divisibility_test(test_type::divisibility_2, 2),
-	create_divisibility_test(test_type::divisibility_3, 3),
-	permutation_test
+struct stream_test_definition {
+	test_type type;
+	stream_test test;
 };
 
-const std::vector<mixer_test> mixer_tests = {
-	avalanche_mixer_sac_test,
-	avalanche_mixer_bic_test,
+const std::vector<stream_test_definition> stream_tests = {
+	{test_type::basic_mean, basic_test},
+	{test_type::chi2, chi2_test},
+	{test_type::kolmogorov_smirnov, kolmogorov_test},
+	{test_type::anderson_darling, anderson_darling_test},
+	{test_type::wald_wolfowitz_runs, wald_wolfowitz_test},
+	{test_type::pearson_r, pearson_correlation_test},
+	{test_type::spearman_r, spearman_correlation_test},
+	{test_type::kendall_tau, kendall_correlation_test},
+	{test_type::gap_low, create_gap_test(test_type::gap_low, 0, 0.33)},
+	{test_type::gap_medium, create_gap_test(test_type::gap_medium, 0.33, 0.66)},
+	{test_type::gap_high, create_gap_test(test_type::gap_high, 0.66, 1)},
+	{test_type::coupon, coupon_test},
+	{test_type::divisibility_2, create_divisibility_test(test_type::divisibility_2, 2)},
+	{test_type::divisibility_2, create_divisibility_test(test_type::divisibility_3, 3)},
+	{test_type::permutation, permutation_test}
+};
+
+
+struct mixer_test_definition {
+	test_type type;
+	mixer_test test;
+};
+
+const std::vector<mixer_test_definition> mixer_tests = {
+	{test_type::sac, avalanche_mixer_sac_test},
+	{test_type::bic, avalanche_mixer_bic_test},
 };
 
 }

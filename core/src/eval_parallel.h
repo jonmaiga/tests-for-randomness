@@ -22,14 +22,14 @@ inline stream_uint64 create_stream(const test_config& cfg) {
 	return s;
 }
 
-inline test_jobs create_stream_jobs(const stream_test& test, const std::vector<test_factory>& test_factories) {
+inline test_jobs create_stream_jobs(const stream_test_definition& test_def, const std::vector<test_factory>& test_factories) {
 	test_jobs js;
 	for (const auto& factory : test_factories) {
-		js.push_back([test, factory]()->test_job_return {
+		js.push_back([test_def, factory]()->test_job_return {
 			const auto cfg = factory();
 			const auto s = create_stream(cfg);
-			if (const auto& stat = test(cfg.n, s)) {
-				return result{cfg.source.name, cfg.mix.name, *stat};
+			if (const auto& stat = test_def.test(cfg.n, s)) {
+				return result{cfg.source.name, cfg.mix.name, test_def.type, *stat};
 			}
 			return {};
 		});
@@ -37,14 +37,14 @@ inline test_jobs create_stream_jobs(const stream_test& test, const std::vector<t
 	return js;
 }
 
-inline test_jobs create_mixer_jobs(const mixer_test& test, const std::vector<test_factory>& test_factories) {
+inline test_jobs create_mixer_jobs(const mixer_test_definition& test_def, const std::vector<test_factory>& test_factories) {
 	test_jobs js;
 	for (const auto& factory : test_factories) {
 		if (factory().stream_append_factory) continue;
-		js.push_back([test, factory]()->test_job_return {
+		js.push_back([test_def, factory]()->test_job_return {
 			const auto cfg = factory();
-			if (const auto& stat = test(cfg.n, cfg.source, cfg.mix)) {
-				return result{cfg.source.name, cfg.mix.name, *stat};
+			if (const auto& stat = test_def.test(cfg.n, cfg.source, cfg.mix)) {
+				return result{cfg.source.name, cfg.mix.name, test_def.type, *stat};
 			}
 			return {};
 		});
