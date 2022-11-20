@@ -19,8 +19,8 @@ class stream_iterator {
 public:
 	using value_type = uint64_t;
 
-	explicit stream_iterator(stream stream, uint64_t n, uint64_t index = 0)
-		: stream(std::move(stream)),
+	explicit stream_iterator(const stream& stream, uint64_t n, uint64_t index = 0)
+		: stream(stream),
 		  current_value(0),
 		  index(index),
 		  n(n) {
@@ -49,7 +49,7 @@ public:
 	}
 
 private:
-	stream stream;
+	const stream& stream;
 	uint64_t current_value;
 	uint64_t index;
 	uint64_t n;
@@ -58,7 +58,7 @@ private:
 
 class ranged_stream {
 public:
-	ranged_stream(stream s, uint64_t n) : s(std::move(s)), n(n) {
+	ranged_stream(const stream& s, uint64_t n) : s(std::move(s)), n(n) {
 	}
 
 	stream_iterator begin() const {
@@ -78,7 +78,7 @@ public:
 	}
 
 private:
-	stream s;
+	const stream& s;
 	uint64_t n;
 };
 
