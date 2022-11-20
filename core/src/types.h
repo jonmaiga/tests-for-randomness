@@ -87,6 +87,10 @@ const auto all_metas = std::vector<statistic_meta>{
 };
 
 struct statistic {
+	statistic(statistic_type type, double value, double p_value, double df) :
+		type(type), value(value), p_value(p_value), df(df) {
+	}
+
 	statistic_type type;
 	double value{};
 	double p_value{};

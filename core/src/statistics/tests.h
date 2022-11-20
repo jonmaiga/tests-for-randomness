@@ -26,7 +26,8 @@ inline std::optional<statistic> z_test(double n, double mean, double population_
 	}
 	const auto se = std::sqrt(population_variance / n);
 	const auto z = (mean - population_mean) / se;
-	return statistic{statistic_type::z_score, z, normal_two_tailed_cdf(z)};
+	// todo: df
+	return statistic{statistic_type::z_score, z, normal_two_tailed_cdf(z), n};
 }
 
 inline double f_test(double a_n, double a_variance, double b_n, double b_variance) {

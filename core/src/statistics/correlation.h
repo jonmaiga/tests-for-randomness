@@ -47,10 +47,10 @@ inline std::optional<statistic> pearson_correlation_stats(const std::vector<doub
 		sum_xy += x_dev * y_dev;
 	}
 	if (is_near(sum_xs, 0) || is_near(sum_ys, 0)) {
-		return statistic{statistic_type::pearson_r, 0, sum_xy < 0 ? -1. : 1.};
+		return statistic{statistic_type::pearson_r, 0, sum_xy < 0 ? -1. : 1., static_cast<double>(n)};
 	}
 	const auto r = adjust_correlation(sum_xy / (std::sqrt(sum_xs) * std::sqrt(sum_ys)));
-	return statistic{statistic_type::pearson_r, r, correlation_p_value(r, n)};
+	return statistic{statistic_type::pearson_r, r, correlation_p_value(r, n), n - 2.};
 }
 
 inline std::optional<statistic> spearman_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
@@ -60,7 +60,7 @@ inline std::optional<statistic> spearman_correlation_stats(const std::vector<dou
 		rescale_to_01(get_ranks(xs, cmp)),
 		rescale_to_01(get_ranks(ys, cmp)));
 
-	return statistic{statistic_type::spearman_r, pearson_stats->value, pearson_stats->p_value};
+	return statistic{statistic_type::spearman_r, pearson_stats->value, pearson_stats->p_value, pearson_stats->df};
 }
 
 inline std::optional<statistic> kendall_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
@@ -90,7 +90,8 @@ inline std::optional<statistic> kendall_correlation_stats(const std::vector<doub
 	const auto var = ((4. * n + 10.) / (9. * n * (n - 1.)));
 	const auto z = tau / std::sqrt(var);
 	const auto p_value = normal_two_tailed_cdf(z);
-	return statistic{statistic_type::kendall_tau, tau, p_value};
+	// todo: df
+	return statistic{statistic_type::kendall_tau, tau, p_value, static_cast<double>(n)};
 }
 
 inline std::optional<statistic> pearson_correlation_test(uint64_t n, const stream_uint64& source) {
