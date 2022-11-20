@@ -12,12 +12,18 @@ class stream {
 public:
 	using value_type = T;
 
+	stream(std::string name, std::function<value_type()> next)
+		: name(std::move(name)), next(std::move(next)) {
+	}
+
 	std::string name;
-	std::function<value_type()> next;
 
 	value_type operator()() const {
 		return next();
 	}
+
+private:
+	std::function<value_type()> next;
 };
 
 template <typename T>
