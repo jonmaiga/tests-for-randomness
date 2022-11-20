@@ -25,5 +25,4 @@ TEST(streams, rescale64_to_01) {
 	EXPECT_NEAR(sum, 4.9435, 1e-4);
 }
 
-
 }
