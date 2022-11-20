@@ -6,17 +6,16 @@
 namespace mixer {
 
 TEST(z_test, basic) {
-	EXPECT_NEAR(z_test(10, 0.5, 0.5, 0.1), 1., 1e-4);
-	EXPECT_NEAR(z_test(10, 0.51, 0.5, 0.1), 0.9203, 1e-3);
-	EXPECT_NEAR(z_test(10, 0.49, 0.5, 0.1), 0.9203, 1e-3);
-	EXPECT_NEAR(z_test(10, 0.40, 0.5, 0.1), 0.317, 1e-3);
-	EXPECT_NEAR(z_test(10, 0.55, 0.5, 0.2), 0.7236, 1e-4);
+	EXPECT_NEAR(z_test(10, 0.5, 0.5, 0.1)->p_value, 1., 1e-4);
+	EXPECT_NEAR(z_test(10, 0.51, 0.5, 0.1)->p_value, 0.9203, 1e-3);
+	EXPECT_NEAR(z_test(10, 0.49, 0.5, 0.1)->p_value, 0.9203, 1e-3);
+	EXPECT_NEAR(z_test(10, 0.40, 0.5, 0.1)->p_value, 0.317, 1e-3);
+	EXPECT_NEAR(z_test(10, 0.55, 0.5, 0.2)->p_value, 0.7236, 1e-4);
 }
 
 TEST(z_test, no_variance) {
-	EXPECT_NEAR(z_test(10, 0, 0, 0), 0, 1e-4);
+	EXPECT_FALSE(z_test(10, 0, 0, 0));
 }
-
 
 TEST(t_test, basic) {
 	EXPECT_NEAR(t_test(10, 0.5, 0.1*0.1, 0.5, 0.1*0.1), 1., 1e-4);
@@ -40,7 +39,7 @@ TEST(ztf_test, from_data) {
 	const auto s1 = basic_stats(data1);
 	const auto s2 = basic_stats(data2);
 
-	EXPECT_NEAR(z_test(s1.n, s1.mean, s2.mean, s2.variance()), 0.4481, 1e-4); // same as mma with population params
+	EXPECT_NEAR(z_test(s1.n, s1.mean, s2.mean, s2.variance())->p_value, 0.4481, 1e-4); // same as mma with population params
 	EXPECT_NEAR(f_test(s1.n, s1.variance(), s2.n, s2.variance()), 0.8543, 1e-4);
 	EXPECT_NEAR(t_test(s1.n, s1.mean, s1.variance(), s2.mean, s2.variance()), 0.6241, 1e-4);
 }

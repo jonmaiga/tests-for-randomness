@@ -9,7 +9,7 @@
 namespace mixer {
 
 template<typename T>
-inline std::vector<uint64_t> bin_data_for_chi2(const T& data01) {
+std::vector<uint64_t> bin_data_for_chi2(const T& data01) {
 	static_assert(std::is_floating_point_v<typename T::value_type>);
 	std::vector<uint64_t> bins(static_cast<uint64_t>(std::ceil(2 * pow(data01.size(), .4))));
 	const auto bin_count = static_cast<double>(bins.size());

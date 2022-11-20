@@ -21,7 +21,12 @@ inline double adjust_correlation(double d) {
 	return d;
 }
 
-inline double pearson_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
+inline double correlation_p_value(double r, double n) {
+	const double t = std::abs(r * std::sqrt((n - 2) / (1 - r * r)));
+	return student_t_cdf(t, n - 2);
+}
+
+inline std::optional<statistic> pearson_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
 	const auto n = xs.size();
 	double x_mean = 0, y_mean = 0;
 	for (uint64_t i = 0; i < n; ++i) {
@@ -42,20 +47,23 @@ inline double pearson_correlation_stats(const std::vector<double>& xs, const std
 		sum_xy += x_dev * y_dev;
 	}
 	if (is_near(sum_xs, 0) || is_near(sum_ys, 0)) {
-		return sum_xy < 0 ? -1 : 1;
+		return statistic{statistic_type::pearson_r, 0, sum_xy < 0 ? -1. : 1.};
 	}
-	return adjust_correlation(sum_xy / (std::sqrt(sum_xs) * std::sqrt(sum_ys)));
+	const auto r = adjust_correlation(sum_xy / (std::sqrt(sum_xs) * std::sqrt(sum_ys)));
+	return statistic{statistic_type::pearson_r, r, correlation_p_value(r, n)};
 }
 
-inline double spearman_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
+inline std::optional<statistic> spearman_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
 	// @attn get_ranks does not handle non-unique data
 	const auto cmp = [](double a, double b) { return a < b; };
-	return pearson_correlation_stats(
+	const auto pearson_stats = pearson_correlation_stats(
 		rescale_to_01(get_ranks(xs, cmp)),
 		rescale_to_01(get_ranks(ys, cmp)));
+
+	return statistic{statistic_type::spearman_r, pearson_stats->value, pearson_stats->p_value};
 }
 
-inline double kendall_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
+inline std::optional<statistic> kendall_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
 	const size_t n = xs.size();
 	uint64_t n1 = 0, n2 = 0;
 	int64_t is = 0;
@@ -76,37 +84,28 @@ inline double kendall_correlation_stats(const std::vector<double>& xs, const std
 		}
 	}
 	if (n1 == 0 || n2 == 0) {
-		return is < 0 ? -1 : 1;
+		return {};
 	}
-	return adjust_correlation(static_cast<double>(is) / (std::sqrt(n1) * std::sqrt(n2)));
-}
-
-inline double correlation_p_value(double r, double n) {
-	const double t = std::abs(r * std::sqrt((n - 2) / (1 - r * r)));
-	return student_t_cdf(t, n - 2);
-}
-
-inline std::optional<statistic> pearson_correlation_test(uint64_t n, const stream_uint64& source) {
-	const auto data = create_serial_xy(n, source);
-	const auto correlation = pearson_correlation_stats(data.xs, data.ys);
-	const auto p_value = correlation_p_value(correlation, data.xs.size());
-	return statistic{statistic_type::pearson_r, correlation, p_value};
-}
-
-inline std::optional<statistic> spearman_correlation_test(uint64_t n, const stream_uint64& source) {
-	const auto data = create_serial_xy(n, source);
-	const auto rho = spearman_correlation_stats(data.xs, data.ys);
-	const auto p_value = correlation_p_value(rho, data.xs.size());
-	return statistic{statistic_type::spearman_r, rho, p_value};
-}
-
-inline std::optional<statistic> kendall_correlation_test(uint64_t n, const stream_uint64& source) {
-	const auto data = create_serial_xy(n, source);
-	const auto tau = kendall_correlation_stats(data.xs, data.ys);
+	const auto tau = adjust_correlation(static_cast<double>(is) / (std::sqrt(n1) * std::sqrt(n2)));
 	const auto var = ((4. * n + 10.) / (9. * n * (n - 1.)));
 	const auto z = tau / std::sqrt(var);
 	const auto p_value = normal_two_tailed_cdf(z);
 	return statistic{statistic_type::kendall_tau, tau, p_value};
+}
+
+inline std::optional<statistic> pearson_correlation_test(uint64_t n, const stream_uint64& source) {
+	const auto data = create_serial_xy(n, source);
+	return pearson_correlation_stats(data.xs, data.ys);
+}
+
+inline std::optional<statistic> spearman_correlation_test(uint64_t n, const stream_uint64& source) {
+	const auto data = create_serial_xy(n, source);
+	return spearman_correlation_stats(data.xs, data.ys);
+}
+
+inline std::optional<statistic> kendall_correlation_test(uint64_t n, const stream_uint64& source) {
+	const auto data = create_serial_xy(n, source);
+	return kendall_correlation_stats(data.xs, data.ys);
 }
 
 }

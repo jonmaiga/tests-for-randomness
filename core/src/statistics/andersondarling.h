@@ -9,7 +9,7 @@
 
 namespace mixer {
 
-inline double anderson_darling_stats(std::vector<double> data01) {
+inline std::optional<statistic> anderson_darling_stats(std::vector<double> data01) {
 	std::sort(data01.begin(), data01.end());
 	double sum = 0;
 	for (std::size_t i = 0; i < data01.size(); ++i) {
@@ -20,12 +20,12 @@ inline double anderson_darling_stats(std::vector<double> data01) {
 	}
 
 	const auto n = static_cast<double>(data01.size());
-	return -n - sum / n;
+	const auto A2 = -n - sum / n;
+	return statistic{statistic_type::anderson_darling_A2, A2, anderson_darling_cdf(A2, n - 1)};
 }
 
 inline std::optional<statistic> anderson_darling_test(const uint64_t n, const stream_uint64& stream) {
-	const auto A2 = anderson_darling_stats(rescale64_to_01(n, stream));
-	return statistic{statistic_type::anderson_darling_A2, A2, anderson_darling_cdf(A2, n - 1)};
+	return anderson_darling_stats(rescale64_to_01(n, stream));
 }
 
 }

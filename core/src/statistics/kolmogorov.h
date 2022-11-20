@@ -8,7 +8,7 @@
 
 namespace mixer {
 
-inline double kolmogorov_smirnov_stats(std::vector<double> data01) {
+inline std::optional<statistic> kolmogorov_smirnov_stats(std::vector<double> data01) {
 	std::sort(data01.begin(), data01.end());
 	const auto n = static_cast<double>(data01.size());
 	double max_distance = 0;
@@ -19,13 +19,12 @@ inline double kolmogorov_smirnov_stats(std::vector<double> data01) {
 		const double distance = std::max(std::abs(e0 - d), std::abs(e1 - d));
 		max_distance = std::max(distance, max_distance);
 	}
-	return max_distance;
+	const auto p_value = kolmogorov_smirnov_cdf(max_distance, n, 100);
+	return statistic{statistic_type::kolmogorov_smirnov_d, max_distance, p_value};
 }
 
 inline std::optional<statistic> kolmogorov_test(const uint64_t n, const stream_uint64& stream) {
-	const auto max_distance = kolmogorov_smirnov_stats(rescale64_to_01(n, stream));
-	const auto p_value = kolmogorov_smirnov_cdf(max_distance, n, 100);
-	return statistic{statistic_type::kolmogorov_smirnov_d, max_distance, p_value};
+	return kolmogorov_smirnov_stats(rescale64_to_01(n, stream));
 }
 
 }

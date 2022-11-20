@@ -20,14 +20,13 @@ inline double t_test(double n,
 	return t_test(n, a_mean, a_variance, n, b_mean, b_variance);
 }
 
-inline double z_test(double n, double mean, double population_mean, double population_variance) {
+inline std::optional<statistic> z_test(double n, double mean, double population_mean, double population_variance) {
 	if (is_near(population_variance, 0)) {
-		// todo: optional
-		return 0;
+		return {};
 	}
 	const auto se = std::sqrt(population_variance / n);
 	const auto z = (mean - population_mean) / se;
-	return normal_two_tailed_cdf(z);
+	return statistic{statistic_type::z_score, z, normal_two_tailed_cdf(z)};
 }
 
 inline double f_test(double a_n, double a_variance, double b_n, double b_variance) {

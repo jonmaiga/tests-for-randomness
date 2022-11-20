@@ -68,7 +68,7 @@ inline std::string p_value_test(const std::vector<result>& results) {
 
 	const auto p_values = to_p_values(results);
 	const auto ks_stat = kolmogorov_smirnov_stats(p_values);
-	const auto p_value = kolmogorov_smirnov_cdf(ks_stat, p_values.size() - 1, 100);
+	const auto p_value = ks_stat->p_value;
 	constexpr auto a = 0.005;
 	const auto fails = "(" + std::to_string(count_fails(p_values, a)) + ")";
 	if (p_value < a || p_value > 1. - a) {

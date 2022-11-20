@@ -8,12 +8,12 @@
 namespace mixer {
 
 TEST(pearson_correlation, basic) {
-	EXPECT_NEAR(pearson_correlation_stats({1,2,3}, {1,2,3}), 1, 1e-4);
-	EXPECT_NEAR(pearson_correlation_stats({3,2,1}, {3,2,1}), 1, 1e-4);
-	EXPECT_NEAR(pearson_correlation_stats({1,2,3}, {3,2,1}), -1, 1e-4);
-	EXPECT_NEAR(pearson_correlation_stats({1,2,3}, {1,2,4}), 0.9819, 1e-4);
-	EXPECT_NEAR(pearson_correlation_stats({1,2,3,5}, {1,2,4,5}), 0.9621, 1e-4);
-	EXPECT_NEAR(pearson_correlation_stats({1,2,3,5}, {5,4,2,1}), -0.9621, 1e-4);
+	EXPECT_NEAR(pearson_correlation_stats({1,2,3}, {1,2,3})->value, 1, 1e-4);
+	EXPECT_NEAR(pearson_correlation_stats({3,2,1}, {3,2,1})->value, 1, 1e-4);
+	EXPECT_NEAR(pearson_correlation_stats({1,2,3}, {3,2,1})->value, -1, 1e-4);
+	EXPECT_NEAR(pearson_correlation_stats({1,2,3}, {1,2,4})->value, 0.9819, 1e-4);
+	EXPECT_NEAR(pearson_correlation_stats({1,2,3,5}, {1,2,4,5})->value, 0.9621, 1e-4);
+	EXPECT_NEAR(pearson_correlation_stats({1,2,3,5}, {5,4,2,1})->value, -0.9621, 1e-4);
 }
 
 TEST(pearson_correlation, p_value) {
@@ -25,12 +25,12 @@ TEST(pearson_correlation, p_value) {
 }
 
 TEST(spearman_correlation, basic) {
-	EXPECT_NEAR(spearman_correlation_stats({1,2,3}, {1,2,3}), 1, 1e-4);
-	EXPECT_NEAR(spearman_correlation_stats({3,2,1}, {3,2,1}), 1, 1e-4);
-	EXPECT_NEAR(spearman_correlation_stats({1,2,3}, {3,2,1}), -1, 1e-4);
+	EXPECT_NEAR(spearman_correlation_stats({1,2,3}, {1,2,3})->value, 1, 1e-4);
+	EXPECT_NEAR(spearman_correlation_stats({3,2,1}, {3,2,1})->value, 1, 1e-4);
+	EXPECT_NEAR(spearman_correlation_stats({1,2,3}, {3,2,1})->value, -1, 1e-4);
 	EXPECT_NEAR(spearman_correlation_stats(
 		            {10,20,1,19,-5,0,-1,21},
-		            {20,44,1,-11,-12,0,7,10}), -0.16666, 1e-4); // 0.5952 not agreeing with mma rank test (no regards to duplicates) 
+		            {20,44,1,-11,-12,0,7,10})->value, -0.16666, 1e-4); // 0.5952 not agreeing with mma rank test (no regards to duplicates) 
 }
 
 TEST(spearman_correlation, p_value) {

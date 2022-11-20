@@ -14,7 +14,7 @@ inline double sffs_fitness_test(const mixer& mixer) {
 	for (const auto& tr : r.results) {
 		append(all, to_p_values(tr.second));
 	}
-	return kolmogorov_smirnov_stats(all);
+	return kolmogorov_smirnov_stats(all)->value;
 	const double pv = fishers_combined_probabilities(all);
 	return 2 * std::abs(pv - 0.5);
 }
