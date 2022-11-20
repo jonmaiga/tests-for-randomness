@@ -1,22 +1,19 @@
 #pragma once
 
 #include <chrono>
-#include <functional>
-#include <utility>
-#include <iostream>
 
-namespace noise {
+namespace mixer {
 
-class Timer {
+class timer {
 public:
-	Timer() : _start(std::chrono::steady_clock::now()) {
+	timer() : _start(std::chrono::steady_clock::now()) {
 	}
 
-	long long millieSeconds() const {
+	long long millie_seconds() const {
 		return _passed<std::chrono::milliseconds>(std::chrono::steady_clock::now());
 	}
 
-	long long nanoSeconds() const {
+	long long nano_seconds() const {
 		return _passed<std::chrono::nanoseconds>(std::chrono::steady_clock::now());
 	}
 
