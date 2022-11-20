@@ -104,7 +104,7 @@ inline uint64_t create_from_bit(const stream_uint64& source, int bit) {
 	uint64_t x = 0;
 	const uint64_t m = 1ull << bit;
 	for (int i = 0; i < 64; ++i) {
-		const auto v = source.next();
+		const auto v = source();
 		if (v & m) {
 			x |= 1ull << i;
 		}
