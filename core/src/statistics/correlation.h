@@ -3,6 +3,7 @@
 #include <vector>
 #include "distributions.h"
 #include "util/algo.h"
+#include "stream.h"
 
 namespace mixer {
 

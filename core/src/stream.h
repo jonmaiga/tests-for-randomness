@@ -29,7 +29,7 @@ private:
 template <typename T>
 class stream_iterator {
 public:
-	using value_type = typename stream<T>::value_type;
+	using value_type = T;
 
 	explicit stream_iterator(stream<T> stream, uint64_t n, uint64_t index = 0)
 		: stream(std::move(stream)),
@@ -72,6 +72,8 @@ private:
 template <typename T>
 class ranged_stream {
 public:
+	using value_type = T;
+
 	ranged_stream(stream<T> s, uint64_t n) : s(std::move(s)), n(n) {
 	}
 
