@@ -39,30 +39,26 @@ inline std::vector<uint64_t> avalanche_generate_bic(uint64_t n, stream_uint64 st
 	return bic;
 }
 
-inline chi2_statistics avalanche_sac_stats(const double n, const std::vector<uint64_t>& bit_counts) {
+inline std::optional<statistic> avalanche_sac_stats(const double n, const std::vector<uint64_t>& bit_counts) {
 	const double total_count = n * 64;
 	return chi2_stats(bit_counts.size(), to_data(bit_counts), [total_count](std::size_t i) {
 		return total_count * binomial_pdf(64, .5, i);
 	}, 5.);
 }
 
-inline chi2_statistics avalanche_bic_stats(const double n, const std::vector<uint64_t>& bit_counts) {
+inline std::optional<statistic> avalanche_bic_stats(const double n, const std::vector<uint64_t>& bit_counts) {
 	return chi2_stats(bit_counts.size(),
 	                  mul(to_data(bit_counts), to_data(2)), to_data(n));
 }
 
 inline std::optional<statistic> avalanche_mixer_sac_test(uint64_t n, const stream_uint64& stream, const mixer& mixer) {
 	const auto counts = avalanche_generate_sac(n, stream, mixer);
-	const auto stats = avalanche_sac_stats(n, counts);
-	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
-	return {{statistic_type::chi2, stats.chi2, p_value}};
+	return avalanche_sac_stats(n, counts);
 }
 
 inline std::optional<statistic> avalanche_mixer_bic_test(uint64_t n, const stream_uint64& stream, const mixer& mixer) {
 	const auto counts = avalanche_generate_bic(n, stream, mixer);
-	const auto stats = avalanche_bic_stats(n, counts);
-	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
-	return statistic{statistic_type::chi2, stats.chi2, p_value};
+	return avalanche_bic_stats(n, counts);
 }
 
 }

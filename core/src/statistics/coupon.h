@@ -53,7 +53,7 @@ inline std::vector<double> expected_probabilities(const uint64_t wanted_coupons)
 }
 
 template <typename T>
-chi2_statistics coupon_stats(const T& data01) {
+std::optional<statistic> coupon_stats(const T& data01) {
 	constexpr uint64_t wanted_coupons = 5;
 	const auto ps = expected_probabilities(wanted_coupons);
 	const auto cc = collect_coupons(wanted_coupons, ps.size(), data01);
@@ -64,10 +64,7 @@ chi2_statistics coupon_stats(const T& data01) {
 }
 
 inline std::optional<statistic> coupon_test(uint64_t n, const stream_uint64& stream) {
-	const auto stats = coupon_stats(ranged_stream(rescale64_to_01(stream), n));
-	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
-	assertion(is_valid_between_01(p_value), "bad p value");
-	return statistic{statistic_type::chi2, stats.chi2, p_value};
+	return coupon_stats(ranged_stream(rescale64_to_01(stream), n));
 }
 
 

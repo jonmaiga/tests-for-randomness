@@ -90,6 +90,7 @@ struct statistic {
 	statistic_type type;
 	double value{};
 	double p_value{};
+	double df{};
 };
 
 struct result {

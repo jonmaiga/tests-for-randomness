@@ -8,7 +8,7 @@
 
 namespace mixer {
 
-template<typename T>
+template <typename T>
 std::vector<uint64_t> bin_data_for_chi2(const T& data01) {
 	static_assert(std::is_floating_point_v<typename T::value_type>);
 	std::vector<uint64_t> bins(static_cast<uint64_t>(std::ceil(2 * pow(data01.size(), .4))));
@@ -16,17 +16,12 @@ std::vector<uint64_t> bin_data_for_chi2(const T& data01) {
 	for (const auto v : data01) {
 		assertion(is_valid_between_01(v), "Invalid data in chi2");
 		auto index = static_cast<std::size_t>(bin_count * v);
-		bins[std::min(bins.size() - 1, index)]++;
+		++bins[std::min(bins.size() - 1, index)];
 	}
 	return bins;
 }
 
-struct chi2_statistics {
-	double chi2{};
-	double df{};
-};
-
-inline chi2_statistics chi2_stats(std::size_t n, const data_fn& observed, const data_fn& expected, double expected_threshold = 0) {
+inline std::optional<statistic> chi2_stats(std::size_t n, const data_fn& observed, const data_fn& expected, double expected_threshold = 0) {
 	double chi2 = 0;
 	double df = 0;
 	for (std::size_t i = 0; i < n; ++i) {
@@ -36,15 +31,17 @@ inline chi2_statistics chi2_stats(std::size_t n, const data_fn& observed, const 
 		chi2 += diff * diff / expected_count;
 		df += 1;
 	}
-	return {chi2, std::max(df - 1, 0.)};
+	df = std::max(df - 1, 0.);
+	const auto p_value = chi2_distribution_cdf(chi2, df);
+	return statistic{statistic_type::chi2, chi2, p_value, df};
 }
 
-inline chi2_statistics chi2_stats(const std::vector<uint64_t>& bins, double expected_count) {
+inline std::optional<statistic> chi2_stats(const std::vector<uint64_t>& bins, double expected_count) {
 	return chi2_stats(bins.size(), to_data(bins), to_data(expected_count));
 }
 
-template<typename T>
-inline chi2_statistics chi2_uniform_stats(const T& data01) {
+template <typename T>
+std::optional<statistic> chi2_uniform_stats(const T& data01) {
 	static_assert(std::is_floating_point_v<typename T::value_type>);
 	const auto& bins = bin_data_for_chi2(data01);
 	const double expected_count = static_cast<double>(data01.size()) / static_cast<double>(bins.size());
@@ -52,8 +49,7 @@ inline chi2_statistics chi2_uniform_stats(const T& data01) {
 }
 
 inline std::optional<statistic> chi2_test(const uint64_t n, const stream_uint64& stream) {
-	const auto stat = chi2_uniform_stats(rescale64_to_01(n, stream));
-	return statistic{statistic_type::chi2, stat.chi2, chi2_distribution_cdf(stat.chi2, stat.df)};
+	return chi2_uniform_stats(rescale64_to_01(n, stream));
 }
 
 }

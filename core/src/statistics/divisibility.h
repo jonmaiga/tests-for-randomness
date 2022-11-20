@@ -11,7 +11,7 @@
 
 namespace mixer {
 
-template<typename T>
+template <typename T>
 std::vector<uint64_t> collect_divisible(uint64_t divisor, uint64_t wanted, uint64_t tracked, const T& data) {
 	static_assert(std::is_integral_v<typename T::value_type>);
 	std::set<uint64_t> coupons_collected;
@@ -58,13 +58,11 @@ inline std::optional<statistic> divisibility_test(uint64_t n, const stream_uint6
 
 	const auto total_count = accumulate(collected);
 	const auto stats = chi2_stats(collected.size(), to_data(collected),
-									mul(to_data(ps), to_data(total_count)), 1.);
-	if (stats.df < 5.) {
+	                              mul(to_data(ps), to_data(total_count)), 1.);
+	if (stats->df < 5.) {
 		return {};
 	}
-	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
-	assertion(is_valid_between_01(p_value), "bad p value");
-	return statistic{statistic_type::chi2, stats.chi2, p_value};
+	return stats;
 }
 
 inline stream_test create_divisibility_test(test_type test, int divisor) {
