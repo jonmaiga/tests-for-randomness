@@ -58,7 +58,7 @@ private:
 
 class ranged_stream {
 public:
-	ranged_stream(const stream& s, uint64_t n) : s(std::move(s)), n(n) {
+	ranged_stream(const stream& s, uint64_t n) : s(s), n(n) {
 	}
 
 	stream_iterator begin() const {
