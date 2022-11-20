@@ -3,6 +3,7 @@
 #include "rrc.h"
 #include "streams.h"
 #include "util/algo.h"
+#include "trng_data.h"
 
 
 namespace mixer {

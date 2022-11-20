@@ -1,9 +1,9 @@
 #pragma once
 
 #include <atomic>
-#include <iostream>
 
 #include "types.h"
+#include "util/algo.h"
 #include "util/fileutil.h"
 
 namespace mixer {
@@ -38,17 +38,6 @@ inline stream_uint64 create_gray_code(uint64_t d) {
 }
 
 #undef FUNC
-
-inline const std::vector<uint64_t>& get_trng_data() {
-	static const auto trng_data = []() {
-		std::cout << "Reading trng stream from disk...";
-		const auto& data = readBinaryMustExist<uint64_t>(R"(C:\tmp\random.org\trng.bin)");
-		std::cout << " done!\n";
-		return data;
-	}();
-
-	return trng_data;
-}
 
 inline stream_uint64 create_stream_from_data_by_ref(const std::string& name, const std::vector<uint64_t>& data) {
 	std::size_t index = 0;
