@@ -75,4 +75,11 @@ inline stream_uint64 create_stream_from_mixer(const stream_uint64& source, const
 	};
 }
 
+inline stream_double rescale64_to_01(const stream_uint64& source) {
+	return {
+		"rescale64_to_01(" + source.name + ")",
+		[source]() { return rescale64_to_01(source()); }
+	};
+}
+
 }

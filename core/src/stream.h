@@ -3,36 +3,37 @@
 #include <string>
 #include <functional>
 
+#include "util/assertion.h"
+
 namespace mixer {
 
-template<typename T>
+template <typename T>
 class stream {
 public:
 	using value_type = T;
 
 	std::string name;
-	std::function<uint64_t()> next;
+	std::function<value_type()> next;
 
-	uint64_t operator()() const {
+	value_type operator()() const {
 		return next();
 	}
 };
 
-using stream_uint64 = stream<uint64_t>;
-
-template<typename T>
+template <typename T>
 class stream_iterator {
 public:
 	using value_type = typename stream<T>::value_type;
 
-	explicit stream_iterator(const stream<T>& stream, uint64_t n, uint64_t index = 0)
-		: stream(stream),
-		  current_value(0),
+	explicit stream_iterator(stream<T> stream, uint64_t n, uint64_t index = 0)
+		: stream(std::move(stream)),
+		  current_value(this->stream()),
 		  index(index),
 		  n(n) {
 	}
 
 	value_type operator *() const {
+		assertion(index < n, "Out of range");
 		return current_value;
 	}
 
@@ -55,17 +56,17 @@ public:
 	}
 
 private:
-	const stream<T>& stream;
-	uint64_t current_value;
+	stream<T> stream;
+	T current_value;
 	uint64_t index;
 	uint64_t n;
 };
 
 
-template<typename T>
+template <typename T>
 class ranged_stream {
 public:
-	ranged_stream(const stream<T>& s, uint64_t n) : s(s), n(n) {
+	ranged_stream(stream<T> s, uint64_t n) : s(std::move(s)), n(n) {
 	}
 
 	stream_iterator<T> begin() const {
@@ -85,8 +86,11 @@ public:
 	}
 
 private:
-	const stream<T>& s;
+	stream<T> s;
 	uint64_t n;
 };
+
+using stream_uint64 = stream<uint64_t>;
+using stream_double = stream<double>;
 
 }
