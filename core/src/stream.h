@@ -5,7 +5,7 @@
 
 namespace mixer {
 
-class stream {
+class stream_uint64 {
 public:
 	std::string name;
 	std::function<uint64_t()> next;
@@ -19,7 +19,7 @@ class stream_iterator {
 public:
 	using value_type = uint64_t;
 
-	explicit stream_iterator(const stream& stream, uint64_t n, uint64_t index = 0)
+	explicit stream_iterator(const stream_uint64& stream, uint64_t n, uint64_t index = 0)
 		: stream(stream),
 		  current_value(0),
 		  index(index),
@@ -49,7 +49,7 @@ public:
 	}
 
 private:
-	const stream& stream;
+	const stream_uint64& stream;
 	uint64_t current_value;
 	uint64_t index;
 	uint64_t n;
@@ -58,7 +58,7 @@ private:
 
 class ranged_stream {
 public:
-	ranged_stream(const stream& s, uint64_t n) : s(s), n(n) {
+	ranged_stream(const stream_uint64& s, uint64_t n) : s(s), n(n) {
 	}
 
 	stream_iterator begin() const {
@@ -78,7 +78,7 @@ public:
 	}
 
 private:
-	const stream& s;
+	const stream_uint64& s;
 	uint64_t n;
 };
 

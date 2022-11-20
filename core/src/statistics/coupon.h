@@ -61,7 +61,7 @@ inline chi2_statistics coupon_stats(const std::vector<double>& data01) {
 	return chi2_stats(cc.size(), to_data(cc), mul(to_data(ps), to_data(total_count)), 1.);
 }
 
-inline std::optional<statistic> coupon_test(uint64_t n, const stream& stream) {
+inline std::optional<statistic> coupon_test(uint64_t n, const stream_uint64& stream) {
 	const auto stats = coupon_stats(rescale64_to_01(n, stream));
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
 	assertion(is_valid_between_01(p_value), "bad p value");
