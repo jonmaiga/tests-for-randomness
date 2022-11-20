@@ -27,7 +27,7 @@ std::vector<std::size_t> get_ranks(const std::vector<T>& vec, Compare& compare) 
 }
 
 
-inline std::vector<uint64_t> get_raw(uint64_t n, const stream_uint64& stream) {
+inline std::vector<uint64_t> get_raw(uint64_t n, stream_uint64 stream) {
 	std::vector<uint64_t> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
@@ -36,7 +36,7 @@ inline std::vector<uint64_t> get_raw(uint64_t n, const stream_uint64& stream) {
 	return data;
 }
 
-inline std::vector<double> rescale64_to_01(uint64_t n, const stream_uint64& stream) {
+inline std::vector<double> rescale64_to_01(uint64_t n, stream_uint64 stream) {
 	std::vector<double> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
@@ -77,7 +77,7 @@ struct xys {
 	std::vector<double> ys;
 };
 
-inline xys create_bit_flipped_xy(uint64_t n, const stream_uint64& source, const mixer& mixer) {
+inline xys create_bit_flipped_xy(uint64_t n, stream_uint64 source, const mixer& mixer) {
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
 		const uint64_t v = source();
@@ -91,7 +91,7 @@ inline xys create_bit_flipped_xy(uint64_t n, const stream_uint64& source, const 
 	return {xs, ys};
 }
 
-inline xys create_serial_xy(uint64_t n, const stream_uint64& source) {
+inline xys create_serial_xy(uint64_t n, stream_uint64 source) {
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
 		xs.push_back(rescale64_to_01(source()));
@@ -100,7 +100,7 @@ inline xys create_serial_xy(uint64_t n, const stream_uint64& source) {
 	return {xs, ys};
 }
 
-inline uint64_t create_from_bit(const stream_uint64& source, int bit) {
+inline uint64_t create_from_bit(stream_uint64 source, int bit) {
 	uint64_t x = 0;
 	const uint64_t m = 1ull << bit;
 	for (int i = 0; i < 64; ++i) {

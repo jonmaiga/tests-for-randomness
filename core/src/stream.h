@@ -18,7 +18,7 @@ public:
 
 	std::string name;
 
-	value_type operator()() const {
+	value_type operator()() {
 		return next();
 	}
 

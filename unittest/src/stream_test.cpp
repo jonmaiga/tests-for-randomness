@@ -5,28 +5,30 @@
 
 namespace mixer {
 
+
 TEST(stream, expected_behavior) {
-	const auto s1 = create_counter_stream(1);
+	auto s1 = create_counter_stream(1);
 	EXPECT_EQ(s1(), 1);
 	EXPECT_EQ(s1(), 2);
 
-	const auto s2 = s1;
+	auto s2 = s1;
 	EXPECT_EQ(s2(), 3);
 	EXPECT_EQ(s2(), 4);
 	EXPECT_EQ(s1(), 3);
 	EXPECT_EQ(s1(), 4);
 
-	const auto s3 = create_counter_stream(1);
+	auto s3 = create_counter_stream(1);
 	EXPECT_EQ(s1(), 5);
 	EXPECT_EQ(s2(), 5);
 	EXPECT_EQ(s3(), 1);
 	EXPECT_EQ(s3(), 2);
 
-	const auto s4 = create_counter_stream(1);
-	const auto rs = rescale64_to_01(s4);
+	auto s4 = create_counter_stream(1);
+	auto rs = rescale64_to_01(s4);
 	auto d = rs();
 	EXPECT_TRUE(is_near(d, 0));
 	EXPECT_EQ(s4(), 1);
+	EXPECT_EQ(s4(), 2);
 }
 
 TEST(stream, iterable) {
