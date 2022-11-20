@@ -41,7 +41,7 @@ inline std::vector<double> generate_gap_probabilities(double a, double b) {
 	return ps;
 }
 
-inline std::optional<statistic> gap_test(uint64_t n, const stream& stream, test_type test, double a, double b) {
+inline std::optional<statistic> gap_test(uint64_t n, const stream_uint64& stream, test_type test, double a, double b) {
 	const auto& data01 = rescale64_to_01(n, stream);
 	const auto& ps = generate_gap_probabilities(a, b);
 	const auto& gaps = generate_gaps(ps.size(), a, b, data01);
@@ -56,7 +56,7 @@ inline std::optional<statistic> gap_test(uint64_t n, const stream& stream, test_
 }
 
 inline stream_test create_gap_test(test_type test, double a, double b) {
-	return [test, a, b](uint64_t n, const stream& stream) {
+	return [test, a, b](uint64_t n, const stream_uint64& stream) {
 		return gap_test(n, stream, test, a, b);
 	};
 }

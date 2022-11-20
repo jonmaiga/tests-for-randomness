@@ -14,7 +14,7 @@ namespace mixer {namespace internal {
 using test_job_return = std::optional<result>;
 using test_jobs = jobs<test_job_return>;
 
-inline stream create_stream(const test_config& cfg) {
+inline stream_uint64 create_stream(const test_config& cfg) {
 	auto s = create_stream_from_mixer(cfg.source, cfg.mix);
 	if (cfg.stream_append_factory) {
 		return cfg.stream_append_factory(s);

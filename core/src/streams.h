@@ -27,13 +27,13 @@ struct function_stream {
 	}
 };
 
-inline stream create_counter_stream(uint64_t increment) {
+inline stream_uint64 create_counter_stream(uint64_t increment) {
 	return {"counter-" + std::to_string(increment), counter_stream{increment}};
 }
 
 #define FUNC(exp) [=](uint64_t i) { return exp; }
 
-inline stream create_gray_code(uint64_t d) {
+inline stream_uint64 create_gray_code(uint64_t d) {
 	return {"graycode-" + std::to_string(d), function_stream{FUNC(i ^ (i / d))}};
 }
 
@@ -50,25 +50,25 @@ inline const std::vector<uint64_t>& get_trng_data() {
 	return trng_data;
 }
 
-inline stream create_stream_from_data_by_ref(const std::string& name, const std::vector<uint64_t>& data) {
+inline stream_uint64 create_stream_from_data_by_ref(const std::string& name, const std::vector<uint64_t>& data) {
 	std::size_t index = 0;
-	return stream{
+	return stream_uint64{
 		name, [&data, index]() mutable -> uint64_t {
 			return data[index++ % data.size()];
 		}
 	};
 }
 
-inline stream create_stream_from_data_by_ref_thread_safe(const std::string& name, const std::vector<uint64_t>& data) {
+inline stream_uint64 create_stream_from_data_by_ref_thread_safe(const std::string& name, const std::vector<uint64_t>& data) {
 	static std::atomic_size_t index = 0;
-	return stream{
+	return stream_uint64{
 		name, [&data]() -> uint64_t {
 			return data[index++ % data.size()];
 		}
 	};
 }
 
-inline stream create_stream_from_mixer(const stream& source, const mixer& mixer) {
+inline stream_uint64 create_stream_from_mixer(const stream_uint64& source, const mixer& mixer) {
 	return {
 		mixer.name + "(" + source.name + ")",
 		[source, mixer]() { return mixer(source()); }

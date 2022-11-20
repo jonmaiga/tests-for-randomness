@@ -6,7 +6,7 @@
 namespace mixer {
 
 
-inline mixer create_mixer_from_stream(const std::string& name, const stream& source) {
+inline mixer create_mixer_from_stream(const std::string& name, const stream_uint64& source) {
 	return {
 		name, [&source](uint64_t) {
 			return source();

@@ -5,7 +5,7 @@
 
 namespace mixer {
 
-inline stream test_stream() {
+inline stream_uint64 test_stream() {
 	//return create_stream_from_mixer(create_stream_from_data_by_ref("test_trng", get_trng_data()), mx3);
 	return create_stream_from_mixer(create_counter_stream(1), mx3);
 }

@@ -22,12 +22,12 @@ struct mixer {
 	}
 };
 
-using stream_factory = std::function<stream()>;
-using append_stream_factory = std::function<stream(const stream&)>;
+using stream_factory = std::function<stream_uint64()>;
+using append_stream_factory = std::function<stream_uint64(const stream_uint64&)>;
 
 struct test_config {
 	uint64_t n{};
-	stream source;
+	stream_uint64 source;
 	mixer mix;
 	append_stream_factory stream_append_factory;
 };
@@ -108,8 +108,8 @@ inline statistic_meta get_meta(test_type type) {
 	return {};
 }
 
-using mixer_test = std::function<std::optional<statistic>(uint64_t n, const stream&, const mixer&)>;
-using stream_test = std::function<std::optional<statistic>(uint64_t n, const stream&)>;
+using mixer_test = std::function<std::optional<statistic>(uint64_t n, const stream_uint64&, const mixer&)>;
+using stream_test = std::function<std::optional<statistic>(uint64_t n, const stream_uint64&)>;
 
 struct test_result {
 	using result_map = std::map<test_type, std::vector<result>>;

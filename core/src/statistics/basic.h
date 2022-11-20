@@ -52,7 +52,7 @@ inline basic_statistics basic_stats(const T& values) {
 	return stats;
 }
 
-inline std::optional<statistic> basic_test(uint64_t n, const stream& stream) {
+inline std::optional<statistic> basic_test(uint64_t n, const stream_uint64& stream) {
 	// mean from uniform is approximately normal
 	// https://stats.stackexchange.com/questions/458341/what-distribution-does-the-mean-of-a-random-sample-from-a-uniform-distribution-f
 	const auto ns = rescale64_to_01(n, stream);

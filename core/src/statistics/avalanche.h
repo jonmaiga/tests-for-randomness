@@ -6,7 +6,7 @@
 
 namespace mixer {
 
-inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream& stream, const mixer& mixer) {
+inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream_uint64& stream, const mixer& mixer) {
 	// @attn, using x = stream() directly will make all mixers fail for all counter streams with increments
 	// of a power of 2, 1,2,4... I believe this is an error in the test rather than the mixers,
 	// maybe the bit flip causes too many duplicates and it becomes biased.
@@ -23,7 +23,7 @@ inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream& st
 	return sac;
 }
 
-inline std::vector<uint64_t> avalanche_generate_bic(uint64_t n, const stream& stream, const mixer& mixer) {
+inline std::vector<uint64_t> avalanche_generate_bic(uint64_t n, const stream_uint64& stream, const mixer& mixer) {
 	std::vector<uint64_t> bic(4096);
 	for (uint64_t i = 0; i < n; ++i) {
 		const auto x = mixer(stream());
@@ -51,14 +51,14 @@ inline chi2_statistics avalanche_bic_stats(const double n, const std::vector<uin
 	                  mul(to_data(bit_counts), to_data(2)), to_data(n));
 }
 
-inline std::optional<statistic> avalanche_mixer_sac_test(uint64_t n, const stream& stream, const mixer& mixer) {
+inline std::optional<statistic> avalanche_mixer_sac_test(uint64_t n, const stream_uint64& stream, const mixer& mixer) {
 	const auto counts = avalanche_generate_sac(n, stream, mixer);
 	const auto stats = avalanche_sac_stats(n, counts);
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
 	return {{test_type::sac, stats.chi2, p_value}};
 }
 
-inline std::optional<statistic> avalanche_mixer_bic_test(uint64_t n, const stream& stream, const mixer& mixer) {
+inline std::optional<statistic> avalanche_mixer_bic_test(uint64_t n, const stream_uint64& stream, const mixer& mixer) {
 	const auto counts = avalanche_generate_bic(n, stream, mixer);
 	const auto stats = avalanche_bic_stats(n, counts);
 	const auto p_value = chi2_distribution_cdf(stats.chi2, stats.df);
