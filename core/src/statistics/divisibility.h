@@ -50,7 +50,7 @@ inline std::vector<double> divisible_expected_probabilities(const uint64_t divis
 }
 
 
-inline std::optional<statistic> divisibility_test(uint64_t n, const stream_uint64& stream, test_type test, int divisor) {
+inline std::optional<statistic> divisibility_test(uint64_t n, const stream_uint64& stream, int divisor) {
 	constexpr auto wanted = 7;
 	const auto ps = divisible_expected_probabilities(divisor, wanted);
 	const auto collected = collect_divisible(divisor, wanted, ps.size(), ranged_stream(stream, n));
@@ -65,9 +65,9 @@ inline std::optional<statistic> divisibility_test(uint64_t n, const stream_uint6
 	return stats;
 }
 
-inline stream_test create_divisibility_test(test_type test, int divisor) {
-	return [test, divisor](uint64_t n, const stream_uint64& stream) {
-		return divisibility_test(n, stream, test, divisor);
+inline stream_test create_divisibility_test(int divisor) {
+	return [divisor](uint64_t n, const stream_uint64& stream) {
+		return divisibility_test(n, stream, divisor);
 	};
 }
 

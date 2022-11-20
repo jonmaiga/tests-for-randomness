@@ -42,18 +42,18 @@ inline std::vector<double> generate_gap_probabilities(double a, double b) {
 	return ps;
 }
 
-inline std::optional<statistic> gap_test(uint64_t n, const stream_uint64& source, test_type test, double a, double b) {
+inline std::optional<statistic> gap_test(uint64_t n, const stream_uint64& source, double a, double b) {
 	const auto& ps = generate_gap_probabilities(a, b);
 	const auto& gaps = generate_gaps(ps.size(), a, b, ranged_stream(rescale64_to_01(source), n));
 	const auto total_count = accumulate(gaps);
 	return chi2_stats(gaps.size(), to_data(gaps),
-	                               mul(to_data(ps), to_data(total_count)),
-	                               1.);
+	                  mul(to_data(ps), to_data(total_count)),
+	                  1.);
 }
 
-inline stream_test create_gap_test(test_type test, double a, double b) {
-	return [test, a, b](uint64_t n, const stream_uint64& stream) {
-		return gap_test(n, stream, test, a, b);
+inline stream_test create_gap_test(double a, double b) {
+	return [a, b](uint64_t n, const stream_uint64& stream) {
+		return gap_test(n, stream, a, b);
 	};
 }
 
