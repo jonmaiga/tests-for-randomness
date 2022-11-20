@@ -8,7 +8,7 @@ namespace mixer {
 
 inline mixer create_mixer_from_stream(const std::string& name, const stream_uint64& source) {
 	return {
-		name, [&source](uint64_t) {
+		name, [source](uint64_t) {
 			return source();
 		}
 	};
