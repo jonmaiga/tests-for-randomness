@@ -28,6 +28,9 @@ inline double correlation_p_value(double r, double n) {
 
 inline std::optional<statistic> pearson_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
 	const auto n = xs.size();
+	if (n < 3) {
+		return {};
+	}
 	double x_mean = 0, y_mean = 0;
 	for (uint64_t i = 0; i < n; ++i) {
 		x_mean += xs[i];
@@ -56,15 +59,21 @@ inline std::optional<statistic> pearson_correlation_stats(const std::vector<doub
 inline std::optional<statistic> spearman_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
 	// @attn get_ranks does not handle non-unique data
 	const auto cmp = [](double a, double b) { return a < b; };
-	const auto pearson_stats = pearson_correlation_stats(
+	if (const auto pearson_stats = pearson_correlation_stats(
 		rescale_to_01(get_ranks(xs, cmp)),
-		rescale_to_01(get_ranks(ys, cmp)));
+		rescale_to_01(get_ranks(ys, cmp)))) {
 
-	return statistic{statistic_type::spearman_r, pearson_stats->value, pearson_stats->p_value, pearson_stats->df};
+		return statistic{statistic_type::spearman_r, pearson_stats->value, pearson_stats->p_value, pearson_stats->df};
+	}
+	return {};
 }
 
 inline std::optional<statistic> kendall_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
 	const size_t n = xs.size();
+	if (n < 2) {
+		return {};
+	}
+
 	uint64_t n1 = 0, n2 = 0;
 	int64_t is = 0;
 	for (size_t j = 0; j < n - 1; ++j) {

@@ -5,6 +5,11 @@
 
 namespace mixer {
 
+TEST(z_test, unset) {
+	EXPECT_FALSE(z_test(0, 10., 1., 0.1));
+	EXPECT_FALSE(z_test(10, 10., 1., 0));
+}
+
 TEST(z_test, basic) {
 	EXPECT_NEAR(z_test(10, 0.5, 0.5, 0.1)->p_value, 1., 1e-4);
 	EXPECT_NEAR(z_test(10, 0.51, 0.5, 0.1)->p_value, 0.9203, 1e-3);

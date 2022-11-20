@@ -32,6 +32,9 @@ inline std::optional<statistic> chi2_stats(std::size_t n, const data_fn& observe
 		df += 1;
 	}
 	df = std::max(df - 1, 0.);
+	if (is_near(df, 0)) {
+		return {};
+	}
 	const auto p_value = chi2_distribution_cdf(chi2, df);
 	return statistic{statistic_type::chi2, chi2, p_value, df};
 }

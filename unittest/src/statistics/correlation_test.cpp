@@ -7,6 +7,12 @@
 
 namespace mixer {
 
+TEST(pearson_correlation, unset) {
+	EXPECT_FALSE(pearson_correlation_stats({},{}));
+	EXPECT_FALSE(pearson_correlation_stats({1},{1}));
+	EXPECT_FALSE(pearson_correlation_stats({1, 2},{1,2}));
+}
+
 TEST(pearson_correlation, basic) {
 	EXPECT_NEAR(pearson_correlation_stats({1,2,3}, {1,2,3})->value, 1, 1e-4);
 	EXPECT_NEAR(pearson_correlation_stats({3,2,1}, {3,2,1})->value, 1, 1e-4);
@@ -22,6 +28,12 @@ TEST(pearson_correlation, p_value) {
 	EXPECT_NEAR(correlation_p_value(0.5727, 6), 0.2348, 1e-4);
 	EXPECT_NEAR(correlation_p_value(-0.9621, 4), 0.03785, 1e-4);
 	EXPECT_NEAR(correlation_p_value(0.9621, 4), 0.03785, 1e-4);
+}
+
+TEST(spearman_correlation, unset) {
+	EXPECT_FALSE(spearman_correlation_stats({},{}));
+	EXPECT_FALSE(spearman_correlation_stats({1},{1}));
+	EXPECT_FALSE(spearman_correlation_stats({1, 2},{1,2}));
 }
 
 TEST(spearman_correlation, basic) {

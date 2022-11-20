@@ -6,6 +6,11 @@
 
 namespace mixer {
 
+TEST(chi2, unset) {
+	EXPECT_FALSE(chi2_stats({}, 0));
+	EXPECT_FALSE(chi2_stats({1}, 0));
+}
+
 TEST(chi2, basic) {
 	using T = std::vector<double>;
 	// same as mma

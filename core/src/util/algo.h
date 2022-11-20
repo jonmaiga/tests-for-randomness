@@ -68,7 +68,7 @@ std::vector<double> rescale64_to_01(const std::vector<T>& data) {
 
 template <typename T>
 std::vector<double> rescale_to_01(const std::vector<T>& data) {
-	return rescale_to_01(data,
+	return data.empty() ? std::vector<double>{} : rescale_to_01(data,
 	                     *std::min_element(data.begin(), data.end()),
 	                     *std::max_element(data.begin(), data.end()));
 }

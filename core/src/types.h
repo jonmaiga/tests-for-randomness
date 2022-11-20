@@ -89,6 +89,9 @@ const auto all_metas = std::vector<statistic_meta>{
 struct statistic {
 	statistic(statistic_type type, double value, double p_value, double df) :
 		type(type), value(value), p_value(p_value), df(df) {
+			assertion(is_valid(value), "statistic value not valid");
+			assertion(is_valid_between_01(p_value), "statistic p-value not valid");
+			assertion(df > 0, "statistic df not valid");
 	}
 
 	statistic_type type;

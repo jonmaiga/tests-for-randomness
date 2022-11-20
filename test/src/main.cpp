@@ -33,12 +33,12 @@ void write_stream(const mixer& m, uint64_t n) {
 inline void run_tests() {
 	using test_method = std::function<test_result(const mixer&, uint64_t)>;
 
-	const auto trng_stream = create_stream_from_data_by_ref_thread_safe("trng", get_trng_data());
-	const auto trng1 = create_mixer_from_stream("trng1", trng_stream);
-	const auto trng2 = create_mixer_from_stream("trng2", trng_stream);
+	//const auto trng_stream = create_stream_from_data_by_ref_thread_safe("trng", get_trng_data());
+	//const auto trng1 = create_mixer_from_stream("trng1", trng_stream);
+	//const auto trng2 = create_mixer_from_stream("trng2", trng_stream);
 
 	const test_method test = test_rrc_parallel;
-	constexpr auto n = 20000;
+	constexpr auto n = 1000;
 
 	const mixer test_mixer = {
 		"test", [](uint64_t x) {
@@ -52,8 +52,8 @@ inline void run_tests() {
 	std::cout << "n=" << n << "\n";
 
 	result_analyzer analyzer;
-	analyzer.add(test(trng1, n));
-	analyzer.add(test(trng2, n));
+	//analyzer.add(test(trng1, n));
+	//analyzer.add(test(trng2, n));
 
 	analyzer.add(test(mx3, n));
 	analyzer.add(test(nasam, n));

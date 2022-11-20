@@ -19,7 +19,6 @@ inline std::optional<statistic> kolmogorov_smirnov_stats(std::vector<double> dat
 		const double distance = std::max(std::abs(e0 - d), std::abs(e1 - d));
 		max_distance = std::max(distance, max_distance);
 	}
-	//todo: df
 	const auto p_value = kolmogorov_smirnov_cdf(max_distance, n, 100);
 	return statistic{statistic_type::kolmogorov_smirnov_d, max_distance, p_value, n};
 }

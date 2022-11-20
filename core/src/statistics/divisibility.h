@@ -49,7 +49,6 @@ inline std::vector<double> divisible_expected_probabilities(const uint64_t divis
 	return expected;
 }
 
-
 inline std::optional<statistic> divisibility_test(uint64_t n, const stream_uint64& stream, int divisor) {
 	constexpr auto wanted = 7;
 	const auto ps = divisible_expected_probabilities(divisor, wanted);

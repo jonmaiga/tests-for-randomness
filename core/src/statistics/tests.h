@@ -24,6 +24,9 @@ inline std::optional<statistic> z_test(double n, double mean, double population_
 	if (is_near(population_variance, 0)) {
 		return {};
 	}
+	if (is_near(n, 0)) {
+		return {};
+	}
 	const auto se = std::sqrt(population_variance / n);
 	const auto z = (mean - population_mean) / se;
 	// todo: df

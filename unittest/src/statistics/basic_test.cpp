@@ -32,5 +32,4 @@ TEST(statistics_basic, no_change) {
 	EXPECT_NEAR(r->p_value, 0.9734, 1e-4);
 }
 
-
 }

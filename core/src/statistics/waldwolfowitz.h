@@ -38,7 +38,7 @@ wald_wolfowitz_statistics wald_wolfowitz_stats(const std::vector<T>& data) {
 	};
 }
 
-inline std::optional<statistic> wald_wolfowitz_p_value(wald_wolfowitz_statistics s) {
+inline std::optional<statistic> wald_wolfowitz_stats(wald_wolfowitz_statistics s) {
 	// https://en.wikipedia.org/wiki/Wald%E2%80%93Wolfowitz_runs_test
 	// info https://support.sas.com/kb/33/092.html
 	// exact, z-test, improved: https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_Runs.pdf
@@ -53,7 +53,7 @@ inline std::optional<statistic> wald_wolfowitz_p_value(wald_wolfowitz_statistics
 
 inline std::optional<statistic> wald_wolfowitz_test(const uint64_t n, const stream_uint64& stream) {
 	const auto ww = wald_wolfowitz_stats(get_raw(n, stream));
-	return wald_wolfowitz_p_value(ww);
+	return wald_wolfowitz_stats(ww);
 }
 
 
