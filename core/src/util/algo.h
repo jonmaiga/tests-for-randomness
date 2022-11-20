@@ -8,6 +8,7 @@
 
 #include "bitwise.h"
 #include "math.h"
+#include "stream.h"
 #include "types.h"
 
 namespace mixer {
