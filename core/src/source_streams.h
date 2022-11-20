@@ -8,20 +8,20 @@
 
 namespace mixer {
 
-inline stream_uint64 add_rrc(const stream_uint64& source, int rotation, rrc_type type) {
+inline stream_uint64 add_rrc(stream_uint64 source, int rotation, rrc_type type) {
 	const auto name = to_string(type) + "-" + std::to_string(rotation) + "(" + source.name + ")";
 	return {
-		name, [source, rotation, type]()-> uint64_t {
+		name, [source, rotation, type]() mutable -> uint64_t {
 			return permute(source(), rotation, type);
 		}
 	};
 }
 
-inline stream_uint64 create_bit_isolation_stream(const stream_uint64& source, int bit) {
+inline stream_uint64 create_bit_isolation_stream(stream_uint64 source, int bit) {
 	const auto name = "bit-" + std::to_string(bit) + "(" + source.name + ")";
 	return {
 		name,
-		[source, bit]()-> uint64_t {
+		[source, bit]() mutable -> uint64_t {
 			return create_from_bit(source, bit);
 		}
 	};
@@ -38,7 +38,7 @@ inline std::vector<test_factory> create_test_factories(const mixer& mixer, uint6
 		return test_config{n, create_stream_from_data_by_ref("trng", get_trng_data()), mixer};
 	};
 
-	std::vector<test_factory> factories {counter1, graycode2}; //, trng};
+	std::vector<test_factory> factories{counter1, graycode2}; //, trng};
 	for (int bit = 0; bit < 64; ++bit) {
 		const auto post_mix_permute = [bit](const stream_uint64& source) {
 			return create_bit_isolation_stream(source, bit);

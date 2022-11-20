@@ -38,7 +38,7 @@ inline void run_tests() {
 	const auto trng2 = create_mixer_from_stream("trng2", trng_stream);
 
 	const test_method test = test_rrc_parallel;
-	constexpr auto n = 20000;
+	constexpr auto n = 2000;
 
 	const mixer test_mixer = {
 		"test", [](uint64_t x) {

@@ -57,17 +57,17 @@ inline stream_uint64 create_stream_from_data_by_ref_thread_safe(const std::strin
 	};
 }
 
-inline stream_uint64 create_stream_from_mixer(const stream_uint64& source, const mixer& mixer) {
+inline stream_uint64 create_stream_from_mixer(stream_uint64 source, const mixer& mixer) {
 	return {
 		mixer.name + "(" + source.name + ")",
-		[source, mixer]() { return mixer(source()); }
+		[source, mixer]() mutable { return mixer(source()); }
 	};
 }
 
-inline stream_double rescale64_to_01(const stream_uint64& source) {
+inline stream_double rescale64_to_01(stream_uint64 source) {
 	return {
 		"rescale64_to_01(" + source.name + ")",
-		[source]() { return rescale64_to_01(source()); }
+		[source]() mutable { return rescale64_to_01(source()); }
 	};
 }
 

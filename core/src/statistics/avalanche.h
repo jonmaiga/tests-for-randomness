@@ -6,7 +6,7 @@
 
 namespace mixer {
 
-inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream_uint64& stream, const mixer& mixer) {
+inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, stream_uint64 stream, const mixer& mixer) {
 	// @attn, using x = stream() directly will make all mixers fail for all counter streams with increments
 	// of a power of 2, 1,2,4... I believe this is an error in the test rather than the mixers,
 	// maybe the bit flip causes too many duplicates and it becomes biased.
@@ -23,7 +23,7 @@ inline std::vector<uint64_t> avalanche_generate_sac(uint64_t n, const stream_uin
 	return sac;
 }
 
-inline std::vector<uint64_t> avalanche_generate_bic(uint64_t n, const stream_uint64& stream, const mixer& mixer) {
+inline std::vector<uint64_t> avalanche_generate_bic(uint64_t n, stream_uint64 stream, const mixer& mixer) {
 	std::vector<uint64_t> bic(4096);
 	for (uint64_t i = 0; i < n; ++i) {
 		const auto x = mixer(stream());
