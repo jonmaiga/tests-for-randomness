@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include "mixers.h"
+#include "mixers64.h"
 #include "testutil.h"
 
 namespace mixer {

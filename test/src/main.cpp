@@ -1,7 +1,7 @@
 #include <iostream>
 #include "eval_parallel.h"
 #include "format_result.h"
-#include "mixers.h"
+#include "mixers64.h"
 #include "trng_data.h"
 
 #include "search/search_mixer_constants_setup.h"
