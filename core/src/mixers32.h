@@ -56,33 +56,35 @@ const mixer32 h2_sql = {
 
 const mixer32 sffs1 = {
 	"sffs_all", [](uint32_t x) {
-		x ^= x >> 11;
-		x *= 708060363;
-		x ^= x >> 14;
-		x *= 708060363;
-		x ^= x >> 15;
+		x ^= x >> 12;
+		x *= 36275027;
+		x ^= x >> 16;
+		x *= 36275027;
+		x ^= x >> 17;
 		return x;
 	}
 };
 
 const mixer32 sffs2 = {
 	"sffs_bic", [](uint32_t x) {
-		x ^= x >> 16;
-		x *= 12987573;
-		x ^= x >> 16;
-		x *= 12987573;
-		x ^= x >> 12;
+		x ^= x >> 17;
+		x *= 3144857259;
+		x ^= x >> 15;
+		x *= 3144857259;
+		x ^= x >> 15;
 		return x;
 	}
 };
 
 const mixer32 sffs3 = {
-	"sffs_mean_chi2", [](uint32_t x) {
-		x ^= x >> 30;
-		x *= 4274575107;
-		x ^= x >> 31;
-		x *= 4274575107;
-		x ^= x >> 24;
+	"sffs_mx3", [](uint32_t x) {
+		x ^= x >> 16;
+		x *= 20493;
+		x ^= x >> 16;
+		x *= 20493;
+		x ^= x >> 8;
+		x *= 20493;
+		x ^= x >> 8;
 		return x;
 	}
 };
@@ -122,8 +124,8 @@ inline std::vector<mixer32> get_mixers() {
 		mix32::sffs1,
 		mix32::sffs2,
 		mix32::sffs3,
-		mix32::sffs4,
-		mix32::sffs_xm3,
+		//mix32::sffs4,
+		//mix32::sffs_xm3,
 	};
 }
 
