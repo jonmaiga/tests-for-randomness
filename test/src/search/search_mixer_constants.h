@@ -8,15 +8,14 @@
 
 namespace mixer {
 
-inline double sffs_fitness_test(const mixer64& mixer) {
-	const auto r = test_rrc(mixer, 5000);
+template<typename T>
+double sffs_fitness_test(const mixer<T>& mixer) {
+	const auto r = test_rrc<T>(mixer, 5000);
 	std::vector<double> all;
 	for (const auto& tr : r.results) {
 		append(all, to_p_values(tr.second));
 	}
 	return kolmogorov_smirnov_stats(all)->value;
-	const double pv = fishers_combined_probabilities(all);
-	return 2 * std::abs(pv - 0.5);
 }
 
 inline bit_vector random_bit_vector(int bits) {
@@ -42,7 +41,7 @@ inline bit_vector find_seed(const config& config, int tries) {
 	return best;
 }
 
-template<typename T>
+template <typename T>
 void start_search(const std::string& name, const config& config) {
 	auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
 	const auto trng = create_mixer_from_stream("trng1", trng_stream);
