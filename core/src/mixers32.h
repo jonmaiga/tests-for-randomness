@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "mixer.h"
 
 namespace mixer {

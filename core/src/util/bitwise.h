@@ -35,6 +35,9 @@ inline uint64_t byte_swap(uint64_t val) {
 		(((val) & 0x00000000000000ffull) << 56));
 }
 
+template<typename T> T reverse_bits(T x);
+
+template<>
 inline uint32_t reverse_bits(uint32_t x) {
 	x = ((x >> 1) & 0x55555555) | ((x & 0x55555555) << 1);
 	x = ((x >> 2) & 0x33333333) | ((x & 0x33333333) << 2);
@@ -43,6 +46,7 @@ inline uint32_t reverse_bits(uint32_t x) {
 	return (x >> 16) | (x << 16);
 }
 
+template<>
 inline uint64_t reverse_bits(uint64_t x) {
 	x = (x & 0xaaaaaaaaaaaaaaaaull) >> 1 | (x & 0x5555555555555555ull) << 1;
 	x = (x & 0xccccccccccccccccull) >> 2 | (x & 0x3333333333333333ull) << 2;
