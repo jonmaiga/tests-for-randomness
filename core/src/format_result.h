@@ -53,7 +53,14 @@ inline void draw_histogram(const std::vector<double>& data) {
 	std::cout << "\n";
 }
 
-inline std::string p_value_test(const std::vector<result>& results) {
+inline bool passed_test(const std::vector<result>& results, const double alpha) {
+	const auto p_values = to_p_values(results);
+	const auto ks_stat = kolmogorov_smirnov_stats(p_values);
+	const auto p_value = ks_stat->p_value;
+	return p_value >= alpha && p_value <= 1. - alpha;
+}
+
+inline std::string p_value_test(const std::vector<result>& results, const double alpha) {
 	if (results.empty()) {
 		return "N/A";
 	}
@@ -67,14 +74,11 @@ inline std::string p_value_test(const std::vector<result>& results) {
 	//const auto p_value = fishers_combined_probabilities(to_p_values(results));
 
 	const auto p_values = to_p_values(results);
-	const auto ks_stat = kolmogorov_smirnov_stats(p_values);
-	const auto p_value = ks_stat->p_value;
-	constexpr auto a = 0.005;
-	const auto fails = "(" + std::to_string(count_fails(p_values, a)) + ")";
-	if (p_value < a || p_value > 1. - a) {
-		return "F*" + fails;
+	const auto fails = "(" + std::to_string(count_fails(p_values, alpha)) + ")";
+	if (passed_test(results, alpha)) {
+		return "P " + fails;
 	}
-	return "P " + fails;
+	return "F*" + fails;
 }
 
 using tags = std::vector<std::string>;
@@ -125,15 +129,16 @@ public:
 
 	void add(const test_result& r) {
 		test_results.push_back(r);
-
-		table t({"test", r.mixer_name});
-		for (const auto& result : r.results) {
-			t.col(get_meta(result.first).name);
-			t.col(p_value_test(result.second));
-			t.row();
-		}
-		std::cout << t.to_string() << "\n";
-
+		/*
+				table t({"test", r.mixer_name});
+				for (const auto& result : r.results) {
+					t.col(get_meta(result.first).name);
+					t.col(p_value_test(result.second));
+					t.row();
+				}
+				std::cout << t.to_string() << "\n";
+		*/
+		summarize();
 		/*
 				
 				p_table
@@ -159,6 +164,40 @@ public:
 		
 				std::cout << p_table.to_string() << "\n";
 		*/
+	}
+
+	void summarize() const {
+		std::set<test_type> tests;
+		std::vector<std::string> headers{"test"};
+
+		std::vector<std::optional<statistic>> kolmogorov_d;
+		for (const auto& tr : test_results) {
+			headers.push_back(tr.mixer_name);
+			std::vector<double> p_values;
+			for (const auto& r : tr.results) {
+				tests.insert(r.first);
+				append(p_values, to_p_values(r.second));
+			}
+			kolmogorov_d.push_back(kolmogorov_smirnov_stats(p_values));
+		}
+
+		constexpr double alpha = 0.005;
+
+		table t(headers);
+		for (const auto& test : tests) {
+			t.col(get_meta(test).name);
+			for (const auto& tr : test_results) {
+				t.col(p_value_test(tr[test], alpha));
+			}
+			t.row();
+		}
+
+		t.col("kolmogorov_d");
+		for (const auto s : kolmogorov_d) {
+			t.col(s ? s->value : -1);
+		}
+		t.row();
+		std::cout << t.to_string() << "\n";
 	}
 
 	std::vector<result> query(const tags& mixer_tags, const tags& stream_tags) const {

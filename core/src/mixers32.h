@@ -56,11 +56,11 @@ const mixer32 h2_sql = {
 
 const mixer32 sffs1 = {
 	"sffs_all", [](uint32_t x) {
+		x ^= x >> 18;
+		x *= 620980885;
 		x ^= x >> 12;
-		x *= 36275027;
+		x *= 620980885;
 		x ^= x >> 16;
-		x *= 36275027;
-		x ^= x >> 17;
 		return x;
 	}
 };
