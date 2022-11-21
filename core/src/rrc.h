@@ -25,10 +25,10 @@ inline uint64_t reverse64(uint64_t x) {
 
 inline uint64_t permute(uint64_t c, int rot, rrc_type type) {
 	switch (type) {
-	case rrc_type::identity: return ror64(c, rot);
-	case rrc_type::reverse: return ror64(reverse64(c), rot);
-	case rrc_type::complement: return ror64(~c, rot);
-	case rrc_type::reverse_complement: return ror64(~reverse64(c), rot);
+	case rrc_type::identity: return ror(c, rot);
+	case rrc_type::reverse: return ror(reverse64(c), rot);
+	case rrc_type::complement: return ror(~c, rot);
+	case rrc_type::reverse_complement: return ror(~reverse64(c), rot);
 	}
 	assertion(false, "unknown type");
 	return 0;

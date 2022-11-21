@@ -7,16 +7,20 @@
 
 namespace mixer {
 
-inline uint64_t ror64(uint64_t v, int r) {
-	return (v >> r) | (v << (64 - r));
+template <typename T>
+T ror(T v, int r) {
+	constexpr auto Bits = 8 * sizeof(T);
+	return (v >> r) | (v << (Bits - r));
 }
 
-inline uint64_t flip_bit(uint64_t i, int bit) {
-	assertion(bit >= 0 && bit <= 63, "bit to flip out of range");
+template <typename T>
+T flip_bit(T i, int bit) {
+	assertion(bit >= 0 && bit < 8 * sizeof(T), "bit to flip out of range");
 	return i ^ (1ull << bit);
 }
 
-inline int bit_count(uint64_t x) {
+template <typename T>
+int bit_count(T x) {
 	return std::popcount(x);
 }
 

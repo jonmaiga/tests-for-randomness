@@ -19,7 +19,7 @@ std::vector<uint64_t> avalanche_generate_sac(uint64_t n, stream<T> stream, const
 		const auto h0 = mixer(x);
 		for (int j = 0; j < Size; j++) {
 			const auto change = h0 ^ mixer(flip_bit(x, j));
-			++sac[std::popcount(change)];
+			++sac[bit_count(change)];
 		}
 	}
 	return sac;
