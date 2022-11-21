@@ -2,13 +2,19 @@
 
 namespace mixer {
 
-struct mixer64 {
-	std::string name;
-	std::function<uint64_t(uint64_t)> mix;
+template <typename T>
+struct mixer {
+	using value_type = T;
 
-	uint64_t operator()(uint64_t x) const {
+	std::string name;
+	std::function<T(T)> mix;
+
+	T operator()(T x) const {
 		return mix(x);
 	}
+
 };
+
+using mixer64 = mixer<uint64_t>;
 
 }
