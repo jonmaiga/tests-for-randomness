@@ -58,12 +58,12 @@ inline std::string p_value_test(const std::vector<result>& results) {
 		return "N/A";
 	}
 
-	if (results.front().type == test_type::permutation) {
-		const auto st = basic_stats(to_statistics(results));
-		draw_histogram(to_p_values(results));
-		draw_histogram(to_statistics(results));
-		std::cout << "stat mean: " << st.mean << " stat var: " << st.variance() << "\n";
-	}
+	// if (results.front().type == test_type::permutation) {
+	// 	const auto st = basic_stats(to_statistics(results));
+	// 	draw_histogram(to_p_values(results));
+	// 	draw_histogram(to_statistics(results));
+	// 	std::cout << "stat mean: " << st.mean << " stat var: " << st.variance() << "\n";
+	// }
 	//const auto p_value = fishers_combined_probabilities(to_p_values(results));
 
 	const auto p_values = to_p_values(results);
@@ -125,28 +125,40 @@ public:
 
 	void add(const test_result& r) {
 		test_results.push_back(r);
-		p_table
-			.col(r.mixer_name)
-			.col(p_value_test(r[test_type::basic_mean]))
-			.col(p_value_test(r[test_type::chi2]))
-			.col(p_value_test(r[test_type::kolmogorov_smirnov]))
-			.col(p_value_test(r[test_type::anderson_darling]))
-			.col(p_value_test(r[test_type::wald_wolfowitz_runs]))
-			.col(p_value_test(r[test_type::pearson_r]))
-			.col(p_value_test(r[test_type::spearman_r]))
-			.col(p_value_test(r[test_type::kendall_tau]))
-			.col(p_value_test(r[test_type::gap_low]))
-			.col(p_value_test(r[test_type::gap_medium]))
-			.col(p_value_test(r[test_type::gap_high]))
-			.col(p_value_test(r[test_type::coupon]))
-			.col(p_value_test(r[test_type::divisibility_2]))
-			.col(p_value_test(r[test_type::divisibility_3]))
-			.col(p_value_test(r[test_type::permutation]))
-			.col(p_value_test(r[test_type::sac]))
-			.col(p_value_test(r[test_type::bic]))
-			.row();
 
-		std::cout << p_table.to_string() << "\n";
+		table t({"test", r.mixer_name});
+		for (const auto& result : r.results) {
+			t.col(get_meta(result.first).name);
+			t.col(p_value_test(result.second));
+			t.row();
+		}
+		std::cout << t.to_string() << "\n";
+
+		/*
+				
+				p_table
+					.col(r.mixer_name)
+					.col(p_value_test(r[test_type::basic_mean]))
+					.col(p_value_test(r[test_type::chi2]))
+					.col(p_value_test(r[test_type::kolmogorov_smirnov]))
+					.col(p_value_test(r[test_type::anderson_darling]))
+					.col(p_value_test(r[test_type::wald_wolfowitz_runs]))
+					.col(p_value_test(r[test_type::pearson_r]))
+					.col(p_value_test(r[test_type::spearman_r]))
+					.col(p_value_test(r[test_type::kendall_tau]))
+					.col(p_value_test(r[test_type::gap_low]))
+					.col(p_value_test(r[test_type::gap_medium]))
+					.col(p_value_test(r[test_type::gap_high]))
+					.col(p_value_test(r[test_type::coupon]))
+					.col(p_value_test(r[test_type::divisibility_2]))
+					.col(p_value_test(r[test_type::divisibility_3]))
+					.col(p_value_test(r[test_type::permutation]))
+					.col(p_value_test(r[test_type::sac]))
+					.col(p_value_test(r[test_type::bic]))
+					.row();
+		
+				std::cout << p_table.to_string() << "\n";
+		*/
 	}
 
 	std::vector<result> query(const tags& mixer_tags, const tags& stream_tags) const {
