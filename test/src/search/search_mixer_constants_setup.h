@@ -1,6 +1,7 @@
 #pragma once
 
 #include "search_mixer_constants.h"
+#include "search_configs32.h"
 
 namespace mixer {
 
@@ -116,10 +117,22 @@ inline config get_xmx_config() {
 	return {bits, fitness, to_str, to_arr_str};
 }
 
-inline void run_search() {
-	auto cfg = get_xmx_config();
-	cfg.seed = find_seed(cfg, 30);
-	start_search<uint64_t>("xmx", cfg);
+
+template <typename T> config get_xmxmx_config() {
+	if constexpr (sizeof(T) == 4) {
+		return search32::get_xmxmx_config();
+	}
+	else {
+		return {};
+	}
+}
+
+
+template<typename T>
+void run_search() {
+	auto cfg = get_xmxmx_config<T>();
+	cfg.seed = find_seed(cfg, 1);
+	start_search<T>("NAME HERE", cfg);
 }
 
 }

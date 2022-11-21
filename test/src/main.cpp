@@ -34,16 +34,14 @@ void write_stream(const mixer64& m, uint64_t n) {
 template <typename T>
 using test_method = std::function<test_result(const mixer<T>&, uint64_t)>;
 
-inline void run_tests() {
-	using T = uint64_t;
-
+template <typename T>
+void run_tests() {
 	const auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
 	const auto trng1 = create_mixer_from_stream<T>("trng1", trng_stream);
 	const auto trng2 = create_mixer_from_stream<T>("trng2", trng_stream);
 
-	
 	const auto test = test_rrc_parallel<T>;
-	constexpr auto n = 2000;
+	constexpr auto n = 100000;
 
 	const mixer64 test_mixer = {
 		"test", [](uint64_t x) {
@@ -85,8 +83,9 @@ inline void run_tests() {
 
 int main(int argc, char** args) {
 	try {
-		mixer::run_tests();
-		//mixer::run_search();
+		using T = uint64_t;
+		mixer::run_tests<T>();
+		mixer::run_search<T>();
 	}
 	catch (std::runtime_error& e) {
 		std::cout << "ERROR: " << e.what() << "\n";

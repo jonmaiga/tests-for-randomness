@@ -44,6 +44,26 @@ const mixer32 prospector = {
 	}
 };
 
+const mixer32 h2_sql = {
+	"h2sql", [](uint32_t x) {
+		// Thomas Mueller
+		x = ((x >> 16) ^ x) * 0x45d9f3bU;
+		x = ((x >> 16) ^ x) * 0x45d9f3bU;
+		x = (x >> 16) ^ x;
+		return x;
+	}
+};
+
+const mixer32 sffs1 = {
+	"sffs1", [](uint32_t x) {
+		x ^= x >> 11;
+		x *= 708060363;
+		x ^= x >> 14;
+		x *= 708060363;
+		x ^= x >> 15;
+		return x;
+	}
+};
 
 }
 
@@ -52,7 +72,9 @@ inline std::vector<mixer32> get_mixers() {
 	return {
 		mix32::mx3,
 		mix32::prospector,
-		mix32::murmur
+		mix32::murmur,
+		mix32::h2_sql,
+		mix32::sffs1
 	};
 }
 
