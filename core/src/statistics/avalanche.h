@@ -51,12 +51,14 @@ inline std::optional<statistic> avalanche_bic_stats(const double n, const std::v
 	                  mul(to_data(bit_counts), to_data(2)), to_data(n));
 }
 
-inline std::optional<statistic> avalanche_mixer_sac_test(uint64_t n, const stream_uint64& stream, const mixer64& mixer) {
+template<typename T>
+std::optional<statistic> avalanche_mixer_sac_test(uint64_t n, const stream<T>& stream, const mixer<T>& mixer) {
 	const auto counts = avalanche_generate_sac(n, stream, mixer);
 	return avalanche_sac_stats(n, counts);
 }
 
-inline std::optional<statistic> avalanche_mixer_bic_test(uint64_t n, const stream_uint64& stream, const mixer64& mixer) {
+template<typename T>
+std::optional<statistic> avalanche_mixer_bic_test(uint64_t n, const stream<T>& stream, const mixer<T>& mixer) {
 	const auto counts = avalanche_generate_bic(n, stream, mixer);
 	return avalanche_bic_stats(n, counts);
 }
