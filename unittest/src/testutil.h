@@ -1,14 +1,21 @@
 #pragma once
 
+#include "mixers32.h"
 #include "mixers64.h"
 #include "streams.h"
 
 namespace mixer {
 
-template<typename T = uint64_t>
-stream_uint64 test_stream() {
+
+template <typename T> mixer<T> get_test_mixer();
+
+template <> inline mixer<uint64_t> get_test_mixer() { return mx3; }
+template <> inline mixer<uint32_t> get_test_mixer() { return mix32::prospector; }
+
+template <typename T = uint64_t>
+stream<T> test_stream() {
 	//return create_stream_from_mixer(create_stream_from_data_by_ref("test_trng", get_trng_data()), mx3);
-	return create_stream_from_mixer<T>(create_counter_stream<T>(1), mx3);
+	return create_stream_from_mixer<T>(create_counter_stream<T>(1), get_test_mixer<T>());
 }
 
 template <typename T>
