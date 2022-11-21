@@ -43,10 +43,12 @@ std::vector<uint64_t> avalanche_generate_bic(uint64_t n, stream<T> stream, const
 	return bic;
 }
 
-inline std::optional<statistic> avalanche_sac_stats(const double n, const std::vector<uint64_t>& bit_counts) {
-	const double total_count = n * 64;
+template <typename T>
+std::optional<statistic> avalanche_sac_stats(const double n, const std::vector<uint64_t>& bit_counts) {
+	constexpr auto Bits = 8 * sizeof(T);
+	const double total_count = n * Bits;
 	return chi2_stats(bit_counts.size(), to_data(bit_counts), [total_count](std::size_t i) {
-		return total_count * binomial_pdf(64, .5, i);
+		return total_count * binomial_pdf(Bits, .5, i);
 	}, 5.);
 }
 
@@ -58,7 +60,7 @@ inline std::optional<statistic> avalanche_bic_stats(const double n, const std::v
 template <typename T>
 std::optional<statistic> avalanche_mixer_sac_test(uint64_t n, const stream<T>& stream, const mixer<T>& mixer) {
 	const auto counts = avalanche_generate_sac(n, stream, mixer);
-	return avalanche_sac_stats(n, counts);
+	return avalanche_sac_stats<T>(n, counts);
 }
 
 template <typename T>
