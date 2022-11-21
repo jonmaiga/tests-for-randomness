@@ -42,14 +42,18 @@ std::vector<stream_test_definition<T>> get_stream_tests() {
 	};
 }
 
+template <typename T>
 struct mixer_test_definition {
 	test_type type;
-	mixer_test test;
+	mixer_test<T> test;
 };
 
-const std::vector<mixer_test_definition> mixer_tests = {
-	{test_type::sac, avalanche_mixer_sac_test},
-	{test_type::bic, avalanche_mixer_bic_test},
-};
+template <typename T>
+std::vector<mixer_test_definition<T>> get_mixer_tests() {
+	return {
+		{test_type::sac, avalanche_mixer_sac_test<T>},
+		{test_type::bic, avalanche_mixer_bic_test<T>},
+	};
+}
 
 }

@@ -13,17 +13,22 @@
 
 namespace mixer {
 
-using stream_factory = std::function<stream_uint64()>;
-using append_stream_factory = std::function<stream_uint64(const stream_uint64&)>;
+template <typename T>
+using stream_factory = std::function<stream<T>()>;
 
+template <typename T>
+using append_stream_factory = std::function<stream<T>(const stream<T>&)>;
+
+template <typename T>
 struct test_config {
 	uint64_t n{};
-	stream_uint64 source;
+	stream<T> source;
 	mixer64 mix;
-	append_stream_factory stream_append_factory;
+	append_stream_factory<T> stream_append_factory;
 };
 
-using test_factory = std::function<test_config()>;
+template <typename T>
+using test_factory = std::function<test_config<T>()>;
 
 enum class statistic_type {
 	z_score,
@@ -80,9 +85,9 @@ const auto all_metas = std::vector<statistic_meta>{
 struct statistic {
 	statistic(statistic_type type, double value, double p_value, double df) :
 		type(type), value(value), p_value(p_value), df(df) {
-			assertion(is_valid(value), "statistic value not valid");
-			assertion(is_valid_between_01(p_value), "statistic p-value not valid");
-			assertion(df > 0, "statistic df not valid");
+		assertion(is_valid(value), "statistic value not valid");
+		assertion(is_valid_between_01(p_value), "statistic p-value not valid");
+		assertion(df > 0, "statistic df not valid");
 	}
 
 	statistic_type type;
@@ -108,7 +113,8 @@ inline statistic_meta get_meta(test_type type) {
 	return {};
 }
 
-using mixer_test = std::function<std::optional<statistic>(uint64_t n, const stream_uint64&, const mixer64&)>;
+template <typename T>
+using mixer_test = std::function<std::optional<statistic>(uint64_t n, const stream<T>&, const mixer<T>&)>;
 
 template <typename T>
 using stream_test = std::function<std::optional<statistic>(uint64_t n, const stream<T>&)>;
