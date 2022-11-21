@@ -51,7 +51,8 @@ inline std::optional<statistic> wald_wolfowitz_stats(wald_wolfowitz_statistics s
 	return z_test(n, s.runs, expected_runs_mean, expected_runs_variance);
 }
 
-inline std::optional<statistic> wald_wolfowitz_test(const uint64_t n, const stream_uint64& stream) {
+template <typename T>
+std::optional<statistic> wald_wolfowitz_test(const uint64_t n, const stream<T>& stream) {
 	const auto ww = wald_wolfowitz_stats(get_raw(n, stream));
 	return wald_wolfowitz_stats(ww);
 }

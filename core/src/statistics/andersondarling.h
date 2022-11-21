@@ -28,7 +28,8 @@ inline std::optional<statistic> anderson_darling_stats(std::vector<double> data0
 	return statistic{statistic_type::anderson_darling_A2, A2, anderson_darling_cdf(A2, n - 1), n - 1};
 }
 
-inline std::optional<statistic> anderson_darling_test(const uint64_t n, const stream_uint64& stream) {
+template <typename T>
+std::optional<statistic> anderson_darling_test(const uint64_t n, const stream<T>& stream) {
 	return anderson_darling_stats(rescale64_to_01(n, stream));
 }
 
