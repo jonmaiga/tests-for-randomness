@@ -8,20 +8,22 @@
 
 namespace mixer {
 
-inline stream_uint64 add_rrc(stream_uint64 source, int rotation, rrc_type type) {
+template <typename T>
+stream<T> add_rrc(stream<T> source, int rotation, rrc_type type) {
 	const auto name = to_string(type) + "-" + std::to_string(rotation) + "(" + source.name + ")";
 	return {
-		name, [source, rotation, type]() mutable -> uint64_t {
+		name, [source, rotation, type]() mutable -> T {
 			return permute(source(), rotation, type);
 		}
 	};
 }
 
-inline stream_uint64 create_bit_isolation_stream(stream_uint64 source, int bit) {
+template <typename T>
+stream<T> create_bit_isolation_stream(stream<T> source, int bit) {
 	const auto name = "bit-" + std::to_string(bit) + "(" + source.name + ")";
 	return {
 		name,
-		[source, bit]() mutable -> uint64_t {
+		[source, bit]() mutable -> T {
 			return create_from_bit(source, bit);
 		}
 	};
@@ -30,22 +32,22 @@ inline stream_uint64 create_bit_isolation_stream(stream_uint64 source, int bit) 
 template <typename T>
 std::vector<test_factory<T>> create_test_factories(const mixer<T>& mixer, uint64_t n) {
 	const auto counter1 = [mixer, n]() {
-		return test_config<T>{n, create_counter_stream(1), mixer};
+		return test_config<T>{n, create_counter_stream<T>(1), mixer};
 	};
 	const auto graycode2 = [mixer, n]() {
-		return test_config<T>{n, create_gray_code(2), mixer};
+		return test_config<T>{n, create_gray_code<T>(2), mixer};
 	};
 	const auto trng = [mixer, n]() {
-		return test_config<T>{n, create_stream_from_data_by_ref("trng", get_trng_data()), mixer};
+		return test_config<T>{n, create_stream_from_data_by_ref<T>("trng", get_trng_data<T>()), mixer};
 	};
 
 	std::vector<test_factory<T>> factories{counter1, graycode2}; //, trng};
 	for (int bit = 0; bit < 64; ++bit) {
-		const auto post_mix_permute = [bit](const stream_uint64& source) {
-			return create_bit_isolation_stream(source, bit);
+		const auto post_mix_permute = [bit](const stream<T>& source) {
+			return create_bit_isolation_stream<T>(source, bit);
 		};
 		const auto bit_factory = [=]()-> test_config<T> {
-			return {n, create_counter_stream(1), mixer, post_mix_permute};
+			return {n, create_counter_stream<T>(1), mixer, post_mix_permute};
 		};
 		//factories.emplace_back(bit_factory);
 	}
@@ -61,7 +63,7 @@ std::vector<test_factory<T>> create_rrc_test_factories(const mixer<T>& mixer, ui
 			for (int rot = 0; rot < 64; ++rot) {
 				const auto rrc_factory = [=]()-> test_config<T> {
 					const auto config = factory();
-					return {config.n, add_rrc(config.source, rot, type), config.mix, config.stream_append_factory};
+					return {config.n, add_rrc<T>(config.source, rot, type), config.mix, config.stream_append_factory};
 				};
 				factories.emplace_back(rrc_factory);
 			}

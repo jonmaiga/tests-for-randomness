@@ -1,6 +1,7 @@
 #include <iostream>
 #include "eval_parallel.h"
 #include "format_result.h"
+#include "mixers32.h"
 #include "mixers64.h"
 #include "trng_data.h"
 
@@ -30,16 +31,19 @@ void write_stream(const mixer64& m, uint64_t n) {
 	write(R"(/Users/jonkagstrom/root/github/bit_mixer_evaluation/mx3.bin)", data_str);
 }
 
+template <typename T>
+using test_method = std::function<test_result(const mixer<T>&, uint64_t)>;
+
 inline void run_tests() {
-	using test_method = std::function<test_result(const mixer64&, uint64_t)>;
-
-	//const auto trng_stream = create_stream_from_data_by_ref_thread_safe("trng", get_trng_data());
-	//const auto trng1 = create_mixer_from_stream("trng1", trng_stream);
-	//const auto trng2 = create_mixer_from_stream("trng2", trng_stream);
-
 	using T = uint64_t;
-	const test_method test = test_rrc_parallel<T>;
-	constexpr auto n = 1000;
+
+	const auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
+	const auto trng1 = create_mixer_from_stream<T>("trng1", trng_stream);
+	const auto trng2 = create_mixer_from_stream<T>("trng2", trng_stream);
+
+	
+	const auto test = test_rrc_parallel<T>;
+	constexpr auto n = 2000;
 
 	const mixer64 test_mixer = {
 		"test", [](uint64_t x) {
@@ -53,23 +57,12 @@ inline void run_tests() {
 	std::cout << "n=" << n << "\n";
 
 	result_analyzer analyzer;
-	//analyzer.add(test(trng1, n));
-	//analyzer.add(test(trng2, n));
+	analyzer.add(test(trng1, n));
+	analyzer.add(test(trng2, n));
 
-	analyzer.add(test(mx3, n));
-	analyzer.add(test(nasam, n));
-
-	analyzer.add(test(xmxmxm, n));
-	analyzer.add(test(moremur, n));
-	analyzer.add(test(lea64, n));
-	analyzer.add(test(degski64, n));
-	analyzer.add(test(split_mix, n));
-	analyzer.add(test(murmur3, n));
-
-	analyzer.add(test(test_mixer, n));
-	analyzer.add(test(xmx, n));
-	analyzer.add(test(xxh3, n));
-	analyzer.add(test(fast_hash, n));
+	for (const auto& m : get_mixers<T>()) {
+		analyzer.add(test(m, n));
+	}
 
 	analyzer.summarize_fails({}, {
 		                         "trng",

@@ -28,8 +28,9 @@ std::vector<std::size_t> get_ranks(const std::vector<T>& vec, Compare& compare) 
 }
 
 
-inline std::vector<uint64_t> get_raw(uint64_t n, stream_uint64 stream) {
-	std::vector<uint64_t> data;
+template <typename T>
+std::vector<T> get_raw(uint64_t n, stream<T> stream) {
+	std::vector<T> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
 		data.push_back(stream());
@@ -37,7 +38,8 @@ inline std::vector<uint64_t> get_raw(uint64_t n, stream_uint64 stream) {
 	return data;
 }
 
-inline std::vector<double> rescale64_to_01(uint64_t n, stream_uint64 stream) {
+template <typename T>
+std::vector<double> rescale64_to_01(uint64_t n, stream<T> stream) {
 	std::vector<double> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
@@ -68,9 +70,11 @@ std::vector<double> rescale64_to_01(const std::vector<T>& data) {
 
 template <typename T>
 std::vector<double> rescale_to_01(const std::vector<T>& data) {
-	return data.empty() ? std::vector<double>{} : rescale_to_01(data,
-	                     *std::min_element(data.begin(), data.end()),
-	                     *std::max_element(data.begin(), data.end()));
+	return data.empty()
+		       ? std::vector<double>{}
+		       : rescale_to_01(data,
+		                       *std::min_element(data.begin(), data.end()),
+		                       *std::max_element(data.begin(), data.end()));
 }
 
 struct xys {
@@ -78,13 +82,14 @@ struct xys {
 	std::vector<double> ys;
 };
 
-inline xys create_bit_flipped_xy(uint64_t n, stream_uint64 source, const mixer64& mixer) {
+template<typename T>
+xys create_bit_flipped_xy(uint64_t n, stream<T> source, const mixer<T>& mixer) {
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
 		const uint64_t v = source();
 		const uint64_t m = mixer(v);
 		const double x = rescale64_to_01(m);
-		for (int bit = 0; bit < 64; ++bit) {
+		for (int bit = 0; bit < sizeof(T); ++bit) {
 			xs.push_back(x);
 			ys.push_back(rescale64_to_01(mixer(flip_bit(m, bit))));
 		}
@@ -92,7 +97,8 @@ inline xys create_bit_flipped_xy(uint64_t n, stream_uint64 source, const mixer64
 	return {xs, ys};
 }
 
-inline xys create_serial_xy(uint64_t n, stream_uint64 source) {
+template <typename T>
+xys create_serial_xy(uint64_t n, stream<T> source) {
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
 		xs.push_back(rescale64_to_01(source()));
@@ -101,10 +107,11 @@ inline xys create_serial_xy(uint64_t n, stream_uint64 source) {
 	return {xs, ys};
 }
 
-inline uint64_t create_from_bit(stream_uint64 source, int bit) {
+template <typename T>
+uint64_t create_from_bit(stream<T> source, int bit) {
 	uint64_t x = 0;
 	const uint64_t m = 1ull << bit;
-	for (int i = 0; i < 64; ++i) {
+	for (int i = 0; i < sizeof(T); ++i) {
 		const auto v = source();
 		if (v & m) {
 			x |= 1ull << i;
@@ -140,22 +147,23 @@ typename T::value_type accumulate(const T& data) {
 	return std::accumulate(data.begin(), data.end(), 0ull, std::plus());
 }
 
-inline void sliding_bit_window(
-	const std::vector<uint64_t>& data,
+template <typename T>
+void sliding_bit_window(
+	const std::vector<T>& data,
 	int window_size,
 	int increments,
 	const std::function<void(uint64_t)>& callback) {
+	constexpr auto Size = 8 * sizeof(T);
+	assertion(window_size >= 1 && window_size <= Size-1, "bad window size");
+	assertion(increments >= 1 && increments + window_size <= Size, "bad increments");
 
-	assertion(window_size >= 1 && window_size <= 63, "bad window size");
-	assertion(increments >= 1 && increments + window_size <= 64, "bad increments");
-
-	std::bitset<128> left_mask;
+	std::bitset<2 * Size> left_mask;
 	left_mask |= (1ull << window_size) - 1;
 
-	std::bitset<128> bits;
+	std::bitset<2 * Size> bits;
 	bits |= data[0];
 	std::size_t i = 0;
-	int bits_left_to_consume = 64;
+	int bits_left_to_consume = Size;
 	while (i < data.size()) {
 		while (bits_left_to_consume >= window_size) {
 			callback((bits & left_mask).to_ullong());
@@ -164,11 +172,11 @@ inline void sliding_bit_window(
 		}
 		++ i;
 		if (i < data.size()) {
-			std::bitset<128> refill;
+			std::bitset<2 * Size> refill;
 			refill |= data[i];
 			refill <<= bits_left_to_consume;
 			bits |= refill;
-			bits_left_to_consume += 64;
+			bits_left_to_consume += Size;
 		}
 	}
 }

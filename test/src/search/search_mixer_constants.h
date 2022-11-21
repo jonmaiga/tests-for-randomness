@@ -42,8 +42,9 @@ inline bit_vector find_seed(const config& config, int tries) {
 	return best;
 }
 
-inline void start_search(const std::string& name, const config& config) {
-	auto trng_stream = create_stream_from_data_by_ref_thread_safe("trng", get_trng_data());
+template<typename T>
+void start_search(const std::string& name, const config& config) {
+	auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
 	const auto trng = create_mixer_from_stream("trng1", trng_stream);
 
 	std::cout << "===========================\n";

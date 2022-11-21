@@ -7,7 +7,7 @@ namespace mixer {
 
 
 TEST(stream, expected_behavior) {
-	auto s1 = create_counter_stream(1);
+	auto s1 = create_counter_stream<uint64_t>(1);
 	EXPECT_EQ(s1(), 1);
 	EXPECT_EQ(s1(), 2);
 
@@ -17,13 +17,13 @@ TEST(stream, expected_behavior) {
 	EXPECT_EQ(s1(), 3);
 	EXPECT_EQ(s1(), 4);
 
-	auto s3 = create_counter_stream(1);
+	auto s3 = create_counter_stream<uint64_t>(1);
 	EXPECT_EQ(s1(), 5);
 	EXPECT_EQ(s2(), 5);
 	EXPECT_EQ(s3(), 1);
 	EXPECT_EQ(s3(), 2);
 
-	auto s4 = create_counter_stream(1);
+	auto s4 = create_counter_stream<uint64_t>(1);
 	auto rs = rescale64_to_01(s4);
 	auto d = rs();
 	EXPECT_TRUE(is_near(d, 0));
@@ -32,7 +32,7 @@ TEST(stream, expected_behavior) {
 }
 
 TEST(stream, iterable) {
-	const auto s = create_counter_stream(1);
+	const auto s = create_counter_stream<uint64_t>(1);
 	int j = 0;
 	int sum = 0;
 	for (auto v : ranged_stream(s, 10)) {
@@ -53,7 +53,7 @@ TEST(stream, iterable) {
 }
 
 TEST(stream, iterate_twice_on_same_ranged) {
-	const auto s = create_counter_stream(1);
+	const auto s = create_counter_stream<uint64_t>(1);
 	int j = 0;
 	int sum = 0;
 	auto r = ranged_stream(s, 10);
@@ -75,7 +75,7 @@ TEST(stream, iterate_twice_on_same_ranged) {
 }
 
 TEST(stream, iterator) {
-	const auto s = create_counter_stream(1);
+	const auto s = create_counter_stream<uint64_t>(1);
 	{
 		const auto r = ranged_stream(s, 0);
 		EXPECT_TRUE(r.begin() == r.end());
