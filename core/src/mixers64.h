@@ -86,7 +86,7 @@ const mixer64 split_mix = {
 
 const mixer64 nasam = {
 	"nasam", [](uint64_t x) {
-		x ^= ror64(x, 25) ^ ror64(x, 47);
+		x ^= ror(x, 25) ^ ror(x, 47);
 		x *= 0x9E6C63D0676A9A99UL;
 		x ^= x >> 23 ^ x >> 51;
 		x *= 0x9E6D62D06F6A9A9BUL;
