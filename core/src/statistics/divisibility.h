@@ -57,12 +57,14 @@ std::optional<statistic> divisibility_test(uint64_t n, const stream<T>& stream, 
 	assertion(collected.size() == ps.size(), "Unexpected size in divisible");
 
 	const auto total_count = accumulate(collected);
-	const auto stats = chi2_stats(collected.size(), to_data(collected),
-	                              mul(to_data(ps), to_data(total_count)), 1.);
-	if (stats->df < 5.) {
-		return {};
+	if (const auto stats = chi2_stats(collected.size(), to_data(collected),
+	                                  mul(to_data(ps), to_data(total_count)), 1.)) {
+		if (stats->df < 5.) {
+			return {};
+		}
+		return stats;
 	}
-	return stats;
+	return {};
 }
 
 template <typename T>
