@@ -57,7 +57,7 @@ inline stream_uint64 create_stream_from_data_by_ref_thread_safe(const std::strin
 	};
 }
 
-inline stream_uint64 create_stream_from_mixer(stream_uint64 source, const mixer& mixer) {
+inline stream_uint64 create_stream_from_mixer(stream_uint64 source, const mixer64& mixer) {
 	return {
 		mixer.name + "(" + source.name + ")",
 		[source, mixer]() mutable { return mixer(source()); }

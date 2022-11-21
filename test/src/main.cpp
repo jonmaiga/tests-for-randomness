@@ -20,7 +20,7 @@ void build_trng() {
 	write(R"(C:\tmp\random.org\raw\trng_small.bin)", data_str);
 }
 
-void write_stream(const mixer& m, uint64_t n) {
+void write_stream(const mixer64& m, uint64_t n) {
 	std::vector<uint64_t> data;
 	for (uint64_t i = 0; i < n; ++i) {
 		data.push_back(m(i));
@@ -31,7 +31,7 @@ void write_stream(const mixer& m, uint64_t n) {
 }
 
 inline void run_tests() {
-	using test_method = std::function<test_result(const mixer&, uint64_t)>;
+	using test_method = std::function<test_result(const mixer64&, uint64_t)>;
 
 	//const auto trng_stream = create_stream_from_data_by_ref_thread_safe("trng", get_trng_data());
 	//const auto trng1 = create_mixer_from_stream("trng1", trng_stream);
@@ -40,7 +40,7 @@ inline void run_tests() {
 	const test_method test = test_rrc_parallel;
 	constexpr auto n = 1000;
 
-	const mixer test_mixer = {
+	const mixer64 test_mixer = {
 		"test", [](uint64_t x) {
 			x ^= x >> 3;
 			x *= 17192186266073230512ull;

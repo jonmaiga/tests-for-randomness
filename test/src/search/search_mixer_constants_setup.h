@@ -64,7 +64,7 @@ inline config get_mx3_config() {
 
 	constexpr int bits = 24; // + 64; // + 64 + 64; // + 64; // + 64 + 64 + 64;
 	const auto fitness = [factory](const bit_vector& bits) {
-		const auto m = mixer{"mx3", factory(bits)};
+		const auto m = mixer64{"mx3", factory(bits)};
 		return sffs_fitness_test(m);
 	};
 	return {bits, fitness, to_str, to_arr_str};
@@ -110,7 +110,7 @@ inline config get_xmx_config() {
 
 	constexpr int bits = 12 + 64;
 	const auto fitness = [factory](const bit_vector& bits) {
-		const auto m = mixer{"xmx", factory(bits)};
+		const auto m = mixer64{"xmx", factory(bits)};
 		return sffs_fitness_test(m);
 	};
 	return {bits, fitness, to_str, to_arr_str};

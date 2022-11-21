@@ -19,7 +19,7 @@ using append_stream_factory = std::function<stream_uint64(const stream_uint64&)>
 struct test_config {
 	uint64_t n{};
 	stream_uint64 source;
-	mixer mix;
+	mixer64 mix;
 	append_stream_factory stream_append_factory;
 };
 
@@ -108,7 +108,7 @@ inline statistic_meta get_meta(test_type type) {
 	return {};
 }
 
-using mixer_test = std::function<std::optional<statistic>(uint64_t n, const stream_uint64&, const mixer&)>;
+using mixer_test = std::function<std::optional<statistic>(uint64_t n, const stream_uint64&, const mixer64&)>;
 using stream_test = std::function<std::optional<statistic>(uint64_t n, const stream_uint64&)>;
 
 struct test_result {

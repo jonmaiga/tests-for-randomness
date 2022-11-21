@@ -78,7 +78,7 @@ struct xys {
 	std::vector<double> ys;
 };
 
-inline xys create_bit_flipped_xy(uint64_t n, stream_uint64 source, const mixer& mixer) {
+inline xys create_bit_flipped_xy(uint64_t n, stream_uint64 source, const mixer64& mixer) {
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
 		const uint64_t v = source();

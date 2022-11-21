@@ -27,7 +27,7 @@ inline stream_uint64 create_bit_isolation_stream(stream_uint64 source, int bit) 
 	};
 }
 
-inline std::vector<test_factory> create_test_factories(const mixer& mixer, uint64_t n) {
+inline std::vector<test_factory> create_test_factories(const mixer64& mixer, uint64_t n) {
 	const auto counter1 = [mixer, n]() {
 		return test_config{n, create_counter_stream(1), mixer};
 	};
@@ -52,7 +52,7 @@ inline std::vector<test_factory> create_test_factories(const mixer& mixer, uint6
 	return factories;
 }
 
-inline std::vector<test_factory> create_rrc_test_factories(const mixer& mixer, uint64_t n) {
+inline std::vector<test_factory> create_rrc_test_factories(const mixer64& mixer, uint64_t n) {
 	std::vector<test_factory> factories;
 	for (const auto& factory : create_test_factories(mixer, n)) {
 		for (const auto type : rrc_types) {

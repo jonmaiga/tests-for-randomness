@@ -2,7 +2,7 @@
 
 namespace mixer {
 
-struct mixer {
+struct mixer64 {
 	std::string name;
 	std::function<uint64_t(uint64_t)> mix;
 

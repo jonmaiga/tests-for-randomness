@@ -6,7 +6,7 @@
 namespace mixer {
 
 
-inline mixer create_mixer_from_stream(const std::string& name, stream_uint64 source) {
+inline mixer64 create_mixer_from_stream(const std::string& name, stream_uint64 source) {
 	return {
 		name, [source](uint64_t) mutable {
 			return source();
@@ -14,14 +14,14 @@ inline mixer create_mixer_from_stream(const std::string& name, stream_uint64 sou
 	};
 }
 
-const mixer identity_mixer = {
+const mixer64 identity_mixer = {
 	"identity", [](uint64_t x) {
 		return x;
 	}
 };
 
 
-const mixer mx3 = {
+const mixer64 mx3 = {
 	"mx3", [](uint64_t x) {
 		constexpr uint64_t C = 0xbea225f9eb34556d;
 		x ^= (x >> 32);
@@ -35,7 +35,7 @@ const mixer mx3 = {
 	}
 };
 
-const mixer xmxmxm = {
+const mixer64 xmxmxm = {
 	"xmxmxm", [](uint64_t x) {
 		constexpr uint64_t C = 0xe9846af9b1a615dull;
 		x ^= x >> 32;
@@ -48,7 +48,7 @@ const mixer xmxmxm = {
 };
 
 
-const mixer xmx = {
+const mixer64 xmx = {
 	"xmx", [](uint64_t x) {
 		x ^= x >> 32;
 		x *= 0xe9846af9b1a615dull;
@@ -58,7 +58,7 @@ const mixer xmx = {
 };
 
 
-const mixer murmur3 = {
+const mixer64 murmur3 = {
 	"murmur3", [](uint64_t x) {
 		x ^= x >> 33;
 		x *= 0xff51afd7ed558ccd;
@@ -70,7 +70,7 @@ const mixer murmur3 = {
 };
 
 
-const mixer split_mix = {
+const mixer64 split_mix = {
 	"splitmix", [](uint64_t x) {
 		x ^= x >> 30;
 		x *= 0xbf58476d1ce4e5b9;
@@ -82,7 +82,7 @@ const mixer split_mix = {
 };
 
 
-const mixer nasam = {
+const mixer64 nasam = {
 	"nasam", [](uint64_t x) {
 		x ^= ror64(x, 25) ^ ror64(x, 47);
 		x *= 0x9E6C63D0676A9A99UL;
@@ -93,7 +93,7 @@ const mixer nasam = {
 	}
 };
 
-const mixer moremur = {
+const mixer64 moremur = {
 	"moremur", [](uint64_t x) {
 		x ^= x >> 27;
 		x *= 0x3C79AC492BA7B653UL;
@@ -104,7 +104,7 @@ const mixer moremur = {
 	}
 };
 
-const mixer fast_hash = {
+const mixer64 fast_hash = {
 	"fast_hash", [](uint64_t x) {
 		x ^= (x >> 23);
 		x *= 0x2127599bf4325c37ull;
@@ -113,7 +113,7 @@ const mixer fast_hash = {
 	}
 };
 
-const mixer xxh3 = {
+const mixer64 xxh3 = {
 	"xxh3", [](uint64_t x) {
 		x ^= x >> 37;
 		x *= 0x165667919E3779F9ULL;
@@ -122,7 +122,7 @@ const mixer xxh3 = {
 	}
 };
 
-const mixer lea64 = {
+const mixer64 lea64 = {
 	"lea64", [](uint64_t x) {
 		x ^= (x >> 32);
 		x *= 0xdaba0b6eb09322e3ull;
@@ -132,7 +132,7 @@ const mixer lea64 = {
 	}
 };
 
-const mixer degski64 = {
+const mixer64 degski64 = {
 	"degski64", [](uint64_t x) {
 		x ^= (x >> 32);
 		x *= 0xd6e8feb86659fd93ull;

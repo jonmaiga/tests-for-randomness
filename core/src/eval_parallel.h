@@ -63,7 +63,7 @@ inline test_jobs create_test_jobs(const std::vector<test_factory>& test_factorie
 	return jobs;
 }
 
-inline test_result test_rrc_parallel(const mixer& mixer, uint64_t n, unsigned int num_threads) {
+inline test_result test_rrc_parallel(const mixer64& mixer, uint64_t n, unsigned int num_threads) {
 	test_result test_result{"rrc", mixer.name};
 	const auto collect_job_results = [&](const test_job_return& result) {
 		if (result) {
@@ -80,13 +80,13 @@ inline test_result test_rrc_parallel(const mixer& mixer, uint64_t n, unsigned in
 
 }
 
-inline test_result test_rrc_parallel(const mixer& mixer, uint64_t n) {
+inline test_result test_rrc_parallel(const mixer64& mixer, uint64_t n) {
 	const auto hw_threads = std::thread::hardware_concurrency();
 	const auto num_threads = hw_threads > 1 ? hw_threads - 1 : hw_threads;
 	return internal::test_rrc_parallel(mixer, n, num_threads);
 }
 
-inline test_result test_rrc(const mixer& mixer, uint64_t n) {
+inline test_result test_rrc(const mixer64& mixer, uint64_t n) {
 	return internal::test_rrc_parallel(mixer, n, 1);
 }
 

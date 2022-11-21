@@ -8,7 +8,7 @@
 
 namespace mixer {
 
-inline double sffs_fitness_test(const mixer& mixer) {
+inline double sffs_fitness_test(const mixer64& mixer) {
 	const auto r = test_rrc(mixer, 5000);
 	std::vector<double> all;
 	for (const auto& tr : r.results) {
