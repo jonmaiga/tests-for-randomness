@@ -127,10 +127,19 @@ template <typename T> config get_xmxmx_config() {
 	}
 }
 
+template <typename T> config get_xmxmxmx_config() {
+	if constexpr (sizeof(T) == 4) {
+		return search32::get_xmxmxmx_config();
+	}
+	else {
+		return {};
+	}
+}
 
-template<typename T>
+
+template <typename T>
 void run_search() {
-	auto cfg = get_xmxmx_config<T>();
+	auto cfg = get_xmxmxmx_config<T>();
 	cfg.seed = find_seed(cfg, 10);
 	start_search<T>("NAME HERE", cfg);
 }

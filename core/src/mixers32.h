@@ -97,13 +97,15 @@ const mixer32 sffs4 = {
 	}
 };
 
-const mixer32 sffs5 = {
+const mixer32 sffs_xm3 = {
 	"sffs_many", [](uint32_t x) {
+		x ^= x >> 12;
+		x *= 3587312053;
+		x ^= x >> 24;
+		x *= 3587312053;
 		x ^= x >> 17;
-		x *= 688330889;
-		x ^= x >> 10;
-		x *= 688330889;
-		x ^= x >> 17;
+		x *= 3587312053;
+		x ^= x >> 18;
 		return x;
 	}
 };
@@ -121,7 +123,7 @@ inline std::vector<mixer32> get_mixers() {
 		mix32::sffs2,
 		mix32::sffs3,
 		mix32::sffs4,
-		mix32::sffs5,
+		mix32::sffs_xm3,
 	};
 }
 

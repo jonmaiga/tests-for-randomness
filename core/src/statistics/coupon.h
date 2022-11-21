@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "chi2.h"
-#include "distributions.h"
 #include "types.h"
 #include "streams.h"
 #include "util/algo.h"
@@ -12,7 +11,7 @@
 namespace mixer {
 
 template <typename T>
-inline std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t tracked_draws, const T& data01) {
+std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t tracked_draws, const T& data01) {
 	static_assert(std::is_floating_point_v<typename T::value_type>);
 	std::set<uint64_t> coupons_collected;
 	std::vector<uint64_t> draws_histogram(tracked_draws);
