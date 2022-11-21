@@ -23,7 +23,7 @@ template <typename T>
 struct test_config {
 	uint64_t n{};
 	stream<T> source;
-	mixer64 mix;
+	mixer<T> mix;
 	append_stream_factory<T> stream_append_factory;
 };
 

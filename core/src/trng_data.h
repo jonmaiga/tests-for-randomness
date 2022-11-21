@@ -4,10 +4,11 @@
 
 namespace mixer {
 
-inline const std::vector<uint64_t>& get_trng_data() {
+template <typename T>
+const std::vector<T>& get_trng_data() {
 	static const auto trng_data = []() {
 		std::cout << "Reading trng stream from disk...";
-		const auto& data = readBinaryMustExist<uint64_t>(R"(C:\tmp\random.org\trng.bin)");
+		const auto& data = readBinaryMustExist<T>(R"(C:\tmp\random.org\trng.bin)");
 		std::cout << " done!\n";
 		return data;
 	}();

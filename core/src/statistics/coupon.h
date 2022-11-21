@@ -63,7 +63,8 @@ std::optional<statistic> coupon_stats(const T& data01) {
 	return chi2_stats(cc.size(), to_data(cc), mul(to_data(ps), to_data(total_count)), 1.);
 }
 
-inline std::optional<statistic> coupon_test(uint64_t n, const stream_uint64& stream) {
+template <typename T>
+std::optional<statistic> coupon_test(uint64_t n, const stream<T>& stream) {
 	return coupon_stats(ranged_stream(rescale64_to_01(stream), n));
 }
 

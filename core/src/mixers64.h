@@ -5,10 +5,12 @@
 
 namespace mixer {
 
+using mixer64 = mixer<uint64_t>;
 
-inline mixer64 create_mixer_from_stream(const std::string& name, stream_uint64 source) {
+template <typename T>
+mixer<T> create_mixer_from_stream(const std::string& name, stream<T> source) {
 	return {
-		name, [source](uint64_t) mutable {
+		name, [source](T) mutable {
 			return source();
 		}
 	};
@@ -141,5 +143,22 @@ const mixer64 degski64 = {
 		return x ^ (x >> 32);
 	}
 };
+
+template <>
+inline std::vector<mixer64> get_mixers() {
+	return {
+		mx3,
+		nasam,
+		xmxmxm,
+		moremur,
+		lea64,
+		degski64,
+		split_mix,
+		murmur3,
+		xmx,
+		xxh3,
+		fast_hash
+	};
+}
 
 }

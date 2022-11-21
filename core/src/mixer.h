@@ -15,6 +15,7 @@ struct mixer {
 
 };
 
-using mixer64 = mixer<uint64_t>;
+template <typename T>
+std::vector<mixer<T>> get_mixers();
 
 }
