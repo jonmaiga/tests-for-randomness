@@ -6,21 +6,12 @@
 #include <string>
 #include <vector>
 
+#include "mixer.h"
 #include "stream.h"
 #include "util/assertion.h"
 #include "util/math.h"
 
 namespace mixer {
-
-
-struct mixer {
-	std::string name;
-	std::function<uint64_t(uint64_t)> mix;
-
-	uint64_t operator()(uint64_t x) const {
-		return mix(x);
-	}
-};
 
 using stream_factory = std::function<stream_uint64()>;
 using append_stream_factory = std::function<stream_uint64(const stream_uint64&)>;
