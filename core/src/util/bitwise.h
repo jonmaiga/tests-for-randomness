@@ -35,6 +35,14 @@ inline uint64_t byte_swap(uint64_t val) {
 		(((val) & 0x00000000000000ffull) << 56));
 }
 
+inline uint32_t reverse_bits(uint32_t x) {
+	x = ((x >> 1) & 0x55555555) | ((x & 0x55555555) << 1);
+	x = ((x >> 2) & 0x33333333) | ((x & 0x33333333) << 2);
+	x = ((x >> 4) & 0x0F0F0F0F) | ((x & 0x0F0F0F0F) << 4);
+	x = ((x >> 8) & 0x00FF00FF) | ((x & 0x00FF00FF) << 8);
+	return (x >> 16) | (x << 16);
+}
+
 inline uint64_t reverse_bits(uint64_t x) {
 	x = (x & 0xaaaaaaaaaaaaaaaaull) >> 1 | (x & 0x5555555555555555ull) << 1;
 	x = (x & 0xccccccccccccccccull) >> 2 | (x & 0x3333333333333333ull) << 2;
@@ -42,14 +50,6 @@ inline uint64_t reverse_bits(uint64_t x) {
 	x = (x & 0xff00ff00ff00ff00ull) >> 8 | (x & 0x00ff00ff00ff00ffull) << 8;
 	x = (x & 0xffff0000ffff0000ull) >> 16 | (x & 0x0000ffff0000ffffull) << 16;
 	return x >> 32 | x << 32;
-}
-
-inline uint32_t reverse_bits(uint32_t x) {
-	x = ((x >> 1) & 0x55555555) | ((x & 0x55555555) << 1);
-	x = ((x >> 2) & 0x33333333) | ((x & 0x33333333) << 2);
-	x = ((x >> 4) & 0x0F0F0F0F) | ((x & 0x0F0F0F0F) << 4);
-	x = ((x >> 8) & 0x00FF00FF) | ((x & 0x00FF00FF) << 8);
-	return (x >> 16) | (x << 16);
 }
 
 }

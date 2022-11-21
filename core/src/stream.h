@@ -31,9 +31,9 @@ class stream_iterator {
 public:
 	using value_type = T;
 
-	explicit stream_iterator(stream<T> stream, uint64_t n, uint64_t index = 0)
-		: stream(std::move(stream)),
-		  current_value(this->stream()),
+	explicit stream_iterator(stream<T> s, uint64_t n, uint64_t index = 0)
+		: s(std::move(s)),
+		  current_value(this->s()),
 		  index(index),
 		  n(n) {
 	}
@@ -45,7 +45,7 @@ public:
 
 	stream_iterator& operator ++() {
 		++index;
-		current_value = stream();
+		current_value = s();
 		return *this;
 	}
 
@@ -62,7 +62,7 @@ public:
 	}
 
 private:
-	stream<T> stream;
+	stream<T> s;
 	T current_value;
 	uint64_t index;
 	uint64_t n;
