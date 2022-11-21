@@ -41,7 +41,7 @@ void run_tests() {
 	const auto trng2 = create_mixer_from_stream<T>("trng2", trng_stream);
 
 	const auto test = test_rrc_parallel<T>;
-	constexpr auto n = 100000;
+	constexpr auto n = 20000;
 
 	const mixer64 test_mixer = {
 		"test", [](uint64_t x) {
@@ -55,8 +55,8 @@ void run_tests() {
 	std::cout << "n=" << n << "\n";
 
 	result_analyzer analyzer;
-	analyzer.add(test(trng1, n));
-	analyzer.add(test(trng2, n));
+	//analyzer.add(test(trng1, n));
+	//analyzer.add(test(trng2, n));
 
 	for (const auto& m : get_mixers<T>()) {
 		analyzer.add(test(m, n));

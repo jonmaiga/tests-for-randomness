@@ -131,7 +131,7 @@ template <typename T> config get_xmxmx_config() {
 template<typename T>
 void run_search() {
 	auto cfg = get_xmxmx_config<T>();
-	cfg.seed = find_seed(cfg, 1);
+	cfg.seed = find_seed(cfg, 10);
 	start_search<T>("NAME HERE", cfg);
 }
 

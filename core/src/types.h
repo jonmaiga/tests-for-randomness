@@ -75,11 +75,18 @@ const auto all_metas = std::vector<statistic_meta>{
 	{test_type::kolmogorov_smirnov, "kolmogorov-smirnov"},
 	{test_type::wald_wolfowitz_runs, "wald-wolfowitz runs"},
 	{test_type::anderson_darling, "anderson_darling"},
-	{test_type::sac, "sac"},
-	{test_type::bic, "bic"},
 	{test_type::pearson_r, "pearson r"},
 	{test_type::spearman_r, "spearman rho"},
-	{test_type::kendall_tau, "kendall tau"}
+	{test_type::kendall_tau, "kendall tau"},
+	{test_type::gap_low, "gap low"},
+	{test_type::gap_medium, "gap medium"},
+	{test_type::gap_high, "gap high"},
+	{test_type::coupon, "coupon"},
+	{test_type::divisibility_2, "divisibility 2"},
+	{test_type::divisibility_3, "divisibility 3"},
+	{test_type::permutation, "permutation"},
+	{test_type::sac, "sac"},
+	{test_type::bic, "bic"},
 };
 
 struct statistic {

@@ -37,8 +37,8 @@ const mixer64 mx3 = {
 	}
 };
 
-const mixer64 xmxmxm = {
-	"xmxmxm", [](uint64_t x) {
+const mixer64 xmxmx = {
+	"xmxmx", [](uint64_t x) {
 		constexpr uint64_t C = 0xe9846af9b1a615dull;
 		x ^= x >> 32;
 		x *= C;
@@ -149,7 +149,7 @@ inline std::vector<mixer64> get_mixers() {
 	return {
 		mx3,
 		nasam,
-		xmxmxm,
+		xmxmx,
 		moremur,
 		lea64,
 		degski64,
