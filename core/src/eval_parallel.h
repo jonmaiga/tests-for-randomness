@@ -22,7 +22,8 @@ inline stream_uint64 create_stream(const test_config& cfg) {
 	return s;
 }
 
-inline test_jobs create_stream_jobs(const stream_test_definition& test_def, const std::vector<test_factory>& test_factories) {
+template <typename T>
+test_jobs create_stream_jobs(const stream_test_definition<T>& test_def, const std::vector<test_factory>& test_factories) {
 	test_jobs js;
 	for (const auto& factory : test_factories) {
 		js.push_back([test_def, factory]()->test_job_return {
@@ -54,7 +55,7 @@ inline test_jobs create_mixer_jobs(const mixer_test_definition& test_def, const 
 
 inline test_jobs create_test_jobs(const std::vector<test_factory>& test_factories) {
 	test_jobs jobs;
-	for (const auto& test : stream_tests) {
+	for (const auto& test : get_stream_tests<uint64_t>()) {
 		append(jobs, create_stream_jobs(test, test_factories));
 	}
 	for (const auto& test : mixer_tests) {

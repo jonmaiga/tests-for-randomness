@@ -42,7 +42,8 @@ inline std::vector<double> generate_gap_probabilities(double a, double b) {
 	return ps;
 }
 
-inline std::optional<statistic> gap_test(uint64_t n, const stream_uint64& source, double a, double b) {
+template <typename T>
+std::optional<statistic> gap_test(uint64_t n, const stream<T>& source, double a, double b) {
 	const auto& ps = generate_gap_probabilities(a, b);
 	const auto& gaps = generate_gaps(ps.size(), a, b, ranged_stream(rescale64_to_01(source), n));
 	const auto total_count = accumulate(gaps);
@@ -51,9 +52,10 @@ inline std::optional<statistic> gap_test(uint64_t n, const stream_uint64& source
 	                  1.);
 }
 
-inline stream_test create_gap_test(double a, double b) {
-	return [a, b](uint64_t n, const stream_uint64& stream) {
-		return gap_test(n, stream, a, b);
+template <typename T>
+stream_test<T> create_gap_test(double a, double b) {
+	return [a, b](uint64_t n, const stream<T>& stream) {
+		return gap_test<T>(n, stream, a, b);
 	};
 }
 

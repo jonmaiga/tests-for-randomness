@@ -109,7 +109,9 @@ inline statistic_meta get_meta(test_type type) {
 }
 
 using mixer_test = std::function<std::optional<statistic>(uint64_t n, const stream_uint64&, const mixer64&)>;
-using stream_test = std::function<std::optional<statistic>(uint64_t n, const stream_uint64&)>;
+
+template <typename T>
+using stream_test = std::function<std::optional<statistic>(uint64_t n, const stream<T>&)>;
 
 struct test_result {
 	using result_map = std::map<test_type, std::vector<result>>;

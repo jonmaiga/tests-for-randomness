@@ -103,17 +103,20 @@ inline std::optional<statistic> kendall_correlation_stats(const std::vector<doub
 	return statistic{statistic_type::kendall_tau, tau, p_value, static_cast<double>(n)};
 }
 
-inline std::optional<statistic> pearson_correlation_test(uint64_t n, const stream_uint64& source) {
+template <typename T>
+std::optional<statistic> pearson_correlation_test(uint64_t n, const stream<T>& source) {
 	const auto data = create_serial_xy(n, source);
 	return pearson_correlation_stats(data.xs, data.ys);
 }
 
-inline std::optional<statistic> spearman_correlation_test(uint64_t n, const stream_uint64& source) {
+template <typename T>
+std::optional<statistic> spearman_correlation_test(uint64_t n, const stream<T>& source) {
 	const auto data = create_serial_xy(n, source);
 	return spearman_correlation_stats(data.xs, data.ys);
 }
 
-inline std::optional<statistic> kendall_correlation_test(uint64_t n, const stream_uint64& source) {
+template <typename T>
+std::optional<statistic> kendall_correlation_test(uint64_t n, const stream<T>& source) {
 	const auto data = create_serial_xy(n, source);
 	return kendall_correlation_stats(data.xs, data.ys);
 }

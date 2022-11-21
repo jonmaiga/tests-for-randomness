@@ -23,7 +23,8 @@ inline std::optional<statistic> kolmogorov_smirnov_stats(std::vector<double> dat
 	return statistic{statistic_type::kolmogorov_smirnov_d, max_distance, p_value, n};
 }
 
-inline std::optional<statistic> kolmogorov_test(const uint64_t n, const stream_uint64& stream) {
+template<typename T>
+std::optional<statistic> kolmogorov_test(const uint64_t n, const stream<T>& stream) {
 	return kolmogorov_smirnov_stats(rescale64_to_01(n, stream));
 }
 
