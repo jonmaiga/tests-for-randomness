@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "chi2.h"
-#include "distributions.h"
 #include "streams.h"
 #include "types.h"
 #include "util/algo.h"
