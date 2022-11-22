@@ -30,6 +30,11 @@ struct test_config {
 template <typename T>
 using test_factory = std::function<test_config<T>()>;
 
+
+///////////////////////////////////////////////////////////////
+/// STATISTIC TYPES
+///////////////////////////////////////////////////////////////
+
 enum class statistic_type {
 	z_score,
 	chi2,
@@ -175,6 +180,10 @@ using mixer_test = std::function<sub_test_results(uint64_t n, const stream<T>&, 
 template <typename T>
 using stream_test = std::function<sub_test_results(uint64_t n, const stream<T>&)>;
 
+
+///////////////////////////////////////////////////////////////
+/// DATA TYPES
+///////////////////////////////////////////////////////////////
 
 using data_fn = std::function<double(std::size_t)>;
 
