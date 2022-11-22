@@ -104,21 +104,27 @@ inline std::optional<statistic> kendall_correlation_stats(const std::vector<doub
 }
 
 template <typename T>
-sub_test_results pearson_correlation_test(uint64_t n, const stream<T>& source) {
-	const auto data = create_serial_xy(n, source);
-	return main_sub_test(pearson_correlation_stats(data.xs, data.ys));
+sub_test_results pearson_correlation_test(uint64_t n, stream<T> source) {
+	return split_test(n, 1000000, [&source](uint64_t size) {
+		const auto data = create_serial_xy_by_ref(size, source);
+		return pearson_correlation_stats(data.xs, data.ys);
+	});
 }
 
 template <typename T>
-sub_test_results spearman_correlation_test(uint64_t n, const stream<T>& source) {
-	const auto data = create_serial_xy(n, source);
-	return main_sub_test(spearman_correlation_stats(data.xs, data.ys));
+sub_test_results spearman_correlation_test(uint64_t n, stream<T> source) {
+	return split_test(n, 1000000, [&source](uint64_t size) {
+		const auto data = create_serial_xy_by_ref(size, source);
+		return spearman_correlation_stats(data.xs, data.ys);
+	});
 }
 
 template <typename T>
-sub_test_results kendall_correlation_test(uint64_t n, const stream<T>& source) {
-	const auto data = create_serial_xy(n, source);
-	return main_sub_test(kendall_correlation_stats(data.xs, data.ys));
+sub_test_results kendall_correlation_test(uint64_t n, stream<T> source) {
+	return split_test(n, 10000, [&source](uint64_t size) {
+		const auto data = create_serial_xy_by_ref(size, source);
+		return kendall_correlation_stats(data.xs, data.ys);
+	});
 }
 
 }

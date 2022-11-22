@@ -98,7 +98,7 @@ xys create_bit_flipped_xy(uint64_t n, stream<T> source, const mixer<T>& mixer) {
 }
 
 template <typename T>
-xys create_serial_xy(uint64_t n, stream<T> source) {
+xys create_serial_xy_by_ref(uint64_t n, stream<T>& source) {
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
 		xs.push_back(rescale_type_to_01(source()));
