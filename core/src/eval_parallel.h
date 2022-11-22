@@ -29,10 +29,8 @@ test_jobs create_stream_jobs(const stream_test_definition<T>& test_def, const st
 		js.push_back([test_def, factory]()-> test_job_return {
 			const auto cfg = factory();
 			const auto s = create_stream(cfg);
-			if (const auto& stat = test_def.test(cfg.n, s)) {
-				return result{cfg.source.name, cfg.mix.name, test_def.type, *stat};
-			}
-			return {};
+			const auto& sub_tests = test_def.test(cfg.n, s);
+			return result{cfg.source.name, cfg.mix.name, test_def.type, sub_tests};
 		});
 	}
 	return js;
@@ -45,10 +43,8 @@ test_jobs create_mixer_jobs(const mixer_test_definition<T>& test_def, const std:
 		if (factory().stream_append_factory) continue;
 		js.push_back([test_def, factory]()-> test_job_return {
 			const auto cfg = factory();
-			if (const auto& stat = test_def.test(cfg.n, cfg.source, cfg.mix)) {
-				return result{cfg.source.name, cfg.mix.name, test_def.type, *stat};
-			}
-			return {};
+			const auto& sub_tests = test_def.test(cfg.n, cfg.source, cfg.mix);
+			return result{cfg.source.name, cfg.mix.name, test_def.type, sub_tests};
 		});
 	}
 	return js;

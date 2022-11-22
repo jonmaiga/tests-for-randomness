@@ -52,12 +52,12 @@ basic_statistics basic_stats(const T& values) {
 	return stats;
 }
 
-template<typename T>
-std::optional<statistic> basic_test(uint64_t n, stream<T> stream) {
+template <typename T>
+sub_tests basic_test(uint64_t n, stream<T> stream) {
 	// mean from uniform is approximately normal
 	// https://stats.stackexchange.com/questions/458341/what-distribution-does-the-mean-of-a-random-sample-from-a-uniform-distribution-f
 	const auto stats = basic_stats(ranged_stream(rescale_type_to_01(stream), n));
-	return z_test(stats.n, stats.mean, .5, 1. / 12.);
+	return main_sub_test(z_test(stats.n, stats.mean, .5, 1. / 12.));
 }
 
 

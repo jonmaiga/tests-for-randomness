@@ -17,7 +17,7 @@ TEST(anderson_darling, basic) {
 }
 
 TEST(anderson_darling, no_change) {
-	const auto r = anderson_darling_test(50, test_stream());
+	const auto r = anderson_darling_test(50, test_stream()).front().stats;
 	EXPECT_NEAR(r->value,  0.5850, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.3385, 1e-4);
 }

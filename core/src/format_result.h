@@ -11,7 +11,8 @@ inline std::vector<double> to_statistics(const std::vector<result>& results) {
 	std::vector<double> statistics;
 	statistics.reserve(results.size());
 	for (const auto& r : results) {
-		statistics.push_back(r.stats.value);
+		// todo: subtest
+		//statistics.push_back(r.stats.value);
 	}
 	return statistics;
 }
@@ -20,7 +21,8 @@ inline std::vector<double> to_p_values(const std::vector<result>& results) {
 	std::vector<double> statistics;
 	statistics.reserve(results.size());
 	for (const auto& r : results) {
-		statistics.push_back(r.stats.p_value);
+		// todo: subtest
+		// statistics.push_back(r.stats.p_value);
 	}
 	return statistics;
 }
@@ -201,23 +203,26 @@ public:
 	}
 
 	std::vector<result> query(const tags& mixer_tags, const tags& stream_tags) const {
-		auto results = find_by_mixer_name(_flatten(), mixer_tags);
-		results = find_by_stream_name(results, stream_tags);
-		std::sort(results.begin(), results.end(), [](const result& a, const result& b) {
-			return a.stats.p_value < b.stats.p_value;
-		});
-		return results;
+		// todo: subtest
+		return {};
+		//auto results = find_by_mixer_name(_flatten(), mixer_tags);
+		//results = find_by_stream_name(results, stream_tags);
+		//std::sort(results.begin(), results.end(), [](const result& a, const result& b) {
+		//	return a.stats.p_value < b.stats.p_value;
+		//});
+		//return results;
 	}
 
 	void list_results(const tags& mixer_tags, const tags& stream_tags) const {
 		table t({"mixer", "stream", "statistic", "value", "p_value"});
 		for (const auto& r : query(mixer_tags, stream_tags)) {
-			if (r.stats.p_value > 0.05 && r.stats.p_value < 0.95) continue;
+			// todo: subtest
+			// if (r.stats.p_value > 0.05 && r.stats.p_value < 0.95) continue;
 			t.col(r.mixer_name).
 			  col(r.stream_name).
 			  col(get_meta(r.type).name).
-			  col(r.stats.value).
-			  col(r.stats.p_value).
+			  //col(r.stats.value).
+			  //col(r.stats.p_value).
 			  row();
 		}
 		std::cout << t.to_string() << "\n";

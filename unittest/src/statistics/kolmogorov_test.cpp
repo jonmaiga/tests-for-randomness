@@ -7,7 +7,7 @@
 namespace mixer {
 
 TEST(kolmogorov, no_change) {
-	const auto r = kolmogorov_test(50, test_stream());
+	const auto r = kolmogorov_test(50, test_stream()).front().stats;
 	EXPECT_NEAR(r->value, 0.0971, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.7113, 1e-4);
 }

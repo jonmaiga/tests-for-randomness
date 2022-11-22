@@ -54,7 +54,7 @@ std::optional<statistic> gap_test(uint64_t n, const stream<T>& source, double a,
 template <typename T>
 stream_test<T> create_gap_test(double a, double b) {
 	return [a, b](uint64_t n, const stream<T>& stream) {
-		return gap_test<T>(n, stream, a, b);
+		return main_sub_test(gap_test<T>(n, stream, a, b));
 	};
 }
 

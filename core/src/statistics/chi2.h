@@ -52,8 +52,8 @@ std::optional<statistic> chi2_uniform_stats(const T& data01) {
 }
 
 template <typename T>
-std::optional<statistic> chi2_test(const uint64_t n, const stream<T>& stream) {
-	return chi2_uniform_stats(rescale_type_to_01(n, stream));
+sub_tests chi2_test(const uint64_t n, const stream<T>& stream) {
+	return main_sub_test(chi2_uniform_stats(rescale_type_to_01(n, stream)));
 }
 
 }

@@ -50,7 +50,7 @@ TEST(waldwolfowitz, two_runs_2) {
 }
 
 TEST(waldwolfowitz, no_change) {
-	const auto r = wald_wolfowitz_test(50, test_stream());
+	const auto r = wald_wolfowitz_test(50, test_stream()).front().stats;
 	EXPECT_NEAR(r->value, -0.5855, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.5581, 1e-4);
 }
