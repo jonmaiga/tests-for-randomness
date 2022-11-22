@@ -30,7 +30,9 @@ inline std::optional<statistic> anderson_darling_stats(std::vector<double> data0
 
 template <typename T>
 sub_test_results anderson_darling_test(const uint64_t n, stream<T> source) {
-	return main_sub_test(anderson_darling_stats(rescale_type_to_01_by_ref(n, source)));
+	return split_test(n, 1000000, [&source](uint64_t size) {
+		return anderson_darling_stats(rescale_type_to_01_by_ref(size, source));
+	});
 }
 
 }
