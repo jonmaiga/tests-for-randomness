@@ -42,20 +42,26 @@ inline std::vector<double> generate_gap_probabilities(double a, double b) {
 }
 
 template <typename T>
-std::optional<statistic> gap_test(uint64_t n, const stream<T>& source, double a, double b) {
-	const auto& ps = generate_gap_probabilities(a, b);
-	const auto& gaps = generate_gaps(ps.size(), a, b, ranged_stream(rescale_type_to_01(source), n));
-	const auto total_count = accumulate(gaps);
-	return chi2_stats(gaps.size(), to_data(gaps),
-	                  mul(to_data(ps), to_data(total_count)),
-	                  1.);
-}
-
-template <typename T>
-stream_test<T> create_gap_test(double a, double b) {
-	return [a, b](uint64_t n, const stream<T>& stream) {
-		return main_sub_test(gap_test<T>(n, stream, a, b));
+sub_test_results gap_test(uint64_t n, const stream<T>& source) {
+	struct g {
+		double a;
+		double b;
 	};
+
+	sub_test_results results;
+	int gi = 1;
+	for (const auto gp : {g{0, 0.33}, g{0.33, 0.66}, g{.66, 1}}) {
+		const auto& ps = generate_gap_probabilities(gp.a, gp.b);
+		const auto& gaps = generate_gaps(ps.size(), gp.a, gp.b, ranged_stream(rescale_type_to_01(source), n));
+		const auto total_count = accumulate(gaps);
+		if (const auto s = chi2_stats(gaps.size(), to_data(gaps),
+		                              mul(to_data(ps), to_data(total_count)),
+		                              1.)) {
+			results.push_back({"g" + std::to_string(gi), s});
+		}
+		++gi;
+	}
+	return results;
 }
 
 }
