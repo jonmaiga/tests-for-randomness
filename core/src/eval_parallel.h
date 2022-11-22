@@ -10,7 +10,7 @@
 
 namespace mixer {namespace internal {
 
-using test_job_return = std::optional<test_result>;
+using test_job_return = std::vector<test_result>;
 using test_jobs = jobs<test_job_return>;
 
 template <typename T>
@@ -29,8 +29,13 @@ test_jobs create_stream_jobs(const stream_test_definition<T>& test_def, const st
 		js.push_back([test_def, factory]()-> test_job_return {
 			const auto cfg = factory();
 			const auto s = create_stream(cfg);
-			const auto& sub_tests = test_def.test(cfg.n, s);
-			return test_result{cfg.source.name, cfg.mix.name, test_def.type, sub_tests};
+			std::vector<test_result> results;
+			for (const auto& sub_test : test_def.test(cfg.n, s)) {
+				if (const auto& stat = sub_test.stats) {
+					results.push_back(test_result{cfg.source.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
+				}
+			}
+			return results;
 		});
 	}
 	return js;
@@ -43,8 +48,13 @@ test_jobs create_mixer_jobs(const mixer_test_definition<T>& test_def, const std:
 		if (factory().stream_append_factory) continue;
 		js.push_back([test_def, factory]()-> test_job_return {
 			const auto cfg = factory();
-			const auto& sub_tests = test_def.test(cfg.n, cfg.source, cfg.mix);
-			return test_result{cfg.source.name, cfg.mix.name, test_def.type, sub_tests};
+			std::vector<test_result> results;
+			for (const auto& sub_test : test_def.test(cfg.n, cfg.source, cfg.mix)) {
+				if (const auto& stat = sub_test.stats) {
+					results.push_back({cfg.source.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
+				}
+			}
+			return results;
 		});
 	}
 	return js;
@@ -65,11 +75,13 @@ test_jobs create_test_jobs(const std::vector<test_factory<T>>& test_factories) {
 template <typename T>
 test_battery_result test_rrc_parallel(const mixer<T>& mixer, uint64_t n, unsigned int num_threads) {
 	test_battery_result test_result{"rrc", mixer.name};
-	const auto collect_job_results = [&](const test_job_return& result) {
-		if (result) {
+	const auto collect_job_results = [&](const test_job_return& results) {
+		if (!results.empty()) {
 			static std::mutex m;
 			std::lock_guard lg(m);
-			test_result.add(*result);
+			for (const auto& r : results) {
+				test_result.add(r);
+			}
 		}
 	};
 
