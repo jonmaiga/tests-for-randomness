@@ -84,12 +84,13 @@ struct xys {
 
 template<typename T>
 xys create_bit_flipped_xy(uint64_t n, stream<T> source, const mixer<T>& mixer) {
+	constexpr auto Bits = 8 * sizeof(T);
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
 		const T v = source();
 		const T m = mixer(v);
 		const double x = rescale_type_to_01(m);
-		for (int bit = 0; bit < sizeof(T); ++bit) {
+		for (int bit = 0; bit < Bits; ++bit) {
 			xs.push_back(x);
 			ys.push_back(rescale_type_to_01(mixer(flip_bit(m, bit))));
 		}
@@ -108,10 +109,11 @@ xys create_serial_xy_by_ref(uint64_t n, stream<T>& source) {
 }
 
 template <typename T>
-T create_from_bit(stream<T> source, int bit) {
+T isolate_bit_by_ref(stream<T>& source, int bit) {
+	constexpr auto Bits = 8 * sizeof(T);
 	T x = 0;
 	const T m = 1ull << bit;
-	for (int i = 0; i < sizeof(T); ++i) {
+	for (int i = 0; i < Bits; ++i) {
 		const auto v = source();
 		if (v & m) {
 			x |= 1ull << i;

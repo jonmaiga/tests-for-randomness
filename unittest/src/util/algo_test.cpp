@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+#include "testutil.h"
+
 namespace mixer {
 
 inline std::vector<uint64_t> sliding_bit_window(const std::vector<uint64_t>& data,
@@ -113,6 +115,14 @@ TEST(algo, sliding_bit_window_128bits_explicit_even) {
 	EXPECT_EQ(r[3], 0b1110010101011011);
 	EXPECT_EQ(r[4], 0b1011111100010001);
 	EXPECT_EQ(r[7], 0b1001111011101110);
+}
+
+TEST(algo, isolate_bit) {
+	using T = uint64_t;
+	auto s = test_stream();
+	auto r1 = isolate_bit_by_ref<T>(s, 0);
+	auto r2 = isolate_bit_by_ref<T>(s, 0);
+	EXPECT_NE(r1, r2);
 }
 
 

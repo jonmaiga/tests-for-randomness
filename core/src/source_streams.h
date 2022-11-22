@@ -24,7 +24,7 @@ stream<T> create_bit_isolation_stream(stream<T> source, int bit) {
 	return {
 		name,
 		[source, bit]() mutable -> T {
-			return create_from_bit(source, bit);
+			return isolate_bit_by_ref(source, bit);
 		}
 	};
 }
@@ -42,7 +42,7 @@ std::vector<test_factory<T>> create_test_factories(const mixer<T>& mixer, uint64
 	};
 
 	std::vector<test_factory<T>> factories{counter1, graycode2}; //, trng};
-	for (int bit = 0; bit < 64; ++bit) {
+	for (int bit = 0; bit < 8 * sizeof(T); ++bit) {
 		const auto post_mix_permute = [bit](const stream<T>& source) {
 			return create_bit_isolation_stream<T>(source, bit);
 		};

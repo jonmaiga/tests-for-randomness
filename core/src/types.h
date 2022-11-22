@@ -127,7 +127,7 @@ struct sub_test {
 using sub_test_results = std::vector<sub_test>;
 
 inline sub_test_results main_sub_test(std::optional<statistic> s) {
-	return {{"main", s}};
+	return {{"m", s}};
 }
 
 struct test_key {

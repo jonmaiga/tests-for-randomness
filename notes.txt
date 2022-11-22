@@ -4,7 +4,8 @@ TODO:
 - What is a good fitness function
 - Pass in cmd line args for trng file	
 - Proper tags instead of string contains in query
-
+- Trng should not have to lock?
+- Possible to seed all tests at startup
 
 DONE:
 -----
