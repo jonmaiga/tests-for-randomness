@@ -38,8 +38,8 @@ TEST(gap, generate_gap_probabilities) {
 
 TEST(gap, no_change) {
 	const auto r = gap_test<uint64_t>(1000, test_stream()).front().stats;
-	EXPECT_NEAR(r->value, 6.3867, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.8953, 1e-4);
+	EXPECT_NEAR(r->value, 5.6200, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.9340, 1e-4);
 }
 
 }

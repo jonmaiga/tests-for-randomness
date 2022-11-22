@@ -17,9 +17,13 @@ std::vector<uint64_t> get_permutation_histogram(const T& data, int window_size) 
 
 template <typename T>
 sub_test_results permutation_test(const uint64_t n, const stream<T>& stream) {
-	const auto histogram = get_permutation_histogram(get_raw(n, stream), 5);
-	const double expected_count = static_cast<double>(accumulate(histogram)) / histogram.size();
-	return main_sub_test(chi2_stats(histogram, expected_count));
+	sub_test_results results;
+	for (int size = 5; size <= 5; ++size) {
+		const auto histogram = get_permutation_histogram(get_raw(n, stream), size);
+		const double expected_count = static_cast<double>(accumulate(histogram)) / histogram.size();
+		results.push_back({"w" + std::to_string(size), chi2_stats(histogram, expected_count)});
+	}
+	return results;
 }
 
 
