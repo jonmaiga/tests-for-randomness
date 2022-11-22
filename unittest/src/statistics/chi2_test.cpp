@@ -23,7 +23,7 @@ TEST(chi2, basic) {
 }
 
 TEST(chi2, no_change) {
-	const auto r = chi2_test(50, test_stream());
+	const auto r = chi2_test(50, test_stream()).front().stats;
 	EXPECT_NEAR(r->value, 4.7999, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.8513, 1e-4);
 }

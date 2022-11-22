@@ -103,12 +103,23 @@ struct statistic {
 	double df{};
 };
 
+struct sub_test {
+	std::string name;
+	std::optional<statistic> stats;
+};
+
+using sub_tests = std::vector<sub_test>;
+
 struct result {
 	std::string stream_name;
 	std::string mixer_name;
 	test_type type;
-	statistic stats;
+	sub_tests sub_results;
 };
+
+inline sub_tests main_sub_test(std::optional<statistic> s) {
+	return {{"main", s}};
+}
 
 inline statistic_meta get_meta(test_type type) {
 	for (const auto& meta : all_metas) {
@@ -121,10 +132,10 @@ inline statistic_meta get_meta(test_type type) {
 }
 
 template <typename T>
-using mixer_test = std::function<std::optional<statistic>(uint64_t n, const stream<T>&, const mixer<T>&)>;
+using mixer_test = std::function<sub_tests(uint64_t n, const stream<T>&, const mixer<T>&)>;
 
 template <typename T>
-using stream_test = std::function<std::optional<statistic>(uint64_t n, const stream<T>&)>;
+using stream_test = std::function<sub_tests(uint64_t n, const stream<T>&)>;
 
 struct test_result {
 	using result_map = std::map<test_type, std::vector<result>>;
@@ -134,8 +145,6 @@ struct test_result {
 	result_map results;
 
 	void add(const result& r) {
-		assertion(is_valid(r.stats.value), "a statistic is not valid");
-		assertion(is_valid_between_01(r.stats.p_value), "a p-value is not valid or normal");
 		results[r.type].push_back(r);
 	}
 

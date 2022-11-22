@@ -69,7 +69,7 @@ std::optional<statistic> divisibility_test(uint64_t n, const stream<T>& stream, 
 template <typename T>
 stream_test<T> create_divisibility_test(int divisor) {
 	return [divisor](uint64_t n, const stream<T>& stream) {
-		return divisibility_test<T>(n, stream, divisor);
+		return main_sub_test(divisibility_test<T>(n, stream, divisor));
 	};
 }
 

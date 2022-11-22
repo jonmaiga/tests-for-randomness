@@ -52,9 +52,9 @@ inline std::optional<statistic> wald_wolfowitz_stats(wald_wolfowitz_statistics s
 }
 
 template <typename T>
-std::optional<statistic> wald_wolfowitz_test(const uint64_t n, const stream<T>& stream) {
+sub_tests wald_wolfowitz_test(const uint64_t n, const stream<T>& stream) {
 	const auto ww = wald_wolfowitz_stats(get_raw(n, stream));
-	return wald_wolfowitz_stats(ww);
+	return main_sub_test(wald_wolfowitz_stats(ww));
 }
 
 
