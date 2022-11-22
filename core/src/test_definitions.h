@@ -35,9 +35,7 @@ std::vector<stream_test_definition<T>> get_stream_tests() {
 		{test_type::spearman_r, spearman_correlation_test<T>},
 		{test_type::kendall_tau, kendall_correlation_test<T>},
 
-		{test_type::gap_low, create_gap_test<T>(0, 0.33)},
-		{test_type::gap_medium, create_gap_test<T>(0.33, 0.66)},
-		{test_type::gap_high, create_gap_test<T>(0.66, 1)},
+		{test_type::gap, gap_test<T>},
 		{test_type::coupon, coupon_test<T>},
 		{test_type::divisibility, divisibility_test<T>},
 		{test_type::permutation, permutation_test<T>}
