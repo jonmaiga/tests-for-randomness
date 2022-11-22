@@ -183,7 +183,7 @@ inline sub_test_results split_test(const uint64_t n, const uint64_t max_size, co
 		return main_sub_test(f(n));
 	}
 
-	const auto split_count = std::max(2ull, n / max_size);
+	const auto split_count = std::max(static_cast<uint64_t>(2), n / max_size);
 	sub_test_results results;
 	for (uint64_t i = 0; i < split_count; ++i) {
 		results.push_back({"s" + std::to_string(i + 1), f(max_size)});

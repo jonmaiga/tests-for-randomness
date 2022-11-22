@@ -155,7 +155,7 @@ void sliding_bit_window(
 	int window_size,
 	int increments,
 	const std::function<void(uint64_t)>& callback) {
-	constexpr auto Size = 8 * sizeof(T::value_type);
+	constexpr auto Size = 8 * sizeof(typename T::value_type);
 	assertion(window_size >= 1 && window_size <= Size-1, "bad window size");
 	assertion(increments >= 1 && increments + window_size <= Size, "bad increments");
 
