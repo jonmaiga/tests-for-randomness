@@ -58,8 +58,7 @@ enum class test_type {
 	gap_medium,
 	gap_high,
 	coupon,
-	divisibility_2,
-	divisibility_3,
+	divisibility,
 	permutation,
 
 	// mixer
@@ -87,8 +86,7 @@ const auto all_metas = std::vector<statistic_meta>{
 	{test_type::gap_medium, "gap medium"},
 	{test_type::gap_high, "gap high"},
 	{test_type::coupon, "coupon"},
-	{test_type::divisibility_2, "divisibility 2"},
-	{test_type::divisibility_3, "divisibility 3"},
+	{test_type::divisibility, "divisibility"},
 	{test_type::permutation, "permutation"},
 	{test_type::sac, "sac"},
 	{test_type::bic, "bic"},

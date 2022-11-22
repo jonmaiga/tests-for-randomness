@@ -62,19 +62,7 @@ void run_tests() {
 		analyzer.add(test(m, n));
 	}
 
-	analyzer.summarize_fails({}, {
-		                         "trng",
-		                         "counter-1",
-		                         "counter-23",
-		                         "graycode-",
-		                         // "graycode-4",
-		                         // "graycode-8",
-		                         "bit-",
-		                         // "reverse-",
-		                         // "identity-",
-		                         // "complement-",
-		                         // "reverse_co-"
-	                         });
+	analyzer.summarize_fails({}, {"trng", "counter-1", "graycode-"});
 	analyzer.summarize_fails({});
 	std::cout << "done.";
 }
