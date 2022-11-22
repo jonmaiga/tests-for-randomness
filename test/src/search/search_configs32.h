@@ -2,7 +2,7 @@
 
 namespace mixer {namespace search32 {
 
-inline config get_xmxmx_config() {
+inline sffs_config get_xmxmx_config() {
 	struct constants {
 		explicit constants(const bit_vector& bits) {
 			C1 = bits.get(0, 5);
@@ -54,7 +54,7 @@ inline config get_xmxmx_config() {
 	return {bits, fitness, to_str, to_arr_str};
 }
 
-inline config get_xmxmxmx_config() {
+inline sffs_config get_xmxmxmx_config() {
 	struct constants {
 		explicit constants(const bit_vector& bits) {
 			C1 = bits.get(0, 5);

@@ -10,7 +10,7 @@ namespace mixer {
 
 template<typename T>
 double sffs_fitness_test(const mixer<T>& mixer) {
-	const auto r = test_rrc<T>(mixer, 5000);
+	const auto r = internal::test_rrc_parallel<T>(mixer, 10000, 4);
 	std::vector<double> all;
 	for (const auto& tr : r.results) {
 		append(all, to_p_values(tr.second));
@@ -27,7 +27,7 @@ inline bit_vector random_bit_vector(int bits) {
 	return bv;
 }
 
-inline bit_vector find_seed(const config& config, int tries) {
+inline bit_vector find_seed(const sffs_config& config, int tries) {
 	double best_score = std::numeric_limits<double>::max();
 	bit_vector best(config.bits);
 	for (int i = 0; i < tries; ++i) {
@@ -42,9 +42,9 @@ inline bit_vector find_seed(const config& config, int tries) {
 }
 
 template <typename T>
-void start_search(const std::string& name, const config& config) {
-	auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
-	const auto trng = create_mixer_from_stream("trng1", trng_stream);
+void start_search(const std::string& name, const sffs_config& config) {
+	//auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
+	//const auto trng = create_mixer_from_stream("trng1", trng_stream);
 
 	std::cout << "===========================\n";
 	std::cout << name << " " << config.bits << " bits\n";
@@ -53,7 +53,7 @@ void start_search(const std::string& name, const config& config) {
 		std::cout << config.to_string(*seed) << "\n";
 		std::cout << "Baseline fitness: " << config.fitness(*seed) << "\n";
 	}
-	std::cout << "Trng fitness    : " << sffs_fitness_test(trng) << "\n";
+	//std::cout << "Trng fitness    : " << sffs_fitness_test(trng) << "\n";
 	const auto result = run_sffs(config, create_sffs_printer(config.to_arr_str));
 	std::stringstream ss;
 	ss << to_string(result, config.to_arr_str) << "\n";

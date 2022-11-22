@@ -5,7 +5,7 @@
 
 namespace mixer {
 
-inline config get_mx3_config() {
+inline sffs_config get_mx3_config() {
 	struct constants {
 		explicit constants(const bit_vector& bits) {
 			//m1 = bits.get(0, 64);
@@ -71,7 +71,7 @@ inline config get_mx3_config() {
 	return {bits, fitness, to_str, to_arr_str};
 }
 
-inline config get_xmx_config() {
+inline sffs_config get_xmx_config() {
 	struct constants {
 		explicit constants(const bit_vector& bits) {
 			C1 = bits.get(0, 6);
@@ -118,7 +118,7 @@ inline config get_xmx_config() {
 }
 
 
-template <typename T> config get_xmxmx_config() {
+template <typename T> sffs_config get_xmxmx_config() {
 	if constexpr (sizeof(T) == 4) {
 		return search32::get_xmxmx_config();
 	}
@@ -127,7 +127,7 @@ template <typename T> config get_xmxmx_config() {
 	}
 }
 
-template <typename T> config get_xmxmxmx_config() {
+template <typename T> sffs_config get_xmxmxmx_config() {
 	if constexpr (sizeof(T) == 4) {
 		return search32::get_xmxmxmx_config();
 	}
@@ -139,7 +139,7 @@ template <typename T> config get_xmxmxmx_config() {
 
 template <typename T>
 void run_search() {
-	auto cfg = get_xmxmxmx_config<T>();
+	auto cfg = get_xmxmx_config<T>();
 	cfg.seed = find_seed(cfg, 10);
 	start_search<T>("NAME HERE", cfg);
 }

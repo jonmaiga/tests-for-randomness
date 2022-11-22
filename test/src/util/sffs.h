@@ -14,7 +14,7 @@ struct sffs_state {
 
 using sffs_callback = std::function<void(int k, const sffs_state& new_state, const sffs_state& old_state)>;
 
-inline sffs_state get_state(const config& config, const sffs_state& current_state, bool is_forward) {
+inline sffs_state get_state(const sffs_config& config, const sffs_state& current_state, bool is_forward) {
 	jobs<sffs_state> sffs_jobs;
 	for (int i = 0; i < config.bits; ++i) {
 		if (current_state.data.get_bit(i) == is_forward) continue;
@@ -39,15 +39,15 @@ inline sffs_state get_state(const config& config, const sffs_state& current_stat
 	return best;
 }
 
-inline sffs_state get_forward_state(const config& config, const sffs_state& current_state) {
+inline sffs_state get_forward_state(const sffs_config& config, const sffs_state& current_state) {
 	return get_state(config, current_state, true);
 }
 
-inline sffs_state get_backward_state(const config& config, const sffs_state& current_state) {
+inline sffs_state get_backward_state(const sffs_config& config, const sffs_state& current_state) {
 	return get_state(config, current_state, false);
 }
 
-inline sffs_state run_sffs(const config& config, const sffs_callback& callback) {
+inline sffs_state run_sffs(const sffs_config& config, const sffs_callback& callback) {
 	std::map<int, sffs_state> ks;
 	bit_vector init_bits(config.bits);
 	if (const auto& seed = config.seed) {

@@ -55,7 +55,7 @@ void run_tests() {
 	std::cout << "n=" << n << "\n";
 
 	result_analyzer analyzer;
-	//analyzer.add(test(trng1, n));
+	analyzer.add(test(trng1, n));
 	//analyzer.add(test(trng2, n));
 
 	for (const auto& m : get_mixers<T>()) {
@@ -71,8 +71,13 @@ void run_tests() {
 
 int main(int argc, char** args) {
 	try {
-		using T = uint64_t;
-		mixer::run_tests<T>();
+		if (argc == 2) {   
+			std::string trng_path = args[1];
+			mixer::set_config({trng_path});
+		}	
+
+		using T = uint32_t;
+		//mixer::run_tests<T>();
 		mixer::run_search<T>();
 	}
 	catch (std::runtime_error& e) {
