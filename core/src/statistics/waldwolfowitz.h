@@ -5,14 +5,14 @@
 
 namespace mixer {
 
-struct wald_wolfowitz_statistics {
+struct wald_wolfowitz_data {
 	double runs{};
 	double n_plus{};
 	double n_minus{};
 };
 
 template <typename T>
-wald_wolfowitz_statistics wald_wolfowitz_stats(const std::vector<T>& data) {
+wald_wolfowitz_data generate_wald_wolfowitz_data(const std::vector<T>& data) {
 	if (data.empty()) {
 		return {};
 	}
@@ -38,7 +38,7 @@ wald_wolfowitz_statistics wald_wolfowitz_stats(const std::vector<T>& data) {
 	};
 }
 
-inline std::optional<statistic> wald_wolfowitz_stats(wald_wolfowitz_statistics s) {
+inline std::optional<statistic> wald_wolfowitz_stats(wald_wolfowitz_data s) {
 	// https://en.wikipedia.org/wiki/Wald%E2%80%93Wolfowitz_runs_test
 	// info https://support.sas.com/kb/33/092.html
 	// exact, z-test, improved: https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_Runs.pdf
@@ -52,9 +52,10 @@ inline std::optional<statistic> wald_wolfowitz_stats(wald_wolfowitz_statistics s
 }
 
 template <typename T>
-sub_test_results wald_wolfowitz_test(const uint64_t n, const stream<T>& stream) {
-	const auto ww = wald_wolfowitz_stats(get_raw(n, stream));
-	return main_sub_test(wald_wolfowitz_stats(ww));
+sub_test_results wald_wolfowitz_test(const uint64_t n, stream<T> source) {
+	return split_test(n, 1000000, [&source](uint64_t size) {
+		return wald_wolfowitz_stats(generate_wald_wolfowitz_data(get_raw_by_ref(size, source)));
+	});
 }
 
 

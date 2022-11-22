@@ -18,10 +18,10 @@ std::vector<uint64_t> get_permutation_histogram(const T& data, int window_size) 
 template <typename T>
 sub_test_results permutation_test(const uint64_t n, const stream<T>& stream) {
 	sub_test_results results;
-	for (int size = 5; size <= 5; ++size) {
-		const auto histogram = get_permutation_histogram(get_raw(n, stream), size);
+	for (int permutation_size = 5; permutation_size <= 5; ++permutation_size) {
+		const auto histogram = get_permutation_histogram(ranged_stream<T>(stream, n), permutation_size);
 		const double expected_count = static_cast<double>(accumulate(histogram)) / histogram.size();
-		results.push_back({"w" + std::to_string(size), chi2_stats(histogram, expected_count)});
+		results.push_back({"w" + std::to_string(permutation_size), chi2_stats(histogram, expected_count)});
 	}
 	return results;
 }

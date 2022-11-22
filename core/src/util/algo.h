@@ -29,7 +29,7 @@ std::vector<std::size_t> get_ranks(const std::vector<T>& vec, Compare& compare) 
 
 
 template <typename T>
-std::vector<T> get_raw(uint64_t n, stream<T> stream) {
+std::vector<T> get_raw_by_ref(uint64_t n, stream<T>& stream) {
 	std::vector<T> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
@@ -149,31 +149,32 @@ typename T::value_type accumulate(const T& data) {
 
 template <typename T>
 void sliding_bit_window(
-	const std::vector<T>& data,
+	const T& data,
 	int window_size,
 	int increments,
 	const std::function<void(uint64_t)>& callback) {
-	constexpr auto Size = 8 * sizeof(T);
+	constexpr auto Size = 8 * sizeof(T::value_type);
 	assertion(window_size >= 1 && window_size <= Size-1, "bad window size");
 	assertion(increments >= 1 && increments + window_size <= Size, "bad increments");
 
 	std::bitset<2 * Size> left_mask;
 	left_mask |= (1ull << window_size) - 1;
 
+	auto it = data.begin();
+	const auto end = data.end();
 	std::bitset<2 * Size> bits;
-	bits |= data[0];
-	std::size_t i = 0;
+	bits |= *it;
 	int bits_left_to_consume = Size;
-	while (i < data.size()) {
+	while (it != end) {
 		while (bits_left_to_consume >= window_size) {
 			callback((bits & left_mask).to_ullong());
 			bits >>= increments;
 			bits_left_to_consume -= increments;
 		}
-		++ i;
-		if (i < data.size()) {
+		++ it;
+		if (it != end) {
 			std::bitset<2 * Size> refill;
-			refill |= data[i];
+			refill |= *it;
 			refill <<= bits_left_to_consume;
 			bits |= refill;
 			bits_left_to_consume += Size;
