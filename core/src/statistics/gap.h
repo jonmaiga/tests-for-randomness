@@ -45,7 +45,7 @@ inline std::vector<double> generate_gap_probabilities(double a, double b) {
 template <typename T>
 std::optional<statistic> gap_test(uint64_t n, const stream<T>& source, double a, double b) {
 	const auto& ps = generate_gap_probabilities(a, b);
-	const auto& gaps = generate_gaps(ps.size(), a, b, ranged_stream(rescale64_to_01(source), n));
+	const auto& gaps = generate_gaps(ps.size(), a, b, ranged_stream(rescale_type_to_01(source), n));
 	const auto total_count = accumulate(gaps);
 	return chi2_stats(gaps.size(), to_data(gaps),
 	                  mul(to_data(ps), to_data(total_count)),

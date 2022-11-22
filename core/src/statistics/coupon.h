@@ -64,7 +64,7 @@ std::optional<statistic> coupon_stats(const T& data01) {
 
 template <typename T>
 std::optional<statistic> coupon_test(uint64_t n, const stream<T>& stream) {
-	return coupon_stats(ranged_stream(rescale64_to_01(stream), n));
+	return coupon_stats(ranged_stream(rescale_type_to_01(stream), n));
 }
 
 

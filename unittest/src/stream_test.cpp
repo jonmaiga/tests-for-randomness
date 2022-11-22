@@ -24,7 +24,7 @@ TEST(stream, expected_behavior) {
 	EXPECT_EQ(s3(), 2);
 
 	auto s4 = create_counter_stream<uint64_t>(1);
-	auto rs = rescale64_to_01(s4);
+	auto rs = rescale_type_to_01(s4);
 	auto d = rs();
 	EXPECT_TRUE(is_near(d, 0));
 	EXPECT_EQ(s4(), 1);

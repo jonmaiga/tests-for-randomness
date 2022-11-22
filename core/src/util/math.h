@@ -4,7 +4,6 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
-#include <vector>
 
 #include "assertion.h"
 
@@ -28,10 +27,10 @@ inline double rescale_to_01(double x, double x_min, double x_max) {
 	return (x - x_min) / (x_max - x_min);
 }
 
-template<typename T>
-double rescale64_to_01(T x) {
+template <typename T>
+double rescale_type_to_01(T x) {
 	constexpr auto normalizer = static_cast<double>(std::numeric_limits<T>::max());
-	return rescale_to_01(static_cast<double>(x) / normalizer, 0, 1);
+	return static_cast<double>(x) / normalizer;
 }
 
 inline double log_safe(double x) {

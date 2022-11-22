@@ -25,7 +25,7 @@ inline std::optional<statistic> kolmogorov_smirnov_stats(std::vector<double> dat
 
 template<typename T>
 std::optional<statistic> kolmogorov_test(const uint64_t n, const stream<T>& stream) {
-	return kolmogorov_smirnov_stats(rescale64_to_01(n, stream));
+	return kolmogorov_smirnov_stats(rescale_type_to_01(n, stream));
 }
 
 }

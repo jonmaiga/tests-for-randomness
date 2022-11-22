@@ -26,12 +26,15 @@ std::vector<stream_test_definition<T>> get_stream_tests() {
 	return {
 		{test_type::basic_mean, basic_test<T>},
 		{test_type::chi2, chi2_test<T>},
+
+		// requires more than 1 iteration/sorting
 		{test_type::kolmogorov_smirnov, kolmogorov_test<T>},
 		{test_type::anderson_darling, anderson_darling_test<T>},
 		{test_type::wald_wolfowitz_runs, wald_wolfowitz_test<T>},
 		{test_type::pearson_r, pearson_correlation_test<T>},
 		{test_type::spearman_r, spearman_correlation_test<T>},
 		{test_type::kendall_tau, kendall_correlation_test<T>},
+
 		{test_type::gap_low, create_gap_test<T>(0, 0.33)},
 		{test_type::gap_medium, create_gap_test<T>(0.33, 0.66)},
 		{test_type::gap_high, create_gap_test<T>(0.66, 1)},

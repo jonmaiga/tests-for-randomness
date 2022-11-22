@@ -39,13 +39,23 @@ std::vector<T> get_raw(uint64_t n, stream<T> stream) {
 }
 
 template <typename T>
-std::vector<double> rescale64_to_01(uint64_t n, stream<T> stream) {
+std::vector<double> rescale_type_to_01(uint64_t n, stream<T> stream) {
 	std::vector<double> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
-		data.push_back(rescale64_to_01(stream()));
+		data.push_back(rescale_type_to_01(stream()));
 	}
 	return data;
+}
+
+template <typename T>
+std::vector<double> rescale_type_to_01(const std::vector<T>& data) {
+	std::vector<double> ns;
+	ns.reserve(data.size());
+	for (const auto v : data) {
+		ns.push_back(rescale_type_to_01(v));
+	}
+	return ns;
 }
 
 template <typename T>
@@ -54,16 +64,6 @@ std::vector<double> rescale_to_01(const std::vector<T>& data, T min_value, T max
 	ns.reserve(data.size());
 	for (const auto v : data) {
 		ns.push_back(rescale_to_01(v, min_value, max_value));
-	}
-	return ns;
-}
-
-template <typename T>
-std::vector<double> rescale64_to_01(const std::vector<T>& data) {
-	std::vector<double> ns;
-	ns.reserve(data.size());
-	for (const auto v : data) {
-		ns.push_back(rescale64_to_01(v));
 	}
 	return ns;
 }
@@ -88,10 +88,10 @@ xys create_bit_flipped_xy(uint64_t n, stream<T> source, const mixer<T>& mixer) {
 	for (uint64_t i = 0; i < n; ++i) {
 		const T v = source();
 		const T m = mixer(v);
-		const double x = rescale64_to_01(m);
+		const double x = rescale_type_to_01(m);
 		for (int bit = 0; bit < sizeof(T); ++bit) {
 			xs.push_back(x);
-			ys.push_back(rescale64_to_01(mixer(flip_bit(m, bit))));
+			ys.push_back(rescale_type_to_01(mixer(flip_bit(m, bit))));
 		}
 	}
 	return {xs, ys};
@@ -101,8 +101,8 @@ template <typename T>
 xys create_serial_xy(uint64_t n, stream<T> source) {
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
-		xs.push_back(rescale64_to_01(source()));
-		ys.push_back(rescale64_to_01(source()));
+		xs.push_back(rescale_type_to_01(source()));
+		ys.push_back(rescale_type_to_01(source()));
 	}
 	return {xs, ys};
 }
