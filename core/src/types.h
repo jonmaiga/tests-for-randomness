@@ -103,24 +103,6 @@ struct statistic {
 	double df{};
 };
 
-struct sub_test {
-	std::string name;
-	std::optional<statistic> stats;
-};
-
-using sub_tests = std::vector<sub_test>;
-
-struct result {
-	std::string stream_name;
-	std::string mixer_name;
-	test_type type;
-	sub_tests sub_results;
-};
-
-inline sub_tests main_sub_test(std::optional<statistic> s) {
-	return {{"main", s}};
-}
-
 inline statistic_meta get_meta(test_type type) {
 	for (const auto& meta : all_metas) {
 		if (meta.type == type) {
@@ -131,29 +113,75 @@ inline statistic_meta get_meta(test_type type) {
 	return {};
 }
 
-template <typename T>
-using mixer_test = std::function<sub_tests(uint64_t n, const stream<T>&, const mixer<T>&)>;
+///////////////////////////////////////////////////////////////
+/// RESULT TYPES
+///////////////////////////////////////////////////////////////
 
-template <typename T>
-using stream_test = std::function<sub_tests(uint64_t n, const stream<T>&)>;
+struct sub_test {
+	std::string name;
+	std::optional<statistic> stats;
+};
+
+class sub_test_results {
+public:
+	using sub_test_map = std::map<std::string, sub_test>;
+
+	sub_test_results(const sub_test& st) {
+		tests[st.name] = st;
+	}
+
+	sub_test front() const {
+		// todo: subtest
+		return tests.find("main")->second;
+	}
+
+	sub_test_map::const_iterator begin() const {
+		return tests.cbegin();
+	}
+
+	sub_test_map::const_iterator end() const {
+		return tests.cend();
+	}
+
+	sub_test_map tests;
+};
+
+inline sub_test_results main_sub_test(std::optional<statistic> s) {
+	return {{"main", s}};
+}
 
 struct test_result {
-	using result_map = std::map<test_type, std::vector<result>>;
+	std::string stream_name;
+	std::string mixer_name;
+	test_type type;
+	sub_test_results sub_results;
+};
+
+struct test_battery_result {
+	using test_result_map = std::map<test_type, std::vector<test_result>>;
 
 	std::string name;
 	std::string mixer_name;
-	result_map results;
+	test_result_map results;
 
-	void add(const result& r) {
+	void add(const test_result& r) {
 		results[r.type].push_back(r);
 	}
 
-	const std::vector<result>& operator[](test_type type) const {
-		static const std::vector<result> empty;
+	const std::vector<test_result>& operator[](test_type type) const {
+		static const std::vector<test_result> empty;
 		const auto it = results.find(type);
 		return it != results.end() ? it->second : empty;
 	}
 };
+
+
+template <typename T>
+using mixer_test = std::function<sub_test_results(uint64_t n, const stream<T>&, const mixer<T>&)>;
+
+template <typename T>
+using stream_test = std::function<sub_test_results(uint64_t n, const stream<T>&)>;
+
 
 using data_fn = std::function<double(std::size_t)>;
 

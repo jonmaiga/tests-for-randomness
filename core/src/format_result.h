@@ -7,7 +7,7 @@
 
 namespace mixer {
 
-inline std::vector<double> to_statistics(const std::vector<result>& results) {
+inline std::vector<double> to_statistics(const std::vector<test_result>& results) {
 	std::vector<double> statistics;
 	statistics.reserve(results.size());
 	for (const auto& r : results) {
@@ -17,7 +17,7 @@ inline std::vector<double> to_statistics(const std::vector<result>& results) {
 	return statistics;
 }
 
-inline std::vector<double> to_p_values(const std::vector<result>& results) {
+inline std::vector<double> to_p_values(const std::vector<test_result>& results) {
 	std::vector<double> statistics;
 	statistics.reserve(results.size());
 	for (const auto& r : results) {
@@ -55,14 +55,14 @@ inline void draw_histogram(const std::vector<double>& data) {
 	std::cout << "\n";
 }
 
-inline bool passed_test(const std::vector<result>& results, const double alpha) {
+inline bool passed_test(const std::vector<test_result>& results, const double alpha) {
 	const auto p_values = to_p_values(results);
 	const auto ks_stat = kolmogorov_smirnov_stats(p_values);
 	const auto p_value = ks_stat->p_value;
 	return p_value >= alpha && p_value <= 1. - alpha;
 }
 
-inline std::string p_value_test(const std::vector<result>& results, const double alpha) {
+inline std::string p_value_test(const std::vector<test_result>& results, const double alpha) {
 	if (results.empty()) {
 		return "N/A";
 	}
@@ -85,11 +85,11 @@ inline std::string p_value_test(const std::vector<result>& results, const double
 
 using tags = std::vector<std::string>;
 
-inline std::vector<result> find_by_mixer_name(const std::vector<result>& results, const tags& mixer_names) {
+inline std::vector<test_result> find_by_mixer_name(const std::vector<test_result>& results, const tags& mixer_names) {
 	if (mixer_names.empty()) {
 		return results;
 	}
-	std::vector<result> found;
+	std::vector<test_result> found;
 	for (const auto& result : results) {
 		for (const auto& tag : mixer_names) {
 			if (contains(result.mixer_name, tag)) {
@@ -100,11 +100,11 @@ inline std::vector<result> find_by_mixer_name(const std::vector<result>& results
 	return found;
 }
 
-inline std::vector<result> find_by_stream_name(const std::vector<result>& results, const tags& stream_tags) {
+inline std::vector<test_result> find_by_stream_name(const std::vector<test_result>& results, const tags& stream_tags) {
 	if (stream_tags.empty()) {
 		return results;
 	}
-	std::vector<result> found;
+	std::vector<test_result> found;
 	for (const auto& result : results) {
 		for (const auto& stream_tag : stream_tags) {
 			if (contains(result.stream_name, stream_tag)) {
@@ -129,7 +129,7 @@ public:
 		}) {
 	}
 
-	void add(const test_result& r) {
+	void add(const test_battery_result& r) {
 		test_results.push_back(r);
 		/*
 				table t({"test", r.mixer_name});
@@ -202,7 +202,7 @@ public:
 		std::cout << t.to_string() << "\n";
 	}
 
-	std::vector<result> query(const tags& mixer_tags, const tags& stream_tags) const {
+	std::vector<test_result> query(const tags& mixer_tags, const tags& stream_tags) const {
 		// todo: subtest
 		return {};
 		//auto results = find_by_mixer_name(_flatten(), mixer_tags);
@@ -299,8 +299,8 @@ private:
 	}
 
 
-	std::vector<result> _flatten() const {
-		std::vector<result> rs;
+	std::vector<test_result> _flatten() const {
+		std::vector<test_result> rs;
 		for (const auto& ts : test_results) {
 			for (const auto& r : ts.results) {
 				append(rs, r.second);
@@ -310,7 +310,7 @@ private:
 	}
 
 	table p_table;
-	std::vector<test_result> test_results;
+	std::vector<test_battery_result> test_results;
 };
 
 }

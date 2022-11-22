@@ -32,7 +32,7 @@ void write_stream(const mixer64& m, uint64_t n) {
 }
 
 template <typename T>
-using test_method = std::function<test_result(const mixer<T>&, uint64_t)>;
+using test_method = std::function<test_battery_result(const mixer<T>&, uint64_t)>;
 
 template <typename T>
 void run_tests() {

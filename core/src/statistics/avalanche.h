@@ -58,13 +58,13 @@ inline std::optional<statistic> avalanche_bic_stats(const double n, const std::v
 }
 
 template <typename T>
-sub_tests avalanche_mixer_sac_test(uint64_t n, const stream<T>& stream, const mixer<T>& mixer) {
+sub_test_results avalanche_mixer_sac_test(uint64_t n, const stream<T>& stream, const mixer<T>& mixer) {
 	const auto counts = avalanche_generate_sac(n, stream, mixer);
 	return main_sub_test(avalanche_sac_stats<T>(n, counts));
 }
 
 template <typename T>
-sub_tests avalanche_mixer_bic_test(uint64_t n, const stream<T>& stream, const mixer<T>& mixer) {
+sub_test_results avalanche_mixer_bic_test(uint64_t n, const stream<T>& stream, const mixer<T>& mixer) {
 	const auto counts = avalanche_generate_bic(n, stream, mixer);
 	return main_sub_test(avalanche_bic_stats(n, counts));
 }
