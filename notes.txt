@@ -1,3 +1,12 @@
+TODO:
+-----
+- Make it work with large n
+	* need to run some tests multiple times (kendall and all that requires sorting etc)
+	* need to be able to continue a stream
+- Determine false positive rate
+- What is a good fitness function
+	
+	
 	// not sure what to do with variance, can't get p values uniformly distributed.
 	// https://www.youtube.com/watch?v=V4Rm4UQHij0 sampling dist of variance is not normal!
 	// We can't use this for variance since it's sampling is non normal!
