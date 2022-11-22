@@ -16,7 +16,7 @@ std::vector<uint64_t> get_permutation_histogram(const T& data, int window_size) 
 }
 
 template <typename T>
-sub_tests permutation_test(const uint64_t n, const stream<T>& stream) {
+sub_test_results permutation_test(const uint64_t n, const stream<T>& stream) {
 	const auto histogram = get_permutation_histogram(get_raw(n, stream), 5);
 	const double expected_count = static_cast<double>(accumulate(histogram)) / histogram.size();
 	return main_sub_test(chi2_stats(histogram, expected_count));
