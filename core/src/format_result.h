@@ -129,44 +129,7 @@ public:
 
 	void add(const test_battery_result& r) {
 		test_results.push_back(r);
-		/*
-				table t({"test", r.mixer_name});
-				for (const auto& result : r.results) {
-					t.col(get_meta(result.first).name);
-					t.col(p_value_test(result.second));
-					t.row();
-				}
-				std::cout << t.to_string() << "\n";
-		*/
-		summarize();
-		/*
-				
-				p_table
-					.col(r.mixer_name)
-					.col(p_value_test(r[test_type::basic_mean]))
-					.col(p_value_test(r[test_type::chi2]))
-					.col(p_value_test(r[test_type::kolmogorov_smirnov]))
-					.col(p_value_test(r[test_type::anderson_darling]))
-					.col(p_value_test(r[test_type::wald_wolfowitz_runs]))
-					.col(p_value_test(r[test_type::pearson_r]))
-					.col(p_value_test(r[test_type::spearman_r]))
-					.col(p_value_test(r[test_type::kendall_tau]))
-					.col(p_value_test(r[test_type::gap_low]))
-					.col(p_value_test(r[test_type::gap_medium]))
-					.col(p_value_test(r[test_type::gap_high]))
-					.col(p_value_test(r[test_type::coupon]))
-					.col(p_value_test(r[test_type::divisibility_2]))
-					.col(p_value_test(r[test_type::divisibility_3]))
-					.col(p_value_test(r[test_type::permutation]))
-					.col(p_value_test(r[test_type::sac]))
-					.col(p_value_test(r[test_type::bic]))
-					.row();
-		
-				std::cout << p_table.to_string() << "\n";
-		*/
-	}
 
-	void summarize() const {
 		std::set<test_key> test_keys;
 		std::vector<std::string> headers{"test"};
 
@@ -185,7 +148,7 @@ public:
 
 		table t(headers);
 		for (const auto& key : test_keys) {
-			t.col(get_meta(key.type).name);
+			t.col(get_meta(key.type).name + "-" + key.name);
 			for (const auto& tr : test_results) {
 				t.col(p_value_test(tr[key], alpha));
 			}
