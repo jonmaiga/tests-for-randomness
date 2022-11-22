@@ -29,8 +29,9 @@ inline std::optional<statistic> anderson_darling_stats(std::vector<double> data0
 }
 
 template <typename T>
-sub_test_results anderson_darling_test(const uint64_t n, const stream<T>& stream) {
-	return main_sub_test(anderson_darling_stats(rescale_type_to_01(n, stream)));
+sub_test_results anderson_darling_test(const uint64_t n, const stream<T>& source) {
+	stream<T> s = source;
+	return main_sub_test(anderson_darling_stats(rescale_type_to_01_by_ref(n, s)));
 }
 
 }

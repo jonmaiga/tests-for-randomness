@@ -23,9 +23,20 @@ inline std::optional<statistic> kolmogorov_smirnov_stats(std::vector<double> dat
 	return statistic{statistic_type::kolmogorov_smirnov_d, max_distance, p_value, n};
 }
 
-template<typename T>
-sub_test_results kolmogorov_test(const uint64_t n, const stream<T>& stream) {
-	return main_sub_test(kolmogorov_smirnov_stats(rescale_type_to_01(n, stream)));
+template <typename T>
+sub_test_results kolmogorov_test(const uint64_t n, const stream<T>& source) {
+
+	constexpr uint64_t max_size = 1000;
+	sub_test_results results;
+	stream<T> s = source;
+	for (uint64_t i = 0; i < n; i += max_size) {
+		results.push_back({
+			"s" + std::to_string(i),
+			kolmogorov_smirnov_stats(rescale_type_to_01_by_ref(max_size, s))
+		});
+	}
+	return results;
 }
+
 
 }

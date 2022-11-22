@@ -5,7 +5,8 @@ TODO:
 	* need to be able to continue a stream
 - Determine false positive rate
 - What is a good fitness function
-	
+- pass in cmd line args for trng file	
+- proper tags instead of string contains in query
 	
 	// not sure what to do with variance, can't get p values uniformly distributed.
 	// https://www.youtube.com/watch?v=V4Rm4UQHij0 sampling dist of variance is not normal!

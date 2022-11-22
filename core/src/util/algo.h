@@ -39,7 +39,7 @@ std::vector<T> get_raw(uint64_t n, stream<T> stream) {
 }
 
 template <typename T>
-std::vector<double> rescale_type_to_01(uint64_t n, stream<T> stream) {
+std::vector<double> rescale_type_to_01_by_ref(uint64_t n, stream<T>& stream) {
 	std::vector<double> data;
 	data.reserve(n);
 	for (uint64_t i = 0; i < n; ++i) {
