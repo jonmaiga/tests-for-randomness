@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include "util/fileutil.h"
 
 namespace mixer {
