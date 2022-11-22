@@ -122,55 +122,48 @@ struct sub_test {
 	std::optional<statistic> stats;
 };
 
-class sub_test_results {
-public:
-	using sub_test_map = std::map<std::string, sub_test>;
-
-	sub_test_results(const sub_test& st) {
-		tests[st.name] = st;
-	}
-
-	sub_test front() const {
-		// todo: subtest
-		return tests.find("main")->second;
-	}
-
-	sub_test_map::const_iterator begin() const {
-		return tests.cbegin();
-	}
-
-	sub_test_map::const_iterator end() const {
-		return tests.cend();
-	}
-
-	sub_test_map tests;
-};
+using sub_test_results = std::vector<sub_test>;
 
 inline sub_test_results main_sub_test(std::optional<statistic> s) {
 	return {{"main", s}};
 }
 
+struct test_key {
+	test_type type;
+	std::string name;
+
+	bool operator <(const test_key& rhs) const {
+		if (type != rhs.type) {
+			return type < rhs.type;
+		}
+		if (name != rhs.name) {
+			return name < rhs.name;
+		}
+		return false;
+	}
+};
+
 struct test_result {
 	std::string stream_name;
 	std::string mixer_name;
-	test_type type;
-	sub_test_results sub_results;
+	test_key key;
+	statistic stats;
 };
 
 struct test_battery_result {
-	using test_result_map = std::map<test_type, std::vector<test_result>>;
+	using test_result_map = std::map<test_key, std::vector<test_result>>;
 
 	std::string name;
 	std::string mixer_name;
 	test_result_map results;
 
 	void add(const test_result& r) {
-		results[r.type].push_back(r);
+		results[r.key].push_back(r);
 	}
 
-	const std::vector<test_result>& operator[](test_type type) const {
+	const std::vector<test_result>& operator[](test_key key) const {
 		static const std::vector<test_result> empty;
-		const auto it = results.find(type);
+		const auto it = results.find(key);
 		return it != results.end() ? it->second : empty;
 	}
 };
