@@ -24,15 +24,19 @@ inline std::optional<statistic> kolmogorov_smirnov_stats(std::vector<double> dat
 }
 
 template <typename T>
-sub_test_results kolmogorov_test(const uint64_t n, const stream<T>& source) {
+sub_test_results kolmogorov_test(const uint64_t n, stream<T> source) {
+	constexpr uint64_t max_size = 1000000;
+	if (n <= max_size) 
+	{
+		return main_sub_test(kolmogorov_smirnov_stats(rescale_type_to_01_by_ref(n, source)));
+	}
 
-	constexpr uint64_t max_size = 1000;
+	const auto split_count = std::max(2ull, n / max_size);
 	sub_test_results results;
-	stream<T> s = source;
-	for (uint64_t i = 0; i < n; i += max_size) {
+	for (uint64_t i = 0; i < split_count; ++i) {
 		results.push_back({
-			"s" + std::to_string(i),
-			kolmogorov_smirnov_stats(rescale_type_to_01_by_ref(max_size, s))
+			"s" + std::to_string(i + 1),
+			kolmogorov_smirnov_stats(rescale_type_to_01_by_ref(max_size, source))
 		});
 	}
 	return results;
