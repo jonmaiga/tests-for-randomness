@@ -82,14 +82,14 @@ TEST(stream, iterator) {
 	}
 	{
 		const auto r = ranged_stream(s, 1);
+		EXPECT_TRUE(r.begin() != r.end());
+
 		auto it = r.begin();
 		EXPECT_EQ(*it, 1);
-		it++;
-		EXPECT_EQ(*r.begin(), 1);
-		EXPECT_EQ(*it, 2);
 		++it;
-		EXPECT_EQ(*it, 3);
-		EXPECT_TRUE(r.begin() != r.end());
+		EXPECT_EQ(it, r.end());
+		EXPECT_EQ(*r.begin(), 1);
+		
 		const stream_iterator n = ++r.begin();
 		EXPECT_TRUE(n == r.end());
 	}
