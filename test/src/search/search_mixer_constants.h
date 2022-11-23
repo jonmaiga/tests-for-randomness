@@ -43,8 +43,8 @@ inline bit_vector find_seed(const sffs_config& config, int tries) {
 
 template <typename T>
 void start_search(const std::string& name, const sffs_config& config) {
-	//auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
-	//const auto trng = create_mixer_from_stream("trng1", trng_stream);
+	auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
+	const auto trng = create_mixer_from_stream("trng1", trng_stream);
 
 	std::cout << "===========================\n";
 	std::cout << name << " " << config.bits << " bits\n";
@@ -53,7 +53,7 @@ void start_search(const std::string& name, const sffs_config& config) {
 		std::cout << config.to_string(*seed) << "\n";
 		std::cout << "Baseline fitness: " << config.fitness(*seed) << "\n";
 	}
-	//std::cout << "Trng fitness    : " << sffs_fitness_test(trng) << "\n";
+	std::cout << "Trng fitness    : " << sffs_fitness_test(trng) << "\n";
 	const auto result = run_sffs(config, create_sffs_printer(config.to_arr_str));
 	std::stringstream ss;
 	ss << to_string(result, config.to_arr_str) << "\n";
