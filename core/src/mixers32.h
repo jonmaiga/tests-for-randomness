@@ -23,6 +23,32 @@ const mixer32 mx3 = {
 	}
 };
 
+const mixer32 sffs_mx3_1 = {
+	"mx3_100000", [](uint32_t x) {
+		x ^= x >> 18;
+		x *= 4276026067;
+		x ^= x >> 11;
+		x *= 4276026067;
+		x ^= x >> 26;
+		x *= 4276026067;
+		x ^= x >> 29;
+		return x;
+	}
+};
+
+const mixer32 sffs_mx3_2 = {
+	"sffs_mx3", [](uint32_t x) {
+		x ^= x >> 16;
+		x *= 20493;
+		x ^= x >> 16;
+		x *= 20493;
+		x ^= x >> 8;
+		x *= 20493;
+		x ^= x >> 8;
+		return x;
+	}
+};
+
 const mixer32 murmur = {
 	"murmur", [](uint32_t x) {
 		x ^= x >> 16;
@@ -55,8 +81,8 @@ const mixer32 h2_sql = {
 	}
 };
 
-const mixer32 sffs1 = {
-	"sffs_all", [](uint32_t x) {
+const mixer32 sffs_xmxmx_1 = {
+	"xmxmx_1", [](uint32_t x) {
 		x ^= x >> 18;
 		x *= 620980885;
 		x ^= x >> 12;
@@ -66,8 +92,8 @@ const mixer32 sffs1 = {
 	}
 };
 
-const mixer32 sffs2 = {
-	"sffs_bic", [](uint32_t x) {
+const mixer32 sffs_xmxmx_2 = {
+	"xmxmx_2", [](uint32_t x) {
 		x ^= x >> 17;
 		x *= 3144857259;
 		x ^= x >> 15;
@@ -77,38 +103,13 @@ const mixer32 sffs2 = {
 	}
 };
 
-const mixer32 sffs3 = {
-	"sffs_mx3", [](uint32_t x) {
-		x ^= x >> 16;
-		x *= 20493;
-		x ^= x >> 16;
-		x *= 20493;
-		x ^= x >> 8;
-		x *= 20493;
-		x ^= x >> 8;
-		return x;
-	}
-};
-const mixer32 sffs4 = {
-	"sffs_mean_chi2_ww", [](uint32_t x) {
-		x ^= x >> 16;
-		x *= 4020289823;
-		x ^= x >> 10;
-		x *= 4020289823;
-		x ^= x >> 17;
-		return x;
-	}
-};
-
-const mixer32 sffs_xm3 = {
-	"sffs_100000", [](uint32_t x) {
+const mixer32 sffs_xmxmx_3 = {
+	"xmxmx_200000_c1_gc", [](uint32_t x) {
+		x ^= x >> 15;
+		x *= 2232101479;
+		x ^= x >> 12;
+		x *= 2232101479;
 		x ^= x >> 18;
-		x *= 4276026067;
-		x ^= x >> 11;
-		x *= 4276026067;
-		x ^= x >> 26;
-		x *= 4276026067;
-		x ^= x >> 29;
 		return x;
 	}
 };
@@ -119,15 +120,15 @@ template <>
 inline std::vector<mixer32> get_mixers() {
 	return {
 		mix32::mx3,
+		mix32::sffs_mx3_1,
+		mix32::sffs_mx3_2,
+
 		mix32::prospector,
 		mix32::murmur,
 		mix32::h2_sql,
-		mix32::sffs1,
-		mix32::sffs2,
-		mix32::sffs3,
-		mix32::sffs_xm3
-		//mix32::sffs4,
-		//mix32::sffs_xm3,
+		mix32::sffs_xmxmx_1,
+		mix32::sffs_xmxmx_2,
+		mix32::sffs_xmxmx_3,
 	};
 }
 

@@ -2,7 +2,6 @@ TODO:
 -----
 - Determine false positive rate
 - What is a good fitness function
-- Pass in cmd line args for trng file	
 - Proper tags instead of string contains in query
 - Trng should not have to lock?
 - Possible to seed all tests at startup
@@ -12,7 +11,7 @@ DONE:
 - Make it work with large n
 	* need to run some tests multiple times (kendall and all that requires sorting etc)
 	* need to be able to continue a stream
-
+- Pass in cmd line args for trng file
 
 OTHER:
 ------
