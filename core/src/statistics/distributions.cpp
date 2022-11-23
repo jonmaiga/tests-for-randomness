@@ -142,7 +142,7 @@ double kolmogorov_smirnov_cdf(double D, double df, int conv) {
 		else
 			res += x;
 	}
-	return snap_to_01(2 * res);
+	return std::clamp(2. * res, 0., 1.);
 }
 
 
