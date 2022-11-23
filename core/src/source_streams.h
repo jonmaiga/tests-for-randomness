@@ -42,7 +42,8 @@ std::vector<test_factory<T>> create_test_factories(const mixer<T>& mixer, uint64
 	};
 
 	std::vector<test_factory<T>> factories{counter1, graycode2}; //, trng};
-	for (int bit = 0; bit < 8 * sizeof(T); ++bit) {
+	constexpr auto Bits = 8 * sizeof(T);
+	for (int bit = 0; bit < Bits; ++bit) {
 		const auto post_mix_permute = [bit](const stream<T>& source) {
 			return create_bit_isolation_stream<T>(source, bit);
 		};
@@ -58,9 +59,10 @@ std::vector<test_factory<T>> create_test_factories(const mixer<T>& mixer, uint64
 template <typename T>
 std::vector<test_factory<T>> create_rrc_test_factories(const mixer<T>& mixer, uint64_t n) {
 	std::vector<test_factory<T>> factories;
+	constexpr auto Bits = 8 * sizeof(T);
 	for (const auto& factory : create_test_factories(mixer, n)) {
 		for (const auto type : rrc_types) {
-			for (int rot = 0; rot < 64; ++rot) {
+			for (int rot = 0; rot < Bits; ++rot) {
 				const auto rrc_factory = [=]()-> test_config<T> {
 					const auto config = factory();
 					return {config.n, add_rrc<T>(config.source, rot, type), config.mix, config.stream_append_factory};
