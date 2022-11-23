@@ -90,7 +90,7 @@ inline std::vector<test_result> find_by_mixer_name(const std::vector<test_result
 	std::vector<test_result> found;
 	for (const auto& result : results) {
 		for (const auto& tag : mixer_names) {
-			if (contains(result.mixer_name, tag)) {
+			if (result.mixer_name == tag) {
 				found.push_back(result);
 			}
 		}
