@@ -9,7 +9,7 @@ namespace mixer {
 
 struct sffs_state {
 	bit_vector data;
-	double score = 100000000;
+	double score = std::numeric_limits<double>::max();
 };
 
 using sffs_callback = std::function<void(int k, const sffs_state& new_state, const sffs_state& old_state)>;
