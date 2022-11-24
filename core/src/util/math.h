@@ -9,6 +9,12 @@
 
 namespace mixer {
 
+namespace constants {
+constexpr double EulerGamma = 0.5772156649015328606065120900824024310421593359399235988057672348;
+constexpr double Pi = 3.1415926535897932384626433832795028841971693993751058209749445923;
+constexpr double PiSqr = Pi * Pi;
+}
+
 inline bool is_near(double a, double b, double epsilon = 1e-6) {
 	return std::abs(a - b) <= epsilon;
 }
@@ -58,8 +64,7 @@ inline uint64_t stirling_second_kind(int n, int k) {
 }
 
 inline double harmonic(double n) {
-	constexpr double EulerGamma = 0.5772156649015328606065120900824024310421593359399235988057672348;
-	return std::log(n) + EulerGamma + 1. / (2. * n);
+	return std::log(n) + constants::EulerGamma + 1. / (2. * n);
 }
 
 }
