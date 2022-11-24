@@ -101,4 +101,10 @@ TEST(kolmogorov_smirnov_cdf, basic) {
 	EXPECT_NEAR(kolmogorov_smirnov_cdf(0.4, 5, 1000), 0.3128, 1e-4); // boost have a theta function maybe use that (doesn't match mma right now 0.8095)
 }
 
+TEST(kolmogorov_smirnov, basic) {
+	// there are links to ks cdf implementations here: https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test#Kolmogorov_distribution 
+	EXPECT_NEAR(kolmogorov_smirnov(0.4, 5), 0.85977, 1e-4); // boost have a theta function maybe use that (doesn't match mma right now 0.8095)
+	EXPECT_NEAR(kolmogorov_smirnov2(0.4, 5), 0.85977, 1e-4); // boost have a theta function maybe use that (doesn't match mma right now 0.8095)
+}
+
 }
