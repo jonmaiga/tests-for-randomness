@@ -69,7 +69,7 @@ inline double kolmogorov_smirnov(double D, double df) {
 	using namespace constants;
 	double sum = 0;
 	double x = std::sqrt(df) * D;
-	x = x + 1. / (6. * std::sqrt(D)) + (x - 1) / (4 * df);
+	x = x + 1. / (6. * std::sqrt(df)) + (x - 1) / (4 * df);
 	constexpr double c = PiSqr / 8.;
 	const double cx = c / (x * x);
 	for (uint64_t k = 1; k <= 1000; ++k) {
@@ -85,7 +85,7 @@ inline double kolmogorov_smirnov(double D, double df) {
 inline double kolmogorov_smirnov2(double D, double df) {
 	// from here: https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test
 	double x = std::sqrt(df) * D;
-	x = x + 1. / (6. * std::sqrt(D)) + (x - 1.) / (4. * df);
+	x = x + 1. / (6. * std::sqrt(df)) + (x - 1.) / (4. * df);
 	int sign = 1;
 	const double xx2 = - 2. * x * x;
 	double sum = 0;
