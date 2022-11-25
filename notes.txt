@@ -1,9 +1,13 @@
 TODO:
 -----
-- Determine false positive rate
-- What is a good fitness function
-- Trng should not have to lock?
 - Possible to seed all tests at startup
+- What is a good fitness function. Design an experiment: 
+	- which streams should be used
+	- which tests should be used
+	- how many datapoints per test should be used
+	- which fitness function works best? minimize kolmogorov, chi2, ad? all? count fails?
+- Determine false positive rate
+- Trng should not have to lock?
 
 DONE:
 -----
