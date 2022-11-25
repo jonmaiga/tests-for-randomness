@@ -22,6 +22,7 @@ inline sffs_state get_state(const sffs_config& config, const sffs_state& current
 		test.set_bit(i, is_forward);
 		sffs_jobs.emplace_back([test, &config]() {
 				const double score = config.fitness(test);
+				assertion(is_valid(score), "invalid fitness score for sffs");
 				return sffs_state{test, score};
 			}
 		);
