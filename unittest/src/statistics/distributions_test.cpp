@@ -94,6 +94,8 @@ TEST(chi2_distribution_cdf, basic) {
 
 	EXPECT_NEAR(chi2_distribution_cdf(0, 5), 1-0, 1e-4);
 	EXPECT_NEAR(chi2_distribution_cdf(0, 0), 0, 1e-4);
+
+	EXPECT_NEAR(chi2_distribution_cdf(2008, 200000), 1, 1e-4);
 }
 
 TEST(kolmogorov_smirnov_cdf, basic) {
@@ -101,12 +103,14 @@ TEST(kolmogorov_smirnov_cdf, basic) {
 	EXPECT_NEAR(kolmogorov_smirnov_cdf(0.4, 5, 1000), 0.3128, 1e-4); // boost have a theta function maybe use that (doesn't match mma right now 0.8095)
 	// mma: 0.293669
 	EXPECT_NEAR(kolmogorov_smirnov_cdf(0.135124, 50, 1000), 0.29916, 1e-4);
+
+	EXPECT_NEAR(kolmogorov_smirnov_cdf(0.135124, 200000, 1000), 0, 1e-4);
 }
 
 TEST(kolmogorov_smirnov, basic) {
 	// there are links to ks cdf implementations here: https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test#Kolmogorov_distribution 
-	EXPECT_NEAR(kolmogorov_smirnov(0.4, 5), 0.85977, 1e-4); // boost have a theta function maybe use that (doesn't match mma right now 0.8095)
-	EXPECT_NEAR(kolmogorov_smirnov2(0.4, 5), 0.85977, 1e-4); // boost have a theta function maybe use that (doesn't match mma right now 0.8095)
+	EXPECT_NEAR(kolmogorov_smirnov(0.4, 5), 0.6890, 1e-4); // boost have a theta function maybe use that (doesn't match mma right now 0.8095)
+	EXPECT_NEAR(kolmogorov_smirnov2(0.4, 5), 0.6890, 1e-4); // boost have a theta function maybe use that (doesn't match mma right now 0.8095)
 }
 
 }

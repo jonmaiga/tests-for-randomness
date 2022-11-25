@@ -22,6 +22,17 @@ TEST(chi2, basic) {
 	EXPECT_EQ(chi2_uniform_stats<T>({0.1, 0.2, 0.3, 0.4, 0.5, 0.4, 0.8})->df, 4);
 }
 
+TEST(chi2, large) {
+	auto s = test_stream();
+	std::vector<double> a;
+	while (a.size() < 1000000) {
+		a.push_back(rescale_type_to_01(s()));
+	}
+	const auto stat = chi2_uniform_stats(a);
+	EXPECT_NEAR(stat->value, 485.4309, 1e-4);
+	EXPECT_NEAR(stat->p_value, 0.6941, 1e-4);
+}
+
 TEST(chi2, no_change) {
 	const auto r = chi2_test(50, test_stream()).front().stats;
 	EXPECT_NEAR(r->value, 4.7999, 1e-4);
