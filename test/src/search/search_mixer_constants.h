@@ -11,7 +11,7 @@ namespace mixer {
 template <typename T>
 double sffs_fitness_test(const mixer<T>& mixer) {
 	uint64_t n = 10000;
-	auto ts = test_setup{
+	auto ts = test_setup<T>{
 		n,
 		mixer,
 		create_rrc_test_factories<T>(mixer, n),

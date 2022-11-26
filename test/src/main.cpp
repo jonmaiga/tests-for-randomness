@@ -58,7 +58,7 @@ void run_tests() {
 	//analyzer.add(test(trng2, n));
 
 	for (const auto& m : get_mixers<T>()) {
-		auto ts = test_setup{
+		auto ts = test_setup<T>{
 			n, m,
 			create_rrc_test_factories(m, n),
 			all_test_types
@@ -95,7 +95,7 @@ int main(int argc, char** args) {
 			const uint64_t n = i * 100000ull;
 			const auto m = mix32::xmxmx;
 
-			auto ts = test_setup{
+			auto ts = test_setup<T>{
 				n, m,
 				create_rrc_test_factories(m, n),
 				all_test_types
