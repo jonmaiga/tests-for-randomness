@@ -117,16 +117,6 @@ inline std::vector<test_result> find_by_stream_name(const std::vector<test_resul
 class result_analyzer {
 
 public:
-	result_analyzer() :
-		p_table({
-			"mixer",
-			"mean", "chi2", "ks", "ad", "ww", "pearson",
-			"spearman", "kendall", "g1", "g2", "g3", "coupon", "d2", "d3",
-			"perm",
-			"sac", "bic"
-		}) {
-	}
-
 	void add(const test_battery_result& r) {
 		test_results.push_back(r);
 
@@ -134,6 +124,9 @@ public:
 		std::vector<std::string> headers{"test"};
 
 		std::vector<std::optional<statistic>> kolmogorov_d;
+		std::vector<std::optional<statistic>> anderson_a2;
+		std::vector<std::optional<statistic>> chi2;
+		std::vector<int> fails;
 		for (const auto& tr : test_results) {
 			headers.push_back(tr.mixer_name);
 			std::vector<double> p_values;
@@ -142,6 +135,9 @@ public:
 				append(p_values, to_p_values(r.second));
 			}
 			kolmogorov_d.push_back(kolmogorov_smirnov_stats(p_values));
+			anderson_a2.push_back(anderson_darling_stats(p_values));
+			chi2.push_back(chi2_uniform_stats(p_values));
+			fails.push_back(count_fails(p_values, 0.005));
 		}
 
 		constexpr double alpha = 0.005;
@@ -157,7 +153,22 @@ public:
 
 		t.col("kolmogorov_d");
 		for (const auto s : kolmogorov_d) {
-			t.col(s ? s->value : -1);
+			t.col(s ? s->p_value : -1);
+		}
+		t.row();
+		t.col("anderson_a2");
+		for (const auto s : anderson_a2) {
+			t.col(s ? s->p_value : -1);
+		}
+		t.row();
+		t.col("chi2");
+		for (const auto s : chi2) {
+			t.col(s ? s->p_value : -1);
+		}
+		t.row();
+		t.col("fails");
+		for (const auto s : fails) {
+			t.col(s);
 		}
 		t.row();
 		std::cout << t.to_string() << "\n";
@@ -267,7 +278,6 @@ private:
 		return rs;
 	}
 
-	table p_table;
 	std::vector<test_battery_result> test_results;
 };
 
