@@ -8,7 +8,19 @@
 #include "test_definitions.h"
 #include "util/jobs.h"
 
-namespace mixer {namespace internal {
+namespace mixer {
+
+template <typename T>
+struct test_setup {
+	uint64_t n{};
+	mixer<T> mixer;
+	std::vector<test_factory<T>> source_factories;
+	std::vector<test_type> tests;
+	unsigned int max_threads = std::thread::hardware_concurrency();
+};
+
+
+namespace internal {
 
 using test_job_return = std::vector<test_result>;
 using test_jobs = jobs<test_job_return>;
@@ -32,7 +44,7 @@ test_jobs create_stream_jobs(const stream_test_definition<T>& test_def, const st
 			std::vector<test_result> results;
 			for (const auto& sub_test : test_def.test(cfg.n, s)) {
 				if (const auto& stat = sub_test.stats) {
-					results.push_back(test_result{cfg.source.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
+					results.push_back(test_result{s.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
 				}
 			}
 			return results;
@@ -73,8 +85,8 @@ test_jobs create_test_jobs(const std::vector<test_factory<T>>& test_factories) {
 }
 
 template <typename T>
-test_battery_result test_rrc_parallel(const mixer<T>& mixer, uint64_t n, unsigned int num_threads) {
-	test_battery_result test_result{"rrc", mixer.name};
+test_battery_result test_rrc_parallel(const test_setup<T>& setup) {
+	test_battery_result test_result{"rrc", setup.mixer.name};
 	const auto collect_job_results = [&](const test_job_return& results) {
 		if (!results.empty()) {
 			static std::mutex m;
@@ -85,23 +97,16 @@ test_battery_result test_rrc_parallel(const mixer<T>& mixer, uint64_t n, unsigne
 		}
 	};
 
-	const auto jobs = create_test_jobs(create_rrc_test_factories(mixer, n));
-	run_jobs<test_job_return>(jobs, collect_job_results, num_threads);
+	const auto jobs = create_test_jobs(create_rrc_test_factories(setup.mixer, setup.n));
+	run_jobs<test_job_return>(jobs, collect_job_results, setup.max_threads);
 	return test_result;
 }
 
 }
 
 template <typename T>
-test_battery_result test_rrc_parallel(const mixer<T>& mixer, uint64_t n) {
-	const auto hw_threads = std::thread::hardware_concurrency();
-	const auto num_threads = hw_threads > 1 ? hw_threads - 1 : hw_threads;
-	return internal::test_rrc_parallel(mixer, n, num_threads);
-}
-
-template <typename T>
-test_battery_result test_rrc(const mixer<T>& mixer, uint64_t n) {
-	return internal::test_rrc_parallel(mixer, n, 1);
+test_battery_result test_rrc_parallel(const test_setup<T>& setup) {
+	return internal::test_rrc_parallel(setup);
 }
 
 }

@@ -8,9 +8,17 @@
 
 namespace mixer {
 
-template<typename T>
+template <typename T>
 double sffs_fitness_test(const mixer<T>& mixer) {
-	const auto r = internal::test_rrc_parallel<T>(mixer, 10000, 4);
+	uint64_t n = 10000;
+	auto ts = test_setup{
+		n,
+		mixer,
+		create_rrc_test_factories<T>(mixer, n),
+		all_test_types
+	};
+
+	const auto r = internal::test_rrc_parallel<T>(ts);
 	std::vector<double> all;
 	for (const auto& tr : r.results) {
 		append(all, to_p_values(tr.second));

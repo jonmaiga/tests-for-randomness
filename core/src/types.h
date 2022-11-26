@@ -74,7 +74,7 @@ struct statistic_meta {
 	std::string name;
 };
 
-const auto all_metas = std::vector<statistic_meta>{
+const auto all_test_metas = std::vector<statistic_meta>{
 	{test_type::basic_mean, "mean"},
 	{test_type::chi2, "chi2"},
 	{test_type::kolmogorov_smirnov, "kolmogorov-smirnov"},
@@ -91,6 +91,15 @@ const auto all_metas = std::vector<statistic_meta>{
 	{test_type::bic, "bic"},
 };
 
+inline std::vector<test_type> all_test_types = []() {
+	std::vector<test_type> types;
+	types.reserve(all_test_metas.size());
+	for (const auto& meta : all_test_metas) {
+		types.push_back(meta.type);
+	}
+	return types;
+}();
+
 struct statistic {
 	statistic(statistic_type type, double value, double p_value, double df) :
 		type(type), value(value), p_value(p_value), df(df) {
@@ -106,7 +115,7 @@ struct statistic {
 };
 
 inline statistic_meta get_meta(test_type type) {
-	for (const auto& meta : all_metas) {
+	for (const auto& meta : all_test_metas) {
 		if (meta.type == type) {
 			return meta;
 		}
