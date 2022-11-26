@@ -117,7 +117,42 @@ TEST(algo, sliding_bit_window_128bits_explicit_even) {
 	EXPECT_EQ(r[7], 0b1001111011101110);
 }
 
-TEST(algo, isolate_bit) {
+TEST(algo, isolate_bit_0) {
+	using T = uint8_t;
+	const std::vector<T> d = {1, 0, 1, 1, 0, 0, 0, 1};
+	auto s = create_stream_from_data_by_ref<T>("ib", d);
+	EXPECT_EQ(isolate_bit_by_ref<T>(s, 0), 0b10001101);
+	EXPECT_EQ(isolate_bit_by_ref<T>(s, 1), 0);
+}
+
+TEST(algo, isolate_bit_7) {
+	using T = uint8_t;
+	const std::vector<T> d = {128, 0, 128, 128, 0, 0, 0, 128};
+	auto s = create_stream_from_data_by_ref<T>("ib", d);
+	EXPECT_EQ(isolate_bit_by_ref<T>(s, 0), 0);
+	EXPECT_EQ(isolate_bit_by_ref<T>(s, 7), 0b10001101);
+}
+
+TEST(algo, isolate_bits) {
+	using T = uint8_t;
+	const std::vector<T> d = {129, 0, 129, 131, 2, 0, 0, 129};
+	auto s = create_stream_from_data_by_ref<T>("ib", d);
+	EXPECT_EQ(isolate_bit_by_ref<T>(s, 0), 0b10001101);
+	EXPECT_EQ(isolate_bit_by_ref<T>(s, 7), 0b10001101);
+	EXPECT_EQ(isolate_bit_by_ref<T>(s, 1), 0b00011000);
+}
+
+TEST(algo, isolate_bits_2) {
+	using T = uint8_t;
+	const std::vector<T> d = {129, 0, 129, 131, 2, 0, 0, 129, 1, 0, 1, 1, 0, 0, 0, 1};
+	auto s = create_stream_from_data_by_ref<T>("ib", d);
+	EXPECT_EQ(isolate_bit_by_ref<T>(s, 7), 0b10001101);
+	EXPECT_EQ(isolate_bit_by_ref<T>(s, 0), 0b10001101);
+	EXPECT_EQ(isolate_bit_by_ref<T>(s, 1), 0b00011000);
+	EXPECT_EQ(isolate_bit_by_ref<T>(s, 1), 0b00000000);
+}
+
+TEST(algo, isolate_bit_by_ref) {
 	using T = uint64_t;
 	auto s = test_stream();
 	auto r1 = isolate_bit_by_ref<T>(s, 0);
