@@ -40,8 +40,7 @@ void run_tests() {
 	const auto trng1 = create_mixer_from_stream<T>("trng1", trng_stream);
 	const auto trng2 = create_mixer_from_stream<T>("trng2", trng_stream);
 
-	const auto test = test_rrc_parallel<T>;
-	constexpr auto n = 20000;
+	constexpr auto n = 1000000;
 
 	const mixer64 test_mixer = {
 		"test", [](uint64_t x) {
@@ -55,11 +54,17 @@ void run_tests() {
 	std::cout << "n=" << n << "\n";
 
 	result_analyzer analyzer;
-	analyzer.add(test(trng1, n));
+	//analyzer.add(test(trng1, n));
 	//analyzer.add(test(trng2, n));
 
 	for (const auto& m : get_mixers<T>()) {
-		analyzer.add(test(m, n));
+		auto ts = test_setup{
+			n, m,
+			create_rrc_test_factories(m, n),
+			all_test_types
+		};
+
+		analyzer.add(test_rrc_parallel(ts));
 	}
 
 	analyzer.summarize_fails({}, {"trng", "counter-1", "graycode-"});
@@ -70,15 +75,35 @@ void run_tests() {
 }
 
 int main(int argc, char** args) {
+	using namespace mixer;
 	try {
-		if (argc == 2) {   
-			std::string trng_path = args[1];
-			mixer::set_config({trng_path});
-		}	
+		if (argc == 2) {
+			const std::string trng_path = args[1];
+			set_config({trng_path});
+		}
 
 		using T = uint32_t;
-		//mixer::run_tests<T>();
-		mixer::run_search<T>();
+		run_tests<T>();
+		//mixer::run_search<T>();
+
+		//using T = uint64_t;
+		//const auto trng_stream = mixer::create_stream_from_data_by_ref_thread_safe<T>("trng", mixer::get_trng_data<T>());
+		//const auto trng1 = mixer::create_mixer_from_stream<T>("trng1", trng_stream);
+
+		result_analyzer analyzer;
+		for (uint64_t i = 1; i <= 10; ++i) {
+			const uint64_t n = i * 100000ull;
+			const auto m = mix32::xmxmx;
+
+			auto ts = test_setup{
+				n, m,
+				create_rrc_test_factories(m, n),
+				all_test_types
+			};
+			std::cout << "Using " << ts.source_factories.size() << " samples per test, each with " << ts.n << " data points.\n";
+			analyzer.add(test_rrc_parallel(ts));
+		}
+		//analyzer.list_results({}, {});
 	}
 	catch (std::runtime_error& e) {
 		std::cout << "ERROR: " << e.what() << "\n";

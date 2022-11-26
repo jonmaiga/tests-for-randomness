@@ -16,6 +16,6 @@ struct mixer {
 };
 
 template <typename T>
-std::vector<mixer<T>> get_mixers();
+std::vector<mixer<T>> get_mixers() = delete;
 
 }
