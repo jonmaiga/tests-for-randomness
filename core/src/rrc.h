@@ -15,7 +15,7 @@ enum class rrc_type {
 const auto rrc_types = {rrc_type::identity, rrc_type::reverse, rrc_type::complement, rrc_type::reverse_complement};
 
 template <typename T>
-uint64_t permute(T c, int rot, rrc_type type) {
+T permute(T c, int rot, rrc_type type) {
 	switch (type) {
 	case rrc_type::identity: return ror(c, rot);
 	case rrc_type::reverse: return ror(reverse_bits(c), rot);
