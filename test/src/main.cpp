@@ -88,7 +88,7 @@ int main(int argc, char** args) {
 			const uint64_t n = i * 40000ull;
 			const auto mixer = mix32::prospector;
 
-			auto ts = test_setup{
+			auto ts = test_setup<T>{
 				n, mixer,
 				create_rrc_test_factories(mixer, n),
 				all_test_types
