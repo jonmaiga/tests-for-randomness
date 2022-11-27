@@ -40,22 +40,14 @@ void run_tests() {
 	const auto trng1 = create_mixer_from_stream<T>("trng1", trng_stream);
 	const auto trng2 = create_mixer_from_stream<T>("trng2", trng_stream);
 
-	constexpr auto n = 1000;
-
-	const mixer64 test_mixer = {
-		"test", [](uint64_t x) {
-			x ^= x >> 3;
-			x *= 17192186266073230512ull;
-			x ^= x >> 23;
-			return x;
-		}
-	};
-
-	std::cout << "n=" << n << "\n";
+	constexpr auto n = 1000000;
 
 	result_analyzer analyzer;
-	//analyzer.add(test(trng1, n));
-	//analyzer.add(test(trng2, n));
+	analyzer.add(test_parallel<T>({
+		n, trng1,
+		create_rrc_test_factories(trng1, n),
+		all_test_types
+	}));
 
 	for (const auto& mixer : get_mixers<T>()) {
 		auto ts = test_setup<T>{
@@ -63,7 +55,7 @@ void run_tests() {
 			create_rrc_test_factories(mixer, n),
 			all_test_types
 		};
-
+		std::cout << "Using " << ts.source_factories.size() << " samples per test, each with " << ts.n << " data points.\n";
 		analyzer.add(test_parallel(ts));
 	}
 
@@ -85,15 +77,16 @@ int main(int argc, char** args) {
 		using T = uint32_t;
 		run_tests<T>();
 		//mixer::run_search<T>();
+		//return 0;
 
-		//using T = uint64_t;
-		//const auto trng_stream = mixer::create_stream_from_data_by_ref_thread_safe<T>("trng", mixer::get_trng_data<T>());
-		//const auto trng1 = mixer::create_mixer_from_stream<T>("trng1", trng_stream);
+		//using T = uint32_t;
+		const auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
+		const auto trng1 = create_mixer_from_stream<T>("trng1", trng_stream);
 
 		result_analyzer analyzer;
 		for (uint64_t i = 1; i <= 10; ++i) {
-			const uint64_t n = i * 100ull;
-			const auto mixer = mix32::prospector;
+			const uint64_t n = i * 5000ull;
+			const auto mixer = trng1; //mix32::mx3;
 
 			auto ts = test_setup{
 				n, mixer,
@@ -103,7 +96,7 @@ int main(int argc, char** args) {
 			std::cout << "Using " << ts.source_factories.size() << " samples per test, each with " << ts.n << " data points.\n";
 			analyzer.add(test_parallel(ts));
 		}
-		//analyzer.list_results({}, {});
+		analyzer.list_results({}, {});
 	}
 	catch (std::runtime_error& e) {
 		std::cout << "ERROR: " << e.what() << "\n";

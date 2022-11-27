@@ -1,14 +1,30 @@
 TODO:
 -----
 - Possible to seed all tests at startup
-- Incremental tests should maybe be able to continue?
+- Incremental tests should maybe be able to continue? emit results instead?
 - What is a good fitness function. Design an experiment: 
-	- which streams should be used
+	- which streams should be used  
+		sources: (trng?, mixed, counter1, ?)
+		(rrc, bit-isolation)
 	- which tests should be used
-	- how many datapoints per test should be used
+		(remove redundant/correlated tests)
+	- how many datapoints per test should be used 
+		(preliminary minimum 5k-10k while 100k seems stable in terms of fails )
 	- which fitness function works best? minimize kolmogorov, chi2, ad? all? count fails?
+		(preliminary pretty much same-same it seems, but minimizing it might not be what we want (too regular?))
+		(maybe optimize on outliers?)
 - Determine false positive rate
 - Trng should not have to lock?
+- splits are added many times if same result formatter is used when n increases (see e.g. kendall_tau).
+
+DONE:
+-----
+- Make it work with large n
+	* need to run some tests multiple times (kendall and all that requires sorting etc)
+	* need to be able to continue a stream
+- Pass in cmd line args for trng file
+- Proper tags instead of string contains in query
+  Simple fix is to have exact match for mixer names. Lets see how far it goes.
 - does divisibility work as it should? Or too few data points??
 	- bit-isolation fails trng with d3:
 		Using 16640 samples per test, each with 10000 data points.
@@ -20,16 +36,6 @@ TODO:
 		chi2             0.00244941  0.00051067   5.8374e-05  0.311584    3.19588e-07  0.0072541    0.155593   2.15719e-05  0.0774099  0
 		fails            383         358          435         360         425          396          384        409          395        27742
 	- have potential fixed commited, test it
-- splits are added many times if same result formatter is used when n increases (see e.g. kendall_tau).
-
-DONE:
------
-- Make it work with large n
-	* need to run some tests multiple times (kendall and all that requires sorting etc)
-	* need to be able to continue a stream
-- Pass in cmd line args for trng file
-- Proper tags instead of string contains in query
-  Simple fix is to have exact match for mixer names. Lets see how far it goes.
 
 OTHER:
 ------

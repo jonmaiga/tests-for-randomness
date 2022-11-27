@@ -16,7 +16,7 @@ struct test_setup {
 	mixer<T> mixer;
 	std::vector<test_factory<T>> source_factories;
 	std::vector<test_type> tests;
-	unsigned int max_threads = std::thread::hardware_concurrency();
+	unsigned int max_threads = std::max(std::thread::hardware_concurrency() - 4, 2u);
 };
 
 
