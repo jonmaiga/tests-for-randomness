@@ -41,7 +41,7 @@ test_jobs create_test_jobs(const test_definition<T>& test_def, const std::vector
 		js.push_back([test_def, factory]()-> test_job_return {
 
 			std::vector<test_result> results;
-			if (const auto& mixer_test = test_def.mixer_test) {
+			if (const auto& mixer_test = test_def.test_mixer) {
 				const auto cfg = factory();
 				if (!cfg.stream_append_factory) {
 					for (const auto& sub_test : mixer_test(cfg.n, cfg.source, cfg.mix)) {
@@ -51,7 +51,7 @@ test_jobs create_test_jobs(const test_definition<T>& test_def, const std::vector
 					}
 				}
 			}
-			if (const auto& stream_test = test_def.stream_test) {
+			if (const auto& stream_test = test_def.test_stream) {
 				const auto cfg = factory();
 				const auto s = create_stream(cfg);
 				for (const auto& sub_test : stream_test(cfg.n, s)) {

@@ -18,8 +18,8 @@ namespace mixer {
 template <typename T>
 struct test_definition {
 	test_type type{};
-	stream_test<T> stream_test;
-	mixer_test<T> mixer_test;
+	stream_test<T> test_stream;
+	mixer_test<T> test_mixer;
 	std::string name;
 };
 
