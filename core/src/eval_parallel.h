@@ -38,15 +38,16 @@ template <typename T>
 test_jobs create_test_jobs(const test_definition<T>& test_def, const std::vector<test_factory<T>>& test_factories) {
 	test_jobs js;
 	for (const auto& factory : test_factories) {
-		if (factory().stream_append_factory) continue;
 		js.push_back([test_def, factory]()-> test_job_return {
 
 			std::vector<test_result> results;
 			if (const auto& mixer_test = test_def.mixer_test) {
 				const auto cfg = factory();
-				for (const auto& sub_test : mixer_test(cfg.n, cfg.source, cfg.mix)) {
-					if (const auto& stat = sub_test.stats) {
-						results.push_back({cfg.source.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
+				if (!cfg.stream_append_factory) {
+					for (const auto& sub_test : mixer_test(cfg.n, cfg.source, cfg.mix)) {
+						if (const auto& stat = sub_test.stats) {
+							results.push_back({cfg.source.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
+						}
 					}
 				}
 			}

@@ -40,7 +40,7 @@ void run_tests() {
 	const auto trng1 = create_mixer_from_stream<T>("trng1", trng_stream);
 	const auto trng2 = create_mixer_from_stream<T>("trng2", trng_stream);
 
-	constexpr auto n = 10000;
+	constexpr auto n = 1000;
 
 	const mixer64 test_mixer = {
 		"test", [](uint64_t x) {
@@ -57,10 +57,10 @@ void run_tests() {
 	//analyzer.add(test(trng1, n));
 	//analyzer.add(test(trng2, n));
 
-	for (const auto& m : get_mixers<T>()) {
+	for (const auto& mixer : get_mixers<T>()) {
 		auto ts = test_setup<T>{
-			n, m,
-			create_rrc_test_factories(m, n),
+			n, mixer,
+			create_rrc_test_factories(mixer, n),
 			all_test_types
 		};
 
@@ -85,19 +85,19 @@ int main(int argc, char** args) {
 		using T = uint32_t;
 		run_tests<T>();
 		//mixer::run_search<T>();
-		return 0;
+
 		//using T = uint64_t;
 		//const auto trng_stream = mixer::create_stream_from_data_by_ref_thread_safe<T>("trng", mixer::get_trng_data<T>());
 		//const auto trng1 = mixer::create_mixer_from_stream<T>("trng1", trng_stream);
 
 		result_analyzer analyzer;
 		for (uint64_t i = 1; i <= 10; ++i) {
-			const uint64_t n = i * 100000ull;
-			const auto m = mix32::xmxmx;
+			const uint64_t n = i * 100ull;
+			const auto mixer = mix32::prospector;
 
-			auto ts = test_setup<T>{
-				n, m,
-				create_rrc_test_factories(m, n),
+			auto ts = test_setup{
+				n, mixer,
+				create_rrc_test_factories(mixer, n),
 				all_test_types
 			};
 			std::cout << "Using " << ts.source_factories.size() << " samples per test, each with " << ts.n << " data points.\n";

@@ -41,7 +41,7 @@ std::vector<test_factory<T>> create_test_factories(const mixer<T>& mixer, uint64
 		return test_config<T>{n, create_stream_from_data_by_ref<T>("trng", get_trng_data<T>()), mixer};
 	};
 
-	std::vector<test_factory<T>> factories{counter1, graycode2}; //, trng};
+	std::vector<test_factory<T>> factories{counter1}; //, trng};
 	constexpr auto Bits = 8 * sizeof(T);
 	for (int bit = 0; bit < Bits; ++bit) {
 		const auto post_mix_permute = [bit](const stream<T>& source) {
@@ -50,7 +50,7 @@ std::vector<test_factory<T>> create_test_factories(const mixer<T>& mixer, uint64
 		const auto bit_factory = [=]()-> test_config<T> {
 			return {n, create_counter_stream<T>(1), mixer, post_mix_permute};
 		};
-		//factories.emplace_back(bit_factory);
+		factories.emplace_back(bit_factory);
 	}
 
 	return factories;
