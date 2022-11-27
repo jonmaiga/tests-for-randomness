@@ -101,7 +101,7 @@ test_battery_result test_rrc_parallel(const test_setup<T>& setup) {
 		}
 	};
 
-	const auto jobs = create_test_jobs(create_rrc_test_factories(setup.mixer, setup.n));
+	const auto jobs = create_test_jobs(setup.source_factories);
 	run_jobs<test_job_return>(jobs, collect_job_results, setup.max_threads);
 	return test_result;
 }
