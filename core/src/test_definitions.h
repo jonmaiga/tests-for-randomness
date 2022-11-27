@@ -17,7 +17,7 @@ namespace mixer {
 
 template <typename T>
 struct test_definition {
-	test_type type;
+	test_type type{};
 	stream_test<T> stream_test;
 	mixer_test<T> mixer_test;
 	std::string name;
@@ -63,10 +63,9 @@ inline std::string get_test_name(test_type type) {
 	return get_test_definition<uint64_t>(type).name;
 }
 
-template <typename T>
 inline std::vector<test_type> all_test_types = []() {
 	std::vector<test_type> types;
-	for (const auto& meta : get_tests<T>()) {
+	for (const auto& meta : get_tests<uint64_t>()) {
 		types.push_back(meta.type);
 	}
 	return types;

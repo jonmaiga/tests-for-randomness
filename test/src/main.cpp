@@ -61,7 +61,7 @@ void run_tests() {
 		auto ts = test_setup<T>{
 			n, m,
 			create_rrc_test_factories(m, n),
-			all_test_types<T>
+			all_test_types
 		};
 
 		analyzer.add(test_parallel(ts));
@@ -98,7 +98,7 @@ int main(int argc, char** args) {
 			auto ts = test_setup<T>{
 				n, m,
 				create_rrc_test_factories(m, n),
-				all_test_types<T>
+				all_test_types
 			};
 			std::cout << "Using " << ts.source_factories.size() << " samples per test, each with " << ts.n << " data points.\n";
 			analyzer.add(test_parallel(ts));
