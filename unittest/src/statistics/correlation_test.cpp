@@ -50,21 +50,21 @@ TEST(spearman_correlation, p_value) {
 }
 
 TEST(pearson_correlation, no_change) {
-	const auto s = create_stream_from_mixer(test_stream(), mx3);
+	const auto s = create_stream_from_mixer(test_stream(), mix64::mx3);
 	const auto r = pearson_correlation_test(50, s).front().stats;
 	EXPECT_NEAR(r->value, 0.09843, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.4964, 1e-4);
 }
 
 TEST(spearman_correlation, no_change) {
-	const auto s = create_stream_from_mixer(test_stream(), mx3);
+	const auto s = create_stream_from_mixer(test_stream(), mix64::mx3);
 	const auto r = spearman_correlation_test(50, s).front().stats;
 	EXPECT_NEAR(r->value, 0.03923, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.7867, 1e-4);
 }
 
 TEST(kendall_correlation, no_change) {
-	const auto s = create_stream_from_mixer(test_stream(), mx3);
+	const auto s = create_stream_from_mixer(test_stream(), mix64::mx3);
 	const auto r = kendall_correlation_test(50, s).front().stats;
 	EXPECT_NEAR(r->value, 0.07265, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.4565, 1e-4);

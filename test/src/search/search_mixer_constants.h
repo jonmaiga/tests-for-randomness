@@ -18,7 +18,7 @@ double sffs_fitness_test(const mixer<T>& mixer) {
 		all_test_types
 	};
 
-	const auto r = internal::test_rrc_parallel<T>(ts);
+	const auto r = test_rrc_parallel<T>(ts);
 	std::vector<double> all;
 	for (const auto& tr : r.results) {
 		append(all, to_p_values(tr.second));

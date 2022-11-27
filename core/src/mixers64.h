@@ -16,12 +16,7 @@ mixer<T> create_mixer_from_stream(const std::string& name, stream<T> source) {
 	};
 }
 
-const mixer64 identity_mixer = {
-	"identity", [](uint64_t x) {
-		return x;
-	}
-};
-
+namespace mix64 {
 
 const mixer64 mx3 = {
 	"mx3", [](uint64_t x) {
@@ -144,20 +139,22 @@ const mixer64 degski64 = {
 	}
 };
 
+}
+
 template <>
 inline std::vector<mixer64> get_mixers() {
 	return {
-		mx3,
-		nasam,
-		xmxmx,
-		moremur,
-		lea64,
-		degski64,
-		split_mix,
-		murmur3,
-		xmx,
-		xxh3,
-		fast_hash
+		mix64::mx3,
+		mix64::nasam,
+		mix64::xmxmx,
+		mix64::moremur,
+		mix64::lea64,
+		mix64::degski64,
+		mix64::split_mix,
+		mix64::murmur3,
+		mix64::xmx,
+		mix64::xxh3,
+		mix64::fast_hash
 	};
 }
 

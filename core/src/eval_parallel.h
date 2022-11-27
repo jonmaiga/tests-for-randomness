@@ -84,8 +84,12 @@ test_jobs create_test_jobs(const std::vector<test_factory<T>>& test_factories) {
 	return jobs;
 }
 
+}
+
 template <typename T>
 test_battery_result test_rrc_parallel(const test_setup<T>& setup) {
+	using namespace internal;
+
 	test_battery_result test_result{"rrc", setup.mixer.name};
 	const auto collect_job_results = [&](const test_job_return& results) {
 		if (!results.empty()) {
@@ -100,13 +104,6 @@ test_battery_result test_rrc_parallel(const test_setup<T>& setup) {
 	const auto jobs = create_test_jobs(create_rrc_test_factories(setup.mixer, setup.n));
 	run_jobs<test_job_return>(jobs, collect_job_results, setup.max_threads);
 	return test_result;
-}
-
-}
-
-template <typename T>
-test_battery_result test_rrc_parallel(const test_setup<T>& setup) {
-	return internal::test_rrc_parallel(setup);
 }
 
 }
