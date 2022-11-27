@@ -40,7 +40,7 @@ void run_tests() {
 	const auto trng1 = create_mixer_from_stream<T>("trng1", trng_stream);
 	const auto trng2 = create_mixer_from_stream<T>("trng2", trng_stream);
 
-	constexpr auto n = 1000000;
+	constexpr auto n = 10000;
 
 	const mixer64 test_mixer = {
 		"test", [](uint64_t x) {
@@ -61,7 +61,7 @@ void run_tests() {
 		auto ts = test_setup<T>{
 			n, m,
 			create_rrc_test_factories(m, n),
-			all_test_types
+			all_test_types<T>
 		};
 
 		analyzer.add(test_rrc_parallel(ts));
@@ -85,7 +85,7 @@ int main(int argc, char** args) {
 		using T = uint32_t;
 		run_tests<T>();
 		//mixer::run_search<T>();
-
+		return 0;
 		//using T = uint64_t;
 		//const auto trng_stream = mixer::create_stream_from_data_by_ref_thread_safe<T>("trng", mixer::get_trng_data<T>());
 		//const auto trng1 = mixer::create_mixer_from_stream<T>("trng1", trng_stream);
@@ -98,7 +98,7 @@ int main(int argc, char** args) {
 			auto ts = test_setup<T>{
 				n, m,
 				create_rrc_test_factories(m, n),
-				all_test_types
+				all_test_types<T>
 			};
 			std::cout << "Using " << ts.source_factories.size() << " samples per test, each with " << ts.n << " data points.\n";
 			analyzer.add(test_rrc_parallel(ts));

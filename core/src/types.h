@@ -74,31 +74,6 @@ struct statistic_meta {
 	std::string name;
 };
 
-const auto all_test_metas = std::vector<statistic_meta>{
-	{test_type::basic_mean, "mean"},
-	{test_type::chi2, "chi2"},
-	{test_type::kolmogorov_smirnov, "kolmogorov-smirnov"},
-	{test_type::wald_wolfowitz_runs, "wald-wolfowitz runs"},
-	{test_type::anderson_darling, "anderson_darling"},
-	{test_type::pearson_r, "pearson r"},
-	{test_type::spearman_r, "spearman rho"},
-	{test_type::kendall_tau, "kendall tau"},
-	{test_type::gap, "gap"},
-	{test_type::coupon, "coupon"},
-	{test_type::divisibility, "divisibility"},
-	{test_type::permutation, "permutation"},
-	{test_type::sac, "sac"},
-	{test_type::bic, "bic"},
-};
-
-inline std::vector<test_type> all_test_types = []() {
-	std::vector<test_type> types;
-	types.reserve(all_test_metas.size());
-	for (const auto& meta : all_test_metas) {
-		types.push_back(meta.type);
-	}
-	return types;
-}();
 
 struct statistic {
 	statistic(statistic_type type, double value, double p_value, double df) :
@@ -114,15 +89,6 @@ struct statistic {
 	double df{};
 };
 
-inline statistic_meta get_meta(test_type type) {
-	for (const auto& meta : all_test_metas) {
-		if (meta.type == type) {
-			return meta;
-		}
-	}
-	assertion(false, "could not find meta");
-	return {};
-}
 
 ///////////////////////////////////////////////////////////////
 /// RESULT TYPES

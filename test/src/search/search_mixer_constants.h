@@ -15,7 +15,7 @@ double sffs_fitness_test(const mixer<T>& mixer) {
 		n,
 		mixer,
 		create_rrc_test_factories<T>(mixer, n),
-		all_test_types
+		all_test_types<T>
 	};
 
 	const auto r = test_rrc_parallel<T>(ts);

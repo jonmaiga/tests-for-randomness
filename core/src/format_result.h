@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+
+#include "test_definitions.h"
 #include "util/table.h"
 #include "statistics/fishersmethod.h"
 #include "util/algo.h"
@@ -144,7 +146,7 @@ public:
 
 		table t(headers);
 		for (const auto& key : test_keys) {
-			t.col(get_meta(key.type).name + "-" + key.name);
+			t.col(get_test_name(key.type) + "-" + key.name);
 			for (const auto& tr : test_results) {
 				t.col(p_value_test(tr[key], alpha));
 			}
@@ -189,7 +191,7 @@ public:
 			if (r.stats.p_value > 0.05 && r.stats.p_value < 0.95) continue;
 			t.col(r.mixer_name).
 			  col(r.stream_name).
-			  col(get_meta(r.key.type).name).
+			  col(get_test_name(r.key.type)).
 			  col(r.stats.value).
 			  col(r.stats.p_value).
 			  row();
