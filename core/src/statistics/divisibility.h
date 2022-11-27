@@ -50,7 +50,7 @@ inline std::vector<double> divisible_expected_probabilities(const uint64_t divis
 
 template <typename T>
 sub_test_results divisibility_test(uint64_t n, const stream<T>& stream) {
-	constexpr auto wanted = 7;
+	constexpr auto wanted = 5;
 
 	sub_test_results results;
 	for (uint64_t divisor = 2; divisor <= 3; ++divisor) {
@@ -60,8 +60,8 @@ sub_test_results divisibility_test(uint64_t n, const stream<T>& stream) {
 
 		const auto total_count = accumulate(collected);
 		if (const auto stats = chi2_stats(collected.size(), to_data(collected),
-		                                  mul(to_data(ps), to_data(total_count)), 1.)) {
-			if (stats->df < 5.) {
+		                                  mul(to_data(ps), to_data(total_count)), 5.)) {
+			if (stats->df < 0.75 * collected.size()) {
 				continue;
 			}
 			results.push_back({"d" + std::to_string(divisor), stats});
