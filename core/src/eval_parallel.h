@@ -66,10 +66,10 @@ test_jobs create_test_jobs(const test_definition<T>& test_def, const std::vector
 }
 
 template <typename T>
-test_jobs create_test_jobs(const std::vector<test_factory<T>>& test_factories) {
+test_jobs create_test_jobs(const test_setup<T>& setup) {
 	test_jobs jobs;
-	for (const auto& test : get_tests<T>()) {
-		append(jobs, create_test_jobs<T>(test, test_factories));
+	for (const auto& test : setup.tests) {
+		append(jobs, create_test_jobs<T>(get_test_definition<T>(test), setup.source_factories));
 	}
 	return jobs;
 }
@@ -77,10 +77,10 @@ test_jobs create_test_jobs(const std::vector<test_factory<T>>& test_factories) {
 }
 
 template <typename T>
-test_battery_result test_rrc_parallel(const test_setup<T>& setup) {
+test_battery_result test_parallel(const test_setup<T>& setup) {
 	using namespace internal;
 
-	test_battery_result test_result{"rrc", setup.mixer.name};
+	test_battery_result test_result{"test", setup.mixer.name};
 	const auto collect_job_results = [&](const test_job_return& results) {
 		if (!results.empty()) {
 			static std::mutex m;
@@ -91,7 +91,7 @@ test_battery_result test_rrc_parallel(const test_setup<T>& setup) {
 		}
 	};
 
-	const auto jobs = create_test_jobs(setup.source_factories);
+	const auto jobs = create_test_jobs(setup);
 	run_jobs<test_job_return>(jobs, collect_job_results, setup.max_threads);
 	return test_result;
 }

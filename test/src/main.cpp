@@ -64,7 +64,7 @@ void run_tests() {
 			all_test_types<T>
 		};
 
-		analyzer.add(test_rrc_parallel(ts));
+		analyzer.add(test_parallel(ts));
 	}
 
 	analyzer.summarize_fails({}, {"trng", "counter-1", "graycode-"});
@@ -101,7 +101,7 @@ int main(int argc, char** args) {
 				all_test_types<T>
 			};
 			std::cout << "Using " << ts.source_factories.size() << " samples per test, each with " << ts.n << " data points.\n";
-			analyzer.add(test_rrc_parallel(ts));
+			analyzer.add(test_parallel(ts));
 		}
 		//analyzer.list_results({}, {});
 	}
