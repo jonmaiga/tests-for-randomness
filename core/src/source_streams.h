@@ -50,7 +50,7 @@ std::vector<test_factory<T>> create_test_factories(const mixer<T>& mixer, uint64
 		const auto bit_factory = [=]()-> test_config<T> {
 			return {n, create_counter_stream<T>(1), mixer, post_mix_permute};
 		};
-		factories.emplace_back(bit_factory);
+		//factories.emplace_back(bit_factory);
 	}
 
 	return factories;

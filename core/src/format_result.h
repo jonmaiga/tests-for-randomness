@@ -186,14 +186,16 @@ public:
 	}
 
 	void list_results(const tags& mixer_tags, const tags& stream_tags) const {
-		table t({"mixer", "stream", "statistic", "value", "p_value"});
+		table t({"mixer", "stream", "n", "statistic", "value", "p_value", "df"});
 		for (const auto& r : query(mixer_tags, stream_tags)) {
 			if (r.stats.p_value > 0.05 && r.stats.p_value < 0.95) continue;
 			t.col(r.mixer_name).
 			  col(r.stream_name).
+			  col(r.n).
 			  col(get_test_name(r.key.type)).
 			  col(r.stats.value).
 			  col(r.stats.p_value).
+			  col(r.stats.df).
 			  row();
 		}
 		std::cout << t.to_string() << "\n";

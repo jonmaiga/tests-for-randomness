@@ -46,7 +46,7 @@ test_jobs create_test_jobs(const test_definition<T>& test_def, const std::vector
 				if (!cfg.stream_append_factory) {
 					for (const auto& sub_test : mixer_test(cfg.n, cfg.source, cfg.mix)) {
 						if (const auto& stat = sub_test.stats) {
-							results.push_back({cfg.source.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
+							results.push_back({cfg.source.name, cfg.mix.name, cfg.n, {test_def.type, sub_test.name}, *stat});
 						}
 					}
 				}
@@ -56,7 +56,7 @@ test_jobs create_test_jobs(const test_definition<T>& test_def, const std::vector
 				const auto s = create_stream(cfg);
 				for (const auto& sub_test : stream_test(cfg.n, s)) {
 					if (const auto& stat = sub_test.stats) {
-						results.push_back(test_result{s.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
+						results.push_back(test_result{s.name, cfg.mix.name, cfg.n, {test_def.type, sub_test.name}, *stat});
 					}
 				}
 			}

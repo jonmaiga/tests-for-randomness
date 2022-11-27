@@ -123,6 +123,7 @@ struct test_key {
 struct test_result {
 	std::string stream_name;
 	std::string mixer_name;
+	uint64_t n{};
 	test_key key;
 	statistic stats;
 };

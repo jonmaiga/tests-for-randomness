@@ -8,6 +8,17 @@ TODO:
 	- which fitness function works best? minimize kolmogorov, chi2, ad? all? count fails?
 - Determine false positive rate
 - Trng should not have to lock?
+- does divisibility work as it should? Or too few data points??
+	- bit-isolation fails trng with d3:
+		Using 16640 samples per test, each with 10000 data points.
+		test             trng1       mx3          nasam       xmxmx       moremur      lea64        degski64   splitmix     murmur3    xmx
+		divisibility-d2  P (169)     F*(171)      P (179)     P (151)     P (199)      P (169)      P (197)    P (191)      P (197)    F*(16617)
+		divisibility-d3  F*(214)     P (187)      F*(256)     P (209)     P (226)      P (227)      P (187)    P (218)      P (198)    F*(11125)
+		kolmogorov_d     0.00182935  0.000238291  0.0493007   0.00108469  0.0205633    0.000619493  0.0157931  0.0123172    0.232204   0
+		anderson_a2      0.994346    0.999978     0.996995    0.999219    0.99981      0.999902     0.994976   0.997893     0.981366   1
+		chi2             0.00244941  0.00051067   5.8374e-05  0.311584    3.19588e-07  0.0072541    0.155593   2.15719e-05  0.0774099  0
+		fails            383         358          435         360         425          396          384        409          395        27742
+	- have potential fixed commited, test it
 
 DONE:
 -----
