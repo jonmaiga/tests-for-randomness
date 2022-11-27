@@ -14,7 +14,6 @@ struct mixer {
 	T operator()(T x) const {
 		return mix(x);
 	}
-
 };
 
 template <typename T>

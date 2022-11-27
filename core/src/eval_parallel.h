@@ -35,35 +35,28 @@ stream<T> create_stream(const test_config<T>& cfg) {
 }
 
 template <typename T>
-test_jobs create_stream_jobs(const stream_test_definition<T>& test_def, const std::vector<test_factory<T>>& test_factories) {
-	test_jobs js;
-	for (const auto& factory : test_factories) {
-		js.push_back([test_def, factory]()-> test_job_return {
-			const auto cfg = factory();
-			const auto s = create_stream(cfg);
-			std::vector<test_result> results;
-			for (const auto& sub_test : test_def.test(cfg.n, s)) {
-				if (const auto& stat = sub_test.stats) {
-					results.push_back(test_result{s.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
-				}
-			}
-			return results;
-		});
-	}
-	return js;
-}
-
-template <typename T>
-test_jobs create_mixer_jobs(const mixer_test_definition<T>& test_def, const std::vector<test_factory<T>>& test_factories) {
+test_jobs create_test_jobs(const test_definition<T>& test_def, const std::vector<test_factory<T>>& test_factories) {
 	test_jobs js;
 	for (const auto& factory : test_factories) {
 		if (factory().stream_append_factory) continue;
 		js.push_back([test_def, factory]()-> test_job_return {
-			const auto cfg = factory();
+
 			std::vector<test_result> results;
-			for (const auto& sub_test : test_def.test(cfg.n, cfg.source, cfg.mix)) {
-				if (const auto& stat = sub_test.stats) {
-					results.push_back({cfg.source.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
+			if (const auto& mixer_test = test_def.mixer_test) {
+				const auto cfg = factory();
+				for (const auto& sub_test : mixer_test(cfg.n, cfg.source, cfg.mix)) {
+					if (const auto& stat = sub_test.stats) {
+						results.push_back({cfg.source.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
+					}
+				}
+			}
+			if (const auto& stream_test = test_def.stream_test) {
+				const auto cfg = factory();
+				const auto s = create_stream(cfg);
+				for (const auto& sub_test : stream_test(cfg.n, s)) {
+					if (const auto& stat = sub_test.stats) {
+						results.push_back(test_result{s.name, cfg.mix.name, {test_def.type, sub_test.name}, *stat});
+					}
 				}
 			}
 			return results;
@@ -75,11 +68,8 @@ test_jobs create_mixer_jobs(const mixer_test_definition<T>& test_def, const std:
 template <typename T>
 test_jobs create_test_jobs(const std::vector<test_factory<T>>& test_factories) {
 	test_jobs jobs;
-	for (const auto& test : get_stream_tests<T>()) {
-		append(jobs, create_stream_jobs<T>(test, test_factories));
-	}
-	for (const auto& test : get_mixer_tests<T>()) {
-		append(jobs, create_mixer_jobs<T>(test, test_factories));
+	for (const auto& test : get_tests<T>()) {
+		append(jobs, create_test_jobs<T>(test, test_factories));
 	}
 	return jobs;
 }

@@ -16,13 +16,14 @@
 namespace mixer {
 
 template <typename T>
-struct stream_test_definition {
+struct test_definition {
 	test_type type;
-	stream_test<T> test;
+	stream_test<T> stream_test;
+	mixer_test<T> mixer_test;
 };
 
 template <typename T>
-std::vector<stream_test_definition<T>> get_stream_tests() {
+std::vector<test_definition<T>> get_tests() {
 	return {
 		{test_type::basic_mean, basic_test<T>},
 		{test_type::chi2, chi2_test<T>},
@@ -38,21 +39,11 @@ std::vector<stream_test_definition<T>> get_stream_tests() {
 		{test_type::gap, gap_test<T>},
 		{test_type::coupon, coupon_test<T>},
 		{test_type::divisibility, divisibility_test<T>},
-		{test_type::permutation, permutation_test<T>}
-	};
-}
+		{test_type::permutation, permutation_test<T>},
 
-template <typename T>
-struct mixer_test_definition {
-	test_type type;
-	mixer_test<T> test;
-};
-
-template <typename T>
-std::vector<mixer_test_definition<T>> get_mixer_tests() {
-	return {
-		{test_type::sac, avalanche_mixer_sac_test<T>},
-		{test_type::bic, avalanche_mixer_bic_test<T>},
+		// mixer tests
+		{test_type::sac, {}, avalanche_mixer_sac_test<T>},
+		{test_type::bic, {}, avalanche_mixer_bic_test<T>},
 	};
 }
 
