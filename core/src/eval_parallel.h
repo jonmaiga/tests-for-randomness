@@ -13,7 +13,7 @@ namespace mixer {
 template <typename T>
 struct test_setup {
 	uint64_t n{};
-	mixer<T> mixer;
+	mixer<T> mix;
 	std::vector<test_factory<T>> source_factories;
 	std::vector<test_type> tests;
 	unsigned int max_threads = std::max(std::thread::hardware_concurrency() - 4, 2u);
@@ -81,7 +81,7 @@ template <typename T>
 test_battery_result test_parallel(const test_setup<T>& setup) {
 	using namespace internal;
 
-	test_battery_result test_result{"test", setup.mixer.name};
+	test_battery_result test_result{"test", setup.mix.name};
 	const auto collect_job_results = [&](const test_job_return& results) {
 		if (!results.empty()) {
 			static std::mutex m;

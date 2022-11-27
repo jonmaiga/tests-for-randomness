@@ -40,14 +40,14 @@ void run_tests() {
 	const auto trng1 = create_mixer_from_stream<T>("trng1", trng_stream);
 	const auto trng2 = create_mixer_from_stream<T>("trng2", trng_stream);
 
-	constexpr auto n = 1000000;
+	constexpr auto n = 100000;
 
 	result_analyzer analyzer;
-	analyzer.add(test_parallel<T>({
-		n, trng1,
-		create_rrc_test_factories(trng1, n),
-		all_test_types
-	}));
+	//analyzer.add(test_parallel<T>({
+	//	n, trng1,
+	//	create_rrc_test_factories(trng1, n),
+	//	all_test_types
+	//}));
 
 	for (const auto& mixer : get_mixers<T>()) {
 		auto ts = test_setup<T>{
@@ -75,7 +75,7 @@ int main(int argc, char** args) {
 		}
 
 		using T = uint32_t;
-		run_tests<T>();
+		//run_tests<T>();
 		//mixer::run_search<T>();
 		//return 0;
 
@@ -85,8 +85,8 @@ int main(int argc, char** args) {
 
 		result_analyzer analyzer;
 		for (uint64_t i = 1; i <= 10; ++i) {
-			const uint64_t n = i * 5000ull;
-			const auto mixer = trng1; //mix32::mx3;
+			const uint64_t n = i * 40000ull;
+			const auto mixer = mix32::prospector;
 
 			auto ts = test_setup{
 				n, mixer,
@@ -96,7 +96,7 @@ int main(int argc, char** args) {
 			std::cout << "Using " << ts.source_factories.size() << " samples per test, each with " << ts.n << " data points.\n";
 			analyzer.add(test_parallel(ts));
 		}
-		analyzer.list_results({}, {});
+		//analyzer.list_results({}, {});
 	}
 	catch (std::runtime_error& e) {
 		std::cout << "ERROR: " << e.what() << "\n";
