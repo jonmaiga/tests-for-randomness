@@ -1,6 +1,7 @@
 TODO:
 -----
 - Possible to seed all tests at startup
+- Incremental tests should maybe be able to continue?
 - What is a good fitness function. Design an experiment: 
 	- which streams should be used
 	- which tests should be used
@@ -19,6 +20,7 @@ TODO:
 		chi2             0.00244941  0.00051067   5.8374e-05  0.311584    3.19588e-07  0.0072541    0.155593   2.15719e-05  0.0774099  0
 		fails            383         358          435         360         425          396          384        409          395        27742
 	- have potential fixed commited, test it
+- splits are added many times if same result formatter is used when n increases (see e.g. kendall_tau).
 
 DONE:
 -----
