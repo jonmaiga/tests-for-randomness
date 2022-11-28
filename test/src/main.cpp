@@ -45,19 +45,18 @@ void run_tests() {
 
 	result_analyzer analyzer;
 	//analyzer.add(test_parallel<T>({
-	//	n, trng1,
+	//	trng1,
 	//	create_rrc_test_factories(trng1, n),
 	//	all_test_types
 	//}));
 
 	for (const auto& mixer : get_mixers<T>()) {
 		auto ts = test_setup<T>{
-			n, mixer,
+			mixer,
 			create_rrc_sources<T>(),
 			all_test_types
 		};
-		std::cout << "Using " << ts.sources.size() << " samples per test, each with " << ts.n << " data points.\n";
-		analyzer.add(test_parallel(ts));
+		analyzer.add(test_parallel(n, ts));
 	}
 
 	analyzer.summarize_fails({}, {"trng", "counter-1", "graycode-"});
