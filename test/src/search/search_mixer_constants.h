@@ -15,7 +15,6 @@ double sffs_fitness_test(const mixer<T>& mixer) {
 		mixer,
 		create_rrc_sources<T>(),
 		all_test_types,
-		{},
 		4
 	};
 

@@ -139,7 +139,7 @@ struct test_battery_result {
 		results[r.key].push_back(r);
 	}
 
-	const std::vector<test_result>& operator[](test_key key) const {
+	const std::vector<test_result>& operator[](const test_key& key) const {
 		static const std::vector<test_result> empty;
 		const auto it = results.find(key);
 		return it != results.end() ? it->second : empty;

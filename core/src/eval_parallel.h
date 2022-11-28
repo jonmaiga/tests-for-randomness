@@ -15,7 +15,6 @@ struct test_setup {
 	mixer<T> mix;
 	std::vector<source<T>> sources;
 	std::vector<test_type> tests;
-	std::function<void(const test_battery_result&)> result_callback;
 	unsigned int max_threads = std::max(std::thread::hardware_concurrency() - 4, 2u);
 };
 
@@ -102,18 +101,19 @@ test_battery_result test_parallel(uint64_t n, const test_setup<T>& setup) {
 	test_battery_result test_result{"test", setup.mix.name, n, setup.sources.size()};
 	const auto jobs = create_test_jobs(n, setup);
 	run_jobs<test_job_return>(jobs, create_collector(test_result), setup.max_threads);
-	if (setup.result_callback) {
-		setup.result_callback(test_result);
-	}
 	return test_result;
 }
 
-
 template <typename T>
-void test_parallel_multi_pass(int max_power, const test_setup<T>& setup) {
+void test_parallel_multi_pass(int max_power,
+                              const std::function<bool(test_battery_result)>& result_callback,
+                              const test_setup<T>& setup) {
 	int power = 10;
 	while (power <= max_power) {
-		test_parallel(1ull << power, setup);
+		const auto& result = test_parallel(1ull << power, setup);
+		if (!result_callback(result)) {
+			break;
+		}
 		++power;
 	}
 }

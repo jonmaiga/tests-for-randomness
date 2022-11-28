@@ -100,8 +100,16 @@ public:
 		stat(kolmogorov_smirnov_stats(p_values)) {
 	}
 
-	bool passed() const {
-		return get_failure_strength() == 0;
+	bool has_remark() const {
+		return get_failure_strength() > 0;
+	}
+
+	bool has_suspicion() const {
+		return get_failure_strength() > 2;
+	}
+
+	bool pass() const {
+		return get_failure_strength() < 5;
 	}
 
 	unsigned int get_failure_strength() const {
@@ -140,6 +148,13 @@ public:
 	std::optional<statistic> stat;
 };
 
+inline meta_analysis get_meta_analysis(const test_battery_result& battery_result) {
+	std::vector<double> all_p_values;
+	for (const auto& e : battery_result.results) {
+		append(all_p_values, to_p_values(e.second));
+	}
+	return meta_analysis(all_p_values);
+}
 
 class result_analyzer {
 
@@ -148,7 +163,6 @@ public:
 		test_results.push_back(battery_result);
 
 		std::optional<meta_analysis> worst;
-		std::vector<double> all_p_values;
 		table t({"KEY", "VALUE"});
 		t.col("test subject").col(battery_result.mixer_name).row();
 		t.col("2^k").col(std::ceil(std::log2(battery_result.n))).row();
@@ -158,26 +172,23 @@ public:
 		for (const auto& e : battery_result.results) {
 			const auto& p_values = to_p_values(e.second);
 			const auto interpretation = meta_analysis(p_values);
-			if (!interpretation.passed()) {
+			if (interpretation.has_suspicion()) {
 				t.col(get_test_name(e.first.type) + "-" + e.first.name);
 				t.col(interpretation.to_string());
 				t.row();
 			}
-			append(all_p_values, p_values);
 
 			if (!worst || worst->get_failure_strength() < interpretation.get_failure_strength()) {
 				worst = interpretation;
 			}
 		}
 
-
 		t.col("-------").col("-------").row();
-		const meta_analysis summary(all_p_values);
-
-		t.col("SUMMARY").col(summary.to_string()).row();
 		if (worst) {
 			t.col("WORST").col(worst->to_string()).row();
 		}
+		const meta_analysis summary = get_meta_analysis(battery_result);
+		t.col("SUMMARY").col(summary.to_string()).row();
 
 		std::cout << t.to_string() << "\n";
 	}
