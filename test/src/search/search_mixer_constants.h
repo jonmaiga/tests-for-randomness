@@ -14,7 +14,7 @@ double sffs_fitness_test(const mixer<T>& mixer) {
 	auto ts = test_setup<T>{
 		n,
 		mixer,
-		create_rrc_test_factories<T>(mixer, n),
+		create_rrc_sources<T>(),
 		all_test_types,
 		4
 	};

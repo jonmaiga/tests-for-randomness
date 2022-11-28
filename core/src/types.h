@@ -20,15 +20,13 @@ template <typename T>
 using append_stream_factory = std::function<stream<T>(const stream<T>&)>;
 
 template <typename T>
-struct test_config {
-	uint64_t n{};
-	stream<T> source;
-	mixer<T> mix;
+struct source {
+	stream<T> stream_source;
 	append_stream_factory<T> stream_append_factory;
 };
 
 template <typename T>
-using test_factory = std::function<test_config<T>()>;
+using sources = std::function<source<T>()>;
 
 
 ///////////////////////////////////////////////////////////////
