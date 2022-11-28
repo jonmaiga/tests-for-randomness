@@ -12,14 +12,14 @@ template <typename T>
 double sffs_fitness_test(const mixer<T>& mixer) {
 	uint64_t n = 10000;
 	auto ts = test_setup<T>{
-		n,
 		mixer,
 		create_rrc_sources<T>(),
 		all_test_types,
+		{},
 		4
 	};
 
-	const auto r = test_parallel<T>(ts);
+	const auto r = test_parallel<T>(n, ts);
 	std::vector<double> all;
 	for (const auto& tr : r.results) {
 		append(all, to_p_values(tr.second));

@@ -12,10 +12,10 @@ namespace mixer {
 
 template <typename T>
 struct test_setup {
-	uint64_t n{};
 	mixer<T> mix;
 	std::vector<source<T>> sources;
 	std::vector<test_type> tests;
+	std::function<void(const test_battery_result&)> result_callback;
 	unsigned int max_threads = std::max(std::thread::hardware_concurrency() - 4, 2u);
 };
 
@@ -72,24 +72,18 @@ test_jobs create_test_jobs(
 }
 
 template <typename T>
-test_jobs create_test_jobs(const test_setup<T>& setup) {
+test_jobs create_test_jobs(const uint64_t n, const test_setup<T>& setup) {
 	test_jobs jobs;
 	for (const auto& test : setup.tests) {
 		for (const auto& source : setup.sources) {
-			append(jobs, create_test_jobs<T>(setup.n, setup.mix, get_test_definition<T>(test), source));
+			append(jobs, create_test_jobs<T>(n, setup.mix, get_test_definition<T>(test), source));
 		}
 	}
 	return jobs;
 }
 
-}
-
-template <typename T>
-test_battery_result test_parallel(const test_setup<T>& setup) {
-	using namespace internal;
-
-	test_battery_result test_result{"test", setup.mix.name, setup.n, setup.sources.size()};
-	const auto collect_job_results = [&](const test_job_return& results) {
+inline auto create_collector(test_battery_result& test_result) {
+	return [&](const test_job_return& results) {
 		if (!results.empty()) {
 			static std::mutex m;
 			std::lock_guard lg(m);
@@ -98,10 +92,30 @@ test_battery_result test_parallel(const test_setup<T>& setup) {
 			}
 		}
 	};
+}
 
-	const auto jobs = create_test_jobs(setup);
-	run_jobs<test_job_return>(jobs, collect_job_results, setup.max_threads);
+}
+
+template <typename T>
+test_battery_result test_parallel(uint64_t n, const test_setup<T>& setup) {
+	using namespace internal;
+	test_battery_result test_result{"test", setup.mix.name, n, setup.sources.size()};
+	const auto jobs = create_test_jobs(n, setup);
+	run_jobs<test_job_return>(jobs, create_collector(test_result), setup.max_threads);
+	if (setup.result_callback) {
+		setup.result_callback(test_result);
+	}
 	return test_result;
+}
+
+
+template <typename T>
+void test_parallel_multi_pass(int max_power, const test_setup<T>& setup) {
+	int power = 10;
+	while (power <= max_power) {
+		test_parallel(1ull << power, setup);
+		++power;
+	}
 }
 
 }

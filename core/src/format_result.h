@@ -151,6 +151,7 @@ public:
 		std::vector<double> all_p_values;
 		table t({"KEY", "VALUE"});
 		t.col("test subject").col(battery_result.mixer_name).row();
+		t.col("2^k").col(std::ceil(std::log2(battery_result.n))).row();
 		t.col("samples").col(battery_result.samples).row();
 		t.col("n per sample").col(battery_result.n).row();
 		t.col("-------").col("-------").row();
