@@ -1,7 +1,6 @@
 TODO:
 -----
 - Possible to seed all tests at startup
-- Incremental tests should maybe be able to continue? emit results instead?
 - What is a good fitness function. Design an experiment: 
 	- which streams should be used  
 		sources: (trng?, mixed, counter1, ?)
@@ -37,6 +36,7 @@ DONE:
 		chi2             0.00244941  0.00051067   5.8374e-05  0.311584    3.19588e-07  0.0072541    0.155593   2.15719e-05  0.0774099  0
 		fails            383         358          435         360         425          396          384        409          395        27742
 	- have potential fixed commited, test it
+- Incremental tests should maybe be able to continue? emit results instead?
 
 OTHER:
 ------
