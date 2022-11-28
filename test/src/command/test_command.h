@@ -12,7 +12,7 @@ inline void test_command() {
 	const auto mixer = mix32::sffs_xmxmx_3;
 
 	result_analyzer analyzer;
-	const auto ts = test_setup{
+	const auto ts = test_setup<T>{
 		mixer,
 		create_rrc_sources<T>(),
 		all_test_types
