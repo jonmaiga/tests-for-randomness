@@ -53,10 +53,10 @@ void run_tests() {
 	for (const auto& mixer : get_mixers<T>()) {
 		auto ts = test_setup<T>{
 			n, mixer,
-			create_rrc_test_factories(mixer, n),
+			create_rrc_sources<T>(),
 			all_test_types
 		};
-		std::cout << "Using " << ts.source_factories.size() << " samples per test, each with " << ts.n << " data points.\n";
+		std::cout << "Using " << ts.sources.size() << " samples per test, each with " << ts.n << " data points.\n";
 		analyzer.add(test_parallel(ts));
 	}
 
@@ -88,8 +88,8 @@ int main(int argc, char** args) {
 		return 1;
 
 		using T = uint32_t;
-		//run_tests<T>();
-		//mixer::run_search<T>();
+		run_tests<T>();
+		run_search<T>();
 		//return 0;
 
 	}

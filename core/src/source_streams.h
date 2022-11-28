@@ -30,48 +30,45 @@ stream<T> create_bit_isolation_stream(stream<T> source, int bit) {
 }
 
 template <typename T>
-std::vector<test_factory<T>> create_test_factories(const mixer<T>& mixer, uint64_t n) {
-	const auto counter1 = [mixer, n]() {
-		return test_config<T>{n, create_counter_stream<T>(1), mixer};
+std::vector<source<T>> create_sources() {
+	const auto counter1 = []() {
+		return source<T>{create_counter_stream<T>(1)};
 	};
-	const auto graycode2 = [mixer, n]() {
-		return test_config<T>{n, create_gray_code<T>(2), mixer};
+	const auto graycode2 = []() {
+		return source<T>{create_gray_code<T>(2)};
 	};
-	const auto trng = [mixer, n]() {
-		return test_config<T>{n, create_stream_from_data_by_ref<T>("trng", get_trng_data<T>()), mixer};
+	const auto trng = []() {
+		return source<T>{create_stream_from_data_by_ref<T>("trng", get_trng_data<T>())};
 	};
 
-	std::vector<test_factory<T>> factories{counter1}; //, trng};
+	std::vector<source<T>> configs{counter1()}; //, trng};
+
 	constexpr auto Bits = 8 * sizeof(T);
 	for (int bit = 0; bit < Bits; ++bit) {
 		const auto post_mix_permute = [bit](const stream<T>& source) {
 			return create_bit_isolation_stream<T>(source, bit);
 		};
-		const auto bit_factory = [=]()-> test_config<T> {
-			return {n, create_counter_stream<T>(1), mixer, post_mix_permute};
+		const auto bit_factory = [=]()-> source<T> {
+			return {create_counter_stream<T>(1), post_mix_permute};
 		};
-		//factories.emplace_back(bit_factory);
+		//configs.emplace_back(bit_factory());
 	}
 
-	return factories;
+	return configs;
 }
 
 template <typename T>
-std::vector<test_factory<T>> create_rrc_test_factories(const mixer<T>& mixer, uint64_t n) {
-	std::vector<test_factory<T>> factories;
+std::vector<source<T>> create_rrc_sources() {
+	std::vector<source<T>> sources;
 	constexpr auto Bits = 8 * sizeof(T);
-	for (const auto& factory : create_test_factories(mixer, n)) {
+	for (const auto& config : create_sources<T>()) {
 		for (const auto type : rrc_types) {
 			for (int rot = 0; rot < Bits; ++rot) {
-				const auto rrc_factory = [=]()-> test_config<T> {
-					const auto config = factory();
-					return {config.n, add_rrc<T>(config.source, rot, type), config.mix, config.stream_append_factory};
-				};
-				factories.emplace_back(rrc_factory);
+				sources.push_back({add_rrc<T>(config.stream_source, rot, type), config.stream_append_factory});
 			}
 		}
 	}
-	return factories;
+	return sources;
 }
 
 
