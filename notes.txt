@@ -9,7 +9,7 @@ TODO:
 	- which tests should be used
 		(remove redundant/correlated tests)
 	- how many datapoints per test should be used 
-		(preliminary minimum 5k-10k while 100k seems stable in terms of fails )
+		(preliminary minimum 5k-10k while 100k seems stable in terms of fails)
 	- which fitness function works best? minimize kolmogorov, chi2, ad? all? count fails?
 		(preliminary pretty much same-same it seems, but minimizing it might not be what we want (too regular?))
 		(maybe optimize on outliers?)

@@ -4,6 +4,7 @@
 #include "mixers32.h"
 #include "mixers64.h"
 #include "trng_data.h"
+#include "command/test_command.h"
 
 #include "search/search_mixer_constants_setup.h"
 
@@ -69,34 +70,28 @@ void run_tests() {
 int main(int argc, char** args) {
 	using namespace mixer;
 	try {
-		if (argc == 2) {
-			const std::string trng_path = args[1];
-			set_config({trng_path});
+		if (argc != 3) {
+			std::cout << "Usage: mixer.exe trng-filename command\n";
+			return 1;
 		}
+		const std::string trng_path = args[1];
+		set_config({trng_path});
+
+		const std::string command = args[2];
+		std::cout << "Executing command " << command << "\n";
+		if (command == "-test") {
+			test_command();
+			return 0;
+		}
+
+		std::cout << "Unknown command\n";
+		return 1;
 
 		using T = uint32_t;
 		//run_tests<T>();
 		//mixer::run_search<T>();
 		//return 0;
 
-		//using T = uint32_t;
-		const auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
-		const auto trng1 = create_mixer_from_stream<T>("trng1", trng_stream);
-
-		result_analyzer analyzer;
-		for (uint64_t i = 1; i <= 10; ++i) {
-			const uint64_t n = i * 40000ull;
-			const auto mixer = mix32::prospector;
-
-			auto ts = test_setup<T>{
-				n, mixer,
-				create_rrc_test_factories(mixer, n),
-				all_test_types
-			};
-			std::cout << "Using " << ts.source_factories.size() << " samples per test, each with " << ts.n << " data points.\n";
-			analyzer.add(test_parallel(ts));
-		}
-		//analyzer.list_results({}, {});
 	}
 	catch (std::runtime_error& e) {
 		std::cout << "ERROR: " << e.what() << "\n";
