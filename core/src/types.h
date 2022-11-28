@@ -133,6 +133,8 @@ struct test_battery_result {
 
 	std::string name;
 	std::string mixer_name;
+	uint64_t n{};
+	uint64_t samples{};
 	test_result_map results;
 
 	void add(const test_result& r) {

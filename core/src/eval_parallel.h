@@ -81,7 +81,7 @@ template <typename T>
 test_battery_result test_parallel(const test_setup<T>& setup) {
 	using namespace internal;
 
-	test_battery_result test_result{"test", setup.mix.name};
+	test_battery_result test_result{"test", setup.mix.name, setup.n, setup.source_factories.size()};
 	const auto collect_job_results = [&](const test_job_return& results) {
 		if (!results.empty()) {
 			static std::mutex m;

@@ -62,27 +62,6 @@ inline bool passed_test(const std::vector<test_result>& results, const double al
 	return p_value >= alpha && p_value <= 1. - alpha;
 }
 
-inline std::string p_value_test(const std::vector<test_result>& results, const double alpha) {
-	if (results.empty()) {
-		return "N/A";
-	}
-
-	// if (results.front().type == test_type::permutation) {
-	// 	const auto st = basic_stats(to_statistics(results));
-	// 	draw_histogram(to_p_values(results));
-	// 	draw_histogram(to_statistics(results));
-	// 	std::cout << "stat mean: " << st.mean << " stat var: " << st.variance() << "\n";
-	// }
-	//const auto p_value = fishers_combined_probabilities(to_p_values(results));
-
-	const auto p_values = to_p_values(results);
-	const auto fails = "(" + std::to_string(count_fails(p_values, alpha)) + ")";
-	if (passed_test(results, alpha)) {
-		return "P " + fails;
-	}
-	return "F*" + fails;
-}
-
 using tags = std::vector<std::string>;
 
 inline std::vector<test_result> find_by_mixer_name(const std::vector<test_result>& results, const tags& mixer_names) {
@@ -115,64 +94,90 @@ inline std::vector<test_result> find_by_stream_name(const std::vector<test_resul
 	return found;
 }
 
+class meta_analysis {
+public:
+	explicit meta_analysis(const std::vector<double>& p_values) :
+		stat(kolmogorov_smirnov_stats(p_values)) {
+	}
+
+	bool passed() const {
+		return get_failure_strength() == 0;
+	}
+
+	unsigned int get_failure_strength() const {
+		if (!stat) {
+			return 0;
+		}
+		const double lower_tail = (1. - 2. * std::abs(stat->p_value - 0.5));
+		if (lower_tail < 1e-10) {
+			return 10;
+		}
+		const auto s = static_cast<unsigned int>(std::abs(std::log10(lower_tail)));
+		assertion(s >= 0 && s <= 10, "Strength out of range");
+		return s;
+	}
+
+	std::string to_string() const {
+		if (!stat) {
+			return "NA";
+		}
+		static const std::vector<std::string> strings = {
+			"pass",
+			"minor (1)",
+			"minor (2)",
+			"suspicious (3)",
+			"suspicious (4)",
+			"failure (5)",
+			"failure (6)",
+			"failure (7)",
+			"failure (8)",
+			"failure (9)",
+			"failure (10)",
+		};
+		return strings[get_failure_strength()];
+	}
+
+	std::optional<statistic> stat;
+};
+
 
 class result_analyzer {
 
 public:
-	void add(const test_battery_result& r) {
-		test_results.push_back(r);
+	void add(const test_battery_result& battery_result) {
+		test_results.push_back(battery_result);
 
-		std::set<test_key> test_keys;
-		std::vector<std::string> headers{"test"};
-
-		std::vector<std::optional<statistic>> kolmogorov_d;
-		std::vector<std::optional<statistic>> anderson_a2;
-		std::vector<std::optional<statistic>> chi2;
-		std::vector<int> fails;
-		for (const auto& tr : test_results) {
-			headers.push_back(tr.mixer_name);
-			std::vector<double> p_values;
-			for (const auto& r : tr.results) {
-				test_keys.insert(r.first);
-				append(p_values, to_p_values(r.second));
+		std::optional<meta_analysis> worst;
+		std::vector<double> all_p_values;
+		table t({"KEY", "VALUE"});
+		t.col("test subject").col(battery_result.mixer_name).row();
+		t.col("samples").col(battery_result.samples).row();
+		t.col("n per sample").col(battery_result.n).row();
+		t.col("-------").col("-------").row();
+		for (const auto& e : battery_result.results) {
+			const auto& p_values = to_p_values(e.second);
+			const auto interpretation = meta_analysis(p_values);
+			if (!interpretation.passed()) {
+				t.col(get_test_name(e.first.type) + "-" + e.first.name);
+				t.col(interpretation.to_string());
+				t.row();
 			}
-			kolmogorov_d.push_back(kolmogorov_smirnov_stats(p_values));
-			anderson_a2.push_back(anderson_darling_stats(p_values));
-			chi2.push_back(chi2_uniform_stats(p_values));
-			fails.push_back(count_fails(p_values, 0.005));
-		}
+			append(all_p_values, p_values);
 
-		constexpr double alpha = 0.005;
-
-		table t(headers);
-		for (const auto& key : test_keys) {
-			t.col(get_test_name(key.type) + "-" + key.name);
-			for (const auto& tr : test_results) {
-				t.col(p_value_test(tr[key], alpha));
+			if (!worst || worst->get_failure_strength() < interpretation.get_failure_strength()) {
+				worst = interpretation;
 			}
-			t.row();
 		}
 
-		t.col("kolmogorov_d");
-		for (const auto s : kolmogorov_d) {
-			t.col(s ? s->p_value : -1);
+
+		t.col("-------").col("-------").row();
+		const meta_analysis summary(all_p_values);
+
+		t.col("SUMMARY").col(summary.to_string()).row();
+		if (worst) {
+			t.col("WORST").col(worst->to_string()).row();
 		}
-		t.row();
-		t.col("anderson_a2");
-		for (const auto s : anderson_a2) {
-			t.col(s ? s->p_value : -1);
-		}
-		t.row();
-		t.col("chi2");
-		for (const auto s : chi2) {
-			t.col(s ? s->p_value : -1);
-		}
-		t.row();
-		t.col("fails");
-		for (const auto s : fails) {
-			t.col(s);
-		}
-		t.row();
+
 		std::cout << t.to_string() << "\n";
 	}
 
@@ -270,7 +275,6 @@ private:
 		const auto stream_tag = stream_tags.empty() ? "*" : join(stream_tags, ",");
 		return fail_summary{mixer_tag, stream_tag, fails, static_cast<double>(r.size())};
 	}
-
 
 	std::vector<test_result> _flatten() const {
 		std::vector<test_result> rs;

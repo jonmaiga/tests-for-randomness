@@ -83,7 +83,7 @@ const mixer32 h2_sql = {
 
 const mixer32 xmxmx = {
 	"xmxmx", [](uint32_t x) {
-		constexpr uint64_t C = 0xb1a615dull;
+		constexpr uint64_t C = 0x9b1a615dull;
 		x ^= x >> 16;
 		x *= C;
 		x ^= x >> 16;
