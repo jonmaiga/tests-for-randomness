@@ -132,6 +132,7 @@ struct test_battery_result {
 	std::string test_subject_name;
 	uint64_t n{};
 	uint64_t samples{};
+	int bits{};
 	test_result_map results;
 
 	void add(const test_result& r) {

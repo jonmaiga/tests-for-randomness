@@ -30,20 +30,20 @@ std::vector<test_definition<T>> get_tests() {
 		{test_type::chi2, chi2_test<T>, {}, "chi2"},
 
 		// requires more than 1 iteration/sorting
-		{test_type::kolmogorov_smirnov, kolmogorov_test<T>, {}, "ks"},
-		{test_type::anderson_darling, anderson_darling_test<T>, {}, "ad"},
-		{test_type::wald_wolfowitz_runs, wald_wolfowitz_test<T>, {}, "ww"},
-		{test_type::pearson_r, pearson_correlation_test<T>, {}, "pearson_r"},
-		//{test_type::spearman_r, spearman_correlation_test<T>, {}, "spearman_r"},
-		//{test_type::kendall_tau, kendall_correlation_test<T>, {}, "kendall_tau"},
+		//{test_type::kolmogorov_smirnov, kolmogorov_test<T>, {}, "ks"},
+		//{test_type::anderson_darling, anderson_darling_test<T>, {}, "ad"},
+		//{test_type::wald_wolfowitz_runs, wald_wolfowitz_test<T>, {}, "ww"}, // weak=xmx
+		//{test_type::pearson_r, pearson_correlation_test<T>, {}, "pearson_r"}, // weak
+		//{test_type::spearman_r, spearman_correlation_test<T>, {}, "spearman_r"}, // weak
+		//{test_type::kendall_tau, kendall_correlation_test<T>, {}, "kendall_tau"}, // slow todo
 
-		{test_type::gap, gap_test<T>, {}, "gap"},
-		{test_type::coupon, coupon_test<T>, {}, "coupon"},
-		{test_type::divisibility, divisibility_test<T>, {}, "divisibility"},
-		{test_type::permutation, permutation_test<T>, {}, "permutation"},
+		//{test_type::gap, gap_test<T>, {}, "gap"}, // weak (found no tweak)
+		//{test_type::coupon, coupon_test<T>, {}, "coupon"}, // weak (found no tweak)
+		//{test_type::divisibility, divisibility_test<T>, {}, "divisibility"}, // weak (didn't find any tweak)
+		//{test_type::permutation, permutation_test<T>, {}, "permutation"}, // weak - but seems tweak-able (might be to little data but w4 also fails 64-bit-xmxmx)
 
 		// mixer tests
-		{test_type::sac, {}, avalanche_mixer_sac_test<T>, "sac"},
+		{test_type::sac, {}, avalanche_mixer_sac_test<T>, "sac"}, // strong
 		{test_type::bic, {}, avalanche_mixer_bic_test<T>, "bic"},
 	};
 }
