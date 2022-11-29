@@ -179,7 +179,7 @@ inline std::string to_string(const test_key& key) {
 
 inline void print_battery_result(const test_battery_result& battery_result) {
 	table t({"KEY", "VALUE"});
-	t.col("test subject").col(battery_result.mixer_name).row();
+	t.col("test subject").col(battery_result.test_subject_name).row();
 	t.col("2^k").col(battery_result.power_of_two()).row();
 	t.col("samples").col(battery_result.samples).row();
 	t.col("n per sample").col(battery_result.n).row();
@@ -239,7 +239,7 @@ public:
 	void summarize_fails(const tags& stream_tags) const {
 		tags mixer_tags;
 		for (const auto& tr : test_results) {
-			mixer_tags.push_back(tr.mixer_name);
+			mixer_tags.push_back(tr.test_subject_name);
 		}
 		summarize_fails(mixer_tags, stream_tags);
 	}

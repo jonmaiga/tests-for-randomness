@@ -24,9 +24,9 @@ inline auto create_result_callback(int max_power) {
 		const bool proceed = meta->pass() && br.power_of_two() < max_power;
 		if (!proceed) {
 			std::ostringstream os;
-			os << br.mixer_name << ";" << br.power_of_two() << ";" << meta->get_failure_strength() << ";";
+			os << br.test_subject_name << ";" << br.power_of_two() << ";" << meta->get_failure_strength() << ";";
 
-			std::string row = br.mixer_name + ";" + std::to_string(br.power_of_two()) + ";";
+			std::string row = br.test_subject_name + ";" + std::to_string(br.power_of_two()) + ";";
 			for (const auto& ra : get_result_analysis(br)) {
 				if (!ra.analysis.pass()) {
 					row += to_string(ra.key) + "(" + std::to_string(ra.analysis.get_failure_strength()) + "), ";
