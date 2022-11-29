@@ -12,9 +12,10 @@ template <typename T>
 double sffs_fitness_test(const mixer<T>& mixer) {
 	uint64_t n = 10000;
 	auto ts = test_setup<T>{
-		mixer,
+		mixer.name,
 		create_rrc_sources<T>(),
 		all_test_types,
+		mixer,
 		4
 	};
 

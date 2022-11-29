@@ -52,9 +52,10 @@ void run_tests() {
 
 	for (const auto& mixer : get_mixers<T>()) {
 		auto ts = test_setup<T>{
-			mixer,
+			mixer.name,
 			create_rrc_sources<T>(),
-			all_test_types
+			all_test_types,
+			mixer,
 		};
 		const auto r = test_parallel(n, ts);
 		analyzer.add(r);

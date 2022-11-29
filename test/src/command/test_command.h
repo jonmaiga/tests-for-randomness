@@ -1,15 +1,17 @@
 #pragma once
 
 #include "eval_parallel.h"
+#include "source_streams.h"
 
 namespace mixer {
 
 template <typename T>
 void run_test(const mixer<T>& mixer, const test_callback& callback) {
 	const test_setup<T> ts{
-		mixer,
+		mixer.name,
 		create_rrc_sources<T>(),
-		all_test_types
+		all_test_types,
+		mixer,
 	};
 	test_parallel_multi_pass(callback, ts);
 }

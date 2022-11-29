@@ -4,7 +4,6 @@
 #include <thread>
 #include <vector>
 
-#include "source_streams.h"
 #include "test_definitions.h"
 #include "util/jobs.h"
 
@@ -12,9 +11,10 @@ namespace mixer {
 
 template <typename T>
 struct test_setup {
-	mixer<T> mix;
+	std::string name;
 	std::vector<source<T>> sources;
 	std::vector<test_type> tests;
+	std::optional<mixer<T>> mix;
 	unsigned int max_threads = std::max(std::thread::hardware_concurrency() - 4, 2u);
 };
 
@@ -22,11 +22,14 @@ struct test_setup {
 namespace internal {
 
 using test_job_return = std::vector<test_result>;
+using test_job = job<test_job_return>;
 using test_jobs = jobs<test_job_return>;
 
 template <typename T>
-stream<T> create_stream(const mixer<T>& mix, const source<T>& cfg) {
-	auto s = create_stream_from_mixer<T>(cfg.stream_source, mix);
+stream<T> create_stream(const std::optional<mixer<T>>& mix, const source<T>& cfg) {
+	auto s = mix
+		         ? create_stream_from_mixer<T>(cfg.stream_source, *mix)
+		         : cfg.stream_source;
 	if (cfg.stream_append_factory) {
 		return cfg.stream_append_factory(s);
 	}
@@ -34,48 +37,51 @@ stream<T> create_stream(const mixer<T>& mix, const source<T>& cfg) {
 }
 
 template <typename T>
-test_jobs create_test_jobs(
+test_job create_mixer_job(
 	uint64_t n,
+	const std::string& name,
 	const mixer<T>& mix,
 	const test_definition<T>& test_def,
 	const source<T>& source) {
-	test_jobs js;
-
-	if (test_def.test_mixer && !source.stream_append_factory) {
-		js.push_back([test_def, source, mix, n]()-> test_job_return {
-			std::vector<test_result> results;
-			for (const auto& sub_test : test_def.test_mixer(n, source.stream_source, mix)) {
-				if (const auto& stat = sub_test.stats) {
-					results.push_back({source.stream_source.name, mix.name, n, {test_def.type, sub_test.name}, *stat});
-				}
+	return [test_def, source, mix, name, n]()-> test_job_return {
+		std::vector<test_result> results;
+		for (const auto& sub_test : test_def.test_mixer(n, source.stream_source, mix)) {
+			if (const auto& stat = sub_test.stats) {
+				results.push_back({source.stream_source.name, name, n, {test_def.type, sub_test.name}, *stat});
 			}
-			return results;
-		});
-	}
+		}
+		return results;
+	};
+}
 
-	if (test_def.test_stream) {
-		const auto s = create_stream(mix, source);
-		js.push_back([test_def, source = s, mix, n]()-> test_job_return {
-			std::vector<test_result> results;
-			for (const auto& sub_test : test_def.test_stream(n, source)) {
-				if (const auto& stat = sub_test.stats) {
-					results.push_back(test_result{source.name, mix.name, n, {test_def.type, sub_test.name}, *stat});
-				}
+template <typename T>
+test_job create_stream_job(uint64_t n, const std::string& name, const test_definition<T>& test_def, const stream<T>& source) {
+	return [test_def, source, n, name]()-> test_job_return {
+		std::vector<test_result> results;
+		for (const auto& sub_test : test_def.test_stream(n, source)) {
+			if (const auto& stat = sub_test.stats) {
+				results.push_back(test_result{source.name, name, n, {test_def.type, sub_test.name}, *stat});
 			}
-			return results;
-		});
-
-	}
-
-	return js;
+		}
+		return results;
+	};
 }
 
 template <typename T>
 test_jobs create_test_jobs(const uint64_t n, const test_setup<T>& setup) {
 	test_jobs jobs;
 	for (const auto& test : setup.tests) {
+		const auto& test_def = get_test_definition<T>(test);
 		for (const auto& source : setup.sources) {
-			append(jobs, create_test_jobs<T>(n, setup.mix, get_test_definition<T>(test), source));
+			if (test_def.test_mixer && setup.mix) {
+				// mixer test
+				jobs.push_back(create_mixer_job<T>(n, setup.name, *setup.mix, test_def, source));
+			}
+			if (test_def.test_stream) {
+				// stream test
+				const auto s = create_stream(setup.mix, source);
+				jobs.push_back(create_stream_job<T>(n, setup.name, test_def, s));
+			}
 		}
 	}
 	return jobs;
@@ -98,7 +104,7 @@ inline auto create_collector(test_battery_result& test_result) {
 template <typename T>
 test_battery_result test_parallel(uint64_t n, const test_setup<T>& setup) {
 	using namespace internal;
-	test_battery_result test_result{"test", setup.mix.name, n, setup.sources.size()};
+	test_battery_result test_result{"test", setup.name, n, setup.sources.size()};
 	const auto jobs = create_test_jobs(n, setup);
 	run_jobs<test_job_return>(jobs, create_collector(test_result), setup.max_threads);
 	return test_result;
