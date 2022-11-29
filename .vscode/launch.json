@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/cmake/test/mixer-test",
             "cwd": "${workspaceFolder}/cmake/test/",
-            "args": ["/mnt/data_disk/tmp/random.org/trng.bin"]
+            "args": ["/mnt/data_disk/tmp/mixer/", "-test"]
           },
           {
             "name": "(lldb) unittest",
