@@ -79,26 +79,19 @@ int main(int argc, char** args) {
 		const std::string root_path = args[1];
 		set_config({root_path});
 
-		//using T = uint32_t;
-		//run_tests<T>();
-		//return 0;
-
-
 		const std::string command = args[2];
 		std::cout << "Executing command " << command << "\n";
 		if (command == "-test") {
 			test_command();
 			return 0;
-		}
+		} else if (command == "-search") {
+			using T = uint32_t;
+			run_search<T>();
+			return 0;
+		} 
 
 		std::cout << "Unknown command\n";
 		return 1;
-
-		using T = uint32_t;
-		run_tests<T>();
-		run_search<T>();
-		//return 0;
-
 	}
 	catch (std::runtime_error& e) {
 		std::cout << "ERROR: " << e.what() << "\n";
