@@ -72,15 +72,15 @@ int main(int argc, char** args) {
 	using namespace mixer;
 	try {
 		if (argc != 3) {
-			std::cout << "Usage: mixer.exe trng-filename command\n";
+			std::cout << "Usage: mixer.exe root-path command\n";
 			return 1;
 		}
-		const std::string trng_path = args[1];
-		set_config({trng_path});
+		const std::string root_path = args[1];
+		set_config({root_path});
 
-		using T = uint32_t;
-		run_tests<T>();
-		return 0;
+		//using T = uint32_t;
+		//run_tests<T>();
+		//return 0;
 
 
 		const std::string command = args[2];
