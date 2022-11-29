@@ -1,6 +1,7 @@
 TODO:
 -----
-- Possible to seed all tests at startup
+- Possible to seed all tests at startup 
+	(counter1 makes no sense only for trng or mixed data)
 - What is a good fitness function. Design an experiment: 
 	- which streams should be used  
 		sources: (trng?, mixed, counter1, ?)
@@ -16,11 +17,7 @@ TODO:
 - Determine false positive rate
 - Trng should not have to lock?
 - splits are added many times if same result formatter is used when n increases (see e.g. kendall_tau).
-- should mean test be two siden (sample mean == population mean => 1)
-	test subject     mx3             
-	2^k              21              
-	samples          256             
-	mean-m           failure (5)  
+- add prng testing
 
 DONE:
 -----
@@ -41,7 +38,24 @@ DONE:
 		chi2             0.00244941  0.00051067   5.8374e-05  0.311584    3.19588e-07  0.0072541    0.155593   2.15719e-05  0.0774099  0
 		fails            383         358          435         360         425          396          384        409          395        27742
 	- have potential fixed commited, test it
-- Incremental tests should maybe be able to continue? emit results instead?
+- Power of two tests
+- Incremental tests
+	(keep stream state and emit results along the way, will halfen the required cpu time)
+	(basic - sum of squares need to be completely reevaluated)
+	(sac, bic - state can continue)
+	(chi2 - more data more bins - needs recompute)
+	(overall it seems like additional complexity doesn't make it worth while)
+	NOT FEASIBLE
+- should mean test be two sided (sample mean == population mean => 1)
+	test subject     mx3             
+	2^k              21              
+	samples          256             
+	mean-m           failure (5)
+	Extracted means, worst offenders where type I mma had same result for individual rrcs and same meta_analysis.
+
+
+
+
 
 OTHER:
 ------
