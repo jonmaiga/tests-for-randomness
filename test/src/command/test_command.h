@@ -22,7 +22,7 @@ inline auto create_result_callback(int max_power) {
 				}
 			}
 			row += "\n";
-			write_append(get_config().result_path(), row);
+			write_append(get_config().result_path() + "result.txt", row);
 		}
 
 		return proceed;
