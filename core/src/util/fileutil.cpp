@@ -43,7 +43,6 @@ bool write(const std::string& filename, const std::string& data, bool append) {
 	return !file.fail();
 }
 
-
 bool write(const std::string& filename, const std::string& data) {
 	return write(filename, data, false);
 }

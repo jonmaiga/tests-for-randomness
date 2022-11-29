@@ -142,6 +142,11 @@ const mixer64 degski64 = {
 }
 
 template <>
+inline mixer<uint64_t> get_default_mixer() {
+	return mix64::mx3;
+}
+
+template <>
 inline std::vector<mixer64> get_mixers() {
 	return {
 		mix64::mx3,

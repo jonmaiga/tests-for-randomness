@@ -119,6 +119,11 @@ const mixer32 jenkins = {
 
 
 template <>
+inline mixer<uint32_t> get_default_mixer() {
+	return mix32::mx3;
+}
+
+template <>
 inline std::vector<mixer32> get_mixers() {
 	return {
 		mix32::mx3,

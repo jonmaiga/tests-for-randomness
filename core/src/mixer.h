@@ -16,7 +16,7 @@ struct mixer {
 	}
 };
 
-template <typename T>
-std::vector<mixer<T>> get_mixers() = delete;
+template <typename T> std::vector<mixer<T>> get_mixers() = delete;
+template <typename T> mixer<T> get_default_mixer() = delete;
 
 }
