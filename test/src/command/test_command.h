@@ -5,17 +5,6 @@
 
 namespace mixer {
 
-template <typename T>
-void run_test(const mixer<T>& mixer, const test_callback& callback) {
-	const test_setup<T> ts{
-		mixer.name,
-		create_rrc_sources<T>(),
-		all_test_types,
-		mixer,
-	};
-	test_parallel_multi_pass(callback, ts);
-}
-
 inline auto create_result_callback(int max_power) {
 	return [max_power](const test_battery_result& br) {
 		const auto meta = get_meta_analysis(br);
@@ -40,15 +29,34 @@ inline auto create_result_callback(int max_power) {
 	};
 }
 
+template <typename T>
+test_setup<T> create_test_setup(const stream<T> stream) {
+	return test_setup<T>{
+		stream.name,
+		{source<T>{stream}},
+		all_test_types
+	};
+}
+
+
+template <typename T>
+test_setup<T> create_test_setup(const mixer<T> mixer) {
+	return test_setup<T>{
+		mixer.name,
+		create_rrc_sources<T>(),
+		all_test_types,
+		mixer,
+	};
+}
+
 inline void test_command() {
 	using T = uint32_t;
-	const auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
-	const auto trng = create_mixer_from_stream<T>("trng1", trng_stream);
+	const auto trng_stream = create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
 
 	const auto callback = create_result_callback(20);
-	run_test(trng, callback);
+	test_parallel_multi_pass(callback, create_test_setup<T>(trng_stream));
 	for (const auto& m : get_mixers<T>()) {
-		run_test(m, callback);
+		test_parallel_multi_pass(callback, create_test_setup<T>(m));
 	}
 	write_append(get_config().result_path(), "\n");
 }
