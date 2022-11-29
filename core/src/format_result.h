@@ -184,11 +184,7 @@ public:
 		}
 
 		t.col("-------").col("-------").row();
-		if (worst) {
-			t.col("WORST").col(worst->to_string()).row();
-		}
-		const meta_analysis summary = get_meta_analysis(battery_result);
-		t.col("SUMMARY").col(summary.to_string()).row();
+		t.col("SUMMARY").col(worst->to_string()).row();
 
 		std::cout << t.to_string() << "\n";
 	}
