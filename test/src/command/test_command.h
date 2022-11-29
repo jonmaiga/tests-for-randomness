@@ -30,14 +30,27 @@ inline auto create_result_callback(int max_power) {
 }
 
 template <typename T>
+std::vector<source<T>> create_seeded_trng(int count) {
+	std::vector<source<T>> ts;
+	const auto& data = get_trng_data<T>();
+	const auto& mix = get_default_mixer<T>();
+	for (int i = 1; i <= count; ++i) {
+		auto indexer = create_stream_from_mixer(create_counter_stream(mix(i)), mix);
+		ts.push_back(
+			{create_stream_from_data_by_ref<T>("trng-" + std::to_string(i), data, indexer)}
+		);
+	}
+	return ts;
+}
+
+template <typename T>
 test_setup<T> create_test_setup(const stream<T> stream) {
 	return test_setup<T>{
 		stream.name,
-		{source<T>{stream}},
+		create_seeded_trng<T>(128),
 		all_test_types
 	};
 }
-
 
 template <typename T>
 test_setup<T> create_test_setup(const mixer<T> mixer) {

@@ -54,6 +54,15 @@ stream<T> create_stream_from_data_by_ref(const std::string& name, const std::vec
 }
 
 template <typename T>
+stream<T> create_stream_from_data_by_ref(const std::string& name, const std::vector<T>& data, stream<T> indexer) {
+	return stream<T>{
+		name, [&data, indexer]() mutable -> T {
+			return data[indexer() % data.size()];
+		}
+	};
+}
+
+template <typename T>
 stream<T> create_stream_from_data_by_ref_thread_safe(const std::string& name, const std::vector<T>& data) {
 	static std::atomic_size_t index = 0;
 	return stream<T>{
