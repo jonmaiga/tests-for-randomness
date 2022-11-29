@@ -144,6 +144,10 @@ struct test_battery_result {
 		const auto it = results.find(key);
 		return it != results.end() ? it->second : empty;
 	}
+
+	int power_of_two() const {
+		return static_cast<int>(std::ceil(std::log2(n)));
+	}
 };
 
 

@@ -148,19 +148,39 @@ public:
 	std::optional<statistic> stat;
 };
 
-inline meta_analysis get_meta_analysis(const test_battery_result& battery_result) {
-	std::vector<double> all_p_values;
+inline std::optional<meta_analysis> get_meta_analysis(const test_battery_result& battery_result) {
+	std::optional<meta_analysis> worst;
 	for (const auto& e : battery_result.results) {
-		append(all_p_values, to_p_values(e.second));
+		const auto interpretation = meta_analysis(to_p_values(e.second));
+		if (!worst || worst->get_failure_strength() < interpretation.get_failure_strength()) {
+			worst = interpretation;
+		}
 	}
-	return meta_analysis(all_p_values);
+	return worst;
+}
+
+struct result_analysis {
+	test_key key;
+	std::vector<test_result> results;
+	meta_analysis analysis;
+};
+
+inline std::vector<result_analysis> get_result_analysis(const test_battery_result& battery_result) {
+	std::vector<result_analysis> all;
+	for (const auto& e : battery_result.results) {
+		all.push_back({e.first, e.second, meta_analysis(to_p_values(e.second))});
+	}
+	return all;
+}
+
+inline std::string to_string(const test_key& key) {
+	return get_test_name(key.type) + "-" + key.name;
 }
 
 inline void print_battery_result(const test_battery_result& battery_result) {
-	std::optional<meta_analysis> worst;
 	table t({"KEY", "VALUE"});
 	t.col("test subject").col(battery_result.mixer_name).row();
-	t.col("2^k").col(std::ceil(std::log2(battery_result.n))).row();
+	t.col("2^k").col(battery_result.power_of_two()).row();
 	t.col("samples").col(battery_result.samples).row();
 	t.col("n per sample").col(battery_result.n).row();
 	t.col("-------").col("-------").row();
@@ -168,18 +188,16 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		const auto& p_values = to_p_values(e.second);
 		const auto interpretation = meta_analysis(p_values);
 		if (interpretation.has_suspicion()) {
-			t.col(get_test_name(e.first.type) + "-" + e.first.name);
+			t.col(to_string(e.first));
 			t.col(interpretation.to_string());
 			t.row();
-		}
-
-		if (!worst || worst->get_failure_strength() < interpretation.get_failure_strength()) {
-			worst = interpretation;
 		}
 	}
 
 	t.col("-------").col("-------").row();
-	t.col("SUMMARY").col(worst->to_string()).row();
+	if (const auto meta = get_meta_analysis(battery_result)) {
+		t.col("SUMMARY").col(meta->to_string()).row();
+	}
 
 	std::cout << t.to_string() << "\n";
 }

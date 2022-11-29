@@ -104,12 +104,13 @@ test_battery_result test_parallel(uint64_t n, const test_setup<T>& setup) {
 	return test_result;
 }
 
+using test_callback = std::function<bool(test_battery_result)>;
+
 template <typename T>
-void test_parallel_multi_pass(int max_power,
-                              const std::function<bool(test_battery_result)>& result_callback,
+void test_parallel_multi_pass(const test_callback& result_callback,
                               const test_setup<T>& setup) {
 	int power = 10;
-	while (power <= max_power) {
+	while (true) {
 		const auto& result = test_parallel(1ull << power, setup);
 		if (!result_callback(result)) {
 			break;

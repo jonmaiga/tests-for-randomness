@@ -4,26 +4,51 @@
 
 namespace mixer {
 
-inline void test_command() {
-	using T = uint32_t;
-	//const auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
-	//const auto trng = create_mixer_from_stream<T>("trng1", trng_stream);
-
-	const auto mixer = mix32::sffs_xmxmx_3;
-
-	result_analyzer analyzer;
-	const auto ts = test_setup<T>{
+template <typename T>
+void run_test(const mixer<T>& mixer, const test_callback& callback) {
+	const test_setup<T> ts{
 		mixer,
 		create_rrc_sources<T>(),
 		all_test_types
 	};
+	test_parallel_multi_pass(callback, ts);
+}
 
-	const auto rc = [&](const test_battery_result& r) {
-		analyzer.add(r);
-		print_battery_result(r);
-		return get_meta_analysis(r).pass();
+inline auto create_result_callback(int max_power) {
+	return [max_power](const test_battery_result& br) {
+		const auto meta = get_meta_analysis(br);
+		print_battery_result(br);
+
+		const bool proceed = meta->pass() && br.power_of_two() < max_power;
+		if (!proceed) {
+			std::ostringstream os;
+			os << br.mixer_name << ";" << br.power_of_two() << ";" << meta->get_failure_strength() << ";";
+
+			std::string row = br.mixer_name + ";" + std::to_string(br.power_of_two()) + ";";
+			for (const auto& ra : get_result_analysis(br)) {
+				if (!ra.analysis.pass()) {
+					row += to_string(ra.key) + "(" + std::to_string(ra.analysis.get_failure_strength()) + "), ";
+				}
+			}
+			row += "\n";
+			write_append(get_config().result_path(), row);
+		}
+
+		return proceed;
 	};
-	test_parallel_multi_pass(25, rc, ts);
+}
+
+inline void test_command() {
+	using T = uint32_t;
+	const auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
+	const auto trng = create_mixer_from_stream<T>("trng1", trng_stream);
+
+	const auto callback = create_result_callback(20);
+	run_test(trng, callback);
+	for (const auto& m : get_mixers<T>()) {
+		run_test(m, callback);
+	}
+	write_append(get_config().result_path(), "\n");
 }
 
 }
