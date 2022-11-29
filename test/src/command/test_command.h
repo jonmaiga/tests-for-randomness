@@ -20,6 +20,7 @@ inline void test_command() {
 
 	const auto rc = [&](const test_battery_result& r) {
 		analyzer.add(r);
+		print_battery_result(r);
 		return get_meta_analysis(r).pass();
 	};
 	test_parallel_multi_pass(25, rc, ts);

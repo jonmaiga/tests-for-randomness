@@ -56,7 +56,9 @@ void run_tests() {
 			create_rrc_sources<T>(),
 			all_test_types
 		};
-		analyzer.add(test_parallel(n, ts));
+		const auto r = test_parallel(n, ts);
+		analyzer.add(r);
+		print_battery_result(r);
 	}
 
 	analyzer.summarize_fails({}, {"trng", "counter-1", "graycode-"});
@@ -75,6 +77,11 @@ int main(int argc, char** args) {
 		}
 		const std::string trng_path = args[1];
 		set_config({trng_path});
+
+		using T = uint32_t;
+		run_tests<T>();
+		return 0;
+
 
 		const std::string command = args[2];
 		std::cout << "Executing command " << command << "\n";

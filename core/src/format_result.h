@@ -156,37 +156,39 @@ inline meta_analysis get_meta_analysis(const test_battery_result& battery_result
 	return meta_analysis(all_p_values);
 }
 
+inline void print_battery_result(const test_battery_result& battery_result) {
+	std::optional<meta_analysis> worst;
+	table t({"KEY", "VALUE"});
+	t.col("test subject").col(battery_result.mixer_name).row();
+	t.col("2^k").col(std::ceil(std::log2(battery_result.n))).row();
+	t.col("samples").col(battery_result.samples).row();
+	t.col("n per sample").col(battery_result.n).row();
+	t.col("-------").col("-------").row();
+	for (const auto& e : battery_result.results) {
+		const auto& p_values = to_p_values(e.second);
+		const auto interpretation = meta_analysis(p_values);
+		if (interpretation.has_suspicion()) {
+			t.col(get_test_name(e.first.type) + "-" + e.first.name);
+			t.col(interpretation.to_string());
+			t.row();
+		}
+
+		if (!worst || worst->get_failure_strength() < interpretation.get_failure_strength()) {
+			worst = interpretation;
+		}
+	}
+
+	t.col("-------").col("-------").row();
+	t.col("SUMMARY").col(worst->to_string()).row();
+
+	std::cout << t.to_string() << "\n";
+}
+
 class result_analyzer {
 
 public:
 	void add(const test_battery_result& battery_result) {
 		test_results.push_back(battery_result);
-
-		std::optional<meta_analysis> worst;
-		table t({"KEY", "VALUE"});
-		t.col("test subject").col(battery_result.mixer_name).row();
-		t.col("2^k").col(std::ceil(std::log2(battery_result.n))).row();
-		t.col("samples").col(battery_result.samples).row();
-		t.col("n per sample").col(battery_result.n).row();
-		t.col("-------").col("-------").row();
-		for (const auto& e : battery_result.results) {
-			const auto& p_values = to_p_values(e.second);
-			const auto interpretation = meta_analysis(p_values);
-			if (interpretation.has_suspicion()) {
-				t.col(get_test_name(e.first.type) + "-" + e.first.name);
-				t.col(interpretation.to_string());
-				t.row();
-			}
-
-			if (!worst || worst->get_failure_strength() < interpretation.get_failure_strength()) {
-				worst = interpretation;
-			}
-		}
-
-		t.col("-------").col("-------").row();
-		t.col("SUMMARY").col(worst->to_string()).row();
-
-		std::cout << t.to_string() << "\n";
 	}
 
 	std::vector<test_result> query(const tags& mixer_tags, const tags& stream_tags) const {
