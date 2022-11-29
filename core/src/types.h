@@ -129,7 +129,6 @@ struct test_result {
 struct test_battery_result {
 	using test_result_map = std::map<test_key, std::vector<test_result>>;
 
-	std::string name;
 	std::string mixer_name;
 	uint64_t n{};
 	uint64_t samples{};

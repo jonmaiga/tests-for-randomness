@@ -104,7 +104,7 @@ inline auto create_collector(test_battery_result& test_result) {
 template <typename T>
 test_battery_result test_parallel(uint64_t n, const test_setup<T>& setup) {
 	using namespace internal;
-	test_battery_result test_result{"test", setup.name, n, setup.sources.size()};
+	test_battery_result test_result{setup.name, n, setup.sources.size()};
 	const auto jobs = create_test_jobs(n, setup);
 	run_jobs<test_job_return>(jobs, create_collector(test_result), setup.max_threads);
 	return test_result;
