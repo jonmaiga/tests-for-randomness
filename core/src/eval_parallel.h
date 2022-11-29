@@ -11,7 +11,7 @@ namespace mixer {
 
 template <typename T>
 struct test_setup {
-	std::string name;
+	std::string test_subject_name;
 	std::vector<source<T>> sources;
 	std::vector<test_type> tests;
 	std::optional<mixer<T>> mix;
@@ -70,17 +70,20 @@ test_job create_stream_job(uint64_t n, const std::string& name, const test_defin
 template <typename T>
 test_jobs create_test_jobs(const uint64_t n, const test_setup<T>& setup) {
 	test_jobs jobs;
+	const auto& test_subject_name = setup.test_subject_name;
+	const auto& mix = setup.mix;
+
 	for (const auto& test : setup.tests) {
 		const auto& test_def = get_test_definition<T>(test);
 		for (const auto& source : setup.sources) {
-			if (test_def.test_mixer && setup.mix) {
+			if (test_def.test_mixer && mix) {
 				// mixer test
-				jobs.push_back(create_mixer_job<T>(n, setup.name, *setup.mix, test_def, source));
+				jobs.push_back(create_mixer_job<T>(n, test_subject_name, *mix, test_def, source));
 			}
 			if (test_def.test_stream) {
 				// stream test
-				const auto s = create_stream(setup.mix, source);
-				jobs.push_back(create_stream_job<T>(n, setup.name, test_def, s));
+				const auto s = create_stream(mix, source);
+				jobs.push_back(create_stream_job<T>(n, test_subject_name, test_def, s));
 			}
 		}
 	}
@@ -104,7 +107,7 @@ inline auto create_collector(test_battery_result& test_result) {
 template <typename T>
 test_battery_result test_parallel(uint64_t n, const test_setup<T>& setup) {
 	using namespace internal;
-	test_battery_result test_result{setup.name, n, setup.sources.size()};
+	test_battery_result test_result{setup.test_subject_name, n, setup.sources.size()};
 	const auto jobs = create_test_jobs(n, setup);
 	run_jobs<test_job_return>(jobs, create_collector(test_result), setup.max_threads);
 	return test_result;
