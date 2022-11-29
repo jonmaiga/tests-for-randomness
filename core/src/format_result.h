@@ -205,7 +205,9 @@ public:
 	void list_results(const tags& mixer_tags, const tags& stream_tags) const {
 		table t({"mixer", "stream", "n", "statistic", "value", "p_value", "df"});
 		for (const auto& r : query(mixer_tags, stream_tags)) {
-			if (r.stats.p_value > 0.05 && r.stats.p_value < 0.95) continue;
+			if (r.stats.p_value > 0.05 && r.stats.p_value < 0.95) {
+				continue;
+			}
 			t.col(r.mixer_name).
 			  col(r.stream_name).
 			  col(r.n).
@@ -275,7 +277,9 @@ private:
 
 	std::optional<fail_summary> get_fail_summary(const tags& mixer_tags, const tags& stream_tags) const {
 		const auto& r = query(mixer_tags, stream_tags);
-		if (r.empty()) return {};
+		if (r.empty()) {
+			return {};
+		}
 		double fails = 0;
 		for (const auto pv : to_p_values(r)) {
 			constexpr auto a = 0.005;
