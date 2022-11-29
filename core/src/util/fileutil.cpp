@@ -36,11 +36,20 @@ std::string readPartOfFileMustExist(const std::string& filename, size_t size) {
 	return data.substr(0, lastNl);
 }
 
-bool write(const std::string& filename, const std::string& data) {
-	std::ofstream file(filename, std::ios::out | std::ios::trunc | std::ios::binary);
+bool write(const std::string& filename, const std::string& data, bool append) {
+	std::ofstream file(filename, std::ios::out | (append ? std::ios::app : std::ios::trunc) | std::ios::binary);
 	file << data;
 	file.close();
 	return !file.fail();
+}
+
+
+bool write(const std::string& filename, const std::string& data) {
+	return write(filename, data, false);
+}
+
+bool write_append(const std::string& filename, const std::string& data) {
+	return write(filename, data, true);
 }
 
 void forEachFile(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>& callback) {

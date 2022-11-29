@@ -15,6 +15,7 @@ std::string readAsStringMustExist(const std::string& filename, size_t maxSize = 
 std::string readPartOfFileMustExist(const std::string& filename, size_t size);
 
 bool write(const std::string& filename, const std::string& data);
+bool write_append(const std::string& filename, const std::string& data);
 
 void forEachFile(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>&);
 void forEachFileRecursively(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>&);
