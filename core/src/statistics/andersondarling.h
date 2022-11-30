@@ -24,8 +24,7 @@ inline std::optional<statistic> anderson_darling_stats(std::vector<double> data0
 
 	const auto n = static_cast<double>(data01.size());
 	const auto A2 = -n - sum / n;
-	// todo: df should be n?
-	return statistic{statistic_type::anderson_darling_A2, A2, anderson_darling_cdf(A2, n - 1), n - 1};
+	return statistic{statistic_type::anderson_darling_A2, A2, anderson_darling_cdf(A2, n), n};
 }
 
 template <typename T>

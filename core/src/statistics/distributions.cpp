@@ -206,7 +206,7 @@ double AndersonDarlingPValue(int n, double z) {
 }
 
 double anderson_darling_cdf(double A2, double df) {
-	const auto p = std::clamp(AndersonDarlingPValue(df, A2), 0., 1.);
+	const auto p = 1. - std::clamp(AndersonDarlingPValue(df, A2), 0., 1.);
 	assertion(is_valid(p), "anderson darling cdf is not valid");
 	return p;
 }
