@@ -62,18 +62,6 @@ inline sffs_state run_sffs(const sffs_config& config, const sffs_callback& callb
 	int k = init_bits.count();
 
 	while (k < max) {
-		{
-			const sffs_state new_fwd_state = get_forward_state(config, ks[k]);
-			const sffs_state old_fwd_state = ks[k + 1];
-			if (old_fwd_state.data.size() == 0 || new_fwd_state.score < old_fwd_state.score) {
-				ks[k + 1] = new_fwd_state;
-			}
-			++k;
-			if (callback) {
-				callback(k, new_fwd_state, old_fwd_state);
-			}
-		}
-
 		while (k > min) {
 			const sffs_state new_bwd_state = get_backward_state(config, ks[k]);
 			const sffs_state old_bwd_state = ks[k - 1];
@@ -85,6 +73,17 @@ inline sffs_state run_sffs(const sffs_config& config, const sffs_callback& callb
 				}
 			}
 			else break;
+		}
+		{
+			const sffs_state new_fwd_state = get_forward_state(config, ks[k]);
+			const sffs_state old_fwd_state = ks[k + 1];
+			if (old_fwd_state.data.size() == 0 || new_fwd_state.score < old_fwd_state.score) {
+				ks[k + 1] = new_fwd_state;
+			}
+			++k;
+			if (callback) {
+				callback(k, new_fwd_state, old_fwd_state);
+			}
 		}
 	}
 
