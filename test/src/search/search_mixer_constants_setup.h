@@ -117,6 +117,15 @@ inline sffs_config get_xmx_config() {
 	return {bits, fitness, to_str, to_arr_str};
 }
 
+template <typename T> sffs_config get_xmx_config() {
+	if constexpr (sizeof(T) == 4) {
+		return search32::get_xmx_config();
+	}
+	else {
+		return {};
+	}
+}
+
 
 template <typename T> sffs_config get_xmxmx_config() {
 	if constexpr (sizeof(T) == 4) {
@@ -139,8 +148,8 @@ template <typename T> sffs_config get_xmxmxmx_config() {
 
 template <typename T>
 void run_search() {
-	auto cfg = get_xmxmx_config<T>();
-	cfg.seed = find_seed(cfg, 10);
+	auto cfg = get_xmx_config<T>();
+	cfg.seed = find_seed(cfg, 5);
 	start_search<T>("NAME HERE", cfg);
 }
 
