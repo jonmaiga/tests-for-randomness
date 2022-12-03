@@ -98,6 +98,7 @@ class meta_analysis {
 public:
 	explicit meta_analysis(const std::vector<double>& p_values) :
 		stat(kolmogorov_smirnov_stats(p_values)) {
+		assertion(stat, "unset stat in meta");
 	}
 
 	bool has_remark() const {
