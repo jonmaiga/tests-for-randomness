@@ -64,9 +64,9 @@ inline sffs_config get_mx3_config() {
 	};
 
 	constexpr int bits = 24; // + 64; // + 64 + 64; // + 64; // + 64 + 64 + 64;
-	const auto fitness = [factory](const bit_vector& bits) {
+	const auto fitness = [factory](const bit_vector& bits, unsigned int num_threads) {
 		const auto m = mixer64{"mx3", factory(bits)};
-		return sffs_fitness_test(m);
+		return sffs_fitness_test(m, num_threads);
 	};
 	return {bits, fitness, to_str, to_arr_str};
 }
@@ -110,9 +110,9 @@ inline sffs_config get_xmx_config() {
 	};
 
 	constexpr int bits = 12 + 64;
-	const auto fitness = [factory](const bit_vector& bits) {
+	const auto fitness = [factory](const bit_vector& bits, unsigned int num_threads) {
 		const auto m = mixer64{"xmx", factory(bits)};
-		return sffs_fitness_test(m);
+		return sffs_fitness_test(m, num_threads);
 	};
 	return {bits, fitness, to_str, to_arr_str};
 }
@@ -149,8 +149,15 @@ template <typename T> sffs_config get_xmxmxmx_config() {
 template <typename T>
 void run_search() {
 	auto cfg = get_xmx_config<T>();
-	cfg.seed = find_seed(cfg, 5);
-	start_search<T>("NAME HERE", cfg);
+	bit_vector seed(42);
+	seed.set(7, 0, 5);
+	seed.set(14, 5, 5);
+	seed.set(4281226949, 10, 32);
+	cfg.seed = seed;
+	cfg.seed = find_seed(cfg, 20);
+	const auto result = start_search<T>("NAME HERE", cfg);
+	const auto mixer = search32::create_xmx_mixer(result.data);
+	test_parallel_multi_pass(create_result_callback(20, false), create_test_setup<T>(mixer));
 }
 
 }

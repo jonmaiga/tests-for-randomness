@@ -4,6 +4,7 @@
 #include <map>
 #include <optional>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "mixer.h"
@@ -197,5 +198,8 @@ inline data_fn mul(const data_fn& a, const data_fn& b) {
 	};
 }
 
+inline unsigned int default_max_threads() {
+	return std::max(std::thread::hardware_concurrency() - 4, 2u);
+}
 
 }

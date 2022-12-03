@@ -5,15 +5,17 @@
 
 namespace mixer {
 
-inline auto create_result_callback(int max_power) {
-	return [max_power](const test_battery_result& br) {
+inline auto create_result_callback(int max_power, bool print_intermediate_results = true) {
+	return [max_power, print_intermediate_results](const test_battery_result& br) {
 		const auto meta = get_meta_analysis(br);
 		if (!meta) {
 			return true;
 		}
-		print_battery_result(br);
 
 		const bool proceed = meta->pass() && br.power_of_two() < max_power;
+		if (print_intermediate_results || !proceed) {
+			print_battery_result(br);
+		}
 		if (!proceed) {
 			std::ostringstream os;
 			os << br.test_subject_name << ";" << br.power_of_two() << ";" << meta->get_failure_strength() << ";";
@@ -66,12 +68,12 @@ test_setup<T> create_test_setup(const mixer<T> mixer) {
 }
 
 inline void test_command() {
-	using T = uint64_t;
+	using T = uint32_t;
 	const auto trng_stream = create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
 
 	const auto callback = create_result_callback(20);
 	//test_parallel_multi_pass(callback, create_test_setup<T>(trng_stream));
-	for (const auto& m : get_mixers<T>()) {
+	for (const auto& m : {mix32::sffs_xmxmx_1}) {
 		test_parallel_multi_pass(callback, create_test_setup<T>(m));
 	}
 	write_append(get_config().result_path(), "\n");
