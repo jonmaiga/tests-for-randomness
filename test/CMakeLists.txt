@@ -1,4 +1,5 @@
 project(mixer-test)
+include_directories(src)
 file(GLOB_RECURSE SOURCES "src/*.*")
 set(SOURCE ${SOURCES})
 add_executable(${PROJECT_NAME} ${SOURCE})
