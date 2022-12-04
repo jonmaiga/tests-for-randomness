@@ -6,7 +6,7 @@
 #include "trng_data.h"
 #include "command/test_command.h"
 
-#include "search/search_mixer_constants_setup.h"
+#include "search/search_setup.h"
 
 namespace mixer {
 

@@ -10,8 +10,7 @@ namespace mixer {
 
 template <typename T>
 double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
-	int max_power = 15;
-	uint64_t n = 1ull << max_power;
+
 	auto ts = test_setup<T>{
 		mixer.name,
 		create_rrc_sources<T>(),
@@ -20,22 +19,26 @@ double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
 		threads
 	};
 
-	auto cb = [max_power](const test_battery_result& br) {
+	constexpr int max_power = 23;
+	double fs = 0;
+	auto cb = [max_power, &fs](const test_battery_result& br) {
 		const auto meta = get_meta_analysis(br);
 		if (!meta) {
 			return true;
 		}
+		fs += meta->get_failure_strength();
 		return meta->pass() && br.power_of_two() < max_power;
 	};
 
 	const auto r = test_parallel_multi_pass<T>(cb, ts);
-	
-	std::vector<double> all;
+
+	std::vector<double> all_p_values;
 	for (const auto& tr : r.results) {
-		append(all, to_p_values(tr.second));
+		append(all_p_values, to_p_values(tr.second));
 	}
-	return (max_power - r.power_of_two()) + kolmogorov_smirnov_stats(all)->value;
-	//return kolmogorov_smirnov_stats(all)->value;
+	return fs + kolmogorov_smirnov_stats(all_p_values)->value;
+	//return (max_power - r.power_of_two()) + kolmogorov_smirnov_stats(all_p_values)->value;
+	//return kolmogorov_smirnov_stats(all_p_values)->value;
 }
 
 inline bit_vector random_bit_vector(int bits) {
@@ -71,9 +74,9 @@ sffs_state start_search(const std::string& name, const sffs_config& config) {
 	std::cout << "===========================\n";
 	if (const auto& seed = config.seed) {
 		std::cout << config.to_string(*seed) << "\n";
-		std::cout << "Baseline fitness: " << config.fitness(*seed, default_max_threads()) << "\n";
+		std::cout << "Seed fitness: " << config.fitness(*seed, default_max_threads()) << "\n";
 	}
-	std::cout << "Trng fitness    : " << sffs_fitness_test(trng, default_max_threads()) << "\n";
+	//std::cout << "Trng fitness    : " << sffs_fitness_test(trng, default_max_threads()) << "\n";
 	auto result = run_sffs(config, create_sffs_printer(config.to_arr_str));
 	std::stringstream ss;
 	ss << to_string(result, config.to_arr_str) << "\n";

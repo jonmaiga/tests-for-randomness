@@ -49,12 +49,12 @@ const mixer32 xmxmx = {
 };
 
 const mixer32 sffs_xmxmx_1 = {
-	"xmxmx_200000_c1_gc", [](uint32_t x) {
-		x ^= x >> 15;
-		x *= 2232101479;
-		x ^= x >> 12;
-		x *= 2232101479;
-		x ^= x >> 18;
+	"xmxmx_sffs_1", [](uint32_t x) {
+    x ^= x >> 16;
+    x *= 12227530;
+    x ^= x >> 16;
+    x *= 12227530;
+    x ^= x >> 13;
 		return x;
 	}
 };
