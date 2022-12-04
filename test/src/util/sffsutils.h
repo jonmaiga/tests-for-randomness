@@ -40,7 +40,7 @@ double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
 		threads
 	};
 
-	constexpr int max_power = 15;
+	constexpr int max_power = 25;
 	auto cb = [max_power](const test_battery_result& br) {
 		const auto meta = get_meta_analysis(br);
 		if (!meta) {
