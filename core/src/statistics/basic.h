@@ -53,7 +53,7 @@ basic_statistics basic_stats(const T& values) {
 }
 
 template <typename T>
-sub_test_results basic_test(uint64_t n, stream<T> stream) {
+sub_test_results distribution_mean_test(uint64_t n, stream<T> stream) {
 	// mean from uniform is approximately normal
 	// https://stats.stackexchange.com/questions/458341/what-distribution-does-the-mean-of-a-random-sample-from-a-uniform-distribution-f
 	const auto stats = basic_stats(ranged_stream(rescale_type_to_01(stream), n));

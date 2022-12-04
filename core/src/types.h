@@ -45,7 +45,7 @@ enum class statistic_type {
 };
 
 enum class test_type {
-	basic_mean,
+	distribution_mean,
 	chi2,
 
 	// requires more than 1 iteration
