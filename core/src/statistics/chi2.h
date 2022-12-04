@@ -51,9 +51,4 @@ std::optional<statistic> chi2_uniform_stats(const T& data01) {
 	return chi2_stats(bins, expected_count);
 }
 
-template <typename T>
-sub_test_results chi2_test(const uint64_t n, const stream<T>& stream) {
-	return main_sub_test(chi2_uniform_stats(ranged_stream(rescale_type_to_01(stream), n)));
-}
-
 }

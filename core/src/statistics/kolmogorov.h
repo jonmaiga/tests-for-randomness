@@ -23,12 +23,4 @@ inline std::optional<statistic> kolmogorov_smirnov_stats(std::vector<double> dat
 	return statistic{statistic_type::kolmogorov_smirnov_d, max_distance, p_value, n};
 }
 
-template <typename T>
-sub_test_results kolmogorov_test(const uint64_t n, stream<T> source) {
-	return split_test(n, 1000000, [&source](uint64_t size) {
-		return kolmogorov_smirnov_stats(rescale_type_to_01_by_ref(size, source));
-	});
-}
-
-
 }

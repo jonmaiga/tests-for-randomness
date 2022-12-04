@@ -27,7 +27,7 @@ TEST(statistics_basic, sum_of_squares) {
 }
 
 TEST(statistics_basic, no_change) {
-	const auto r = distribution_mean_test(50, test_stream()).front().stats;
+	const auto r = mean_test(50, test_stream()).front().stats;
 	EXPECT_NEAR(r->value, 0.03325, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.9734, 1e-4);
 }

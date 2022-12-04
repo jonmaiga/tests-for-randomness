@@ -45,13 +45,10 @@ enum class statistic_type {
 };
 
 enum class test_type {
-	distribution_mean,
-	chi2,
+	mean,
+	uniform,
 
-	// requires more than 1 iteration
-	kolmogorov_smirnov,
 	wald_wolfowitz_runs,
-	anderson_darling,
 	pearson_r,
 	spearman_r,
 	kendall_tau,

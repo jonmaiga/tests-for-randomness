@@ -84,17 +84,17 @@ template <typename T> sffs_config get_xmxmxmx_config() {
 
 template <typename T>
 void run_search() {
-	auto cfg = get_xmx_config<T>();
-	bit_vector seed(42);
+	auto cfg = get_xmxmx_config<T>();
+	bit_vector seed(47);
 	seed.set(16, 0, 5);
 	seed.set(16, 5, 5);
-	//seed.set(16, 10, 5);
+	seed.set(16, 10, 5);
 	seed.set(0x9b1a615dull, 10, 32);
 	cfg.seed = seed;
-	cfg.seed = find_seed(cfg, 1000);
+	//cfg.seed = find_seed(cfg, 1000);
 	const auto result = start_search<T>("NAME HERE", cfg);
-	const auto mixer = search32::create_xmx_mixer(result.data);
-	test_parallel_multi_pass(create_result_callback(15, false), create_test_setup<T>(mixer));
+	const auto mixer = search32::create_xmxmx_mixer(result.data);
+	test_parallel_multi_pass(create_result_callback(25, false), create_test_setup<T>(mixer));
 }
 
 }

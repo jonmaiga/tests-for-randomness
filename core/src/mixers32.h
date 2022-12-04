@@ -50,11 +50,12 @@ const mixer32 xmxmx = {
 
 const mixer32 sffs_xmxmx_1 = {
 	"xmxmx_sffs_1", [](uint32_t x) {
+		//16, 16, 17, 3618791773
     x ^= x >> 16;
-    x *= 12227530;
+    x *= 3618791773;
     x ^= x >> 16;
-    x *= 12227530;
-    x ^= x >> 13;
+    x *= 3618791773;
+    x ^= x >> 17;
 		return x;
 	}
 };
