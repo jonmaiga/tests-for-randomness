@@ -1,5 +1,9 @@
 #pragma once
 
+#include "util/bit_vector.h"
+#include "util/sffs_types.h"
+#include "util/sffsutils.h"
+
 namespace mixer {namespace search32 {
 
 struct xmx_constants {

@@ -29,4 +29,35 @@ inline auto create_sffs_printer(const bit_vector_to_string& to_arr_str) {
 	};
 }
 
+template <typename T>
+double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
+
+	auto ts = test_setup<T>{
+		mixer.name,
+		create_rrc_sources<T>(),
+		all_test_types,
+		mixer,
+		threads
+	};
+
+	constexpr int max_power = 15;
+	auto cb = [max_power](const test_battery_result& br) {
+		const auto meta = get_meta_analysis(br);
+		if (!meta) {
+			return true;
+		}
+		return meta->pass() && br.power_of_two() < max_power;
+	};
+
+	const auto r = test_parallel_multi_pass<T>(cb, ts);
+
+	std::vector<double> all_p_values;
+	for (const auto& tr : r.results) {
+		append(all_p_values, to_p_values(tr.second));
+	}
+	return (max_power - r.power_of_two()) + kolmogorov_smirnov_stats(all_p_values)->value;
+	//return kolmogorov_smirnov_stats(all_p_values)->value;
+}
+
+
 }
