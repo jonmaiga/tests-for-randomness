@@ -1,6 +1,6 @@
 #pragma once
 
-#include "util/bit_vector.h"
+#include "util/bitvector.h"
 #include "util/sffs_types.h"
 #include "util/sffsutils.h"
 

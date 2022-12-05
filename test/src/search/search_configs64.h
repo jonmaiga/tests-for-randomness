@@ -1,8 +1,8 @@
 #pragma once
 
-#include "util/bit_vector.h"
-#include "util/sffs_types.h"
+#include "util/bitvector.h"
 #include "util/sffsutils.h"
+#include "util/sffs_types.h"
 
 namespace mixer {namespace search64 {
 

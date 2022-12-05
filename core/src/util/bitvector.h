@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+#include <string>
 #include <vector>
 
 namespace mixer {
@@ -8,8 +10,7 @@ struct bit_vector {
 	bit_vector() = default;
 
 	bit_vector(int bits) : bits(bits) {
-		const size_t size = std::ceil(bits / 8.);
-		data.resize(size);
+		data.resize(std::ceil(bits / 8.));
 	}
 
 	bool get_bit(int bit) const {
@@ -49,10 +50,13 @@ struct bit_vector {
 		return v;
 	}
 
-	void set(uint64_t v, int from_bit, int count) {
+	void add(uint64_t v, int count) {
+		const int new_bits = bits + count;
+		data.resize(std::ceil(new_bits / 8.));
 		for (int i = 0; i < count; ++i) {
-			set_bit(from_bit + i, ((v >> i) & 1) == 1);
+			set_bit(bits + i, ((v >> i) & 1) == 1);
 		}
+		bits += count;
 	}
 
 

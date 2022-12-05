@@ -84,12 +84,12 @@ template <typename T> sffs_config get_xmxmxmx_config() {
 
 template <typename T>
 void run_search() {
-	
-	bit_vector seed(18+64);
-	seed.set(32, 0, 6);
-	seed.set(32, 6, 6);
-	seed.set(28, 12, 6);
-	seed.set(0xe9846af9b1a615dull, 18, 64);
+
+	bit_vector seed;
+	seed.add(32, 6);
+	seed.add(32, 6);
+	seed.add(28, 6);
+	seed.add(0xe9846af9b1a615dull, 64);
 
 	auto cfg = get_xmxmx_config<T>();
 	cfg.seed = seed;

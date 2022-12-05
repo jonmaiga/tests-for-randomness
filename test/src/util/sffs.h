@@ -2,8 +2,8 @@
 
 #include <map>
 
-#include "bit_vector.h"
 #include "sffs_types.h"
+#include "util/bitvector.h"
 #include "util/timer.h"
 
 namespace mixer {

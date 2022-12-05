@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bit_vector.h"
+#include "util/bitvector.h"
 
 namespace mixer {
 
