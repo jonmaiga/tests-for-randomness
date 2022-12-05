@@ -4,6 +4,7 @@
 
 #include "bit_vector.h"
 #include "sffs_types.h"
+#include "util/timer.h"
 
 namespace mixer {
 
@@ -14,14 +15,20 @@ struct sffs_state {
 
 using sffs_callback = std::function<void(int k, const sffs_state& new_state, const sffs_state& old_state)>;
 
+inline unsigned int get_threads_per_job(const bit_vector& current_data, bool is_forward) {
+	return 4;
+}
+
 inline sffs_state get_state(const sffs_config& config, const sffs_state& current_state, bool is_forward) {
+	const auto& current_data = current_state.data;
+	const auto threads_per_job = get_threads_per_job(current_data, is_forward);
 	jobs<sffs_state> sffs_jobs;
 	for (int i = 0; i < config.bits; ++i) {
-		if (current_state.data.get_bit(i) == is_forward) continue;
-		auto test = current_state.data;
+		if (current_data.get_bit(i) == is_forward) continue;
+		auto test = current_data;
 		test.set_bit(i, is_forward);
-		sffs_jobs.emplace_back([test, &config]() {
-				const double score = config.fitness(test, 4);
+		sffs_jobs.emplace_back([test, &config, threads_per_job]() {
+				const double score = config.fitness(test, threads_per_job);
 				assertion(is_valid(score), "invalid fitness score for sffs");
 				return sffs_state{test, score};
 			}
@@ -57,7 +64,7 @@ inline sffs_state run_sffs(const sffs_config& config, const sffs_callback& callb
 	const int min = 0;
 	const int max = config.bits;
 
-	const double seed_score = config.fitness(init_bits, 4);
+	const double seed_score = config.fitness(init_bits, default_max_threads());
 	ks[init_bits.count()] = {init_bits, seed_score};
 	int k = init_bits.count();
 
