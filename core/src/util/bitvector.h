@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "assertion.h"
+
 namespace mixer {
 
 struct bit_vector {
@@ -14,13 +16,17 @@ struct bit_vector {
 	}
 
 	bool get_bit(int bit) const {
+		assertion(bit < bits, "bit oob");
 		const size_t index = bit / 8;
 		const int shift = bit - 8 * index;
 		return ((data[index] >> shift) & 1) == 1;
 	}
 
 	void set_bit(size_t bit, bool value) {
+		assertion(bit < bits, "bit oob");
 		const size_t index = bit / 8;
+		assertion(index < data.size(), "bit data oob");
+
 		const auto shift = bit - 8 * index;
 		if (value)
 			data[index] |= (value << shift);
@@ -51,12 +57,12 @@ struct bit_vector {
 	}
 
 	void add(uint64_t v, int count) {
-		const int new_bits = bits + count;
-		data.resize(std::ceil(new_bits / 8.));
-		for (int i = 0; i < count; ++i) {
-			set_bit(bits + i, ((v >> i) & 1) == 1);
-		}
+		const int old_bits = bits;
 		bits += count;
+		data.resize(static_cast<std::size_t>(std::ceil(bits / 8.)));
+		for (int i = 0; i < count; ++i) {
+			set_bit(old_bits + i, ((v >> i) & 1) == 1);
+		}
 	}
 
 
