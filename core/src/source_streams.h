@@ -41,7 +41,7 @@ std::vector<source<T>> create_sources() {
 		return source<T>{create_stream_from_data_by_ref<T>("trng", get_trng_data<T>())};
 	};
 
-	std::vector<source<T>> configs{counter1()}; //, trng};
+	std::vector<source<T>> configs{counter1()};
 
 	constexpr auto Bits = 8 * sizeof(T);
 	for (int bit = 0; bit < Bits; ++bit) {
@@ -53,7 +53,6 @@ std::vector<source<T>> create_sources() {
 		};
 		//configs.emplace_back(bit_factory());
 	}
-
 	return configs;
 }
 

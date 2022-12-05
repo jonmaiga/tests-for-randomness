@@ -6,6 +6,61 @@
 
 namespace mixer {namespace search64 {
 
+struct xmxmx_constants {
+	explicit xmxmx_constants(const bit_vector& bits) {
+		C1 = bits.get(0, 6);
+		C2 = bits.get(6, 6);
+		C3 = bits.get(12, 6);
+		m1 = bits.get(18, 64);
+	}
+
+	uint64_t C1;
+	uint64_t C2;
+	uint64_t C3;
+	uint64_t m1;
+};
+
+const auto xmxmx_factory = [](const bit_vector& bits) {
+	return mixer64{
+		"xmxmx", [c=xmxmx_constants(bits)](uint64_t x) {
+			x ^= (x >> c.C1);
+			x *= c.m1;
+			x ^= (x >> c.C2);
+			x *= c.m1;
+			x ^= (x >> c.C3);
+			return x;
+		}
+	};
+};
+
+
+inline sffs_config get_xmxmx_config() {
+
+	auto to_str = [](const bit_vector& bits) {
+		const xmxmx_constants c(bits);
+		std::stringstream ss;
+		ss << "    x ^= x >> " << c.C1 << ";\n";
+		ss << "    x *= " << c.m1 << "ull;\n";
+		ss << "    x ^= x >> " << c.C2 << ";\n";
+		ss << "    x *= " << c.m1 << "ull;\n";
+		ss << "    x ^= x >> " << c.C3 << ";\n";
+		return ss.str();
+	};
+
+	auto to_arr_str = [](const bit_vector& bits) {
+		const xmxmx_constants c(bits);
+		std::stringstream ss;
+		ss << c.C1 << ", " << c.C2 << ", " << c.C3 << ", " << c.m1;
+		return ss.str();
+	};
+
+	constexpr int bits = 18 + 64;
+	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
+		return sffs_fitness_test(xmxmx_factory(bits), num_threads);
+	};
+	return {bits, fitness, to_str, to_arr_str};
+}
+
 inline sffs_config get_mx3_config() {
 	struct constants {
 		explicit constants(const bit_vector& bits) {
@@ -119,7 +174,4 @@ inline sffs_config get_xmx_config() {
 }
 
 
-}
-
-
-}
+}}

@@ -32,7 +32,7 @@ inline auto create_sffs_printer(const bit_vector_to_string& to_arr_str) {
 template <typename T>
 double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
 
-	auto ts = test_setup<T>{
+	const auto ts = test_setup<T>{
 		mixer.name,
 		create_rrc_sources<T>(),
 		all_test_types,
