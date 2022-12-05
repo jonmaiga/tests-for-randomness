@@ -49,7 +49,7 @@ double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
 		return meta->pass() && br.power_of_two() < max_power;
 	};
 
-	const auto r = test_parallel_multi_pass<T>(cb, ts);
+	const auto r = evaluate_multi_pass<T>(cb, ts);
 
 	std::vector<double> all_p_values;
 	for (const auto& tr : r.results) {

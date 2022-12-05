@@ -105,7 +105,7 @@ inline auto create_collector(test_battery_result& test_result) {
 }
 
 template <typename T>
-test_battery_result test_parallel(uint64_t n, const test_setup<T>& setup) {
+test_battery_result evaluate(uint64_t n, const test_setup<T>& setup) {
 	using namespace internal;
 	test_battery_result test_result{setup.test_subject_name, n, setup.sources.size(), 8 * sizeof(T)};
 	const auto jobs = create_test_jobs(n, setup);
@@ -116,11 +116,11 @@ test_battery_result test_parallel(uint64_t n, const test_setup<T>& setup) {
 using test_callback = std::function<bool(test_battery_result)>;
 
 template <typename T>
-test_battery_result test_parallel_multi_pass(const test_callback& result_callback,
-                                             const test_setup<T>& setup) {
+test_battery_result evaluate_multi_pass(const test_callback& result_callback,
+                                        const test_setup<T>& setup) {
 	int power = 10;
 	while (true) {
-		const auto& result = test_parallel(1ull << power, setup);
+		const auto& result = evaluate(1ull << power, setup);
 		if (!result_callback(result)) {
 			return result;
 		}

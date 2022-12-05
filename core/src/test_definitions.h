@@ -1,14 +1,11 @@
 #pragma once
 
-#include "statistics/andersondarling.h"
 #include "statistics/avalanche.h"
 #include "statistics/basic.h"
-#include "statistics/chi2.h"
 #include "statistics/correlation.h"
 #include "statistics/coupon.h"
 #include "statistics/divisibility.h"
 #include "statistics/gap.h"
-#include "statistics/kolmogorov.h"
 #include "statistics/permutation.h"
 #include "statistics/uniform.h"
 #include "statistics/waldwolfowitz.h"
@@ -29,17 +26,17 @@ std::vector<test_definition<T>> get_tests() {
 	return {
 		{test_type::mean, mean_test<T>, {}, "mean"},
 		{test_type::uniform, uniform_test<T>, {}, "uniform"},
-
-		// requires more than 1 iteration/sorting
-		//{test_type::wald_wolfowitz_runs, wald_wolfowitz_test<T>, {}, "ww"}, // weak=xmx
-		//{test_type::pearson_r, pearson_correlation_test<T>, {}, "pearson_r"}, // weak
-		//{test_type::spearman_r, spearman_correlation_test<T>, {}, "spearman_r"}, // weak
-		//{test_type::kendall_tau, kendall_correlation_test<T>, {}, "kendall_tau"}, // slow todo
-
-		//{test_type::gap, gap_test<T>, {}, "gap"}, // weak (found no tweak)
-		//{test_type::coupon, coupon_test<T>, {}, "coupon"}, // weak (found no tweak)
-		//{test_type::divisibility, divisibility_test<T>, {}, "divisibility"}, // weak (didn't find any tweak)
-		//{test_type::permutation, permutation_test<T>, {}, "permutation"}, // weak - but seems tweak-able (might be to little data but w4 also fails 64-bit-xmxmx)
+		//
+		// // requires more than 1 iteration/sorting
+		{test_type::wald_wolfowitz_runs, wald_wolfowitz_test<T>, {}, "ww"}, // weak=xmx
+		{test_type::pearson_r, pearson_correlation_test<T>, {}, "pearson_r"}, // weak
+		// // {test_type::spearman_r, spearman_correlation_test<T>, {}, "spearman_r"}, // weak
+		// // {test_type::kendall_tau, kendall_correlation_test<T>, {}, "kendall_tau"}, // slow todo
+		//
+		{test_type::gap, gap_test<T>, {}, "gap"}, // weak (found no tweak)
+		{test_type::coupon, coupon_test<T>, {}, "coupon"}, // weak (found no tweak)
+		{test_type::divisibility, divisibility_test<T>, {}, "divisibility"}, // weak (didn't find any tweak)
+		{test_type::permutation, permutation_test<T>, {}, "permutation"}, // weak - but seems tweak-able (might be to little data but w4 also fails 64-bit-xmxmx)
 
 		// mixer tests
 		{test_type::sac, {}, avalanche_mixer_sac_test<T>, "sac"}, // strong

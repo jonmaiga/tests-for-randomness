@@ -57,7 +57,7 @@ void run_tests() {
 			all_test_types,
 			mixer,
 		};
-		const auto r = test_parallel(n, ts);
+		const auto r = evaluate(n, ts);
 		analyzer.add(r);
 		print_battery_result(r);
 	}
@@ -86,7 +86,7 @@ int main(int argc, char** args) {
 			return 0;
 		}
 		if (command == "-search") {
-			using T = uint32_t;
+			using T = uint64_t;
 			run_search<T>();
 			return 0;
 		}
