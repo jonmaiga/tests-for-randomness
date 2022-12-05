@@ -1,6 +1,6 @@
 #pragma once
 
-#include "eval_parallel.h"
+#include "evaluate.h"
 #include "source_streams.h"
 
 namespace mixer {
