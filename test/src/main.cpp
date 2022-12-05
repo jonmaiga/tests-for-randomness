@@ -84,11 +84,12 @@ int main(int argc, char** args) {
 		if (command == "-test") {
 			test_command();
 			return 0;
-		} else if (command == "-search") {
+		}
+		if (command == "-search") {
 			using T = uint32_t;
 			run_search<T>();
 			return 0;
-		} 
+		}
 
 		std::cout << "Unknown command\n";
 		return 1;

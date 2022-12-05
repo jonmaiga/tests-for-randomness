@@ -27,7 +27,7 @@ struct bit_vector {
 			data[index] &= ~(1 << shift);
 	}
 
-	size_t size() const { return bits; };
+	int size() const { return bits; }
 
 	int count() const {
 		int sum = 0;

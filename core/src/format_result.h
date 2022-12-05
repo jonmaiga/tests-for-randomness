@@ -5,6 +5,7 @@
 #include "test_definitions.h"
 #include "util/table.h"
 #include "statistics/fishersmethod.h"
+#include "statistics/kolmogorov.h"
 #include "util/algo.h"
 
 namespace mixer {
@@ -53,13 +54,6 @@ inline void draw_histogram(const std::vector<double>& data) {
 		std::cout << "\n";
 	}
 	std::cout << "\n";
-}
-
-inline bool passed_test(const std::vector<test_result>& results, const double alpha) {
-	const auto p_values = to_p_values(results);
-	const auto ks_stat = kolmogorov_smirnov_stats(p_values);
-	const auto p_value = ks_stat->p_value;
-	return p_value >= alpha && p_value <= 1. - alpha;
 }
 
 using tags = std::vector<std::string>;
