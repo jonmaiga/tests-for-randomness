@@ -13,7 +13,7 @@ std::vector<uint64_t> avalanche_generate_sac(uint64_t n, stream<T> stream, const
 	// maybe the bit flip causes too many duplicates and it becomes biased.
 	// This happens for +10 rounds of AES and Sha256 as well...
 	constexpr auto Bits = 8 * sizeof(T);
-	std::vector<uint64_t> sac(Bits);
+	std::vector<uint64_t> sac(Bits + 1);
 	for (uint64_t i = 0; i < n; ++i) {
 		const auto x = mixer(stream());
 		const auto h0 = mixer(x);
