@@ -19,13 +19,8 @@ inline std::string to_string(const sffs_state& s, const bit_vector_to_string& to
 
 inline auto create_sffs_printer(const bit_vector_to_string& to_arr_str) {
 	return [to_arr_str](int k, const sffs_state& new_state, const sffs_state& old_state) {
-		if (true) {
-			std::cout << "k: " << k << ": " << to_string(new_state, to_arr_str) << " vs " << old_state.score;
-			std::cout << "\n";
-		}
-		else if (old_state.data.size() == 0) {
-			std::cout << "." << std::flush;
-		}
+		std::cout << "k: " << k << ": " << to_string(new_state, to_arr_str) << " vs " << old_state.score;
+		std::cout << "\n";
 	};
 }
 
