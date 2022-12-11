@@ -5,6 +5,7 @@
 #include "mixers64.h"
 #include "trng_data.h"
 #include "command/test_command.h"
+#include "command/ppm_command.h"
 
 #include "search/search_setup.h"
 
@@ -86,8 +87,13 @@ int main(int argc, char** args) {
 			return 0;
 		}
 		if (command == "-search") {
-			using T = uint64_t;
+			using T = uint32_t;
 			run_search<T>();
+			return 0;
+		}
+		if (command == "-ppm") {
+			using T = uint32_t;
+			ppm_command<T>();
 			return 0;
 		}
 
