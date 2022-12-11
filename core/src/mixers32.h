@@ -50,12 +50,33 @@ const mixer32 xmxmx = {
 
 const mixer32 sffs_xmxmx_1 = {
 	"xmxmx_sffs_1", [](uint32_t x) {
-		//16, 16, 17, 3618791773
-		x ^= x >> 18;
-		x *= 1916414773;
-		x ^= x >> 17;
-		x *= 1916414773;
 		x ^= x >> 16;
+		x *= 4117713299;
+		x ^= x >> 16;
+		x *= 4117713299;
+		x ^= x >> 15;
+		return x;
+	}
+};
+
+const mixer32 sffs_xmxmx_best = {
+	"xmxmx_sffs_BEST", [](uint32_t x) {
+		x ^= x >> 16;
+		x *= 3714929043;
+		x ^= x >> 11;
+		x *= 3714929043;
+		x ^= x >> 15;
+		return x;
+	}
+};
+
+const mixer32 sffs_xmxmx_best_pr = {
+	"xmxmx_sffs_BEST_PR", [](uint32_t x) {
+		x ^= x >> 16;
+		x *= 2836962011;
+		x ^= x >> 15;
+		x *= 2836962011;
+		x ^= x >> 14;
 		return x;
 	}
 };
@@ -121,29 +142,31 @@ const mixer32 jenkins = {
 
 template <>
 inline mixer<uint32_t> get_default_mixer() {
-	return mix32::mx3;
+return mix32::mx3;
 }
 
 template <>
 inline std::vector<mixer32> get_mixers() {
-	return {
-		mix32::mx3,
-		mix32::sffs_mx3_1,
+return {
+	//mix32::mx3,
+	//mix32::sffs_mx3_1,
 
-		mix32::xmxmx,
-		mix32::sffs_xmxmx_1,
-		mix32::prospector,
-		mix32::murmur,
-		mix32::h2_sql,
+	mix32::xmxmx,
+	mix32::sffs_xmxmx_1,
+	mix32::sffs_xmxmx_best,
+	mix32::sffs_xmxmx_best_pr,
+	mix32::prospector,
+	mix32::murmur,
+	mix32::h2_sql,
 
-		mix32::wang_1,
-		mix32::jenkins
+	mix32::wang_1,
+	mix32::jenkins
 
-		//mix32::sffs_xmxmx_1,
-		//mix32::sffs_xmxmx_2,
-		//mix32::sffs_xmxmx_3,
-		//mix32::sffs_xmxmx_4,
-	};
+	//mix32::sffs_xmxmx_1,
+	//mix32::sffs_xmxmx_2,
+	//mix32::sffs_xmxmx_3,
+	//mix32::sffs_xmxmx_4,
+};
 }
 
 }

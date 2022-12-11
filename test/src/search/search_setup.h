@@ -53,6 +53,14 @@ sffs_state start_search(const std::string& name, const sffs_config& config) {
 	return result;
 }
 
+template <typename T> sffs_config get_m_config() {
+	if constexpr (sizeof(T) == 4) {
+		return search32::get_m_config();
+	}
+	else {
+		return {};
+	}
+}
 
 template <typename T> sffs_config get_xmx_config() {
 	if constexpr (sizeof(T) == 4) {
@@ -86,16 +94,16 @@ template <typename T>
 void run_search() {
 
 	bit_vector seed;
-	seed.add(32, 6);
-	seed.add(32, 6);
-	seed.add(28, 6);
-	seed.add(0xe9846af9b1a615dull, 64);
+	//seed.add(14, 5);
+	//seed.add(14, 5);
+	//seed.add(14, 5);
+	seed.add(2836962011, 32);
 
-	auto cfg = get_xmxmx_config<T>();
+	auto cfg = get_m_config<T>();
 	cfg.seed = seed;
-	//cfg.seed = find_seed(cfg, 1000);
+	//cfg.seed = find_seed(cfg, 10000);
 	const auto result = start_search<T>("NAME HERE", cfg);
-	const auto mixer = search64::xmxmx_factory(result.data);
+	const auto mixer = search32::create_m_mixer(result.data);
 	evaluate_multi_pass(create_result_callback(25, false), create_test_setup<T>(mixer));
 }
 

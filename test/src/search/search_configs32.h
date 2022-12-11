@@ -6,6 +6,46 @@
 
 namespace mixer {namespace search32 {
 
+struct m_constants {
+	explicit m_constants(const bit_vector& bits) {
+		m1 = bits.get(0, 32);
+	}
+	uint32_t m1;
+};
+
+
+inline mixer32 create_m_mixer(const bit_vector& bits) {
+	return mixer32{
+		"m", [c=m_constants(bits)](uint32_t x) {
+			x *= c.m1;
+			return x;
+		}
+	};
+}
+
+
+inline sffs_config get_m_config() {
+	auto to_str = [](const bit_vector& bits) {
+		const m_constants c(bits);
+		std::stringstream ss;
+		ss << "    x *= " << c.m1 << ";\n";
+		return ss.str();
+	};
+
+	auto to_arr_str = [](const bit_vector& bits) {
+		const m_constants c(bits);
+		std::stringstream ss;
+		ss << c.m1;
+		return ss.str();
+	};
+
+	constexpr int bits = 32;
+	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
+		return sffs_fitness_test(create_m_mixer(bits), num_threads);
+	};
+	return {bits, fitness, to_str, to_arr_str};
+}
+
 struct xmx_constants {
 	explicit xmx_constants(const bit_vector& bits) {
 		C1 = bits.get(0, 5);

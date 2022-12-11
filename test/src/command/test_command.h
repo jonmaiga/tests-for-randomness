@@ -71,7 +71,7 @@ inline void test_command() {
 	using T = uint32_t;
 	const auto trng_stream = create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
 
-	const auto callback = create_result_callback(20, false);
+	const auto callback = create_result_callback(25, false);
 	//test_parallel_multi_pass(callback, create_test_setup<T>(trng_stream));
 	for (const auto& m : get_mixers<T>()) { //{mix32::sffs_xmxmx_1}) {
 		evaluate_multi_pass(callback, create_test_setup<T>(m));

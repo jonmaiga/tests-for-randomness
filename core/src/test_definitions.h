@@ -26,13 +26,12 @@ std::vector<test_definition<T>> get_tests() {
 	return {
 		{test_type::mean, mean_test<T>, {}, "mean"},
 		{test_type::uniform, uniform_test<T>, {}, "uniform"},
-		//
-		// // requires more than 1 iteration/sorting
+
 		{test_type::wald_wolfowitz_runs, wald_wolfowitz_test<T>, {}, "ww"}, // weak=xmx
-		{test_type::pearson_r, pearson_correlation_test<T>, {}, "pearson_r"}, // weak
-		// // {test_type::spearman_r, spearman_correlation_test<T>, {}, "spearman_r"}, // weak
-		// // {test_type::kendall_tau, kendall_correlation_test<T>, {}, "kendall_tau"}, // slow todo
-		//
+		// {test_type::pearson_r, pearson_correlation_test<T>, {}, "pearson_r"}, // weak
+		// {test_type::spearman_r, spearman_correlation_test<T>, {}, "spearman_r"}, // weak
+		// {test_type::kendall_tau, kendall_correlation_test<T>, {}, "kendall_tau"}, // slow todo
+		
 		{test_type::gap, gap_test<T>, {}, "gap"}, // weak (found no tweak)
 		{test_type::coupon, coupon_test<T>, {}, "coupon"}, // weak (found no tweak)
 		{test_type::divisibility, divisibility_test<T>, {}, "divisibility"}, // weak (didn't find any tweak)

@@ -104,7 +104,7 @@ public:
 	}
 
 	bool pass() const {
-		return get_failure_strength() < 5;
+		return get_failure_strength() < 9;
 	}
 
 	unsigned int get_failure_strength() const {
@@ -130,10 +130,10 @@ public:
 			"minor (2)",
 			"suspicious (3)",
 			"suspicious (4)",
-			"failure (5)",
-			"failure (6)",
-			"failure (7)",
-			"failure (8)",
+			"suspicious (5)",
+			"very suspicious (6)",
+			"very suspicious (7)",
+			"very suspicious (8)",
 			"failure (9)",
 			"failure (10)",
 		};
