@@ -27,7 +27,7 @@ inline auto create_sffs_printer(const bit_vector_to_string& to_arr_str) {
 template <typename T>
 double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
 
-	const auto ts = test_setup<T>{
+	const test_setup<T> ts{
 		mixer.name,
 		create_rrc_sources<T>(),
 		all_test_types,
@@ -35,7 +35,7 @@ double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
 		threads
 	};
 
-	constexpr int max_power = 25;
+	constexpr int max_power = 27;
 	auto cb = [max_power](const test_battery_result& br) {
 		const auto meta = get_meta_analysis(br);
 		if (!meta) {
