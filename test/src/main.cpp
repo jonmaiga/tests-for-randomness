@@ -4,8 +4,9 @@
 #include "mixers32.h"
 #include "mixers64.h"
 #include "trng_data.h"
-#include "command/test_command.h"
 #include "command/ppm_command.h"
+#include "command/exhaust_command.h"
+#include "command/test_command.h"
 
 #include "search/search_setup.h"
 
@@ -89,6 +90,10 @@ int main(int argc, char** args) {
 		if (command == "-sffs") {
 			using T = uint32_t;
 			run_sffs<T>();
+			return 0;
+		}
+		if (command == "-exhaust") {
+			exhaust_command();
 			return 0;
 		}
 		if (command == "-ppm") {

@@ -44,13 +44,14 @@ struct bit_vector {
 		return sum;
 	}
 
-	uint64_t get(int from_bit, int count) const {
-		uint64_t v = 0;
+	template <typename T = uint64_t>
+	T get(int from_bit, int count) const {
+		T v = 0;
 		int s = 0;
 		const int to_bit = from_bit + count;
 		for (int i = from_bit; i < to_bit; ++i, ++s) {
 			if (get_bit(i)) {
-				v |= 1ull << s;
+				v |= static_cast<T>(1) << s;
 			}
 		}
 		return v;

@@ -7,9 +7,7 @@
 namespace mixer {namespace search32 {
 
 struct m_constants {
-	explicit m_constants(const bit_vector& bits) {
-		m1 = bits.get(0, 32);
-	}
+	explicit m_constants(const bit_vector& bits) { m1 = bits.get(0, 32); }
 	uint32_t m1;
 };
 
@@ -47,21 +45,19 @@ inline sffs_config get_m_config() {
 }
 
 struct xmx_constants {
-	explicit xmx_constants(const bit_vector& bits) {
-		C1 = bits.get(0, 5);
-		C2 = bits.get(5, 5);
-		m1 = bits.get(10, 32);
-	}
-
 	uint32_t C1;
 	uint32_t C2;
 	uint32_t m1;
 };
 
+inline xmx_constants to_xmx_constants(const bit_vector& bits) {
+	using T = uint32_t;
+	return {bits.get<T>(0, 5), bits.get<T>(5, 5), bits.get<T>(10, 32)};
+}
 
-inline mixer32 create_xmx_mixer(const bit_vector& bits) {
+inline mixer32 create_xmx_mixer(const xmx_constants& c) {
 	return mixer32{
-		"xmx", [c=xmx_constants(bits)](uint32_t x) {
+		"xmx", [c](uint32_t x) {
 			x ^= (x >> c.C1);
 			x *= c.m1;
 			x ^= (x >> c.C2);
@@ -72,7 +68,7 @@ inline mixer32 create_xmx_mixer(const bit_vector& bits) {
 
 inline sffs_config get_xmx_config() {
 	auto to_str = [](const bit_vector& bits) {
-		const xmx_constants c(bits);
+		const auto c = to_xmx_constants(bits);
 		std::stringstream ss;
 		ss << "    x ^= x >> " << c.C1 << ";\n";
 		ss << "    x *= " << c.m1 << ";\n";
@@ -81,7 +77,7 @@ inline sffs_config get_xmx_config() {
 	};
 
 	auto to_arr_str = [](const bit_vector& bits) {
-		const xmx_constants c(bits);
+		const auto c = to_xmx_constants(bits);
 		std::stringstream ss;
 		ss << c.C1 << ", " << c.C2 << ", " << c.m1;
 		return ss.str();
@@ -89,28 +85,29 @@ inline sffs_config get_xmx_config() {
 
 	constexpr int bits = 10 + 32;
 	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
-		return sffs_fitness_test(create_xmx_mixer(bits), num_threads);
+		const auto c = to_xmx_constants(bits);
+		return sffs_fitness_test(create_xmx_mixer(c), num_threads);
 	};
 	return {bits, fitness, to_str, to_arr_str};
 }
 
 struct xmxmx_constants {
-	explicit xmxmx_constants(const bit_vector& bits) {
-		C1 = bits.get(0, 5);
-		C2 = bits.get(5, 5);
-		C3 = bits.get(10, 5);
-		m1 = bits.get(15, 32);
-	}
-
 	uint32_t C1;
 	uint32_t C2;
 	uint32_t C3;
 	uint32_t m1;
 };
 
-inline mixer32 create_xmxmx_mixer(const bit_vector& bits) {
+inline xmxmx_constants to_xmxmx_constants(const bit_vector& bits) {
+	using T = uint32_t;
+	return {16, 15, 14, bits.get<T>(0, 32)};
+	return {bits.get<T>(0, 5), bits.get<T>(5, 5), bits.get<T>(10, 5), bits.get<T>(15, 32)};
+}
+
+
+inline mixer32 create_xmxmx_mixer(const xmxmx_constants& c) {
 	return {
-		"xmxmx", [c=xmxmx_constants(bits)](uint32_t x) {
+		"xmxmx", [c](uint32_t x) {
 			x ^= (x >> c.C1);
 			x *= c.m1;
 			x ^= (x >> c.C2);
@@ -123,7 +120,7 @@ inline mixer32 create_xmxmx_mixer(const bit_vector& bits) {
 
 inline sffs_config get_xmxmx_config() {
 	auto to_str = [](const bit_vector& bits) {
-		const xmxmx_constants c(bits);
+		const auto c = to_xmxmx_constants(bits);
 		std::stringstream ss;
 		ss << "    x ^= x >> " << c.C1 << ";\n";
 		ss << "    x *= " << c.m1 << ";\n";
@@ -134,15 +131,16 @@ inline sffs_config get_xmxmx_config() {
 	};
 
 	auto to_arr_str = [](const bit_vector& bits) {
-		const xmxmx_constants c(bits);
+		const auto c = to_xmxmx_constants(bits);
 		std::stringstream ss;
 		ss << c.C1 << ", " << c.C2 << ", " << c.C3 << ", " << c.m1;
 		return ss.str();
 	};
 
-	constexpr int bits = 15 + 32;
+	constexpr int bits = 32;
 	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
-		return sffs_fitness_test(create_xmxmx_mixer(bits), num_threads);
+		const auto c = to_xmxmx_constants(bits);
+		return sffs_fitness_test(create_xmxmx_mixer(c), num_threads);
 	};
 	return {bits, fitness, to_str, to_arr_str};
 }
