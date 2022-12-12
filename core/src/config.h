@@ -14,6 +14,11 @@ struct config {
 	std::string result_path() const {
 		return root_path;
 	}
+
+	template<typename T>
+	std::string ppm_dir() const {
+		return root_path + "ppm" + std::to_string(8 * sizeof(T)) + "/";
+	}
 };
 
 const config& get_config();

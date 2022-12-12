@@ -36,4 +36,15 @@ void write_ppm(const std::string& filename, const int width, const int height, c
 	write_ppm(filename, data, width, height, 255);
 }
 
+template <typename T>
+void write_ppm(const std::string& filename, stream<T> source) {
+	constexpr int size = 512;
+	write_ppm<T>(
+		filename,
+		size, size,
+		[source](T, T) mutable { return source(); });
+
+
+}
+
 }
