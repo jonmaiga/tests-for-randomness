@@ -101,7 +101,7 @@ void run_sffs() {
 
 	auto cfg = get_xmxmx_config<T>();
 	//cfg.seed = seed;
-	cfg.seed = find_seed(cfg, 100000);
+	cfg.seed = find_seed(cfg, 1000);
 	const auto result = start_search<T>("NAME HERE", cfg);
 	const auto c = search32::to_xmxmx_constants(result.data);
 	const auto mixer = search32::create_xmxmx_mixer(c);
