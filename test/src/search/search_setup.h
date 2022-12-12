@@ -91,7 +91,7 @@ template <typename T> sffs_config get_xmxmxmx_config() {
 
 
 template <typename T>
-void run_search() {
+void run_sffs() {
 
 	bit_vector seed;
 	//seed.add(14, 5);

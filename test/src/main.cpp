@@ -86,9 +86,9 @@ int main(int argc, char** args) {
 			test_command();
 			return 0;
 		}
-		if (command == "-search") {
+		if (command == "-sffs") {
 			using T = uint32_t;
-			run_search<T>();
+			run_sffs<T>();
 			return 0;
 		}
 		if (command == "-ppm") {
