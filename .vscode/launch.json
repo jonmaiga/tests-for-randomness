@@ -21,6 +21,22 @@
             "args": ["/mnt/data_disk/tmp/mixer/", "-search"]
           },
           {
+            "name": "(lldb) tune",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake/test/mixer-test",
+            "cwd": "${workspaceFolder}/cmake/test/",
+            "args": ["/mnt/data_disk/tmp/mixer/", "-tune"]
+          },
+          {
+            "name": "(lldb) exhuast",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake/test/mixer-test",
+            "cwd": "${workspaceFolder}/cmake/test/",
+            "args": ["/mnt/data_disk/tmp/mixer/", "-exhuast"]
+          },
+          {
             "name": "(lldb) unittest",
             "type": "lldb",
             "request": "launch",
