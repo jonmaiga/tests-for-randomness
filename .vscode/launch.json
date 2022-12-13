@@ -29,12 +29,12 @@
             "args": ["/mnt/data_disk/tmp/mixer/", "-tune"]
           },
           {
-            "name": "(lldb) exhuast",
+            "name": "(lldb) exhaust",
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/cmake/test/mixer-test",
             "cwd": "${workspaceFolder}/cmake/test/",
-            "args": ["/mnt/data_disk/tmp/mixer/", "-exhuast"]
+            "args": ["/mnt/data_disk/tmp/mixer/", "-exhaust"]
           },
           {
             "name": "(lldb) unittest",
