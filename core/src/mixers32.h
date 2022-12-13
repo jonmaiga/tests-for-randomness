@@ -60,25 +60,25 @@ const mixer32 xmx = {
 
 const mixer32 xmx_sffs = {
 	"xmx_sffs", [](uint32_t x) {
-		// x ^= x >> 2;
-		// x *= 3471659223;
-		// x ^= x >> 2;
-
 		x ^= x >> 2;
-		x *= 1312233105;
-		x ^= x >> 1;
-		
+		x *= 3471659223;
+		x ^= x >> 2;
+
+		// x ^= x >> 2;
+		// x *= 1312233105;
+		// x ^= x >> 1;
+
 		return x;
 	}
 };
 
 const mixer32 sffs_xmxmx_1 = {
 	"xmxmx_sffs_1", [](uint32_t x) {
+		x ^= x >> 16;
+		x *= 2471660141;
 		x ^= x >> 15;
-		x *= 2683062877;
-		x ^= x >> 15;
-		x *= 2683062877;
-		x ^= x >> 15;
+		x *= 2471660141;
+		x ^= x >> 14;
 		return x;
 	}
 };
@@ -97,9 +97,9 @@ const mixer32 sffs_xmxmx_best = {
 const mixer32 sffs_xmxmx_best_pr = {
 	"xmxmx_sffs_BEST_PR", [](uint32_t x) {
 		x ^= x >> 16;
-		x *= 2683062877;
+		x *= 3016919661;
 		x ^= x >> 15;
-		x *= 2683062877;
+		x *= 3016919661;
 		x ^= x >> 14;
 		return x;
 	}
@@ -172,7 +172,7 @@ inline mixer<uint32_t> get_default_mixer() {
 template <>
 inline std::vector<mixer32> get_mixers() {
 	return {
-		mix32::mx3,
+		//mix32::mx3,
 		//mix32::sffs_mx3_1,
 
 		mix32::xmxmx,

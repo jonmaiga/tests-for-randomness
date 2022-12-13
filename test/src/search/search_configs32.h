@@ -96,12 +96,14 @@ struct xmxmx_constants {
 	uint32_t C2;
 	uint32_t C3;
 	uint32_t m1;
+	uint32_t m2;
 };
 
 inline xmxmx_constants to_xmxmx_constants(const bit_vector& bits) {
 	using T = uint32_t;
-	return {16, 15, 14, bits.get<T>(0, 32)};
-	return {bits.get<T>(0, 5), bits.get<T>(5, 5), bits.get<T>(10, 5), bits.get<T>(15, 32)};
+	return {16, 15, 14, bits.get<T>(0, 32), bits.get<T>(0, 32)};
+	//return {16, bits.get<T>(0, 5), bits.get<T>(5, 5), bits.get<T>(10, 32), bits.get<T>(42, 32)};
+	//return {bits.get<T>(0, 5), bits.get<T>(5, 5), bits.get<T>(10, 5), bits.get<T>(15, 32)};
 }
 
 
@@ -111,7 +113,7 @@ inline mixer32 create_xmxmx_mixer(const xmxmx_constants& c) {
 			x ^= (x >> c.C1);
 			x *= c.m1;
 			x ^= (x >> c.C2);
-			x *= c.m1;
+			x *= c.m2;
 			x ^= (x >> c.C3);
 			return x;
 		}
@@ -125,7 +127,7 @@ inline sffs_config get_xmxmx_config() {
 		ss << "    x ^= x >> " << c.C1 << ";\n";
 		ss << "    x *= " << c.m1 << ";\n";
 		ss << "    x ^= x >> " << c.C2 << ";\n";
-		ss << "    x *= " << c.m1 << ";\n";
+		ss << "    x *= " << c.m2 << ";\n";
 		ss << "    x ^= x >> " << c.C3 << ";\n";
 		return ss.str();
 	};
@@ -133,7 +135,7 @@ inline sffs_config get_xmxmx_config() {
 	auto to_arr_str = [](const bit_vector& bits) {
 		const auto c = to_xmxmx_constants(bits);
 		std::stringstream ss;
-		ss << c.C1 << ", " << c.C2 << ", " << c.C3 << ", " << c.m1;
+		ss << c.C1 << ", " << c.C2 << ", " << c.C3 << ", " << c.m1 << ", " << c.m2;
 		return ss.str();
 	};
 
