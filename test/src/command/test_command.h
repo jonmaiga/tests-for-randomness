@@ -73,7 +73,7 @@ inline void test_command() {
 
 	const auto callback = create_result_callback(25, false);
 	//test_parallel_multi_pass(callback, create_test_setup<T>(trng_stream));
-	for (const auto& m : get_mixers<T>()) { //{mix32::sffs_xmxmx_1}) {
+	for (const auto& m : {mix32::sffs_xmxmx_1}) {
 		evaluate_multi_pass(callback, create_test_setup<T>(m));
 	}
 	write_append(get_config().result_path(), "\n");

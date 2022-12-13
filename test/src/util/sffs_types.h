@@ -13,6 +13,8 @@ struct sffs_config {
 	bit_vector_to_string to_string;
 	bit_vector_to_string to_arr_str;
 	std::optional<bit_vector> seed;
+	int min = 0;
+	int max = 1000;
 };
 
 }

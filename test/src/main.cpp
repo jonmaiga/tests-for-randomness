@@ -7,6 +7,7 @@
 #include "command/ppm_command.h"
 #include "command/exhaust_command.h"
 #include "command/test_command.h"
+#include "command/tune_command.h"
 
 #include "search/search_setup.h"
 
@@ -99,6 +100,11 @@ int main(int argc, char** args) {
 		if (command == "-ppm") {
 			using T = uint32_t;
 			ppm_command<T>();
+			return 0;
+		}
+		if (command == "-tune") {
+			using T = uint32_t;
+			tune_command();
 			return 0;
 		}
 

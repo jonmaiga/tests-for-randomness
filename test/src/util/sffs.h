@@ -56,8 +56,8 @@ inline sffs_state run_sffs(const sffs_config& config, const sffs_callback& callb
 	if (const auto& seed = config.seed) {
 		init_bits = *seed;
 	}
-	const int min = 0;
-	const int max = config.bits;
+	const int min = config.min;
+	const int max = std::min(config.bits, config.max);
 
 	const double seed_score = config.fitness(init_bits, default_max_threads());
 	ks[init_bits.count()] = {init_bits, seed_score};
