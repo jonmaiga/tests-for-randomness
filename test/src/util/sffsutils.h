@@ -51,7 +51,6 @@ double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
 		append(all_p_values, to_p_values(tr.second));
 	}
 	return (max_power - r.power_of_two()) + kolmogorov_smirnov_stats(all_p_values)->value;
-	//return kolmogorov_smirnov_stats(all_p_values)->value;
 }
 
 
