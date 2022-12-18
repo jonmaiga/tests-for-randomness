@@ -71,8 +71,8 @@ test_setup<T> create_test_setup(const mixer<T> mixer) {
 inline void test_command() {
 	using T = uint32_t;
 	const auto trng_stream = create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
-	const auto callback = create_result_callback(25, false);
-	evaluate_multi_pass(callback, create_test_setup<T>(trng_stream));
+	const auto callback = create_result_callback(30, true);
+	//evaluate_multi_pass(callback, create_test_setup<T>(trng_stream));
 	for (const auto& m : {mix32::xm3x}) {
 		evaluate_multi_pass(callback, create_test_setup<T>(m));
 	}
