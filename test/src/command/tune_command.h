@@ -55,7 +55,7 @@ inline void tune_command() {
 
 	bit_vector seed;
 	seed.add(3016919661, 32);
-	sffs_config cfg{32, fitness, to_str, to_str, seed, 10, 20};
+	const sffs_config cfg{32, fitness, to_str, to_str, seed, 10, 20};
 	start_search<uint32_t>("TUNE", cfg);
 }
 

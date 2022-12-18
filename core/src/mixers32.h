@@ -36,6 +36,23 @@ const mixer32 sffs_mx3_1 = {
 	}
 };
 
+const mixer32 xm3x = {
+	"xm3x", [](uint32_t x) {
+		constexpr uint32_t C = 2471660141;
+		//constexpr uint32_t C = 0b01010101011101010111010101010101;
+		//constexpr uint32_t C = 2494157447;
+		x ^= (x >> 16);
+		x *= C;
+		x ^= (x >> 15);
+		x *= C;
+		x ^= (x >> 16);
+		x *= C;
+		x ^= (x >> 15);
+		return x;
+	}
+};
+
+
 const mixer32 xmxmx = {
 	"xmxmx", [](uint32_t x) {
 		constexpr uint64_t C = 0x9b1a615dull;

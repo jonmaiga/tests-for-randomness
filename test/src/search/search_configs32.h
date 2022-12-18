@@ -147,25 +147,25 @@ inline sffs_config get_xmxmx_config() {
 	return {bits, fitness, to_str, to_arr_str};
 }
 
-inline sffs_config get_xmxmxmx_config() {
-	struct constants {
-		explicit constants(const bit_vector& bits) {
-			C1 = bits.get(0, 5);
-			C2 = bits.get(5, 5);
-			C3 = bits.get(10, 5);
-			C4 = bits.get(15, 5);
-			m1 = bits.get(20, 32);
-		}
+struct xm3x_constants {
+	uint32_t C1;
+	uint32_t C2;
+	uint32_t C3;
+	uint32_t C4;
+	uint32_t m1;
+};
 
-		uint32_t C1;
-		uint32_t C2;
-		uint32_t C3;
-		uint32_t C4;
-		uint32_t m1;
-	};
 
-	auto factory = [](const bit_vector& bits) {
-		return [c=constants(bits)](uint32_t x) {
+inline xm3x_constants to_xm3x_constants(const bit_vector& bits) {
+	using T = uint32_t;
+	//return {16, 15, 16, 15, bits.get<T>(0, 32)};
+	//return {bits.get<T>(0, 5), bits.get<T>(5, 5), bits.get<T>(10, 5), bits.get<T>(15, 5), bits.get<T>(20, 32)};
+	return {bits.get<T>(0, 5), bits.get<T>(5, 5), bits.get<T>(10, 5), bits.get<T>(15, 5), 0b01110101010101110101010101010101};
+}
+
+inline mixer32 create_xm3x_mixer(const xm3x_constants& c) {
+	return mixer32{
+		"xmx", [c](uint32_t x) {
 			x ^= (x >> c.C1);
 			x *= c.m1;
 			x ^= (x >> c.C2);
@@ -174,11 +174,14 @@ inline sffs_config get_xmxmxmx_config() {
 			x *= c.m1;
 			x ^= (x >> c.C4);
 			return x;
-		};
+		}
 	};
+}
+
+inline sffs_config get_xm3x_config() {
 
 	auto to_str = [](const bit_vector& bits) {
-		const constants c(bits);
+		const auto c = to_xm3x_constants(bits);
 		std::stringstream ss;
 		ss << "    x ^= x >> " << c.C1 << ";\n";
 		ss << "    x *= " << c.m1 << ";\n";
@@ -191,16 +194,16 @@ inline sffs_config get_xmxmxmx_config() {
 	};
 
 	auto to_arr_str = [](const bit_vector& bits) {
-		const constants c(bits);
+		const auto c = to_xm3x_constants(bits);
 		std::stringstream ss;
 		ss << c.C1 << ", " << c.C2 << ", " << c.C3 << ", " << c.C4 << ", " << c.m1;
 		return ss.str();
 	};
 
-	constexpr int bits = 20 + 32;
-	const auto fitness = [factory](const bit_vector& bits, unsigned int num_threads) {
-		const auto m = mixer32{"xmxmxmx", factory(bits)};
-		return sffs_fitness_test(m, num_threads);
+	constexpr int bits = 20; //20 + 32;
+	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
+		const auto c = to_xm3x_constants(bits);
+		return sffs_fitness_test(create_xm3x_mixer(c), num_threads);
 	};
 	return {bits, fitness, to_str, to_arr_str};
 }
