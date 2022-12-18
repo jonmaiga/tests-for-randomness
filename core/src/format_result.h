@@ -104,7 +104,7 @@ public:
 	}
 
 	bool pass() const {
-		return get_failure_strength() < 9;
+		return get_failure_strength() < 5;
 	}
 
 	unsigned int get_failure_strength() const {
