@@ -104,7 +104,7 @@ public:
 	}
 
 	bool pass() const {
-		return get_failure_strength() < 5;
+		return get_failure_strength() < 9;
 	}
 
 	unsigned int get_failure_strength() const {
@@ -125,7 +125,7 @@ public:
 			return "NA";
 		}
 		static const std::vector<std::string> strings = {
-			"pass",
+			"no remarks",
 			"minor (1)",
 			"minor (2)",
 			"suspicious (3)",
@@ -191,7 +191,7 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 
 	t.col("-------").col("-------").row();
 	if (const auto meta = get_meta_analysis(battery_result)) {
-		t.col("SUMMARY").col(meta->to_string()).row();
+		t.col("SUMMARY").col((meta->pass() ? "PASS: " : "FAIL: ") + meta->to_string()).row();
 	}
 
 	std::cout << t.to_string() << "\n";
