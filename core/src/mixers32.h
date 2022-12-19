@@ -55,7 +55,7 @@ const mixer32 xm3x = {
 
 const mixer32 xmxmx = {
 	"xmxmx", [](uint32_t x) {
-		constexpr uint64_t C = 0x9b1a615dull;
+		constexpr uint32_t C = 0x9b1a615dull;
 		x ^= x >> 16;
 		x *= C;
 		x ^= x >> 16;
@@ -67,7 +67,7 @@ const mixer32 xmxmx = {
 
 const mixer32 xmx = {
 	"xmx", [](uint32_t x) {
-		constexpr uint64_t C = 0x9b1a615dull;
+		constexpr uint32_t C = 0x9b1a615dull;
 		x ^= x >> 16;
 		x *= C;
 		x ^= x >> 16;
