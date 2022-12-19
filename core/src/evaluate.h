@@ -118,7 +118,7 @@ using test_callback = std::function<bool(test_battery_result)>;
 template <typename T>
 test_battery_result evaluate_multi_pass(const test_callback& result_callback,
                                         const test_setup<T>& setup) {
-	int power = 10;
+	int power = 4;
 	while (true) {
 		const auto& result = evaluate(1ull << power, setup);
 		if (!result_callback(result)) {

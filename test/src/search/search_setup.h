@@ -1,5 +1,6 @@
 #pragma once
 
+#include "search_configs8.h"
 #include "search_configs32.h"
 #include "search_configs64.h"
 #include "util/random.h"
@@ -72,7 +73,10 @@ template <typename T> sffs_config get_xmx_config() {
 }
 
 template <typename T> sffs_config get_xmxmx_config() {
-	if constexpr (sizeof(T) == 4) {
+	if constexpr (sizeof(T) == 1) {
+		return search8::get_xmxmx_config();
+	}
+	else if constexpr (sizeof(T) == 4) {
 		return search32::get_xmxmx_config();
 	}
 	else {
@@ -81,7 +85,10 @@ template <typename T> sffs_config get_xmxmx_config() {
 }
 
 template <typename T> sffs_config get_xm3x_config() {
-	if constexpr (sizeof(T) == 4) {
+	if constexpr (sizeof(T) == 1) {
+		return search8::get_xm3x_config();
+	}
+	else if constexpr (sizeof(T) == 4) {
 		return search32::get_xm3x_config();
 	}
 	else {
@@ -92,20 +99,22 @@ template <typename T> sffs_config get_xm3x_config() {
 
 template <typename T>
 void run_sffs() {
-
 	bit_vector seed;
-	seed.add(16, 5);
-	seed.add(15, 5);
-	seed.add(16, 5);
-	seed.add(15, 5);
+	seed.add(5, 3);
+	seed.add(2, 3);
+	seed.add(1, 3);
+	seed.add(3, 3);
+	seed.add(121, 8);
+	seed.add(29, 8);
+	seed.add(131, 8);
 	//seed.add(0b01110101010101110101010101010101, 32);
 
 	auto cfg = get_xm3x_config<T>();
 	cfg.seed = seed;
 	//cfg.seed = find_seed(cfg, 1000);
 	const auto result = start_search<T>("NAME HERE", cfg);
-	const auto c = search32::to_xm3x_constants(result.data);
-	const auto mixer = search32::create_xm3x_mixer(c);
+	const auto c = search8::to_xm3x_constants(result.data);
+	const auto mixer = search8::create_xm3x_mixer(c);
 	evaluate_multi_pass(create_result_callback(25, false), create_test_setup<T>(mixer));
 }
 

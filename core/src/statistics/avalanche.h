@@ -15,10 +15,10 @@ std::vector<uint64_t> avalanche_generate_sac(uint64_t n, stream<T> stream, const
 	constexpr auto Bits = 8 * sizeof(T);
 	std::vector<uint64_t> sac(Bits + 1);
 	for (uint64_t i = 0; i < n; ++i) {
-		const auto x = mixer(stream());
-		const auto h0 = mixer(x);
+		const T x = mixer(stream());
+		const T h0 = mixer(x);
 		for (int j = 0; j < Bits; j++) {
-			const auto change = h0 ^ mixer(flip_bit(x, j));
+			const T change = h0 ^ mixer(flip_bit(x, j));
 			++sac[bit_count(change)];
 		}
 	}
@@ -30,10 +30,10 @@ std::vector<uint64_t> avalanche_generate_bic(uint64_t n, stream<T> stream, const
 	constexpr auto Bits = 8 * sizeof(T);
 	std::vector<uint64_t> bic(Bits * Bits);
 	for (uint64_t i = 0; i < n; ++i) {
-		const auto x = mixer(stream());
-		const auto h0 = mixer(x);
+		const T x = mixer(stream());
+		const T h0 = mixer(x);
 		for (std::size_t j = 0; j < Bits; j++) {
-			const auto change = h0 ^ mixer(flip_bit(x, j));
+			const T change = h0 ^ mixer(flip_bit(x, j));
 			for (std::size_t k = 0; k < Bits; k++) {
 				const int bit = (change >> k) & 1;
 				bic[j * Bits + k] += bit;
@@ -59,7 +59,7 @@ inline std::optional<statistic> avalanche_bic_stats(const double n, const std::v
 
 template <typename T>
 sub_test_results avalanche_mixer_sac_test(uint64_t n, const stream<T>& stream, const mixer<T>& mixer) {
-	const auto counts = avalanche_generate_sac(n, stream, mixer);
+	const auto counts = avalanche_generate_sac<T>(n, stream, mixer);
 	return main_sub_test(avalanche_sac_stats<T>(n, counts));
 }
 

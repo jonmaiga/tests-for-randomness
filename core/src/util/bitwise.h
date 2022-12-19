@@ -35,9 +35,15 @@ inline uint64_t byte_swap(uint64_t val) {
 		(((val) & 0x00000000000000ffull) << 56));
 }
 
-template<typename T> T reverse_bits(T x);
+template <typename T> T reverse_bits(T x);
 
-template<>
+template <>
+inline uint8_t reverse_bits(uint8_t x) {
+	constexpr uint8_t lookup[16] = {0x0, 0x8, 0x4, 0xc, 0x2, 0xa, 0x6, 0xe, 0x1, 0x9, 0x5, 0xd, 0x3, 0xb, 0x7, 0xf};
+	return (lookup[x & 0b1111] << 4) | lookup[x >> 4];
+}
+
+template <>
 inline uint32_t reverse_bits(uint32_t x) {
 	x = ((x >> 1) & 0x55555555) | ((x & 0x55555555) << 1);
 	x = ((x >> 2) & 0x33333333) | ((x & 0x33333333) << 2);
@@ -46,7 +52,7 @@ inline uint32_t reverse_bits(uint32_t x) {
 	return (x >> 16) | (x << 16);
 }
 
-template<>
+template <>
 inline uint64_t reverse_bits(uint64_t x) {
 	x = (x & 0xaaaaaaaaaaaaaaaaull) >> 1 | (x & 0x5555555555555555ull) << 1;
 	x = (x & 0xccccccccccccccccull) >> 2 | (x & 0x3333333333333333ull) << 2;
