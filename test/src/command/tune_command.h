@@ -18,8 +18,8 @@ double tune_fitness(T c) {
 	int max = 0;
 	for (T c1 = 16; c1 <= 16; ++c1) {
 		int sum = 0;
-		for (T c2 = 13; c2 <= 19; ++c2) {
-			for (T c3 = 13; c3 <= 19; ++c3) {
+		for (T c2 = 13; c2 <= 16; ++c2) {
+			for (T c3 = 13; c3 <= 16; ++c3) {
 				const search32::xmxmx_constants constants{c1, c2, c3, c, c};
 				const auto mixer = create_xmxmx_mixer(constants);
 				const test_setup<T> ts{
