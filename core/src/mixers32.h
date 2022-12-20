@@ -53,22 +53,22 @@ const mixer32 xm3x = {
 };
 
 
-const mixer32 xmxmx = {
-	"xmxmx", [](uint32_t x) {
-		constexpr uint32_t C = 0x9b1a615dull;
+const mixer32 xm2x = {
+	"xm2x", [](uint32_t x) {
+		constexpr uint32_t C = 2471660141;
 		x ^= x >> 16;
 		x *= C;
-		x ^= x >> 16;
+		x ^= x >> 15;
 		x *= C;
-		x ^= x >> 16;
+		x ^= x >> 14;
 		return x;
 	}
 };
 
 const mixer32 xmx = {
 	"xmx", [](uint32_t x) {
-		constexpr uint32_t C = 0x9b1a615dull;
-		x ^= x >> 16;
+		constexpr uint32_t C = 2471660141;
+		x ^= x >> 15;
 		x *= C;
 		x ^= x >> 16;
 		return x;
@@ -192,7 +192,7 @@ inline std::vector<mixer32> get_mixers() {
 		//mix32::mx3,
 		//mix32::sffs_mx3_1,
 
-		mix32::xmxmx,
+		mix32::xm2x,
 		mix32::sffs_xmxmx_1,
 		mix32::sffs_xmxmx_best,
 		mix32::sffs_xmxmx_best_pr,

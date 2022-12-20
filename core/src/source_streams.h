@@ -57,10 +57,10 @@ std::vector<source<T>> create_sources() {
 }
 
 template <typename T>
-std::vector<source<T>> create_rrc_sources() {
+std::vector<source<T>> create_rrc_sources(const std::vector<source<T>>& stream_sources) {
 	std::vector<source<T>> sources;
 	constexpr auto Bits = 8 * sizeof(T);
-	for (const auto& config : create_sources<T>()) {
+	for (const auto& config : stream_sources) {
 		for (const auto type : rrc_types) {
 			for (int rot = 0; rot < Bits; ++rot) {
 				sources.push_back({add_rrc<T>(config.stream_source, rot, type), config.stream_append_factory});
@@ -68,6 +68,11 @@ std::vector<source<T>> create_rrc_sources() {
 		}
 	}
 	return sources;
+}
+
+template <typename T>
+std::vector<source<T>> create_rrc_sources() {
+	return create_rrc_sources(create_sources<T>());
 }
 
 

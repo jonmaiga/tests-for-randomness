@@ -2,9 +2,10 @@
 
 #include <atomic>
 
-#include "types.h"
 #include "util/algo.h"
 #include "util/fileutil.h"
+#include "mixers32.h"
+#include "combiner.h"
 
 namespace mixer {
 
@@ -29,9 +30,15 @@ struct function_stream {
 	}
 };
 
+
+template <typename T>
+stream<T> create_counter_stream(T increment, T start) {
+	return {"counter-" + std::to_string(increment), counter_stream<T>{increment, start}};
+}
+
 template <typename T>
 stream<T> create_counter_stream(T increment) {
-	return {"counter-" + std::to_string(increment), counter_stream<T>{increment}};
+	return create_counter_stream<T>(increment, 0);
 }
 
 #define FUNC(exp) [=](T i) { return exp; }
@@ -87,5 +94,30 @@ stream_double rescale_type_to_01(stream<T> source) {
 		[source]() mutable { return rescale_type_to_01(source()); }
 	};
 }
+
+template <typename T>
+stream<T> create_combined_stream(stream<T> source_a, stream<T> source_b, combiner<T> combiner) {
+	return {
+		combiner.name + "(" + source_a.name + ", " + source_b.name + ")",
+		[combiner, source_a, source_b]() mutable {
+			return combiner(source_a(), source_b());
+		}
+	};
+}
+
+template <typename T>
+stream<T> create_combined_serial_stream(stream<T> source, combiner<T> combiner, int draws) {
+	return {
+		combiner.name + "(" + source.name + ", " + std::to_string(draws) + ")",
+		[combiner, source, draws]() mutable {
+			T x = source();
+			for (int i = 0; i < draws; ++i) {
+				x = combiner(x, source());
+			}
+			return x;
+		}
+	};
+}
+
 
 }
