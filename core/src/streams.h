@@ -120,4 +120,18 @@ stream<T> create_combined_serial_stream(stream<T> source, combiner<T> combiner, 
 }
 
 
+template <typename T>
+stream<T> create_combined_constant_stream(combiner<T> combiner, T c, int draws) {
+	return {
+		combiner.name + "(" + std::to_string(c) + ")",
+		[combiner, draws, c]() mutable {
+			for (int i = 0; i < draws; ++i) {
+				c = combiner(c, c);
+			}
+			return c;
+		}
+	};
+}
+
+
 }
