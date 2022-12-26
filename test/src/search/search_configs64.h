@@ -54,22 +54,20 @@ inline sffs_config get_xmx_config() {
 
 
 struct xm2x_constants {
-	explicit xm2x_constants(const bit_vector& bits) {
-		C1 = bits.get(0, 6);
-		C2 = bits.get(6, 6);
-		C3 = bits.get(12, 6);
-		m1 = bits.get(18, 64);
-	}
-
 	uint64_t C1;
 	uint64_t C2;
 	uint64_t C3;
 	uint64_t m1;
 };
 
-const auto xm2x_factory = [](const bit_vector& bits) {
+inline xm2x_constants to_xm2x_constants(const bit_vector& bits) {
+	using T = uint64_t;
+	return {bits.get<T>(0, 6), bits.get<T>(6, 6), bits.get<T>(12, 6), bits.get<T>(18, 64)};
+}
+
+inline mixer64 create_xm2x_mixer(const xm2x_constants& c) {
 	return mixer64{
-		"xm2x", [c=xm2x_constants(bits)](uint64_t x) {
+		"xm2x", [c](uint64_t x) {
 			x ^= (x >> c.C1);
 			x *= c.m1;
 			x ^= (x >> c.C2);
@@ -82,9 +80,8 @@ const auto xm2x_factory = [](const bit_vector& bits) {
 
 
 inline sffs_config get_xm2x_config() {
-
 	auto to_str = [](const bit_vector& bits) {
-		const xm2x_constants c(bits);
+		const xm2x_constants c = to_xm2x_constants(bits);
 		std::stringstream ss;
 		ss << "    x ^= x >> " << c.C1 << ";\n";
 		ss << "    x *= " << c.m1 << "ull;\n";
@@ -95,16 +92,17 @@ inline sffs_config get_xm2x_config() {
 	};
 
 	auto to_arr_str = [](const bit_vector& bits) {
-		const xm2x_constants c(bits);
+		const xm2x_constants c = to_xm2x_constants(bits);
 		std::stringstream ss;
 		ss << c.C1 << ", " << c.C2 << ", " << c.C3 << ", " << c.m1;
 		return ss.str();
 	};
 
-	constexpr int bits = 18 + 64;
 	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
-		return sffs_fitness_test(xm2x_factory(bits), num_threads);
+		const xm2x_constants c = to_xm2x_constants(bits);
+		return sffs_fitness_test(create_xm2x_mixer(c), num_threads);
 	};
+	constexpr int bits = 18 + 64;
 	return {bits, fitness, to_str, to_arr_str};
 }
 

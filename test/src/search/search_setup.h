@@ -75,6 +75,13 @@ template <typename T> sffs_config get_xm3x_config() {
 	else return {};
 }
 
+template <typename T> mixer<T> create_xm2x_mixer(const bit_vector& bits) {
+	if constexpr (std::is_same_v<uint8_t, T>) return search8::create_xm2x_mixer(search8::to_xm2x_constants(bits));
+	else if constexpr (std::is_same_v<uint32_t, T>) return search32::create_xm2x_mixer(search32::to_xm2x_constants(bits));
+	else if constexpr (std::is_same_v<uint64_t, T>) return search64::create_xm2x_mixer(search64::to_xm2x_constants(bits));
+	else return {};
+}
+
 template <typename T> mixer<T> create_xm3x_mixer(const bit_vector& bits) {
 	if constexpr (std::is_same_v<uint8_t, T>) return search8::create_xm3x_mixer(search8::to_xm3x_constants(bits));
 	else if constexpr (std::is_same_v<uint32_t, T>) return search32::create_xm3x_mixer(search32::to_xm3x_constants(bits));
@@ -95,12 +102,12 @@ void run_sffs() {
 	seed.add(131, 8);
 	//seed.add(0b01110101010101110101010101010101, 32);
 
-	auto cfg = get_xm3x_config<T>();
+	auto cfg = get_xm2x_config<T>();
 	//cfg.seed = seed;
 	//cfg.seed = find_seed(cfg, 1000);
 
 	const auto result = start_search<T>("NAME HERE", cfg);
-	const auto mixer = create_xm3x_mixer<T>(result.data);
+	const auto mixer = create_xm2x_mixer<T>(result.data);
 	evaluate_multi_pass(create_result_callback(25, false), create_test_setup<T>(mixer));
 }
 
