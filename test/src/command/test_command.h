@@ -4,6 +4,7 @@
 #include "mixers8.h"
 #include "mixers32.h"
 #include "combiners32.h"
+#include "mixers64.h"
 #include "source_streams.h"
 
 namespace mixer {
@@ -162,10 +163,10 @@ inline void test_command() {
 
 	//evaluate_multi_pass(callback, create_trng_test_setup<T>());
 
-	evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xmx));
-	// for (const auto& m : {mix32::xm2x}) {
-	// 	evaluate_multi_pass(callback, create_test_setup<T>(m));
-	// }
+	//evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xmx));
+	for (const auto& m : {mix32::prospector_boost}) {
+		evaluate_multi_pass(callback, create_test_setup<T>(m));
+	}
 	write_append(get_config().result_path(), "\n");
 }
 

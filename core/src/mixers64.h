@@ -44,6 +44,17 @@ const mixer64 xm2x = {
 	}
 };
 
+const mixer64 xm2x_sffs = {
+	"xm2x_sffs", [](uint64_t x) {
+		x ^= x >> 32;
+		x *= 0xe9846af9b1a615d;
+		x ^= x >> 32;
+		x *= 0xe9846af9b1a615d;
+		x ^= x >> 28;
+		return x;
+	}
+};
+
 
 const mixer64 xmx = {
 	"xmx", [](uint64_t x) {

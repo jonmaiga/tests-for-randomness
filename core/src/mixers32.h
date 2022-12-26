@@ -106,6 +106,17 @@ const mixer32 prospector = {
 	}
 };
 
+const mixer32 prospector_boost = {
+	"prospector_boost", [](uint32_t x) {
+		x ^= x >> 16;
+		x *= 0x21f0aaad;
+		x ^= x >> 15;
+		x *= 0x735a2d97;
+		x ^= x >> 15;
+		return x;
+	}
+};
+
 const mixer32 h2_sql = {
 	"h2sql", [](uint32_t x) {
 		// Thomas Mueller
