@@ -23,24 +23,9 @@ const mixer32 mx3 = {
 	}
 };
 
-const mixer32 sffs_mx3_1 = {
-	"mx3_100000", [](uint32_t x) {
-		x ^= x >> 18;
-		x *= 4276026067;
-		x ^= x >> 11;
-		x *= 4276026067;
-		x ^= x >> 26;
-		x *= 4276026067;
-		x ^= x >> 29;
-		return x;
-	}
-};
-
 const mixer32 xm3x = {
 	"xm3x", [](uint32_t x) {
 		constexpr uint32_t C = 2471660141;
-		//constexpr uint32_t C = 0b01010101011101010111010101010101;
-		//constexpr uint32_t C = 2494157447;
 		x ^= (x >> 16);
 		x *= C;
 		x ^= (x >> 15);
@@ -65,6 +50,18 @@ const mixer32 xm2x = {
 	}
 };
 
+const mixer32 sffs_xm2x_best_pr = {
+	"xm2x_sffs_BEST_PR", [](uint32_t x) {
+		x ^= x >> 16;
+		x *= 3016919661;
+		x ^= x >> 15;
+		x *= 3016919661;
+		x ^= x >> 14;
+		return x;
+	}
+};
+
+
 const mixer32 xmx = {
 	"xmx", [](uint32_t x) {
 		constexpr uint32_t C = 2471660141;
@@ -75,52 +72,6 @@ const mixer32 xmx = {
 	}
 };
 
-const mixer32 xmx_sffs = {
-	"xmx_sffs", [](uint32_t x) {
-		x ^= x >> 2;
-		x *= 3471659223;
-		x ^= x >> 2;
-
-		// x ^= x >> 2;
-		// x *= 1312233105;
-		// x ^= x >> 1;
-
-		return x;
-	}
-};
-
-const mixer32 sffs_xmxmx_1 = {
-	"xmxmx_sffs_1", [](uint32_t x) {
-		x ^= x >> 16;
-		x *= 2471660141;
-		x ^= x >> 15;
-		x *= 2471660141;
-		x ^= x >> 14;
-		return x;
-	}
-};
-
-const mixer32 sffs_xmxmx_best = {
-	"xmxmx_sffs_BEST", [](uint32_t x) {
-		x ^= x >> 16;
-		x *= 3714929043;
-		x ^= x >> 11;
-		x *= 3714929043;
-		x ^= x >> 15;
-		return x;
-	}
-};
-
-const mixer32 sffs_xmxmx_best_pr = {
-	"xmxmx_sffs_BEST_PR", [](uint32_t x) {
-		x ^= x >> 16;
-		x *= 3016919661;
-		x ^= x >> 15;
-		x *= 3016919661;
-		x ^= x >> 14;
-		return x;
-	}
-};
 
 const mixer32 murmur = {
 	"murmur", [](uint32_t x) {
@@ -189,27 +140,20 @@ inline mixer<uint32_t> get_default_mixer() {
 template <>
 inline std::vector<mixer32> get_mixers() {
 	return {
-		//mix32::mx3,
-		//mix32::sffs_mx3_1,
+		mix32::xm3x,
+		mix32::mx3,
+
 
 		mix32::xm2x,
-		mix32::sffs_xmxmx_1,
-		mix32::sffs_xmxmx_best,
-		mix32::sffs_xmxmx_best_pr,
+		mix32::sffs_xm2x_best_pr,
 		mix32::prospector,
 		mix32::murmur,
 		mix32::h2_sql,
 
 		mix32::xmx,
-		mix32::xmx_sffs,
 
 		mix32::wang_1,
 		mix32::jenkins
-
-		//mix32::sffs_xmxmx_1,
-		//mix32::sffs_xmxmx_2,
-		//mix32::sffs_xmxmx_3,
-		//mix32::sffs_xmxmx_4,
 	};
 }
 

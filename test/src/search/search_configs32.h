@@ -91,7 +91,7 @@ inline sffs_config get_xmx_config() {
 	return {bits, fitness, to_str, to_arr_str};
 }
 
-struct xmxmx_constants {
+struct xm2x_constants {
 	uint32_t C1;
 	uint32_t C2;
 	uint32_t C3;
@@ -99,7 +99,7 @@ struct xmxmx_constants {
 	uint32_t m2;
 };
 
-inline xmxmx_constants to_xmxmx_constants(const bit_vector& bits) {
+inline xm2x_constants to_xm2x_constants(const bit_vector& bits) {
 	using T = uint32_t;
 	return {16, 15, 14, bits.get<T>(0, 32), bits.get<T>(0, 32)};
 	//return {16, bits.get<T>(0, 5), bits.get<T>(5, 5), bits.get<T>(10, 32), bits.get<T>(42, 32)};
@@ -107,9 +107,9 @@ inline xmxmx_constants to_xmxmx_constants(const bit_vector& bits) {
 }
 
 
-inline mixer32 create_xmxmx_mixer(const xmxmx_constants& c) {
+inline mixer32 create_xm2x_mixer(const xm2x_constants& c) {
 	return {
-		"xmxmx", [c](uint32_t x) {
+		"xm2x", [c](uint32_t x) {
 			x ^= (x >> c.C1);
 			x *= c.m1;
 			x ^= (x >> c.C2);
@@ -120,9 +120,9 @@ inline mixer32 create_xmxmx_mixer(const xmxmx_constants& c) {
 	};
 }
 
-inline sffs_config get_xmxmx_config() {
+inline sffs_config get_xm2x_config() {
 	auto to_str = [](const bit_vector& bits) {
-		const auto c = to_xmxmx_constants(bits);
+		const auto c = to_xm2x_constants(bits);
 		std::stringstream ss;
 		ss << "    x ^= x >> " << c.C1 << ";\n";
 		ss << "    x *= " << c.m1 << ";\n";
@@ -133,7 +133,7 @@ inline sffs_config get_xmxmx_config() {
 	};
 
 	auto to_arr_str = [](const bit_vector& bits) {
-		const auto c = to_xmxmx_constants(bits);
+		const auto c = to_xm2x_constants(bits);
 		std::stringstream ss;
 		ss << c.C1 << ", " << c.C2 << ", " << c.C3 << ", " << c.m1 << ", " << c.m2;
 		return ss.str();
@@ -141,8 +141,8 @@ inline sffs_config get_xmxmx_config() {
 
 	constexpr int bits = 32;
 	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
-		const auto c = to_xmxmx_constants(bits);
-		return sffs_fitness_test(create_xmxmx_mixer(c), num_threads);
+		const auto c = to_xm2x_constants(bits);
+		return sffs_fitness_test(create_xm2x_mixer(c), num_threads);
 	};
 	return {bits, fitness, to_str, to_arr_str};
 }

@@ -54,46 +54,32 @@ sffs_state start_search(const std::string& name, const sffs_config& config) {
 	return result;
 }
 
-template <typename T> sffs_config get_m_config() {
-	if constexpr (sizeof(T) == 4) {
-		return search32::get_m_config();
-	}
-	else {
-		return {};
-	}
-}
 
 template <typename T> sffs_config get_xmx_config() {
-	if constexpr (sizeof(T) == 4) {
-		return search32::get_xmx_config();
-	}
-	else {
-		return {};
-	}
+	if constexpr (std::is_same_v<uint32_t, T>) return search32::get_xmx_config();
+	else if constexpr (std::is_same_v<uint64_t, T>) return search64::get_xmx_config();
+	else return {};
 }
 
-template <typename T> sffs_config get_xmxmx_config() {
-	if constexpr (sizeof(T) == 1) {
-		return search8::get_xmxmx_config();
-	}
-	else if constexpr (sizeof(T) == 4) {
-		return search32::get_xmxmx_config();
-	}
-	else {
-		return search64::get_xmxmx_config();
-	}
+template <typename T> sffs_config get_xm2x_config() {
+	if constexpr (std::is_same_v<uint8_t, T>) return search8::get_xm2x_config();
+	else if constexpr (std::is_same_v<uint32_t, T>) return search32::get_xm2x_config();
+	else if constexpr (std::is_same_v<uint64_t, T>) return search64::get_xm2x_config();
+	else return {};
 }
 
 template <typename T> sffs_config get_xm3x_config() {
-	if constexpr (sizeof(T) == 1) {
-		return search8::get_xm3x_config();
-	}
-	else if constexpr (sizeof(T) == 4) {
-		return search32::get_xm3x_config();
-	}
-	else {
-		return {};
-	}
+	if constexpr (std::is_same_v<uint8_t, T>) return search8::get_xm3x_config();
+	else if constexpr (std::is_same_v<uint32_t, T>) return search32::get_xm3x_config();
+	else if constexpr (std::is_same_v<uint64_t, T>) return search64::get_xm3x_config();
+	else return {};
+}
+
+template <typename T> mixer<T> create_xm3x_mixer(const bit_vector& bits) {
+	if constexpr (std::is_same_v<uint8_t, T>) return search8::create_xm3x_mixer(search8::to_xm3x_constants(bits));
+	else if constexpr (std::is_same_v<uint32_t, T>) return search32::create_xm3x_mixer(search32::to_xm3x_constants(bits));
+	else if constexpr (std::is_same_v<uint64_t, T>) return search64::create_xm3x_mixer(search64::to_xm3x_constants(bits));
+	else return {};
 }
 
 
@@ -110,11 +96,11 @@ void run_sffs() {
 	//seed.add(0b01110101010101110101010101010101, 32);
 
 	auto cfg = get_xm3x_config<T>();
-	cfg.seed = seed;
+	//cfg.seed = seed;
 	//cfg.seed = find_seed(cfg, 1000);
+
 	const auto result = start_search<T>("NAME HERE", cfg);
-	const auto c = search8::to_xm3x_constants(result.data);
-	const auto mixer = search8::create_xm3x_mixer(c);
+	const auto mixer = create_xm3x_mixer<T>(result.data);
 	evaluate_multi_pass(create_result_callback(25, false), create_test_setup<T>(mixer));
 }
 

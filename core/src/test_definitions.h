@@ -35,7 +35,7 @@ std::vector<test_definition<T>> get_tests() {
 		{test_type::gap, gap_test<T>, {}, "gap"}, // weak (found no tweak)
 		{test_type::coupon, coupon_test<T>, {}, "coupon"}, // weak (found no tweak)
 		{test_type::divisibility, divisibility_test<T>, {}, "divisibility"}, // weak (didn't find any tweak)
-		{test_type::permutation, permutation_test<T>, {}, "permutation"}, // weak - but seems tweak-able (might be to little data but w4 also fails 64-bit-xmxmx)
+		{test_type::permutation, permutation_test<T>, {}, "permutation"}, // weak - but seems tweak-able (might be to little data but w4 also fails 64-bit-xm2x)
 
 		// mixer tests
 		{test_type::sac, {}, avalanche_mixer_sac_test<T>, "sac"}, // strong
