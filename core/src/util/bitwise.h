@@ -62,4 +62,22 @@ inline uint64_t reverse_bits(uint64_t x) {
 	return x >> 32 | x << 32;
 }
 
+template <typename T>
+constexpr int bit_sizeof() {
+	return 8 * sizeof(T);
+}
+
+template <typename T>
+constexpr int shift_sizeof() {
+	if constexpr (std::is_same_v<T, uint64_t>) return 6;
+	if constexpr (std::is_same_v<T, uint32_t>) return 5;
+	if constexpr (std::is_same_v<T, uint16_t>) return 4;
+	if constexpr (std::is_same_v<T, uint8_t>) return 3;
+	else {
+		//static_assert(sizeof(T) == 0, "T not supported");
+		assertion(false, "T not supported");
+	}
+	return 0;
+}
+
 }

@@ -2,7 +2,7 @@
 
 #include "evaluate.h"
 #include "source_streams.h"
-#include "search/search_configs32.h"
+#include "search/mixer_constructions.h"
 
 namespace mixer {
 
@@ -19,7 +19,7 @@ inline void exhaust_command() {
 	};
 
 	struct res {
-		search32::xm2x_constants c;
+		xm2x_constants<T> c;
 		test_battery_result result;
 	};
 
@@ -30,8 +30,8 @@ inline void exhaust_command() {
 		std::cout << c1 << "-\n";
 		for (T c2 = 9; c2 <= 20; ++c2) {
 			for (T c3 = 9; c3 < 20; ++c3) {
-				const search32::xm2x_constants c{c1, c2, c3, 2471660141, 3016919661};
-				const auto mixer = create_xm2x_mixer(c);
+				const xm2x_constants<T> c{c1, c2, c3, 2471660141};
+				const auto mixer = create_xm2x_mixer<T>(c);
 				const test_setup<T> ts{
 					mixer.name,
 					create_rrc_sources<T>(),
