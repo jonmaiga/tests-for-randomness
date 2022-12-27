@@ -2,7 +2,7 @@
 
 #include "evaluate.h"
 #include "format_result.h"
-#include "source_streams.h"
+#include "util/stream_sources.h"
 #include "search/mixer_constructions.h"
 
 namespace mixer {
@@ -35,7 +35,7 @@ inline void exhaust_command() {
 				const auto mixer = create_xm2x_mixer<T>(c);
 				const test_setup<T> ts{
 					mixer.name,
-					create_rrc_sources<T>(),
+					create_sources<T>(),
 					all_test_types,
 					mixer,
 					default_max_threads()

@@ -67,7 +67,7 @@ void run_sffs() {
 
 	auto cfg = get_xm3x_config<T>();
 	//cfg.seed = seed;
-	cfg.seed = find_seed(cfg, 100000);
+	cfg.seed = find_seed(cfg, 100);
 
 	const auto result = start_search<T>("NAME HERE", cfg);
 	const auto mixer = create_xm3x_mixer<T>(result.data);

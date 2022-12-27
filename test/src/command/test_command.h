@@ -5,7 +5,7 @@
 #include "mixers32.h"
 #include "combiners32.h"
 #include "mixers64.h"
-#include "source_streams.h"
+#include "util/stream_sources.h"
 
 namespace mixer {
 
@@ -71,49 +71,11 @@ test_setup<T> create_trng_test_setup() {
 	};
 }
 
-
 template <typename T>
 test_setup<T> create_combiner_test_setup(combiner<T> combiner) {
-
-	const auto& mix = get_default_mixer<T>();
-
-	streams<T> sources;
-	streams<T> streams_a;
-	streams<T> streams_b;
-	streams<T> streams_serial;
-	for (int sample = 0; sample < 2; ++sample) {
-		// 17 a, b
-		streams_a.push_back(create_counter_stream<T>(sample + 1, mix(1000 + sample)));
-		streams_b.push_back(create_counter_stream<T>(sample + 1, mix(1 + sample)));
-
-		// 17, >23 a, a
-		streams_a.push_back(create_counter_stream<T>(1, mix(sample)));
-		streams_b.push_back(create_counter_stream<T>(1, mix(sample)));
-
-		// 17 a, -a
-		streams_a.push_back(create_counter_stream<T>(1, mix(sample)));
-		streams_b.push_back(create_counter_stream<T>(1, -mix(sample)));
-
-		streams_serial.push_back(create_counter_stream<T>(1, mix(sample)));
-	}
-
-	const auto rrc_a = create_rrc_sources(streams_a);
-	const auto rrc_b = create_rrc_sources(streams_b);
-	for (std::size_t i = 0; i < rrc_a.size(); ++i) {
-		// 16, >22
-		sources.push_back(create_combined_stream(rrc_a[i], rrc_b[i], combiner));
-	}
-
-	for (const auto& ss : create_rrc_sources(streams_serial)) {
-		for (int draws = 2; draws <= 6; ++ draws) {
-			// 16, >22
-			sources.push_back({create_combined_serial_stream<T>(ss, combiner, draws)});
-		}
-	}
-
 	return test_setup<T>{
 		combiner.name,
-		sources,
+		create_combiner_sources<T>(combiner),
 		all_test_types,
 		mix32::xm2x
 	};
@@ -123,7 +85,7 @@ template <typename T>
 test_setup<T> create_test_setup(const mixer<T> mixer) {
 	return test_setup<T>{
 		mixer.name,
-		create_rrc_sources<T>(),
+		create_sources<T>(),
 		all_test_types,
 		mixer,
 	};

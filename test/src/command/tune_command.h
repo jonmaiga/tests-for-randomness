@@ -24,7 +24,7 @@ double tune_fitness(T c) {
 				const auto mixer = create_xm2x_mixer(constants);
 				const test_setup<T> ts{
 					mixer.name,
-					create_rrc_sources<T>(),
+					create_sources<T>(),
 					all_test_types,
 					mixer,
 					default_max_threads()
