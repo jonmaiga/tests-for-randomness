@@ -1,7 +1,5 @@
 #include <iostream>
 #include "evaluate.h"
-#include "format_result.h"
-#include "mixers32.h"
 #include "mixers64.h"
 #include "trng_data.h"
 #include "command/ppm_command.h"
@@ -33,41 +31,6 @@ void write_stream(const mixer64& m, uint64_t n) {
 	const auto from = reinterpret_cast<char*>(data.data());
 	const std::string data_str(from, from + data.size() * sizeof(uint64_t));
 	write(R"(/Users/jonkagstrom/root/github/bit_mixer_evaluation/mx3.bin)", data_str);
-}
-
-template <typename T>
-using test_method = std::function<test_battery_result(const mixer<T>&, uint64_t)>;
-
-template <typename T>
-void run_tests() {
-	const auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
-	const auto trng1 = create_mixer_from_stream<T>("trng1", trng_stream);
-	const auto trng2 = create_mixer_from_stream<T>("trng2", trng_stream);
-
-	constexpr auto n = 100000;
-
-	result_analyzer analyzer;
-	//analyzer.add(test_parallel<T>({
-	//	trng1,
-	//	create_rrc_test_factories(trng1, n),
-	//	all_test_types
-	//}));
-
-	for (const auto& mixer : get_mixers<T>()) {
-		auto ts = test_setup<T>{
-			mixer.name,
-			create_rrc_sources<T>(),
-			all_test_types,
-			mixer,
-		};
-		const auto r = evaluate(n, ts);
-		analyzer.add(r);
-		print_battery_result(r);
-	}
-
-	analyzer.summarize_fails({}, {"trng", "counter-1", "graycode-"});
-	analyzer.summarize_fails({});
-	std::cout << "done.";
 }
 
 }

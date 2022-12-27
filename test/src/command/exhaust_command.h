@@ -1,6 +1,7 @@
 #pragma once
 
 #include "evaluate.h"
+#include "format_result.h"
 #include "source_streams.h"
 #include "search/mixer_constructions.h"
 
