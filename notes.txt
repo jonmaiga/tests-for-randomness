@@ -1,5 +1,6 @@
 TODO:
 -----
+- Show biggest offenders in tests result.
 - Select maximize or minimize in sffs.
 - Determine false positive rate
 - Splits are added many times if same result formatter is used when n increases (see e.g. kendall_tau).

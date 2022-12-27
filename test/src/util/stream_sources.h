@@ -9,13 +9,13 @@ namespace mixer {
 
 template <typename T>
 streams<T> create_sources() {
-	const auto counter1 = []() {
+	const auto counter1 = [] {
 		return create_counter_stream<T>(1);
 	};
-	const auto graycode2 = []() {
+	const auto graycode2 = [] {
 		return create_gray_code<T>(2);
 	};
-	const auto trng = []() {
+	const auto trng = [] {
 		return create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
 	};
 
@@ -29,7 +29,7 @@ streams<T> create_combiner_sources(combiner<T> combiner) {
 	streams<T> streams_a;
 	streams<T> streams_b;
 	streams<T> streams_serial;
-	for (int sample = 0; sample < 2; ++sample) {
+	for (int sample = 0; sample < 1; ++sample) {
 		// 17 a, b
 		streams_a.push_back(create_counter_stream<T>(sample + 1, mix(1000 + sample)));
 		streams_b.push_back(create_counter_stream<T>(sample + 1, mix(1 + sample)));

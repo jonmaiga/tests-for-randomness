@@ -44,7 +44,7 @@ streams<T> create_seeded_trng(int count) {
 	const auto& data = get_trng_data<T>();
 	const auto& mix = get_default_mixer<T>();
 	for (int i = 1; i <= count; ++i) {
-		auto indexer = create_stream_from_mixer(create_counter_stream(mix(i)), mix);
+		auto indexer = create_stream_from_mixer(create_counter_stream<T>(1, mix(i)), mix);
 		ts.push_back(
 			create_stream_from_data_by_ref<T>("trng-" + std::to_string(i), data, indexer)
 		);
@@ -73,6 +73,12 @@ test_setup<T> create_trng_test_setup() {
 
 template <typename T>
 test_setup<T> create_combiner_test_setup(combiner<T> combiner) {
+	//const auto trngs = create_seeded_trng<T>(4 * 2 * bit_sizeof<T>());
+	//streams<T> ss;
+	//for (size_t i = 0; i < trngs.size(); i += 2) {
+	//	ss.push_back(create_combined_stream(trngs[i], trngs[i + 1], combiner));
+	//}
+
 	return test_setup<T>{
 		combiner.name,
 		create_combiner_sources<T>(combiner),
