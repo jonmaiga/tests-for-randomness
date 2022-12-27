@@ -82,8 +82,7 @@ test_setup<T> create_combiner_test_setup(combiner<T> combiner) {
 	return test_setup<T>{
 		combiner.name,
 		create_combiner_sources<T>(combiner),
-		all_test_types,
-		mix32::xm2x
+		all_test_types
 	};
 }
 
@@ -102,7 +101,7 @@ inline void test_command() {
 	const auto callback = create_result_callback(30, true);
 
 	//evaluate_multi_pass(callback, create_trng_test_setup<T>());
-	evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xmx));
+	evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xm2x));
 	for (const auto& m : {mix32::xm2x}) {
 		//evaluate_multi_pass(callback, create_test_setup(m));
 	}
