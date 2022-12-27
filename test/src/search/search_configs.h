@@ -11,16 +11,16 @@ sffs_config get_xmx_config() {
 	auto to_str = [](const bit_vector& bits) {
 		const auto c = to_xmx_constants<T>(bits);
 		std::stringstream ss;
-		ss << "    x ^= x >> " << c.C1 << ";\n";
+		ss << "    x ^= x >> " << c.c1 << ";\n";
 		ss << "    x *= " << c.m1 << "ull;\n";
-		ss << "    x ^= x >> " << c.C2 << ";\n";
+		ss << "    x ^= x >> " << c.c2 << ";\n";
 		return ss.str();
 	};
 
 	auto to_arr_str = [](const bit_vector& bits) {
 		const auto c = to_xmx_constants<T>(bits);
 		std::stringstream ss;
-		ss << c.C1 << ", " << c.C2 << ", " << c.m1;
+		ss << c.c1 << ", " << c.c2 << ", " << c.m1;
 		return ss.str();
 	};
 
@@ -39,18 +39,18 @@ sffs_config get_xm2x_config() {
 	auto to_str = [](const bit_vector& bits) {
 		const auto c = to_xm2x_constants<T>(bits);
 		std::stringstream ss;
-		ss << "    x ^= x >> " << c.C1 << ";\n";
+		ss << "    x ^= x >> " << c.c1 << ";\n";
 		ss << "    x *= " << c.m1 << ";\n";
-		ss << "    x ^= x >> " << c.C2 << ";\n";
+		ss << "    x ^= x >> " << c.c2 << ";\n";
 		ss << "    x *= " << c.m1 << ";\n";
-		ss << "    x ^= x >> " << c.C3 << ";\n";
+		ss << "    x ^= x >> " << c.c3 << ";\n";
 		return ss.str();
 	};
 
 	auto to_arr_str = [](const bit_vector& bits) {
 		const auto c = to_xm2x_constants<T>(bits);
 		std::stringstream ss;
-		ss << c.C1 << ", " << c.C2 << ", " << c.C3 << ", " << c.m1;
+		ss << c.c1 << ", " << c.c2 << ", " << c.c3 << ", " << c.m1;
 		return ss.str();
 	};
 
@@ -71,20 +71,20 @@ sffs_config get_xm3x_config() {
 	auto to_str = [](const bit_vector& bits) {
 		const auto c = to_xm3x_constants<T>(bits);
 		std::stringstream ss;
-		ss << "    x ^= x >> " << c.C1 << ";\n";
+		ss << "    x ^= x >> " << c.c1 << ";\n";
 		ss << "    x *= " << c.m1 << "ull;\n";
-		ss << "    x ^= x >> " << c.C2 << ";\n";
+		ss << "    x ^= x >> " << c.c2 << ";\n";
 		ss << "    x *= " << c.m1 << "ull;\n";
-		ss << "    x ^= x >> " << c.C3 << ";\n";
+		ss << "    x ^= x >> " << c.c3 << ";\n";
 		ss << "    x *= " << c.m1 << "ull;\n";
-		ss << "    x ^= x >> " << c.C4 << ";\n";
+		ss << "    x ^= x >> " << c.c4 << ";\n";
 		return ss.str();
 	};
 
 	auto to_arr_str = [](const bit_vector& bits) {
 		const auto c = to_xm3x_constants<T>(bits);
 		std::stringstream ss;
-		ss << c.C1 << ", " << c.C2 << ", " << c.C3 << ", " << c.C4 << ", " << c.m1;
+		ss << c.c1 << ", " << c.c2 << ", " << c.c3 << ", " << c.c4 << ", " << c.m1;
 		return ss.str();
 	};
 
