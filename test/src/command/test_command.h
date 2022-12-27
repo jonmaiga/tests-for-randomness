@@ -81,7 +81,7 @@ test_setup<T> create_combiner_test_setup(combiner<T> combiner) {
 	streams<T> streams_a;
 	streams<T> streams_b;
 	streams<T> streams_serial;
-	for (int sample = 0; sample < 3; ++sample) {
+	for (int sample = 0; sample < 2; ++sample) {
 		// 17 a, b
 		streams_a.push_back(create_counter_stream<T>(sample + 1, mix(1000 + sample)));
 		streams_b.push_back(create_counter_stream<T>(sample + 1, mix(1 + sample)));
@@ -130,14 +130,13 @@ test_setup<T> create_test_setup(const mixer<T> mixer) {
 }
 
 inline void test_command() {
-	using T = uint32_t;
+	using T = uint64_t;
 	const auto callback = create_result_callback(30, true);
 
 	//evaluate_multi_pass(callback, create_trng_test_setup<T>());
-
-	evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xmx));
-	for (const auto& m : {mix32::prospector_boost}) {
-		//	evaluate_multi_pass(callback, create_test_setup<T>(m));
+	//evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xmx));
+	for (const auto& m : {mix64::xm2x}) {
+		evaluate_multi_pass(callback, create_test_setup(m));
 	}
 	write_append(get_config().result_path(), "\n");
 }

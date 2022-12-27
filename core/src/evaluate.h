@@ -27,9 +27,7 @@ using test_jobs = jobs<test_job_return>;
 
 template <typename T>
 stream<T> create_stream(const std::optional<mixer<T>>& mix, const stream<T>& source) {
-	return mix
-		       ? create_stream_from_mixer<T>(source, *mix)
-		       : source;
+	return mix ? create_stream_from_mixer<T>(source, *mix) : source;
 }
 
 template <typename T>

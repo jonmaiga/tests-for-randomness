@@ -35,7 +35,6 @@ const mixer8 xm2x = {
 	}
 };
 
-
 }
 
 

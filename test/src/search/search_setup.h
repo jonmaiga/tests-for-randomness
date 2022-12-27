@@ -93,17 +93,13 @@ template <typename T> mixer<T> create_xm3x_mixer(const bit_vector& bits) {
 template <typename T>
 void run_sffs() {
 	bit_vector seed;
-	seed.add(5, 3);
-	seed.add(2, 3);
-	seed.add(1, 3);
-	seed.add(3, 3);
-	seed.add(121, 8);
-	seed.add(29, 8);
-	seed.add(131, 8);
-	//seed.add(0b01110101010101110101010101010101, 32);
+	//seed.add(32, 6);
+	//seed.add(31, 6);
+	//seed.add(30, 6);
+	seed.add(0xe9846af9b1a615d, 64);
 
 	auto cfg = get_xm2x_config<T>();
-	//cfg.seed = seed;
+	cfg.seed = seed;
 	//cfg.seed = find_seed(cfg, 1000);
 
 	const auto result = start_search<T>("NAME HERE", cfg);
