@@ -6,30 +6,31 @@
 
 namespace mixer {namespace search64 {
 
-inline sffs_config get_xmx_config() {
-	struct constants {
-		explicit constants(const bit_vector& bits) {
-			C1 = bits.get(0, 6);
-			C2 = bits.get(6, 6);
-			m1 = bits.get(12, 64);
-		}
+struct xmx_constants {
+	uint64_t C1;
+	uint64_t C2;
+	uint64_t m1;
+};
 
-		uint64_t C1;
-		uint64_t C2;
-		uint64_t m1;
-	};
+inline xmx_constants to_xmx_constants(const bit_vector& bits) {
+	using T = uint64_t;
+	return {bits.get<T>(0, 6), bits.get<T>(6, 6), bits.get<T>(12, 64)};
+}
 
-	auto factory = [](const bit_vector& bits) {
-		return [c=constants(bits)](uint64_t x) {
+inline mixer64 create_xmx_mixer(const xmx_constants& c) {
+	return {
+		"xmx", [c](uint64_t x) {
 			x ^= (x >> c.C1);
 			x *= c.m1;
 			x ^= (x >> c.C2);
 			return x;
-		};
+		}
 	};
+}
 
+inline sffs_config get_xmx_config() {
 	auto to_str = [](const bit_vector& bits) {
-		const constants c(bits);
+		const auto c = to_xmx_constants(bits);
 		std::stringstream ss;
 		ss << "    x ^= x >> " << c.C1 << ";\n";
 		ss << "    x *= " << c.m1 << "ull;\n";
@@ -38,17 +39,17 @@ inline sffs_config get_xmx_config() {
 	};
 
 	auto to_arr_str = [](const bit_vector& bits) {
-		const constants c(bits);
+		const auto c = to_xmx_constants(bits);
 		std::stringstream ss;
 		ss << c.C1 << ", " << c.C2 << ", " << c.m1;
 		return ss.str();
 	};
 
-	constexpr int bits = 12 + 64;
-	const auto fitness = [factory](const bit_vector& bits, unsigned int num_threads) {
-		const auto m = mixer64{"xmx", factory(bits)};
-		return sffs_fitness_test(m, num_threads);
+	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
+		const auto c = to_xmx_constants(bits);
+		return sffs_fitness_test(create_xmx_mixer(c), num_threads);
 	};
+	constexpr int bits = 12 + 64;
 	return {bits, fitness, to_str, to_arr_str};
 }
 
@@ -62,7 +63,8 @@ struct xm2x_constants {
 
 inline xm2x_constants to_xm2x_constants(const bit_vector& bits) {
 	using T = uint64_t;
-	return {bits.get<T>(0, 6), bits.get<T>(6, 6), bits.get<T>(12, 6), bits.get<T>(18, 64)};
+	return {32, 31, 30, bits.get<T>(0, 64)};
+	//return {bits.get<T>(0, 6), bits.get<T>(6, 6), bits.get<T>(12, 6), bits.get<T>(18, 64)};
 }
 
 inline mixer64 create_xm2x_mixer(const xm2x_constants& c) {
@@ -76,7 +78,7 @@ inline mixer64 create_xm2x_mixer(const xm2x_constants& c) {
 			return x;
 		}
 	};
-};
+}
 
 
 inline sffs_config get_xm2x_config() {
@@ -102,7 +104,7 @@ inline sffs_config get_xm2x_config() {
 		const xm2x_constants c = to_xm2x_constants(bits);
 		return sffs_fitness_test(create_xm2x_mixer(c), num_threads);
 	};
-	constexpr int bits = 18 + 64;
+	constexpr int bits = 64;
 	return {bits, fitness, to_str, to_arr_str};
 }
 
@@ -132,7 +134,7 @@ inline mixer64 create_xm3x_mixer(const xm3x_constants& c) {
 			return x;
 		}
 	};
-};
+}
 
 
 inline sffs_config get_xm3x_config() {
