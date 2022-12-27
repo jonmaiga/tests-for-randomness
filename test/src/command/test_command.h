@@ -81,48 +81,24 @@ test_setup<T> create_combiner_test_setup(combiner<T> combiner) {
 	std::vector<source<T>> streams_a;
 	std::vector<source<T>> streams_b;
 	std::vector<source<T>> streams_serial;
-	for (int sample = 0; sample < 2; ++sample) {
-		{
-			// 17, >23 a, a
-			const auto a = create_counter_stream<T>(1, mix(sample));
-			streams_a.push_back({a});
-			streams_b.push_back({a});
-		}
-		{
-			// 17 a, -a
-			streams_a.push_back({create_counter_stream<T>(1, mix(sample))});
-			streams_b.push_back({create_counter_stream<T>(1, -mix(sample))});
-		}
-		{
-			// 17 a, a+1
-			streams_a.push_back({create_counter_stream<T>(1, mix(sample))});
-			streams_b.push_back({create_counter_stream<T>(1, mix(sample) + 1)});
-		}
-		{
-			// 17 a+1, a 
-			streams_a.push_back({create_counter_stream<T>(1, mix(sample) + 1)});
-			streams_b.push_back({create_counter_stream<T>(1, mix(sample))});
-		}
-		{
-			// 17
-			streams_a.push_back({create_counter_stream<T>(sample + 1, mix(1000 + sample))});
-			streams_b.push_back({create_counter_stream<T>(sample + 1, mix(1 + sample))});
-		}
-		streams_serial.push_back({create_counter_stream<T>(1, mix(sample))});
+	for (int sample = 0; sample < 3; ++sample) {
+		// 17 a, b
+		streams_a.push_back({create_counter_stream<T>(sample + 1, mix(1000 + sample))});
+		streams_b.push_back({create_counter_stream<T>(sample + 1, mix(1 + sample))});
 
-		for (const auto rrc_type : rrc_types) {
-			for (int i = 0; i < 8 * sizeof(T); ++i) {
-				const T c = permute(mix(sample) + 1, i, rrc_type);
-				// 13, 14 why - investigate.
-				sources.push_back({create_combined_constant_stream(combiner, c, 5)});
-			}
-		}
+		// 17, >23 a, a
+		streams_a.push_back({create_counter_stream<T>(1, mix(sample))});
+		streams_b.push_back({create_counter_stream<T>(1, mix(sample))});
+
+		// 17 a, -a
+		streams_a.push_back({create_counter_stream<T>(1, mix(sample))});
+		streams_b.push_back({create_counter_stream<T>(1, -mix(sample))});
+
+		streams_serial.push_back({create_counter_stream<T>(1, mix(sample))});
 	}
 
-	auto rrc_a = create_rrc_sources(streams_a);
-	auto rrc_b = create_rrc_sources(streams_b);
-	auto rrc_serial = create_rrc_sources(streams_serial);
-
+	const auto rrc_a = create_rrc_sources(streams_a);
+	const auto rrc_b = create_rrc_sources(streams_b);
 	for (std::size_t i = 0; i < rrc_a.size(); ++i) {
 		const auto s = create_combined_stream(
 			rrc_a[i].stream_source,
@@ -132,7 +108,7 @@ test_setup<T> create_combiner_test_setup(combiner<T> combiner) {
 		sources.push_back({s});
 	}
 
-	for (const auto& ss : rrc_serial) {
+	for (const auto& ss : create_rrc_sources(streams_serial)) {
 		for (int draws = 2; draws <= 6; ++ draws) {
 			// 16, >22
 			sources.push_back({create_combined_serial_stream<T>(ss.stream_source, combiner, draws)});
@@ -163,9 +139,9 @@ inline void test_command() {
 
 	//evaluate_multi_pass(callback, create_trng_test_setup<T>());
 
-	//evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xmx));
+	evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xmx));
 	for (const auto& m : {mix32::prospector_boost}) {
-		evaluate_multi_pass(callback, create_test_setup<T>(m));
+		//	evaluate_multi_pass(callback, create_test_setup<T>(m));
 	}
 	write_append(get_config().result_path(), "\n");
 }
