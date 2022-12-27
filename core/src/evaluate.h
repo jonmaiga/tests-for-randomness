@@ -12,7 +12,7 @@ namespace mixer {
 template <typename T>
 struct test_setup {
 	std::string test_subject_name;
-	std::vector<source<T>> sources;
+	streams<T> sources;
 	std::vector<test_type> tests;
 	std::optional<mixer<T>> mix;
 	unsigned int max_threads = default_max_threads();
@@ -26,14 +26,10 @@ using test_job = job<test_job_return>;
 using test_jobs = jobs<test_job_return>;
 
 template <typename T>
-stream<T> create_stream(const std::optional<mixer<T>>& mix, const source<T>& cfg) {
-	auto s = mix
-		         ? create_stream_from_mixer<T>(cfg.stream_source, *mix)
-		         : cfg.stream_source;
-	if (cfg.stream_append_factory) {
-		return cfg.stream_append_factory(s);
-	}
-	return s;
+stream<T> create_stream(const std::optional<mixer<T>>& mix, const stream<T>& source) {
+	return mix
+		       ? create_stream_from_mixer<T>(source, *mix)
+		       : source;
 }
 
 template <typename T>
@@ -42,12 +38,12 @@ test_job create_mixer_job(
 	const std::string& name,
 	const mixer<T>& mix,
 	const test_definition<T>& test_def,
-	const source<T>& source) {
+	const stream<T>& source) {
 	return [test_def, source, mix, name, n]()-> test_job_return {
 		std::vector<test_result> results;
-		for (const auto& sub_test : test_def.test_mixer(n, source.stream_source, mix)) {
+		for (const auto& sub_test : test_def.test_mixer(n, source, mix)) {
 			if (const auto& stat = sub_test.stats) {
-				results.push_back({source.stream_source.name, name, n, {test_def.type, sub_test.name}, *stat});
+				results.push_back({source.name, name, n, {test_def.type, sub_test.name}, *stat});
 			}
 		}
 		return results;

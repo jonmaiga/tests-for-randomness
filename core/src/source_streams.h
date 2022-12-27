@@ -30,48 +30,36 @@ stream<T> create_bit_isolation_stream(stream<T> source, int bit) {
 }
 
 template <typename T>
-std::vector<source<T>> create_sources() {
+streams<T> create_sources() {
 	const auto counter1 = []() {
-		return source<T>{create_counter_stream<T>(1)};
+		return create_counter_stream<T>(1);
 	};
 	const auto graycode2 = []() {
-		return source<T>{create_gray_code<T>(2)};
+		return create_gray_code<T>(2);
 	};
 	const auto trng = []() {
-		return source<T>{create_stream_from_data_by_ref<T>("trng", get_trng_data<T>())};
+		return create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
 	};
 
-	std::vector<source<T>> configs{counter1()};
-
-	constexpr auto Bits = 8 * sizeof(T);
-	for (int bit = 0; bit < Bits; ++bit) {
-		const auto post_mix_permute = [bit](const stream<T>& source) {
-			return create_bit_isolation_stream<T>(source, bit);
-		};
-		const auto bit_factory = [=]()-> source<T> {
-			return {create_counter_stream<T>(1), post_mix_permute};
-		};
-		//configs.emplace_back(bit_factory());
-	}
-	return configs;
+	return {counter1()};
 }
 
 template <typename T>
-std::vector<source<T>> create_rrc_sources(const std::vector<source<T>>& stream_sources) {
-	std::vector<source<T>> sources;
+streams<T> create_rrc_sources(const streams<T>& stream_sources) {
+	streams<T> rrc_sources;
 	constexpr auto Bits = 8 * sizeof(T);
-	for (const auto& config : stream_sources) {
+	for (const auto& source : stream_sources) {
 		for (const auto type : rrc_types) {
 			for (int rot = 0; rot < Bits; ++rot) {
-				sources.push_back({add_rrc<T>(config.stream_source, rot, type), config.stream_append_factory});
+				rrc_sources.push_back(add_rrc<T>(source, rot, type));
 			}
 		}
 	}
-	return sources;
+	return rrc_sources;
 }
 
 template <typename T>
-std::vector<source<T>> create_rrc_sources() {
+streams<T> create_rrc_sources() {
 	return create_rrc_sources(create_sources<T>());
 }
 

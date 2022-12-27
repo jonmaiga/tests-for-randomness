@@ -39,25 +39,25 @@ inline auto create_result_callback(int max_power, bool print_intermediate_result
 }
 
 template <typename T>
-std::vector<source<T>> create_seeded_trng(int count) {
-	std::vector<source<T>> ts;
+streams<T> create_seeded_trng(int count) {
+	streams<T> ts;
 	const auto& data = get_trng_data<T>();
 	const auto& mix = get_default_mixer<T>();
 	for (int i = 1; i <= count; ++i) {
 		auto indexer = create_stream_from_mixer(create_counter_stream(mix(i)), mix);
 		ts.push_back(
-			{create_stream_from_data_by_ref<T>("trng-" + std::to_string(i), data, indexer)}
+			create_stream_from_data_by_ref<T>("trng-" + std::to_string(i), data, indexer)
 		);
 	}
 	return ts;
 }
 
 template <typename T>
-std::vector<source<T>> create_seeded_counters(int count) {
-	std::vector<source<T>> ts;
+streams<T> create_seeded_counters(int count) {
+	streams<T> ts;
 	const auto& mix = get_default_mixer<T>();
 	for (int i = 1; i <= count; ++i) {
-		ts.push_back({create_counter_stream<T>(1, mix(i))});
+		ts.push_back(create_counter_stream<T>(1, mix(i)));
 	}
 	return ts;
 }
@@ -77,41 +77,37 @@ test_setup<T> create_combiner_test_setup(combiner<T> combiner) {
 
 	const auto& mix = get_default_mixer<T>();
 
-	std::vector<source<T>> sources;
-	std::vector<source<T>> streams_a;
-	std::vector<source<T>> streams_b;
-	std::vector<source<T>> streams_serial;
+	streams<T> sources;
+	streams<T> streams_a;
+	streams<T> streams_b;
+	streams<T> streams_serial;
 	for (int sample = 0; sample < 3; ++sample) {
 		// 17 a, b
-		streams_a.push_back({create_counter_stream<T>(sample + 1, mix(1000 + sample))});
-		streams_b.push_back({create_counter_stream<T>(sample + 1, mix(1 + sample))});
+		streams_a.push_back(create_counter_stream<T>(sample + 1, mix(1000 + sample)));
+		streams_b.push_back(create_counter_stream<T>(sample + 1, mix(1 + sample)));
 
 		// 17, >23 a, a
-		streams_a.push_back({create_counter_stream<T>(1, mix(sample))});
-		streams_b.push_back({create_counter_stream<T>(1, mix(sample))});
+		streams_a.push_back(create_counter_stream<T>(1, mix(sample)));
+		streams_b.push_back(create_counter_stream<T>(1, mix(sample)));
 
 		// 17 a, -a
-		streams_a.push_back({create_counter_stream<T>(1, mix(sample))});
-		streams_b.push_back({create_counter_stream<T>(1, -mix(sample))});
+		streams_a.push_back(create_counter_stream<T>(1, mix(sample)));
+		streams_b.push_back(create_counter_stream<T>(1, -mix(sample)));
 
-		streams_serial.push_back({create_counter_stream<T>(1, mix(sample))});
+		streams_serial.push_back(create_counter_stream<T>(1, mix(sample)));
 	}
 
 	const auto rrc_a = create_rrc_sources(streams_a);
 	const auto rrc_b = create_rrc_sources(streams_b);
 	for (std::size_t i = 0; i < rrc_a.size(); ++i) {
-		const auto s = create_combined_stream(
-			rrc_a[i].stream_source,
-			rrc_b[i].stream_source,
-			combiner);
 		// 16, >22
-		sources.push_back({s});
+		sources.push_back(create_combined_stream(rrc_a[i], rrc_b[i], combiner));
 	}
 
 	for (const auto& ss : create_rrc_sources(streams_serial)) {
 		for (int draws = 2; draws <= 6; ++ draws) {
 			// 16, >22
-			sources.push_back({create_combined_serial_stream<T>(ss.stream_source, combiner, draws)});
+			sources.push_back({create_combined_serial_stream<T>(ss, combiner, draws)});
 		}
 	}
 

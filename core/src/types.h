@@ -18,16 +18,7 @@ template <typename T>
 using stream_factory = std::function<stream<T>()>;
 
 template <typename T>
-using append_stream_factory = std::function<stream<T>(const stream<T>&)>;
-
-template <typename T>
-struct source {
-	stream<T> stream_source;
-	append_stream_factory<T> stream_append_factory;
-};
-
-template <typename T>
-using sources = std::function<source<T>()>;
+using streams = std::vector<stream<T>>;
 
 
 ///////////////////////////////////////////////////////////////
