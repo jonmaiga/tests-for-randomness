@@ -16,7 +16,7 @@ const combiner32 xmx = {
 		x *= 2471660141;
 		x ^= y;
 		x ^= (x >> 15);
-		return x ^ y;
+		return x;
 	}
 };
 

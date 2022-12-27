@@ -34,6 +34,13 @@ TEST(bitwise, reverse_bits_8) {
 	EXPECT_EQ(reverse_bits<uint8_t>(0b11010010), 0b01001011);
 }
 
+TEST(bitwise, reverse_bits_16) {
+	EXPECT_EQ(reverse_bits<uint16_t>(0), 0);
+	EXPECT_EQ(reverse_bits<uint16_t>(1), 0b1000000000000000);
+	EXPECT_EQ(reverse_bits<uint16_t>(3), 0b1100000000000000);
+	EXPECT_EQ(reverse_bits<uint16_t>(0b1101001000111010), 0b0101110001001011);
+}
+
 TEST(bitwise, reverse_bits_32) {
 	EXPECT_EQ(reverse_bits<uint32_t>(0), 0);
 	EXPECT_EQ(reverse_bits<uint32_t>(1), 0b10000000000000000000000000000000);

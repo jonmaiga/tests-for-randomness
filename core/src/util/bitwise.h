@@ -44,6 +44,15 @@ inline uint8_t reverse_bits(uint8_t x) {
 }
 
 template <>
+inline uint16_t reverse_bits(uint16_t x) {
+	x = ((x >> 1) & 0x5555) | ((x & 0x5555) << 1);
+	x = ((x >> 2) & 0x3333) | ((x & 0x3333) << 2);
+	x = ((x >> 4) & 0x0F0F) | ((x & 0x0F0F) << 4);
+	return (x >> 8) | (x << 8);
+}
+
+
+template <>
 inline uint32_t reverse_bits(uint32_t x) {
 	x = ((x >> 1) & 0x55555555) | ((x & 0x55555555) << 1);
 	x = ((x >> 2) & 0x33333333) | ((x & 0x33333333) << 2);
