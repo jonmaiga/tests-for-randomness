@@ -1,5 +1,6 @@
 TODO:
 -----
+- Select maximize or minimize in sffs.
 - Determine false positive rate
 - Splits are added many times if same result formatter is used when n increases (see e.g. kendall_tau).
 - Speed up tests, bad CPU utilization atm, this should done in the jobs, keeping X threads, jumping between job queues.
@@ -70,3 +71,6 @@ OTHER:
 //const auto p_value = f_test(stats.n, stats.variance, population_variance);
 //const auto pop_var_var = 2 * pop_var * pop_var / (n - 1);
 //const auto p_value = z_test(stats.n, stats.variance, pop_var, pop_var_var);
+
+Tried sffs over jenkins came to 2^12 ish. Not worth it. (see jenkins-config branch)
+Tried sffs over xxmxx with different variations. Not worth it.
