@@ -63,7 +63,7 @@ std::optional<statistic> coupon_stats(uint64_t n, const T& data01) {
 	const auto cc = collect_coupons(wanted_coupons, ps.size(), data01);
 	assertion(cc.size() == ps.size(), "Unexpected size in coupons");
 
-	const auto expected_total_count = n / std::ceil(expected_draws_per_coupon(wanted_coupons));
+	const auto expected_total_count = n / expected_draws_per_coupon(wanted_coupons);
 	return chi2_stats(cc.size(), to_data(cc), mul(to_data(ps), to_data(expected_total_count)), 1.);
 }
 

@@ -51,8 +51,8 @@ TEST(coupon, expected_probabilities_10_20) {
 
 TEST(coupon, coupon_no_change) {
 	const auto r = coupon_test(10000, test_stream()).front().stats;
-	EXPECT_NEAR(r->value, 32.5748, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.1133, 1e-4);
+	EXPECT_NEAR(r->value, 29.4294, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.2043, 1e-4);
 }
 
 }
