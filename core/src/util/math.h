@@ -7,9 +7,7 @@
 
 #include "assertion.h"
 
-namespace mixer {
-
-namespace constants {
+namespace mixer {namespace constants {
 constexpr double EulerGamma = 0.5772156649015328606065120900824024310421593359399235988057672348;
 constexpr double Pi = 3.1415926535897932384626433832795028841971693993751058209749445923;
 constexpr double PiSqr = Pi * Pi;
@@ -65,6 +63,11 @@ inline uint64_t stirling_second_kind(int n, int k) {
 
 inline double harmonic(double n) {
 	return std::log(n) + constants::EulerGamma + 1. / (2. * n);
+}
+
+inline double to_one_sided(double p) {
+	assertion(is_valid_between_01(p), "to_one_sided of invalid p");
+	return 1. - 2. * std::abs(p - 0.5);
 }
 
 }

@@ -28,14 +28,17 @@ inline std::vector<double> to_p_values(const std::vector<test_result>& results) 
 	return statistics;
 }
 
-inline uint64_t count_fails(const std::vector<double>& p_values, double alpha) {
-	uint64_t fails = 0;
-	for (const auto pv : p_values) {
-		if (pv < alpha || pv > 1. - alpha) {
-			fails += 1;
-		}
+inline std::string list_worst_results(std::vector<test_result> results) {
+	std::sort(results.begin(), results.end(), [](const test_result& a, const test_result& b) {
+		return to_one_sided(a.stats.p_value) < to_one_sided(b.stats.p_value);
+	});
+
+	std::vector<std::string> streams;
+	for (int i = 0; i < std::min(1ull, results.size()); ++i) {
+		const auto& r = results[i];
+		streams.push_back(r.stream_name + "(p=" + std::to_string(r.stats.p_value) + ")");
 	}
-	return fails;
+	return join(streams, ", ");
 }
 
 inline void draw_histogram(const std::vector<double>& data) {
@@ -90,9 +93,7 @@ inline std::vector<test_result> find_by_stream_name(const std::vector<test_resul
 
 class meta_analysis {
 public:
-	explicit meta_analysis(const std::vector<double>& p_values) :
-		stat(kolmogorov_smirnov_stats(p_values)) {
-		assertion(stat.has_value(), "unset stat in meta");
+	explicit meta_analysis(statistic stat) : stat(stat) {
 	}
 
 	bool has_remark() const {
@@ -108,10 +109,7 @@ public:
 	}
 
 	unsigned int get_failure_strength() const {
-		if (!stat) {
-			return 0;
-		}
-		const double lower_tail = (1. - 2. * std::abs(stat->p_value - 0.5));
+		const double lower_tail = to_one_sided(stat.p_value);
 		if (lower_tail < 1e-10) {
 			return 10;
 		}
@@ -121,9 +119,6 @@ public:
 	}
 
 	std::string to_string() const {
-		if (!stat) {
-			return "NA";
-		}
 		static const std::vector<std::string> strings = {
 			"no remarks",
 			"minor (1)",
@@ -140,13 +135,34 @@ public:
 		return strings[get_failure_strength()];
 	}
 
-	std::optional<statistic> stat;
+	statistic stat;
 };
+
+inline meta_analysis create_meta_analysis(const std::vector<test_result>& test_results) {
+	return meta_analysis(*kolmogorov_smirnov_stats(to_p_values(test_results)));
+	// const auto p_values = to_p_values(test_results);
+	// if (p_values.size() >= 32) {
+	// 	if (const auto& stat = kolmogorov_smirnov_stats(p_values)) {
+	// 		return meta_analysis(*stat);
+	// 	}
+	// }
+
+	std::optional<statistic> worst;
+	double worst_one_sided = 1000;
+	for (const auto& tr : test_results) {
+		const double one_sided = to_one_sided(tr.stats.p_value);
+		if (one_sided < worst_one_sided) {
+			worst = tr.stats;
+			worst_one_sided = one_sided;
+		}
+	}
+	return meta_analysis(*worst);
+}
 
 inline std::optional<meta_analysis> get_meta_analysis(const test_battery_result& battery_result) {
 	std::optional<meta_analysis> worst;
 	for (const auto& e : battery_result.results) {
-		const auto interpretation = meta_analysis(to_p_values(e.second));
+		const auto interpretation = create_meta_analysis(e.second);
 		if (!worst || worst->get_failure_strength() < interpretation.get_failure_strength()) {
 			worst = interpretation;
 		}
@@ -163,7 +179,7 @@ struct result_analysis {
 inline std::vector<result_analysis> get_result_analysis(const test_battery_result& battery_result) {
 	std::vector<result_analysis> all;
 	for (const auto& e : battery_result.results) {
-		all.push_back({e.first, e.second, meta_analysis(to_p_values(e.second))});
+		all.push_back({e.first, e.second, create_meta_analysis(e.second)});
 	}
 	return all;
 }
@@ -180,11 +196,11 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 	t.col("n per sample").col(battery_result.n).row();
 	t.col("-------").col("-------").row();
 	for (const auto& e : battery_result.results) {
-		const auto& p_values = to_p_values(e.second);
-		const auto interpretation = meta_analysis(p_values);
+		const auto interpretation = create_meta_analysis(e.second);
 		if (interpretation.has_suspicion()) {
 			t.col(to_string(e.first));
-			t.col(interpretation.to_string());
+			std::string desc = interpretation.to_string();
+			t.col(desc + (interpretation.pass() ? "" : (" " + list_worst_results(e.second))));
 			t.row();
 		}
 	}

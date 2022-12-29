@@ -26,24 +26,37 @@ template <typename T>
 streams<T> create_combiner_sources(combiner<T> combiner) {
 	const auto& mix = get_default_mixer<T>();
 	streams<T> sources;
+	// 0, 0
+	sources.push_back(create_combined_incremental_stream<T>(
+		0, create_constant_stream<T>(0), combiner));
+
+	// 0, b
+	sources.push_back(create_combined_stream<T>(
+		create_constant_stream<T>(0),
+		create_counter_stream<T>(1, 0),
+		combiner));
+
+	// a, 0 - should this be tested? 
+	// sources.push_back(create_combined_stream<T>(
+	// 	create_counter_stream<T>(1, 0),
+	// 	create_constant_stream<T>(0),
+	// 	combiner));
+
 	streams<T> streams_a;
 	streams<T> streams_b;
-	streams<T> streams_serial;
-	for (int sample = 0; sample < 1; ++sample) {
-		// 17 a, b
-		streams_a.push_back(create_counter_stream<T>(sample + 1, mix(1000 + sample)));
-		streams_b.push_back(create_counter_stream<T>(sample + 1, mix(1 + sample)));
 
-		// 17, >23 a, a
-		streams_a.push_back(create_counter_stream<T>(1, mix(sample)));
-		streams_b.push_back(create_counter_stream<T>(1, mix(sample)));
+	// 17 a, b
+	constexpr int seed = 0;
+	streams_a.push_back(create_counter_stream<T>(seed + 1, mix(1000 + seed)));
+	streams_b.push_back(create_counter_stream<T>(seed + 1, mix(1 + seed)));
 
-		// 17 a, -a
-		streams_a.push_back(create_counter_stream<T>(1, mix(sample)));
-		streams_b.push_back(create_counter_stream<T>(1, -mix(sample)));
+	// 17, >23 a, a
+	streams_a.push_back(create_counter_stream<T>(1, mix(seed)));
+	streams_b.push_back(create_counter_stream<T>(1, mix(seed)));
 
-		streams_serial.push_back(create_counter_stream<T>(1, mix(sample)));
-	}
+	// 17 a, -a
+	streams_a.push_back(create_counter_stream<T>(1, mix(seed)));
+	streams_b.push_back(create_counter_stream<T>(1, -mix(seed)));
 
 	const auto rrc_a = create_rrc_sources(streams_a);
 	const auto rrc_b = create_rrc_sources(streams_b);
@@ -52,12 +65,6 @@ streams<T> create_combiner_sources(combiner<T> combiner) {
 		sources.push_back(create_combined_stream(rrc_a[i], rrc_b[i], combiner));
 	}
 
-	for (const auto& ss : create_rrc_sources(streams_serial)) {
-		for (int draws = 2; draws <= 6; ++ draws) {
-			// 16, >22
-			sources.push_back({create_combined_serial_stream<T>(ss, combiner, draws)});
-		}
-	}
 	return sources;
 }
 

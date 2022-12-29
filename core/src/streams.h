@@ -111,29 +111,11 @@ stream<T> create_combined_stream(stream<T> source_a, stream<T> source_b, combine
 }
 
 template <typename T>
-stream<T> create_combined_serial_stream(stream<T> source, combiner<T> combiner, int draws) {
+stream<T> create_combined_incremental_stream(T seed, stream<T> source, combiner<T> combiner) {
 	return {
-		combiner.name + "(" + source.name + ", " + std::to_string(draws) + ")",
-		[combiner, source, draws]() mutable {
-			T x = source();
-			for (int i = 0; i < draws; ++i) {
-				x = combiner(x, source());
-			}
-			return x;
-		}
-	};
-}
-
-template <typename T>
-stream<T> create_combined_constant_stream(combiner<T> combiner, T c, int draws) {
-	return {
-		combiner.name + "(" + std::to_string(c) + ")",
-		[combiner, draws, c]() mutable {
-			T x = c;
-			for (int i = 0; i < draws; ++i) {
-				x = combiner(x, c);
-			}
-			c = x;
+		combiner.name + "(" + source.name + ")",
+		[x = seed, source, combiner]() mutable {
+			x = combiner(x, source());
 			return x;
 		}
 	};

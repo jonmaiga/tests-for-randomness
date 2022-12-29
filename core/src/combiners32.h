@@ -10,6 +10,8 @@ namespace combine32 {
 
 const combiner32 xmx = {
 	"c-xmx", [](uint32_t x, uint32_t y) {
+		y += 2471660141;
+
 		y ^= (y >> 16);
 		y *= 2471660141;
 		y ^= x;
@@ -21,12 +23,29 @@ const combiner32 xmx = {
 const combiner32 xm2x = {
 	"c-xm2x", [](uint32_t x, uint32_t y) {
 		y += 2471660141;
+
 		y ^= (y >> 16);
 		y *= 2471660141;
 		y ^= x;
 		y ^= (y >> 15);
 		y *= 2471660141;
 		y ^= (y >> 14);
+		return y;
+	}
+};
+
+const combiner32 xm3x = {
+	"c-xm3x", [](uint32_t x, uint32_t y) {
+		y += 2471660141;
+
+		y ^= (y >> 16);
+		y *= 2471660141;
+		y ^= x;
+		y ^= (y >> 15);
+		y *= 2471660141;
+		y ^= (y >> 16);
+		y *= 2471660141;
+		y ^= (y >> 15);
 		return y;
 	}
 };
