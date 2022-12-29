@@ -37,6 +37,11 @@ stream<T> create_counter_stream(T increment, T start) {
 }
 
 template <typename T>
+stream<T> create_constant_stream(T c) {
+	return {"constant-" + std::to_string(c), [c] { return c; }};
+}
+
+template <typename T>
 stream<T> create_counter_stream(T increment) {
 	return create_counter_stream<T>(increment, 0);
 }
