@@ -51,20 +51,25 @@ inline std::vector<double> expected_probabilities(const uint64_t wanted_coupons)
 	return expected;
 }
 
+inline double expected_draws_per_coupon(uint64_t wanted_coupons) {
+	// from: https://en.wikipedia.org/wiki/Coupon_collector%27s_problem
+	return wanted_coupons * harmonic(wanted_coupons);
+}
+
 template <typename T>
-std::optional<statistic> coupon_stats(const T& data01) {
+std::optional<statistic> coupon_stats(uint64_t n, const T& data01) {
 	constexpr uint64_t wanted_coupons = 5;
 	const auto ps = expected_probabilities(wanted_coupons);
 	const auto cc = collect_coupons(wanted_coupons, ps.size(), data01);
 	assertion(cc.size() == ps.size(), "Unexpected size in coupons");
 
-	const auto total_count = accumulate(cc);
-	return chi2_stats(cc.size(), to_data(cc), mul(to_data(ps), to_data(total_count)), 1.);
+	const auto expected_total_count = n / std::ceil(expected_draws_per_coupon(wanted_coupons));
+	return chi2_stats(cc.size(), to_data(cc), mul(to_data(ps), to_data(expected_total_count)), 1.);
 }
 
 template <typename T>
 sub_test_results coupon_test(uint64_t n, const stream<T>& stream) {
-	return main_sub_test(coupon_stats(ranged_stream(rescale_type_to_01(stream), n)));
+	return main_sub_test(coupon_stats(n, ranged_stream(rescale_type_to_01(stream), n)));
 }
 
 

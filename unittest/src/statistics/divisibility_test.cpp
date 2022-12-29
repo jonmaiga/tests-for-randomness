@@ -22,12 +22,12 @@ TEST(divisibility, expected_probabilities) {
 
 TEST(divisibility, divisibility_no_change) {
 	auto r = divisibility_test(10000, test_stream()).front().stats;
-	EXPECT_NEAR(r->value, 26.2105, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.03586, 1e-4);
+	EXPECT_NEAR(r->value, 26.0893, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.03709, 1e-4);
 
 	r = divisibility_test(10000, test_stream()).back().stats;
-	EXPECT_NEAR(r->value, 18.7155, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.6628, 1e-4);
+	EXPECT_NEAR(r->value, 18.6600, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.6662, 1e-4);
 }
 
 }

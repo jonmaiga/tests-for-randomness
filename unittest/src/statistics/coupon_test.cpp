@@ -31,6 +31,13 @@ TEST(coupon, expected_probabilities) {
 	EXPECT_NEAR(ps[15], 0.0141, 1e-4);
 }
 
+TEST(coupon, expected_draws) {
+	EXPECT_NEAR(expected_draws_per_coupon(1), 1.0772, 1e-4);
+	EXPECT_NEAR(expected_draws_per_coupon(5), 11.4332, 1e-4);
+	EXPECT_NEAR(expected_draws_per_coupon(40), 171.1438, 1e-4);
+	EXPECT_NEAR(expected_draws_per_coupon(60), 280.7936, 1e-4);
+}
+
 TEST(coupon, expected_probabilities_10_20) {
 	const auto ps = expected_probabilities(10);
 	EXPECT_EQ(ps.size(), 21);
@@ -44,8 +51,8 @@ TEST(coupon, expected_probabilities_10_20) {
 
 TEST(coupon, coupon_no_change) {
 	const auto r = coupon_test(10000, test_stream()).front().stats;
-	EXPECT_NEAR(r->value, 29.5372, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.2005, 1e-4);
+	EXPECT_NEAR(r->value, 32.5748, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.1133, 1e-4);
 }
 
 }
