@@ -14,13 +14,14 @@ TEST(chi2, unset) {
 TEST(chi2, basic) {
 	using T = std::vector<double>;
 	// same as mma
+	EXPECT_EQ(chi2_uniform_stats<T>({0})->value, 1, 1e-4);
+	EXPECT_NEAR(chi2_uniform_stats<T>({0, 0})->value, 4, 1e-4);
 	EXPECT_EQ(chi2_uniform_stats<T>({0.1})->value, 1);
 	EXPECT_EQ(chi2_uniform_stats<T>({0.1})->df, 1);
 	EXPECT_EQ(chi2_uniform_stats<T>({0.1, 0.1, 0.1, 0.1})->value, 12);
 	EXPECT_EQ(chi2_uniform_stats<T>({0.1, 0.1, 0.1, 0.1})->df, 3);
 	EXPECT_NEAR(chi2_uniform_stats<T>({0.1, 0.2, 0.3, 0.4, 0.5, 0.4, 0.8})->value, 3.71428, 1e-4);
 	EXPECT_EQ(chi2_uniform_stats<T>({0.1, 0.2, 0.3, 0.4, 0.5, 0.4, 0.8})->df, 4);
-	EXPECT_NEAR(chi2_uniform_stats<T>({0, 0})->value, 4, 1e-4);
 }
 
 TEST(chi2, large) {
@@ -47,10 +48,10 @@ TEST(chi2, data) {
 }
 
 TEST(chi2, inconclusive) {
-	const std::vector<uint64_t> obs{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	const std::vector<double> ps{.1, .1, .1, .1, .1, .1, .1, .1, .1, .1};
-	const auto total_count = accumulate(obs);
-	const auto s = chi2_stats(obs.size(), to_data(obs), mul(to_data(ps), to_data(total_count)), 1.);
+	const std::vector<uint64_t> histogram{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	const std::vector<double> expected_probabilities{.1, .1, .1, .1, .1, .1, .1, .1, .1, .1};
+	const auto total_count = accumulate(histogram);
+	const auto s = chi2_stats(histogram.size(), to_data(histogram), mul(to_data(expected_probabilities), to_data(total_count)), 1.);
 	EXPECT_FALSE(s);
 }
 
