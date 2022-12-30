@@ -37,10 +37,10 @@ streams<T> create_combiner_sources(combiner<T> combiner) {
 		combiner));
 
 	// a, 0 - should this be tested? 
-	// sources.push_back(create_combined_stream<T>(
-	// 	create_counter_stream<T>(1, 0),
-	// 	create_constant_stream<T>(0),
-	// 	combiner));
+	sources.push_back(create_combined_stream<T>(
+		create_counter_stream<T>(1, 0),
+		create_constant_stream<T>(0),
+		combiner));
 
 	streams<T> streams_a;
 	streams<T> streams_b;

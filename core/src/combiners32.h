@@ -8,45 +8,51 @@ using combiner32 = combiner<uint32_t>;
 
 namespace combine32 {
 
+// 10
 const combiner32 xmx = {
 	"c-xmx", [](uint32_t x, uint32_t y) {
-		y += 2471660141;
+		x += 2471660141;
+		y -= 2471660141;
 
 		y ^= (y >> 16);
 		y *= 2471660141;
-		y ^= x;
-		y ^= (y >> 15);
-		return y;
+		x ^= y;
+		x ^= (x >> 15);
+		return x;
 	}
 };
 
+// 14, weak to (counter-1, c) (10)
 const combiner32 xm2x = {
 	"c-xm2x", [](uint32_t x, uint32_t y) {
-		y += 2471660141;
+		x += 2471660141;
+		y -= 2471660141;
 
 		y ^= (y >> 16);
 		y *= 2471660141;
-		y ^= x;
-		y ^= (y >> 15);
-		y *= 2471660141;
-		y ^= (y >> 14);
-		return y;
+		x ^= y;
+		x ^= (x >> 15);
+		x *= 2471660141;
+		x ^= (x >> 14);
+		return x;
 	}
 };
 
+// 21
 const combiner32 xm3x = {
 	"c-xm3x", [](uint32_t x, uint32_t y) {
-		y += 2471660141;
+		x += 2471660141;
+		y -= 2471660141;
 
 		y ^= (y >> 16);
-		y *= 2471660141;
-		y ^= x;
-		y ^= (y >> 15);
-		y *= 2471660141;
-		y ^= (y >> 16);
-		y *= 2471660141;
-		y ^= (y >> 15);
-		return y;
+		x *= 2471660141;
+		x ^= y;
+		x ^= (x >> 15);
+		x *= 2471660141;
+		x ^= (x >> 16);
+		x *= 2471660141;
+		x ^= (x >> 15);
+		return x;
 	}
 };
 

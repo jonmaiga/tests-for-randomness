@@ -101,7 +101,7 @@ public:
 	}
 
 	bool has_suspicion() const {
-		return get_failure_strength() > 2;
+		return get_failure_strength() > 3;
 	}
 
 	bool pass() const {
@@ -123,10 +123,10 @@ public:
 			"no remarks",
 			"minor (1)",
 			"minor (2)",
-			"suspicious (3)",
+			"minor (3)",
 			"suspicious (4)",
 			"suspicious (5)",
-			"very suspicious (6)",
+			"suspicious (6)",
 			"very suspicious (7)",
 			"very suspicious (8)",
 			"failure (9)",
@@ -139,16 +139,14 @@ public:
 };
 
 inline meta_analysis create_meta_analysis(const std::vector<test_result>& test_results) {
-	return meta_analysis(*kolmogorov_smirnov_stats(to_p_values(test_results)));
-	// const auto p_values = to_p_values(test_results);
-	// if (p_values.size() >= 32) {
-	// 	if (const auto& stat = kolmogorov_smirnov_stats(p_values)) {
-	// 		return meta_analysis(*stat);
-	// 	}
-	// }
-
+	//return meta_analysis(*kolmogorov_smirnov_stats(to_p_values(test_results)));
+	const auto p_values = to_p_values(test_results);
 	std::optional<statistic> worst;
-	double worst_one_sided = 1000;
+	if (p_values.size() >= 32) {
+		worst = kolmogorov_smirnov_stats(p_values);
+	}
+
+	double worst_one_sided = worst ? to_one_sided(worst->p_value) : 1000;
 	for (const auto& tr : test_results) {
 		const double one_sided = to_one_sided(tr.stats.p_value);
 		if (one_sided < worst_one_sided) {
