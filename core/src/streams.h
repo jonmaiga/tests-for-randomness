@@ -113,7 +113,7 @@ stream<T> create_combined_stream(stream<T> source_a, stream<T> source_b, combine
 template <typename T>
 stream<T> create_combined_incremental_stream(T seed, stream<T> source, combiner<T> combiner) {
 	return {
-		combiner.name + "(" + source.name + ")",
+		combiner.name + "(x, " + source.name + ")",
 		[x = seed, source, combiner]() mutable {
 			x = combiner(x, source());
 			return x;
