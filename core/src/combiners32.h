@@ -41,9 +41,10 @@ const combiner32 xm2x = {
 // 21
 const combiner32 xm3x = {
 	"c-xm3x", [](uint32_t x, uint32_t y) {
+		
 		x += 2471660141;
 		y -= 2471660141;
-
+		return mix32::xm2x(x ^ mix32::xmx(y));
 		y ^= (y >> 16);
 		x *= 2471660141;
 		x ^= y;
