@@ -34,7 +34,7 @@ inline std::string list_worst_results(std::vector<test_result> results) {
 	});
 
 	std::vector<std::string> streams;
-	for (int i = 0; i < std::min(1ull, results.size()); ++i) {
+	for (int i = 0; i < std::min(static_cast<std::size_t>(1), results.size()); ++i) {
 		const auto& r = results[i];
 		streams.push_back(r.stream_name + "(p=" + std::to_string(r.stats.p_value) + ")");
 	}

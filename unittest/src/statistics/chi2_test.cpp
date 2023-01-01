@@ -14,7 +14,7 @@ TEST(chi2, unset) {
 TEST(chi2, basic) {
 	using T = std::vector<double>;
 	// same as mma
-	EXPECT_EQ(chi2_uniform_stats<T>({0})->value, 1, 1e-4);
+	EXPECT_NEAR(chi2_uniform_stats<T>({0})->value, 1, 1e-4);
 	EXPECT_NEAR(chi2_uniform_stats<T>({0, 0})->value, 4, 1e-4);
 	EXPECT_EQ(chi2_uniform_stats<T>({0.1})->value, 1);
 	EXPECT_EQ(chi2_uniform_stats<T>({0.1})->df, 1);
