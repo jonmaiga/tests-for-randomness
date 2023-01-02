@@ -30,7 +30,7 @@ inline std::vector<double> to_p_values(const std::vector<test_result>& results) 
 
 inline std::string list_worst_results(std::vector<test_result> results) {
 	std::sort(results.begin(), results.end(), [](const test_result& a, const test_result& b) {
-		return to_one_sided(a.stats.p_value) < to_one_sided(b.stats.p_value);
+		return a.stats.p_value < b.stats.p_value;
 	});
 
 	std::vector<std::string> streams;
@@ -109,7 +109,7 @@ public:
 	}
 
 	unsigned int get_failure_strength() const {
-		const double lower_tail = to_one_sided(stat.p_value);
+		const double lower_tail = stat.p_value;
 		if (lower_tail < 1e-10) {
 			return 10;
 		}
@@ -146,9 +146,9 @@ inline meta_analysis create_meta_analysis(const std::vector<test_result>& test_r
 		worst = kolmogorov_smirnov_stats(p_values);
 	}
 
-	double worst_one_sided = worst ? to_one_sided(worst->p_value) : 1000;
+	double worst_one_sided = worst ? worst->p_value : 1000;
 	for (const auto& tr : test_results) {
-		const double one_sided = to_one_sided(tr.stats.p_value);
+		const double one_sided = tr.stats.p_value;
 		if (one_sided < worst_one_sided) {
 			worst = tr.stats;
 			worst_one_sided = one_sided;
