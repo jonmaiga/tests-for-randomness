@@ -13,12 +13,12 @@
         "args": ["/mnt/data_disk/tmp/mixer/", "-test"]
       },
         {
-            "name": "(lldb) search",
+            "name": "(lldb) sffs",
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/cmake/test/mixer-test",
             "cwd": "${workspaceFolder}/cmake/test/",
-            "args": ["/mnt/data_disk/tmp/mixer/", "-search"]
+            "args": ["/mnt/data_disk/tmp/mixer/", "-sffs"]
           },
           {
             "name": "(lldb) tune",
