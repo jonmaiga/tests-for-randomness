@@ -67,12 +67,12 @@ int main(int argc, char** args) {
 			return 0;
 		}
 		if (command == "-tune") {
-			using T = uint32_t;
 			tune_command();
 			return 0;
 		}
 		if (command == "-inspect-test") {
-			inspect_test_command();
+			inspect_test_command<uint32_t>();
+			inspect_test_command<uint64_t>();
 			return 0;
 		}
 

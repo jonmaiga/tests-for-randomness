@@ -18,8 +18,7 @@ streams<T> create_fail_sources() {
 
 	// counter-1
 	sources.push_back(create_counter_stream<T>(1));
-	//append(sources, create_rrc_sources<T>({create_counter_stream<T>(1)}));
-
+	
 	return sources;
 }
 
@@ -94,16 +93,15 @@ void inspect_tests(const streams<T>& sources, bool all_should_pass) {
 	}	
 }
 
+template<typename T>
 inline void inspect_test_command() {
-	using T = uint32_t;
-	
 	std::cout << "==============================================\n";
-	std::cout << "Fail sources\n";
+	std::cout << "Fail sources, " << bit_sizeof<T>() << " bits\n";
 	std::cout << "==============================================\n";
 	inspect_tests<T>(create_fail_sources<T>(), false);
 
 	std::cout << "==============================================\n";
-	std::cout << "Pass sources\n";
+	std::cout << "Fail sources, " << bit_sizeof<T>() << " bits\n";
 	std::cout << "==============================================\n";
 	inspect_tests<T>(create_pass_sources<T>(), true);
 }
