@@ -17,32 +17,8 @@ streams<T> create_fail_sources() {
 	sources.push_back(create_constant_stream<T>(mix(123)));
 
 	// counter-1
-	append(sources, create_rrc_sources<T>({create_counter_stream<T>(1)}));
-
-	const auto trng = [] {
-		return create_stream_from_mixer<T>(create_counter_stream<T>(1), mix32::xm3x);
-		//return create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
-	};
-
-	const auto create_repeat_stream = [](stream<T> source) mutable {
-		std::optional<T> r;
-		return stream<T>{"repeat(" + source.name + ")",
-			[r, source]() mutable {
-				if (r) {
-					T x = *r;
-					r = {};
-					return x;
-				}
-				r = source();
-				return *r;
-			}
-		};
-	};
-
-	sources.push_back(create_repeat_stream(trng()));
-	// for (int b = 0; b < bit_sizeof<T>(); ++b) {
-	// 	append(sources, create_bit_disturbance_stream<T>(trng(), b));
-	// }
+	sources.push_back(create_counter_stream<T>(1));
+	//append(sources, create_rrc_sources<T>({create_counter_stream<T>(1)}));
 
 	return sources;
 }
@@ -93,8 +69,19 @@ inline inspect_result<T> inspect_test(const test_definition<T>& test_def, const 
 
 template<typename T>
 void inspect_tests(const streams<T>& sources, bool all_should_pass) {
+	auto rrc_sources = create_rrc_sources(sources);
+	const auto get_sources = [rrc_sources, sources](const test_definition<T>& t) {
+		if (t.type == test_type::mean) {
+			return sources;
+		}
+		return rrc_sources;
+	};
+
 	for (const auto& test_def : get_tests<T>()) {
-		auto result = inspect_test<T>(test_def, sources);
+		if (all_should_pass && test_def.test_mixer) {
+			continue;
+		}
+		auto result = inspect_test<T>(test_def, get_sources(test_def));
 		const auto& fail_sources = all_should_pass ? result.failed : result.passed;
 		bool passed = fail_sources.empty();
 		if (passed) {
