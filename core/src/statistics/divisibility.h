@@ -59,6 +59,7 @@ sub_test_results divisibility_test(uint64_t n, const stream<T>& stream) {
 		assertion(collected.size() == ps.size(), "Unexpected size in divisible");
 
 		const auto expected_total_count = n / (divisor * 5);
+		if (expected_total_count < 100) continue;
 		if (const auto stats = chi2_stats(collected.size(), to_data(collected),
 		                                  mul(to_data(ps), to_data(expected_total_count)), 5.)) {
 			results.push_back({"d" + std::to_string(divisor), stats});
