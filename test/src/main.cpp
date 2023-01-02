@@ -4,6 +4,7 @@
 #include "trng_data.h"
 #include "command/ppm_command.h"
 #include "command/exhaust_command.h"
+#include "command/inspect_test_command.h"
 #include "command/test_command.h"
 #include "command/tune_command.h"
 
@@ -70,6 +71,11 @@ int main(int argc, char** args) {
 			tune_command();
 			return 0;
 		}
+		if (command == "-inspect-test") {
+			inspect_test_command();
+			return 0;
+		}
+
 
 		std::cout << "Unknown command\n";
 		return 1;

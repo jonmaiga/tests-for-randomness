@@ -37,6 +37,14 @@
             "args": ["/mnt/data_disk/tmp/mixer/", "-exhaust"]
           },
           {
+            "name": "(lldb) inspect-test",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/cmake/test/mixer-test",
+            "cwd": "${workspaceFolder}/cmake/test/",
+            "args": ["/mnt/data_disk/tmp/mixer/", "-inspect-test"]
+          },
+          {
             "name": "(lldb) unittest",
             "type": "lldb",
             "request": "launch",
