@@ -91,6 +91,13 @@ inline std::vector<test_result> find_by_stream_name(const std::vector<test_resul
 	return found;
 }
 
+inline double get_comparable_p_value(statistic stat) {
+	if (stat.type == statistic_type::z_score) {
+		return stat.p_value;
+	}
+	return std::min(stat.p_value, 1. - stat.p_value);
+}
+
 class meta_analysis {
 public:
 	explicit meta_analysis(statistic stat) : stat(stat) {
@@ -109,11 +116,11 @@ public:
 	}
 
 	unsigned int get_failure_strength() const {
-		const double lower_tail = stat.p_value;
-		if (lower_tail < 1e-10) {
+		const auto p = get_comparable_p_value(stat);
+		if (p < 1e-10) {
 			return 10;
 		}
-		const auto s = static_cast<unsigned int>(std::abs(std::log10(lower_tail)));
+		const auto s = static_cast<unsigned int>(std::abs(std::log10(p)));
 		assertion(s >= 0 && s <= 10, "Strength out of range");
 		return s;
 	}
@@ -146,12 +153,12 @@ inline meta_analysis create_meta_analysis(const std::vector<test_result>& test_r
 		worst = kolmogorov_smirnov_stats(p_values);
 	}
 
-	double worst_one_sided = worst ? worst->p_value : 1000;
+	double worst_p_value = worst ? worst->p_value : 1000;
 	for (const auto& tr : test_results) {
-		const double one_sided = tr.stats.p_value;
-		if (one_sided < worst_one_sided) {
+		const double p_value = get_comparable_p_value(tr.stats);
+		if (p_value < worst_p_value) {
 			worst = tr.stats;
-			worst_one_sided = one_sided;
+			worst_p_value = p_value;
 		}
 	}
 	return meta_analysis(*worst);

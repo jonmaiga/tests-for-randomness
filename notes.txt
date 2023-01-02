@@ -1,9 +1,6 @@
 TODO:
 -----
-- add sanity tests
 - testable: mixers, combiners, hashers, prngs
-- self-inspect tests?
-- which tests are two sided? ww? z-test should only look on values close to zero.
 - use trng to see if we can get evaluate_multi_pass working from 2^4 ? 
 - Select maximize or minimize in sffs.
 - Determine false positive rate
@@ -14,6 +11,9 @@ TODO:
 
 DONE:
 -----
+- add sanity tests
+- self-inspect tests?
+- which tests are two sided? ww? z-test should only look on values close to zero. z-score only checks near 0
 - combiner with 0, 0 constant streams shows that many tests are inconclusive still the meta interpretation passes.
   * fixed problem with coupon,gap and divisibility solved it.
 - Show biggest offenders in tests result.
