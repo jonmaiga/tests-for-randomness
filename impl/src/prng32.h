@@ -1,5 +1,6 @@
 #pragma once
 
+#include "external/pcg/pcg_random.hpp"
 #include "mixers32.h"
 #include "stream.h"
 
@@ -25,11 +26,31 @@ stream<uint32_t> xm3x(uint32_t seed) {
     }};
 }
 
+stream<uint32_t> pcg(uint32_t seed) {
+    pcg32 pcg(seed);
+    return {"pcg", [pcg]() mutable {
+        return static_cast<uint32_t>(pcg());
+    }};
+}
+
+stream<uint32_t> xoroshift(uint32_t seed) {
+    return {"xoroshift", [x = seed]() mutable {
+        /* Algorithm "xor" from p. 4 of Marsaglia, "Xorshift RNGs" */
+        x ^= x << 13;
+        x ^= x >> 17;
+        x ^= x << 5;
+        return x;        
+    }};
+}
+
+
 }
 
 //template <>
 inline std::vector<stream<uint32_t>> get_prngs(uint32_t seed) {
 	return {
+        prng32::pcg(seed),
+        prng32::xoroshift(seed)
         prng32::xmx(seed),
         prng32::xm2x(seed),
 		prng32::xm3x(seed),

@@ -98,7 +98,7 @@ test_setup<T> create_test_setup(const mixer<T> mixer) {
 }
 
 template <typename T>
-test_setup<T> create_prng_setup(const stream<T> prng) {
+test_setup<T> create_prng_setup(stream<T> prng) {
 	return test_setup<T>{
 		prng.name,
 		{prng},
@@ -117,12 +117,9 @@ inline void test_command() {
 	//	evaluate_multi_pass(callback, create_test_setup(m));
 	//}
 
-	for (const auto& m : get_prngs(1)) {
+	for (const auto& m : get_prngs(123495834)) {
 		evaluate_multi_pass(callback, create_prng_setup(m));
 	}
-
-
-	write_append(get_config().result_path(), "\n");
 }
 
 }
