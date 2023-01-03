@@ -10,6 +10,12 @@ namespace mixer {
 template <typename T>
 T ror(T v, int r) {
 	constexpr auto Bits = 8 * sizeof(T);
+	return (v << r) | (v >> (Bits - r));
+}
+
+template <typename T>
+T rol(T v, int r) {
+	constexpr auto Bits = 8 * sizeof(T);
 	return (v >> r) | (v << (Bits - r));
 }
 

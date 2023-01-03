@@ -6,6 +6,7 @@
 #include "mixers32.h"
 #include "mixers64.h"
 #include "prngs32.h"
+#include "prngs64.h"
 #include "util/stream_sources.h"
 
 namespace mixer {
@@ -107,7 +108,7 @@ test_setup<T> create_prng_setup(stream<T> prng) {
 }
 
 inline void test_command() {
-	using T = uint32_t;
+	using T = uint64_t;
 	const auto callback = create_result_callback(28, false);
 
 	//evaluate_multi_pass(callback, create_trng_test_setup<T>());
@@ -117,7 +118,7 @@ inline void test_command() {
 	//	evaluate_multi_pass(callback, create_test_setup(m));
 	//}
 
-	for (const auto& m : get_prngs(123495834)) {
+	for (const auto& m : get_prngs<T>(123495834)) {
 		evaluate_multi_pass(callback, create_prng_setup(m));
 	}
 }

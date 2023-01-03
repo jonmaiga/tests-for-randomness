@@ -34,7 +34,9 @@ stream<uint32_t> xoroshift(uint32_t seed) {
 
 }
 
-//template <>
+template <typename T> std::vector<stream<T>> get_prngs(T seed) = delete;
+
+template <>
 inline std::vector<stream<uint32_t>> get_prngs(uint32_t seed) {
 	return {
         //prng32::xmx(seed),
