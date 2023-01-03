@@ -1,6 +1,7 @@
 project(mixer-test)
+include_directories(../impl/src)
 include_directories(src)
 file(GLOB_RECURSE SOURCES "src/*.*")
 set(SOURCE ${SOURCES})
 add_executable(${PROJECT_NAME} ${SOURCE})
-target_link_libraries(${PROJECT_NAME} mixer-core Threads::Threads ${CXX_FILESYSTEM_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} mixer-core mixer-impl Threads::Threads ${CXX_FILESYSTEM_LIBRARIES})
