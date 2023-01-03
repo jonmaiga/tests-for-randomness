@@ -5,7 +5,7 @@
 #include "mixers8.h"
 #include "mixers32.h"
 #include "mixers64.h"
-#include "prng32.h"
+#include "prngs32.h"
 #include "util/stream_sources.h"
 
 namespace mixer {
@@ -108,7 +108,7 @@ test_setup<T> create_prng_setup(stream<T> prng) {
 
 inline void test_command() {
 	using T = uint32_t;
-	const auto callback = create_result_callback(26, false);
+	const auto callback = create_result_callback(28, false);
 
 	//evaluate_multi_pass(callback, create_trng_test_setup<T>());
 	//evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xm3x));

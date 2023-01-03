@@ -37,8 +37,8 @@ stream<uint32_t> xoroshift(uint32_t seed) {
 //template <>
 inline std::vector<stream<uint32_t>> get_prngs(uint32_t seed) {
 	return {
-        prng32::xmx(seed),
-        prng32::pcg(seed),
+        //prng32::xmx(seed),
+        //prng32::pcg(seed),
         prng32::xoroshift(seed),
 	};
 }
