@@ -1,10 +1,11 @@
 #pragma once
 
+#include "combiners32.h"
 #include "evaluate.h"
 #include "mixers8.h"
 #include "mixers32.h"
-#include "combiners32.h"
 #include "mixers64.h"
+#include "prng32.h"
 #include "util/stream_sources.h"
 
 namespace mixer {
@@ -96,15 +97,31 @@ test_setup<T> create_test_setup(const mixer<T> mixer) {
 	};
 }
 
+template <typename T>
+test_setup<T> create_prng_setup(const stream<T> prng) {
+	return test_setup<T>{
+		prng.name,
+		{prng},
+		all_test_types,
+	};
+}
+
 inline void test_command() {
 	using T = uint32_t;
-	const auto callback = create_result_callback(30, true);
+	const auto callback = create_result_callback(26, false);
 
 	//evaluate_multi_pass(callback, create_trng_test_setup<T>());
-	evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xm2x));
-	for (const auto& m : {mix32::xm2x}) {
-		//evaluate_multi_pass(callback, create_test_setup(m));
+	//evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xm3x));
+	
+	//for (const auto& m : get_mixers<T>()) {
+	//	evaluate_multi_pass(callback, create_test_setup(m));
+	//}
+
+	for (const auto& m : get_prngs(1)) {
+		evaluate_multi_pass(callback, create_prng_setup(m));
 	}
+
+
 	write_append(get_config().result_path(), "\n");
 }
 
