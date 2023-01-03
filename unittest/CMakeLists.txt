@@ -1,6 +1,5 @@
 project(mixer-unittest)
-include_directories(../impl/src)
-include_directories(src)
+include_directories(src ../impl/src)
 enable_testing()
 add_subdirectory("../googletest-release-1.12.1" "googletest-release-1.12.1")
 file(GLOB_RECURSE SOURCES "../core/src/*.*" "src/*.*")
