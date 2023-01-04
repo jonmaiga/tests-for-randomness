@@ -49,7 +49,17 @@ TEST(math, stirling_second_kind_limits) {
 	EXPECT_EQ(stirling_second_kind(25, 10), 1203163392175387500);
 	EXPECT_EQ(stirling_second_kind(25, 11), 802355904438462660);
 	EXPECT_EQ(stirling_second_kind(25, 12), 362262620784874680);
+}
 
+TEST(math, harmonic_numerical) {
+	EXPECT_NEAR(harmonic(1), 1., 1e-13);
+	EXPECT_NEAR(harmonic(2), 3./2., 1e-13);
+	EXPECT_NEAR(harmonic(3), 11./6., 1e-13);
+	EXPECT_NEAR(harmonic(4), 25./12., 1e-13);
+	EXPECT_NEAR(harmonic(5), 137./60., 1e-13);
+	EXPECT_NEAR(harmonic(6), 49./20., 1e-13);
+	EXPECT_NEAR(harmonic(10), 7381./2520., 1e-13);
+	EXPECT_NEAR(harmonic(1000), 7.4854708605503449127, 1e-13);
 }
 
 

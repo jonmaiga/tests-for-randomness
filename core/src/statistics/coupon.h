@@ -53,7 +53,11 @@ inline std::vector<double> expected_probabilities(const uint64_t wanted_coupons)
 
 inline double expected_draws_per_coupon(uint64_t wanted_coupons) {
 	// from: https://en.wikipedia.org/wiki/Coupon_collector%27s_problem
-	return wanted_coupons * harmonic(wanted_coupons);
+	if (wanted_coupons < 1024) {
+		return wanted_coupons * harmonic(wanted_coupons);
+	} else {
+		return wanted_coupons * harmonic_asymptotic(wanted_coupons);
+	}
 }
 
 template <typename T>

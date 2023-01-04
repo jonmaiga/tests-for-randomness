@@ -32,10 +32,20 @@ TEST(coupon, expected_probabilities) {
 }
 
 TEST(coupon, expected_draws) {
-	EXPECT_NEAR(expected_draws_per_coupon(1), 1.0772, 1e-4);
-	EXPECT_NEAR(expected_draws_per_coupon(5), 11.4332, 1e-4);
-	EXPECT_NEAR(expected_draws_per_coupon(40), 171.1438, 1e-4);
-	EXPECT_NEAR(expected_draws_per_coupon(60), 280.7936, 1e-4);
+	EXPECT_NEAR(expected_draws_per_coupon(1), 1, 1e-4);
+	EXPECT_NEAR(expected_draws_per_coupon(5), 11.4166, 1e-4); // mma 11.41666...
+	EXPECT_NEAR(expected_draws_per_coupon(10), 29.289682539682539683, 1e-4);
+	EXPECT_NEAR(expected_draws_per_coupon(40), 171.1417, 1e-4); // mma 171.1417
+	EXPECT_NEAR(expected_draws_per_coupon(60), 280.7922, 1e-4); // mma 280.7922
+}
+
+TEST(coupon, expected_draws_large) {
+	EXPECT_NEAR(expected_draws_per_coupon(1ull << 10), 7689.3959, 1e-4); // mma 7689.3958
+	EXPECT_NEAR(expected_draws_per_coupon(1ull << 20), 15141604.9530, 1e-4); // mma 15141604.9530
+	EXPECT_NEAR(expected_draws_per_coupon(1ull << 25), 600822142.6795, 1e-4); // mma 6.008221426795335e8
+	EXPECT_NEAR(expected_draws_per_coupon(1ull << 29), 11101676511.28232, 1e-4); // mma 1.110167651128232e10
+	EXPECT_NEAR(expected_draws_per_coupon(1ull << 40), 31119590726726.6085, 1e-4); // mma 3.11195907267266085584380946871e13
+	EXPECT_NEAR(expected_draws_per_coupon(1ull << 50), 39670604364374234.6749, 1e-4); // mma 3.96706043643742346749420681270e16 Last integer digit is not correct
 }
 
 TEST(coupon, expected_probabilities_10_20) {
@@ -51,8 +61,8 @@ TEST(coupon, expected_probabilities_10_20) {
 
 TEST(coupon, coupon_no_change) {
 	const auto r = coupon_test(10000, test_stream()).front().stats;
-	EXPECT_NEAR(r->value, 29.4294, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.2043, 1e-4);
+	EXPECT_NEAR(r->value, 29.3991, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.2054, 1e-4);
 }
 
 }

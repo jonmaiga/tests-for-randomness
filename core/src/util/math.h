@@ -61,8 +61,16 @@ inline uint64_t stirling_second_kind(int n, int k) {
 	return k * stirling_second_kind(n - 1, k) + stirling_second_kind(n - 1, k - 1);
 }
 
-inline double harmonic(double n) {
+inline double harmonic_asymptotic(double n) {
 	return std::log(n) + constants::EulerGamma + 1. / (2. * n);
+}
+
+inline double harmonic(uint64_t n) {
+	double h = 0;
+	for (uint64_t i = 1; i <= n; ++i) {
+		h += 1. / static_cast<double>(i);
+	}
+	return h;
 }
 
 inline double to_one_sided(double p) {
