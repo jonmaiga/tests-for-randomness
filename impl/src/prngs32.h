@@ -53,6 +53,12 @@ stream<uint32_t> mt(uint32_t seed) {
     }};
 }
 
+stream<uint32_t> minstd_rand(uint32_t seed) {
+    std::minstd_rand gen(seed);
+    return {"minstd_rand", [gen]() mutable {
+        return gen();
+    }};
+}
 
 }
 
@@ -61,12 +67,13 @@ template <typename T> std::vector<stream<T>> get_prngs(T seed) = delete;
 template <>
 inline std::vector<stream<uint32_t>> get_prngs(uint32_t seed) {
 	return {
-        prng32::mt(seed),
-        //prng32::xmx(seed), // 29 uniform p=1.0
-        //prng32::xm2x(seed), // 29
-        //prng32::xm3x(seed), // 29
-        //prng32::pcg(seed), // 29
-        //prng32::xoroshift(seed), // 29 uniform p=1.0
+        prng32::mt(seed), // > 31
+        prng32::xmx(seed),  // 29 uniform-m     failure (10) xm3x(p=1.000000)  
+        prng32::xm2x(seed), // 29 uniform-m     failure (10) xm2x(p=0.000000) 
+        prng32::xm3x(seed), // 29 uniform-m     failure (10) xm3x(p=1.000000)  
+        prng32::pcg(seed),  // >31
+        prng32::minstd_rand(seed), // 10 mean, uniform, gap, coupon
+        prng32::xoroshift(seed), // uniform-m     failure (10) xoroshift(p=1.000000)
 	};
 }
 
