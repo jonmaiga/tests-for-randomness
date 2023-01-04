@@ -4,6 +4,8 @@
 #include "mixers32.h"
 #include "stream.h"
 
+#include <random>
+
 namespace mixer {
     
 namespace prng32 {
@@ -13,6 +15,19 @@ stream<uint32_t> xmx(uint32_t seed) {
         return state = mix32::xmx(state);
     }};
 }
+
+stream<uint32_t> xm2x(uint32_t seed) {
+    return {"xm2x", [state = seed]() mutable {
+        return state = mix32::xm2x(state);
+    }};
+}
+
+stream<uint32_t> xm3x(uint32_t seed) {
+    return {"xm3x", [state = seed]() mutable {
+        return state = mix32::xm3x(state);
+    }};
+}
+
 
 stream<uint32_t> pcg(uint32_t seed) {
     pcg32 pcg(seed);
@@ -31,6 +46,13 @@ stream<uint32_t> xoroshift(uint32_t seed) {
     }};
 }
 
+stream<uint32_t> mt(uint32_t seed) {
+    std::mt19937 gen(seed);
+    return {"mt", [gen]() mutable {
+        return gen();
+    }};
+}
+
 
 }
 
@@ -39,9 +61,12 @@ template <typename T> std::vector<stream<T>> get_prngs(T seed) = delete;
 template <>
 inline std::vector<stream<uint32_t>> get_prngs(uint32_t seed) {
 	return {
-        //prng32::xmx(seed),
-        //prng32::pcg(seed),
-        prng32::xoroshift(seed),
+        prng32::mt(seed),
+        //prng32::xmx(seed), // 29 uniform p=1.0
+        //prng32::xm2x(seed), // 29
+        //prng32::xm3x(seed), // 29
+        //prng32::pcg(seed), // 29
+        //prng32::xoroshift(seed), // 29 uniform p=1.0
 	};
 }
 

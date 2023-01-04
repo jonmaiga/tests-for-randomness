@@ -108,8 +108,8 @@ test_setup<T> create_prng_setup(stream<T> prng) {
 }
 
 inline void test_command() {
-	using T = uint64_t;
-	const auto callback = create_result_callback(28, false);
+	using T = uint32_t;
+	const auto callback = create_result_callback(31, true);
 
 	//evaluate_multi_pass(callback, create_trng_test_setup<T>());
 	//evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xm3x));
