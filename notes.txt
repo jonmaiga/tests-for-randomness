@@ -82,3 +82,35 @@ OTHER:
 
 Tried sffs over jenkins came to 2^12 ish. Not worth it. (see jenkins-config branch)
 Tried sffs over xxmxx with different variations. Not worth it.
+
+
+Testing trng as prng fails at 2^26:
+KEY           VALUE
+test subject  trng
+2^k           26
+samples       128
+n per sample  67108864
+-------       -------
+uniform-m     failure (10) trng-75(p=0.000763)
+ww-s45        suspicious (4)
+-------       -------
+SUMMARY       FAIL: failure (10)
+
+ww also seems to be buggy:
+KEY           VALUE
+test subject  trng
+2^k           29
+samples       128
+n per sample  536870912
+-------       -------
+ww-s136       very suspicious (7)
+ww-s213       suspicious (4)
+ww-s214       suspicious (4)
+ww-s260       suspicious (4)
+ww-s307       suspicious (4)
+ww-s311       suspicious (5)
+ww-s353       suspicious (4)
+ww-s412       suspicious (4)
+ww-s45        suspicious (4)
+-------       -------
+SUMMARY       PASS: very suspicious (7)

@@ -37,5 +37,16 @@ inline std::string to_string(rrc_type type) {
 	return "unknown";
 }
 
+template <typename T>
+std::vector<T> get_rrc_permutations(T x) {
+	std::vector<T> xs;
+	for (const auto rrc_type : rrc_types) {
+		for (int rot = 0; rot < bit_sizeof<T>(); ++rot) {
+			xs.push_back(permute<T>(x, rot, rrc_type));
+		}
+	}
+	return xs;
+}
+
 
 }

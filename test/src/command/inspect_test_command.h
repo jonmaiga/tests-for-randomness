@@ -25,7 +25,8 @@ streams<T> create_fail_sources() {
 template <typename T>
 streams<T> create_pass_sources() {
 	const auto trng = [] {
-		return create_stream_from_mixer<T>(create_counter_stream<T>(1), get_default_mixer<T>());
+		return create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
+		//return create_stream_from_mixer<T>(create_counter_stream<T>(1), get_default_mixer<T>());
 	};
 	return {trng()};
 }	
@@ -101,7 +102,7 @@ inline void inspect_test_command() {
 	inspect_tests<T>(create_fail_sources<T>(), false);
 
 	std::cout << "==============================================\n";
-	std::cout << "Fail sources, " << bit_sizeof<T>() << " bits\n";
+	std::cout << "Pass sources, " << bit_sizeof<T>() << " bits\n";
 	std::cout << "==============================================\n";
 	inspect_tests<T>(create_pass_sources<T>(), true);
 }

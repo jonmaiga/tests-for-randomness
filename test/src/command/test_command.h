@@ -99,28 +99,50 @@ test_setup<T> create_test_setup(const mixer<T> mixer) {
 }
 
 template <typename T>
-test_setup<T> create_prng_setup(stream<T> prng) {
+std::vector<T> generate_seeds(int n) {
+	std::set<T> seeds;
+	for (const auto& seed : get_rrc_permutations<T>(1)) {
+		seeds.insert(seed);
+	}
+	uint32_t x = 1234;
+	while (seeds.size() < n) {
+		seeds.insert(mix32::xm3x(x++));
+	}
+	return {seeds.begin(), seeds.end()};
+}
+
+template <typename T>
+test_setup<T> create_prng_setup(std::function<stream<T>(T seed)> create_prng) {
+	streams<T> to_test;
+	for (auto seed : generate_seeds<T>(4 * bit_sizeof<T>())) {
+		to_test.push_back(create_prng(seed));
+	}
+
 	return test_setup<T>{
-		prng.name,
-		{prng},
+		to_test.front().name,
+		to_test,
 		all_test_types,
 	};
 }
 
 inline void test_command() {
 	using T = uint32_t;
-	const auto callback = create_result_callback(31, false);
+	const auto callback = create_result_callback(32, true);
 
-	//evaluate_multi_pass(callback, create_trng_test_setup<T>());
+	evaluate_multi_pass(callback, create_trng_test_setup<T>());
 	//evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xm3x));
-	
+
 	//for (const auto& m : get_mixers<T>()) {
 	//	evaluate_multi_pass(callback, create_test_setup(m));
 	//}
 
-	for (const auto& m : get_prngs<T>(123495834)) {
-		evaluate_multi_pass(callback, create_prng_setup(m));
-	}
+	// for (const auto& m : get_prngs<T>(123495834)) {
+	// 	evaluate_multi_pass(callback, create_prng_setup(m));
+	// }
+
+	evaluate_multi_pass(callback, create_prng_setup<T>([](T seed) {
+		return prng32::mt19337(seed);
+	}));
 }
 
 }
