@@ -52,6 +52,8 @@
  * This ugliness attempts to do so.
  */
 
+#define PCG_LITTLE_ENDIAN 1
+
 #ifndef PCG_LITTLE_ENDIAN
     #if defined(__BYTE_ORDER__)
         #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
