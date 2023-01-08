@@ -12,7 +12,7 @@ std::vector<uint64_t> avalanche_generate_sac(uint64_t n, stream<T> stream, const
 	// of a power of 2, 1,2,4... I believe this is an error in the test rather than the mixers,
 	// maybe the bit flip causes too many duplicates and it becomes biased.
 	// This happens for +10 rounds of AES and Sha256 as well...
-	constexpr auto Bits = 8 * sizeof(T);
+	constexpr auto Bits = bit_sizeof<T>();
 	std::vector<uint64_t> sac(Bits + 1);
 	for (uint64_t i = 0; i < n; ++i) {
 		const T x = mixer(stream());
@@ -27,7 +27,7 @@ std::vector<uint64_t> avalanche_generate_sac(uint64_t n, stream<T> stream, const
 
 template <typename T>
 std::vector<uint64_t> avalanche_generate_bic(uint64_t n, stream<T> stream, const mixer<T>& mixer) {
-	constexpr auto Bits = 8 * sizeof(T);
+	constexpr auto Bits = bit_sizeof<T>();
 	std::vector<uint64_t> bic(Bits * Bits);
 	for (uint64_t i = 0; i < n; ++i) {
 		const T x = mixer(stream());
@@ -45,7 +45,7 @@ std::vector<uint64_t> avalanche_generate_bic(uint64_t n, stream<T> stream, const
 
 template <typename T>
 std::optional<statistic> avalanche_sac_stats(const double n, const std::vector<uint64_t>& bit_counts) {
-	constexpr auto Bits = 8 * sizeof(T);
+	constexpr auto Bits = bit_sizeof<T>();
 	const double total_count = n * Bits;
 	return chi2_stats(bit_counts.size(), to_data(bit_counts), [total_count](std::size_t i) {
 		return total_count * binomial_pdf(Bits, .5, i);

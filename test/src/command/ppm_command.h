@@ -6,7 +6,7 @@ namespace mixer {
 
 template <typename T>
 void ppm_command() {
-	const auto dir = get_config().root_path + "ppm" + std::to_string(8 * sizeof(T)) + "/";
+	const auto dir = get_config().root_path + "ppm" + std::to_string(bit_sizeof<T>()) + "/";
 	auto trng_stream = create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
 	write_ppm(dir + trng_stream.name + ".ppm", trng_stream);
 

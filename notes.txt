@@ -114,3 +114,103 @@ ww-s412       suspicious (4)
 ww-s45        suspicious (4)
 -------       -------
 SUMMARY       PASS: very suspicious (7)
+
+
+TRNG without ww and uniform:
+
+Executing command -test
+Reading trng stream from disk... done!
+KEY           VALUE
+test subject  trng
+2^k           27
+samples       128
+n per sample  134217728
+-------       -------
+coupon-m      suspicious (4)
+-------       -------
+SUMMARY       PASS: suspicious (4)
+
+KEY              VALUE
+test subject     trng
+2^k              28
+samples          128
+n per sample     268435456
+-------          -------
+coupon-m         very suspicious (7)
+divisibility-d3  suspicious (4)
+-------          -------
+SUMMARY          PASS: very suspicious (7)
+
+KEY           VALUE
+test subject  trng
+2^k           29
+samples       128
+n per sample  536870912
+-------       -------
+mean-m        suspicious (5)
+gap-g1        very suspicious (7)
+gap-g2        suspicious (4)
+coupon-m      suspicious (6)
+-------       -------
+SUMMARY       PASS: very suspicious (7)
+
+KEY           VALUE
+test subject  trng
+2^k           30
+samples       128
+n per sample  1073741824
+-------       -------
+mean-m        suspicious (4)
+gap-g1        suspicious (6)
+coupon-m      failure (10) trng-41(p=0.047130)
+-------       -------
+SUMMARY       FAIL: failure (10)
+
+
+TRNG only using worst (without ww and uniform)
+
+KEY           VALUE
+test subject  trng
+2^k           27
+samples       128
+n per sample  134217728
+-------       -------
+-------       -------
+SUMMARY       PASS: minor (3)
+
+KEY              VALUE
+test subject     trng
+2^k              28
+samples          128
+n per sample     268435456
+-------          -------
+divisibility-d3  suspicious (4)
+-------          -------
+SUMMARY          PASS: suspicious (4)
+
+KEY           VALUE
+test subject  trng
+2^k           29
+samples       128
+n per sample  536870912
+-------       -------
+-------       -------
+SUMMARY       PASS: minor (3)
+
+KEY           VALUE
+test subject  trng
+2^k           30
+samples       128
+n per sample  1073741824
+-------       -------
+-------       -------
+SUMMARY       PASS: minor (3)
+
+KEY           VALUE
+test subject  trng
+2^k           31
+samples       128
+n per sample  2147483648
+-------       -------
+-------       -------
+SUMMARY       PASS: minor (2)

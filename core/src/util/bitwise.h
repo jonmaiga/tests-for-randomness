@@ -8,20 +8,38 @@
 namespace mixer {
 
 template <typename T>
+constexpr int bit_sizeof() {
+	return 8 * sizeof(T);
+}
+
+template <typename T>
+constexpr int shift_sizeof() {
+	if constexpr (std::is_same_v<T, uint64_t>) return 6;
+	if constexpr (std::is_same_v<T, uint32_t>) return 5;
+	if constexpr (std::is_same_v<T, uint16_t>) return 4;
+	if constexpr (std::is_same_v<T, uint8_t>) return 3;
+	else {
+		//static_assert(sizeof(T) == 0, "T not supported");
+		assertion(false, "T not supported");
+	}
+	return 0;
+}
+
+template <typename T>
 T ror(T v, int r) {
-	constexpr auto Bits = 8 * sizeof(T);
+	constexpr auto Bits = bit_sizeof<T>();
 	return (v << r) | (v >> (Bits - r));
 }
 
 template <typename T>
 T rol(T v, int r) {
-	constexpr auto Bits = 8 * sizeof(T);
+	constexpr auto Bits = bit_sizeof<T>();
 	return (v >> r) | (v << (Bits - r));
 }
 
 template <typename T>
 T flip_bit(T i, int bit) {
-	assertion(bit >= 0 && bit < 8 * sizeof(T), "bit to flip out of range");
+	assertion(bit >= 0 && bit < bit_sizeof<T>(), "bit to flip out of range");
 	return i ^ (1ull << bit);
 }
 
@@ -75,24 +93,6 @@ inline uint64_t reverse_bits(uint64_t x) {
 	x = (x & 0xff00ff00ff00ff00ull) >> 8 | (x & 0x00ff00ff00ff00ffull) << 8;
 	x = (x & 0xffff0000ffff0000ull) >> 16 | (x & 0x0000ffff0000ffffull) << 16;
 	return x >> 32 | x << 32;
-}
-
-template <typename T>
-constexpr int bit_sizeof() {
-	return 8 * sizeof(T);
-}
-
-template <typename T>
-constexpr int shift_sizeof() {
-	if constexpr (std::is_same_v<T, uint64_t>) return 6;
-	if constexpr (std::is_same_v<T, uint32_t>) return 5;
-	if constexpr (std::is_same_v<T, uint16_t>) return 4;
-	if constexpr (std::is_same_v<T, uint8_t>) return 3;
-	else {
-		//static_assert(sizeof(T) == 0, "T not supported");
-		assertion(false, "T not supported");
-	}
-	return 0;
 }
 
 }

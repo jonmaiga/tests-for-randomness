@@ -82,9 +82,9 @@ struct xys {
 	std::vector<double> ys;
 };
 
-template<typename T>
+template <typename T>
 xys create_bit_flipped_xy(uint64_t n, stream<T> source, const mixer<T>& mixer) {
-	constexpr auto Bits = 8 * sizeof(T);
+	constexpr auto Bits = bit_sizeof<T>();
 	std::vector<double> xs, ys;
 	for (uint64_t i = 0; i < n; ++i) {
 		const T v = source();
@@ -110,7 +110,7 @@ xys create_serial_xy_by_ref(uint64_t n, stream<T>& source) {
 
 template <typename T>
 T isolate_bit_by_ref(stream<T>& source, int bit) {
-	constexpr auto Bits = 8 * sizeof(T);
+	constexpr auto Bits = bit_sizeof<T>();
 	T x = 0;
 	const T m = 1ull << bit;
 	for (int i = 0; i < Bits; ++i) {
@@ -155,7 +155,7 @@ void sliding_bit_window(
 	int window_size,
 	int increments,
 	const std::function<void(uint64_t)>& callback) {
-	constexpr auto Size = 8 * sizeof(typename T::value_type);
+	constexpr auto Size = bit_sizeof<typename T::value_type>();
 	assertion(window_size >= 1 && window_size <= Size-1, "bad window size");
 	assertion(increments >= 1 && increments + window_size <= Size, "bad increments");
 

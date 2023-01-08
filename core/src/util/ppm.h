@@ -26,7 +26,7 @@ void write_ppm(const std::string& filename, const int width, const int height, c
 		for (T x = 0; x < width; ++x) {
 			T p = func(x, y);
 			for (auto byte = 0; byte < sizeof(T); ++byte) {
-				unsigned char grey = (p >> (8 * byte)) & 0xff;
+				const unsigned char grey = (p >> (8 * byte)) & 0xff;
 				data.push_back(grey);
 				data.push_back(grey);
 				data.push_back(grey);

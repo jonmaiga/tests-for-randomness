@@ -17,7 +17,7 @@ struct config {
 
 	template<typename T>
 	std::string ppm_dir() const {
-		return root_path + "ppm" + std::to_string(8 * sizeof(T)) + "/";
+		return root_path + "ppm" + std::to_string(bit_sizeof<T>()) + "/";
 	}
 };
 
