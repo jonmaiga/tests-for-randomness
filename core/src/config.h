@@ -1,5 +1,6 @@
 #pragma once
 
+#include "util/bitwise.h"
 #include <string>
 
 namespace mixer {
