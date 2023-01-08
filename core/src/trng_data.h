@@ -19,4 +19,10 @@ const std::vector<T>& get_trng_data() {
 	return trng_data;
 }
 
+template <typename T>
+stream<T> create_trng_stream() {
+	return create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
+}
+
+
 }

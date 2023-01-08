@@ -29,7 +29,6 @@ struct function_stream {
 	}
 };
 
-
 template <typename T>
 stream<T> create_counter_stream(T increment, T start) {
 	return {"counter-" + std::to_string(increment), counter_stream<T>{increment, start}};
