@@ -52,7 +52,7 @@ int main(int argc, char** args) {
 			return 0;
 		}
 		if (command == "-sffs") {
-			using T = uint64_t;
+			using T = uint32_t;
 			run_sffs<T>();
 			return 0;
 		}

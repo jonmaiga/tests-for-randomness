@@ -41,7 +41,7 @@ sffs_state start_search(const std::string& name, const sffs_config& config) {
 	std::cout << "===========================\n";
 	if (const auto& seed = config.seed) {
 		if (seed->size() != config.bits) {
-			std::cout << "Seed size is not correct.\n";
+			std::cout << "Seed size is not correct, expected " << config.bits << " but seed is " << seed->size() << ".\n";
 			return {};
 		}
 		std::cout << config.to_string(*seed) << "\n";
@@ -59,18 +59,19 @@ sffs_state start_search(const std::string& name, const sffs_config& config) {
 template <typename T>
 void run_sffs() {
 	bit_vector seed;
-	seed.add(32, 6);
-	seed.add(31, 6);
-	seed.add(30, 6);
-	seed.add(29, 6);
-	seed.add(0xe9846af9b1a615d, 64);
+	seed.add(13, 5);
+	seed.add(17, 5);
+	seed.add(5, 5);
+	seed.add(19, 5);
+	seed.add(7, 5);
 
-	auto cfg = get_xm3x_config<T>();
+	auto cfg = get_xmx_config<T>();
 	//cfg.seed = seed;
 	cfg.seed = find_seed(cfg, 100);
 
 	const auto result = start_search<T>("NAME HERE", cfg);
-	const auto mixer = create_xm3x_mixer<T>(result.data);
+
+	const auto mixer = create_xmx_mixer<T>(result.data);
 	evaluate_multi_pass(create_result_callback(25, false), create_test_setup<T>(mixer));
 }
 

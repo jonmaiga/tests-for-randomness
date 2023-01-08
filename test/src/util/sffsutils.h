@@ -25,15 +25,7 @@ inline auto create_sffs_printer(const bit_vector_to_string& to_arr_str) {
 }
 
 template <typename T>
-double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
-	const test_setup<T> ts{
-		mixer.name,
-		create_sources<T>(),
-		all_test_types,
-		mixer,
-		threads
-	};
-
+double sffs_fitness_test(const test_setup<T>& ts) {
 	constexpr int max_power = 27;
 	auto cb = [max_power](const test_battery_result& br) {
 		const auto meta = get_meta_analysis(br);
@@ -50,6 +42,27 @@ double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
 		append(all_p_values, to_p_values(tr.second));
 	}
 	return (max_power - r.power_of_two()) + kolmogorov_smirnov_stats(all_p_values)->value;
+}
+
+
+template <typename T>
+double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
+	const test_setup<T> ts{
+		mixer.name,
+		create_sources<T>(),
+		all_test_types,
+		mixer,
+		threads
+	};
+	return sffs_fitness_test<T>(ts);
+}
+
+template <typename T>
+double sffs_fitness_test_as_prng(const mixer<T>& mixer) {
+	const auto setup = create_prng_setup<T>([mixer](T seed) {
+		return create_prng_from_mixer<T>(mixer, seed);
+	});
+	return sffs_fitness_test<T>(setup);
 }
 
 
