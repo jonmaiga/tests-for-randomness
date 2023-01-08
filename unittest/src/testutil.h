@@ -10,14 +10,11 @@ namespace mixer {
 
 template <typename T> mixer<T> get_test_mixer();
 
-template <> inline mixer<uint64_t> get_test_mixer() { return mix64::mx3; }
 template <> inline mixer<uint32_t> get_test_mixer() { return mix32::prospector; }
+template <> inline mixer<uint64_t> get_test_mixer() { return mix64::mx3; }
 
 template <typename T = uint64_t>
 stream<T> test_stream() {
-	//return create_stream_from_mixer(
-		//create_stream_from_data_by_ref("test_trng",
-		//                               get_trng_data<T>()), get_test_mixer<T>());
 	return create_stream_from_mixer<T>(create_counter_stream<T>(1), get_test_mixer<T>());
 }
 
