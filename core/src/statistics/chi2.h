@@ -39,8 +39,8 @@ inline std::optional<statistic> chi2_stats(std::size_t n, const data_fn& observe
 	return statistic{statistic_type::chi2, chi2, p_value, df};
 }
 
-inline std::optional<statistic> chi2_stats(const std::vector<uint64_t>& bins, double expected_count) {
-	return chi2_stats(bins.size(), to_data(bins), to_data(expected_count));
+inline std::optional<statistic> chi2_stats(const std::vector<uint64_t>& bins, double expected_count, double expected_threshold = 0) {
+	return chi2_stats(bins.size(), to_data(bins), to_data(expected_count), expected_threshold);
 }
 
 template <typename T>
