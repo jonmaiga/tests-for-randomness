@@ -83,6 +83,18 @@ OTHER:
 Tried sffs over jenkins came to 2^12 ish. Not worth it. (see jenkins-config branch)
 Tried sffs over xxmxx with different variations. Not worth it.
 
+without ks meta trng still fails (a bit later):
+KEY           VALUE                             
+test subject  trng                              
+2^k           28                                
+samples       128                               
+n per sample  268435456                         
+-------       -------                           
+uniform-m     failure (10) trng-71(p=0.000000)  
+ww-s136       very suspicious (7)               
+-------       -------                           
+SUMMARY       FAIL: failure (10)  
+
 
 Testing trng as prng fails at 2^26:
 KEY           VALUE
