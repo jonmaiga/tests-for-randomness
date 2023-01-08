@@ -23,7 +23,7 @@ inline sffs_state get_state(const sffs_config& config, const sffs_state& current
 		auto test = current_data;
 		test.set_bit(i, is_forward);
 		sffs_jobs.emplace_back([test, &config]() {
-				const double score = config.fitness(test, 60);
+				const double score = config.fitness(test);
 				assertion(is_valid(score), "invalid fitness score for sffs");
 				return sffs_state{test, score};
 			}
@@ -59,7 +59,7 @@ inline sffs_state run_sffs(const sffs_config& config, const sffs_callback& callb
 	const int min = config.min;
 	const int max = std::min(config.bits, config.max);
 
-	const double seed_score = config.fitness(init_bits, default_max_threads());
+	const double seed_score = config.fitness(init_bits);
 	ks[init_bits.count()] = {init_bits, seed_score};
 	int k = init_bits.count();
 

@@ -24,9 +24,9 @@ sffs_config get_xmx_config() {
 		return ss.str();
 	};
 
-	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
+	const auto fitness = [](const bit_vector& bits) {
 		const auto c = to_xmx_constants<T>(bits);
-		return sffs_fitness_test(create_xmx_mixer<T>(c), num_threads);
+		return sffs_fitness_test<T>(create_xmx_mixer<T>(c));
 	};
 	constexpr int bits_for_multiplier = bit_sizeof<T>();
 	constexpr int bits_for_shift = shift_sizeof<T>();
@@ -54,9 +54,9 @@ sffs_config get_xm2x_config() {
 		return ss.str();
 	};
 
-	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
+	const auto fitness = [](const bit_vector& bits) {
 		const auto c = to_xm2x_constants<T>(bits);
-		return sffs_fitness_test(create_xm2x_mixer(c), num_threads);
+		return sffs_fitness_test(create_xm2x_mixer(c));
 	};
 
 	constexpr int bits_for_multiplier = bit_sizeof<T>();
@@ -88,9 +88,9 @@ sffs_config get_xm3x_config() {
 		return ss.str();
 	};
 
-	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
+	const auto fitness = [](const bit_vector& bits) {
 		const auto c = to_xm3x_constants<T>(bits);
-		return sffs_fitness_test(create_xm3x_mixer<T>(c), num_threads);
+		return sffs_fitness_test(create_xm3x_mixer<T>(c));
 	};
 
 	constexpr int bits_for_multiplier = bit_sizeof<T>();

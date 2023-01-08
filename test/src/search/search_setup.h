@@ -22,7 +22,7 @@ inline bit_vector find_seed(const sffs_config& config, int tries) {
 	bit_vector best(config.bits);
 	for (int i = 0; i < tries; ++i) {
 		bit_vector r = random_bit_vector(config.bits);
-		const double score = config.fitness(r, default_max_threads());
+		const double score = config.fitness(r);
 		if (score < best_score) {
 			best_score = score;
 			best = r;
@@ -45,7 +45,7 @@ sffs_state start_search(const std::string& name, const sffs_config& config) {
 			return {};
 		}
 		std::cout << config.to_string(*seed) << "\n";
-		std::cout << "Seed fitness: " << config.fitness(*seed, default_max_threads()) << "\n";
+		std::cout << "Seed fitness: " << config.fitness(*seed) << "\n";
 	}
 	//std::cout << "Trng fitness    : " << sffs_fitness_test(trng, default_max_threads()) << "\n";
 	auto result = run_sffs(config, create_sffs_printer(config.to_arr_str));

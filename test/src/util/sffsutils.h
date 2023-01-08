@@ -44,15 +44,13 @@ double sffs_fitness_test(const test_setup<T>& ts) {
 	return (max_power - r.power_of_two()) + kolmogorov_smirnov_stats(all_p_values)->value;
 }
 
-
 template <typename T>
-double sffs_fitness_test(const mixer<T>& mixer, unsigned int threads) {
+double sffs_fitness_test(const mixer<T>& mixer) {
 	const test_setup<T> ts{
 		mixer.name,
 		create_sources<T>(),
 		all_test_types,
-		mixer,
-		threads
+		mixer
 	};
 	return sffs_fitness_test<T>(ts);
 }

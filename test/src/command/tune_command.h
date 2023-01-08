@@ -48,7 +48,7 @@ inline void tune_command() {
 		return std::to_string(bits.get(0, 32));
 	};
 
-	const auto fitness = [](const bit_vector& bits, unsigned int num_threads) {
+	const auto fitness = [](const bit_vector& bits) {
 		const auto c = bits.get<uint32_t>(0, 32);
 		return tune_fitness(c);
 	};
