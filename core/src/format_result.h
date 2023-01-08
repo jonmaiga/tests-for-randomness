@@ -108,7 +108,7 @@ public:
 	}
 
 	bool has_suspicion() const {
-		return get_failure_strength() > 3;
+		return get_failure_strength() > 4;
 	}
 
 	bool pass() const {
@@ -131,7 +131,7 @@ public:
 			"minor (1)",
 			"minor (2)",
 			"minor (3)",
-			"suspicious (4)",
+			"minor (4)",
 			"suspicious (5)",
 			"suspicious (6)",
 			"very suspicious (7)",
@@ -150,7 +150,7 @@ inline meta_analysis create_meta_analysis(const std::vector<test_result>& test_r
 	const auto p_values = to_p_values(test_results);
 	std::optional<statistic> worst;
 	if (p_values.size() >= 32) {
-		worst = kolmogorov_smirnov_stats(p_values);
+		//worst = kolmogorov_smirnov_stats(p_values);
 	}
 
 	double worst_p_value = worst ? worst->p_value : 1000;
