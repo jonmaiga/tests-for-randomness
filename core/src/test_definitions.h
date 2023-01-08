@@ -2,6 +2,7 @@
 
 #include "statistics/avalanche.h"
 #include "statistics/basic.h"
+#include "statistics/bit_correlation.h"
 #include "statistics/correlation.h"
 #include "statistics/coupon.h"
 #include "statistics/divisibility.h"
@@ -31,7 +32,8 @@ std::vector<test_definition<T>> get_tests() {
 		// {test_type::pearson_r, pearson_correlation_test<T>, {}, "pearson_r"}, // weak
 		// {test_type::spearman_r, spearman_correlation_test<T>, {}, "spearman_r"}, // weak
 		// {test_type::kendall_tau, kendall_correlation_test<T>, {}, "kendall_tau"}, // slow todo
-		
+		{test_type::bit_correlation, bit_count_correlation_test<T>, {}, "bcc"},
+
 		{test_type::gap, gap_test<T>, {}, "gap"}, // weak (found no tweak)
 		{test_type::coupon, coupon_test<T>, {}, "coupon"}, // weak (found no tweak)
 		{test_type::divisibility, divisibility_test<T>, {}, "divisibility"}, // weak (didn't find any tweak)

@@ -43,6 +43,7 @@ enum class test_type {
 	pearson_r,
 	spearman_r,
 	kendall_tau,
+	bit_correlation,
 
 	gap,
 	coupon,
