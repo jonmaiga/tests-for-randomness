@@ -55,7 +55,7 @@ inline std::optional<statistic> wald_wolfowitz_stats(wald_wolfowitz_data s) {
 
 template <typename T>
 sub_test_results wald_wolfowitz_test(const uint64_t n, stream<T> source) {
-	return split_test(n, 1000000, [&source](uint64_t size) {
+	return split_test(source.name, n, 1000000, [&source](uint64_t size) {
 		return wald_wolfowitz_stats(generate_wald_wolfowitz_data(get_raw_by_ref(size, source)));
 	});
 }

@@ -148,15 +148,14 @@ template <typename T>
 using stream_test = std::function<sub_test_results(uint64_t n, const stream<T>&)>;
 
 
-inline sub_test_results split_test(const uint64_t n, const uint64_t max_size, const std::function<std::optional<statistic>(uint64_t)>& f) {
+inline sub_test_results split_test(const std::string& name, const uint64_t n, const uint64_t max_size, const std::function<std::optional<statistic>(uint64_t)>& f) {
 	if (n <= max_size) {
 		return main_sub_test(f(n));
 	}
-
 	const auto split_count = std::max(static_cast<uint64_t>(2), n / max_size);
 	sub_test_results results;
 	for (uint64_t i = 0; i < split_count; ++i) {
-		results.push_back({"s" + std::to_string(i + 1), f(max_size)});
+		results.push_back({name + "-s" + std::to_string(i + 1), f(max_size)});
 	}
 	return results;
 }
