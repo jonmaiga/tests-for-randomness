@@ -55,5 +55,16 @@ TEST(chi2, inconclusive) {
 	EXPECT_FALSE(s);
 }
 
+TEST(chi2, get_bin_count) {
+	EXPECT_EQ(get_bin_count(1), 2);
+	EXPECT_EQ(get_bin_count(2), 3);
+	EXPECT_EQ(get_bin_count(3), 4);
+	EXPECT_EQ(get_bin_count(10), 6);
+	EXPECT_EQ(get_bin_count(100), 13);
+	EXPECT_EQ(get_bin_count(1000), 32);
+	EXPECT_EQ(get_bin_count(1000000), 503);
+	EXPECT_EQ(get_bin_count(67108864), 2703);
+}
+
 
 }

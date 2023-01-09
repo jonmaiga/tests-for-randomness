@@ -8,10 +8,14 @@
 
 namespace mixer {
 
+inline uint64_t get_bin_count(uint64_t n) {
+	return static_cast<uint64_t>(std::ceil(2 * pow(n, .4)));
+}
+
 template <typename T>
 std::vector<uint64_t> bin_data_for_chi2(const T& data01) {
 	static_assert(std::is_floating_point_v<typename T::value_type>);
-	std::vector<uint64_t> bins(static_cast<uint64_t>(std::ceil(2 * pow(data01.size(), .4))));
+	std::vector<uint64_t> bins(get_bin_count(data01.size()));
 	const auto bin_count = static_cast<double>(bins.size());
 	for (const auto v : data01) {
 		assertion(is_valid_between_01(v), "Invalid data in chi2");
