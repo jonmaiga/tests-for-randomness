@@ -54,8 +54,8 @@ stream<T> create_gray_code(T d) {
 #undef FUNC
 
 template <typename T>
-stream<T> create_stream_from_data_by_ref(const std::string& name, const std::vector<T>& data) {
-	std::size_t index = 0;
+stream<T> create_stream_from_data_by_ref(const std::string& name, const std::vector<T>& data, std::size_t start_index = 0) {
+	std::size_t index = start_index;
 	return stream<T>{
 		name, [&data, index]() mutable -> T {
 			return data[index++ % data.size()];
@@ -63,14 +63,6 @@ stream<T> create_stream_from_data_by_ref(const std::string& name, const std::vec
 	};
 }
 
-template <typename T>
-stream<T> create_stream_from_data_by_ref(const std::string& name, const std::vector<T>& data, stream<T> indexer) {
-	return stream<T>{
-		name, [&data, indexer]() mutable -> T {
-			return data[indexer() % data.size()];
-		}
-	};
-}
 
 template <typename T>
 stream<T> create_stream_from_data_by_ref_thread_safe(const std::string& name, const std::vector<T>& data) {
