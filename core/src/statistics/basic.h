@@ -8,13 +8,15 @@
 namespace mixer {
 
 template <typename T>
-double get_median(const T& sorted) {
+typename T::value_type get_median(const T& sorted) {
 	assertion(!sorted.empty(), "median in empty vector");
 	const auto s = sorted.size();
 	if (s % 2 == 1) {
 		return sorted[s / 2];
 	}
-	return (sorted[(s - 1) / 2] + sorted[(s - 1) / 2 + 1]) / 2.;
+	const auto a = static_cast<double>(sorted[(s - 1) / 2]);
+	const auto b = static_cast<double>(sorted[(s - 1) / 2 + 1]);
+	return static_cast<typename T::value_type>((a + b) / 2);
 }
 
 template <typename T>
