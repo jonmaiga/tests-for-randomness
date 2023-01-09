@@ -16,7 +16,9 @@ wald_wolfowitz_data generate_wald_wolfowitz_data(const std::vector<T>& data) {
 	if (data.empty()) {
 		return {};
 	}
-	const auto cutoff = get_median(data);
+	auto sorted = data;
+	std::sort(sorted.begin(), sorted.end());
+	const auto cutoff = get_median(sorted);
 	uint64_t n_plus = 0;
 	uint64_t n_minus = 0;
 	uint64_t runs = 1;
@@ -24,7 +26,7 @@ wald_wolfowitz_data generate_wald_wolfowitz_data(const std::vector<T>& data) {
 	for (const auto v : data) {
 		const auto is_greater = v > cutoff;
 		if (v != cutoff) {
-			is_greater ? n_plus++ : n_minus++;
+			is_greater ? ++n_plus : ++n_minus;
 		}
 		if (is_greater != is_current_run_greater) {
 			is_current_run_greater = !is_current_run_greater;

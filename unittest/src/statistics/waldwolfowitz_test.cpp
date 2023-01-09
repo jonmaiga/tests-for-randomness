@@ -35,7 +35,7 @@ TEST(waldwolfowitz, two_different) {
 }
 
 TEST(waldwolfowitz, two_runs) {
-	const auto ww = generate_wald_wolfowitz_data<uint64_t>({1, 1, 1, 2, 2, 2});
+	const auto ww = generate_wald_wolfowitz_data<uint64_t>({1, 1, 1, 2, 3, 3, 3});
 	EXPECT_EQ(ww.runs, 2);
 	EXPECT_EQ(ww.n_plus, 3);
 	EXPECT_EQ(ww.n_minus, 3);
@@ -51,8 +51,8 @@ TEST(waldwolfowitz, two_runs_2) {
 
 TEST(waldwolfowitz, no_change) {
 	const auto r = wald_wolfowitz_test(50, test_stream()).front().stats;
-	EXPECT_NEAR(r->value, -0.5855, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.5581, 1e-4);
+	EXPECT_NEAR(r->value, 0.866025, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.38647, 1e-4);
 }
 
 }
