@@ -42,14 +42,13 @@ inline auto create_result_callback(int max_power, bool print_intermediate_result
 }
 
 template <typename T>
-streams<T> create_seeded_trng(int count) {
+streams<T> create_seeded_trng(int sample_count) {
 	streams<T> ts;
 	const auto& data = get_trng_data<T>();
-	const auto& mix = get_default_mixer<T>();
-	for (int i = 1; i <= count; ++i) {
-		auto indexer = create_stream_from_mixer(create_counter_stream<T>(1, mix(i)), mix);
+	const auto interval = data.size() / sample_count;
+	for (int i = 0; i < sample_count; ++i) {
 		ts.push_back(
-			create_stream_from_data_by_ref<T>("trng-" + std::to_string(i), data, indexer)
+			create_stream_from_data_by_ref<T>("trng-" + std::to_string(i), data, i * interval)
 		);
 	}
 	return ts;
@@ -69,7 +68,7 @@ template <typename T>
 test_setup<T> create_trng_test_setup() {
 	return test_setup<T>{
 		"trng",
-		create_seeded_trng<T>(128),
+		create_seeded_trng<T>(1),
 		all_test_types
 	};
 }
@@ -100,12 +99,11 @@ test_setup<T> create_test_setup(const mixer<T> mixer) {
 }
 
 
-
 inline void test_command() {
 	using T = uint32_t;
-	const auto callback = create_result_callback(25, true);
+	const auto callback = create_result_callback(30, true);
 
-	//evaluate_multi_pass(callback, create_trng_test_setup<T>());
+	evaluate_multi_pass(callback, create_trng_test_setup<T>());
 	//evaluate_multi_pass(callback, create_combiner_test_setup<T>(combine32::xm3x));
 
 	// for (const auto& m : get_mixers<T>()) {
@@ -116,9 +114,9 @@ inline void test_command() {
 	// 	evaluate_multi_pass(callback, create_prng_setup(m));
 	// }
 
-	evaluate_multi_pass(callback, create_prng_setup<T>([](T seed) {
-		return rng32::pcg(seed);
-	}));
+	// evaluate_multi_pass(callback, create_prng_setup<T>([](T seed) {
+	// 	return rng32::xoroshift(seed);
+	// }));
 }
 
 }
