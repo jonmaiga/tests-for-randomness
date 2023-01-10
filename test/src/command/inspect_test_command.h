@@ -10,7 +10,7 @@ streams<T> create_fail_sources() {
 	const auto& mix = get_default_mixer<T>();
 
 	streams<T> sources;
-	
+
 	// constant
 	sources.push_back(create_constant_stream<T>(0));
 	sources.push_back(create_constant_stream<T>(1));
@@ -18,7 +18,7 @@ streams<T> create_fail_sources() {
 
 	// counter-1
 	sources.push_back(create_counter_stream<T>(1));
-	
+
 	return sources;
 }
 
@@ -29,29 +29,31 @@ streams<T> create_pass_sources() {
 		//return create_stream_from_mixer<T>(create_counter_stream<T>(1), get_default_mixer<T>());
 	};
 	return {trng()};
-}	
+}
 
-inline auto create_test_inspect_callback(int max_power, bool print_intermediate_results = true) {
-	return [max_power, print_intermediate_results](const test_battery_result& br) {
+inline auto create_test_inspect_callback(int max_power) {
+	return [max_power](const test_battery_result& br) {
 		const auto meta = get_meta_analysis(br);
 		const bool proceed = meta->pass() && br.power_of_two() < max_power;
 		return proceed;
 	};
 }
 
-template<typename T>
+template <typename T>
 struct inspect_result {
 	streams<T> passed;
 	streams<T> failed;
 };
 
-template<typename T>
-inline inspect_result<T> inspect_test(const test_definition<T>& test_def, const streams<T>& sources) {
-	const auto callback = create_test_inspect_callback(20, false);
+template <typename T>
+inspect_result<T> inspect_test(const test_definition<T>& test_def, const streams<T>& sources) {
+	const auto callback = create_test_inspect_callback(20);
 
-	const mixer<T> identity_mixer = {"identity", [](T x) {
-		return x;
-	}};
+	const mixer<T> identity_mixer = {
+		"identity", [](T x) {
+			return x;
+		}
+	};
 
 	inspect_result<T> result;
 	for (const auto& source : sources) {
@@ -60,14 +62,15 @@ inline inspect_result<T> inspect_test(const test_definition<T>& test_def, const 
 		auto meta = get_meta_analysis(br);
 		if (meta->pass()) {
 			result.passed.push_back(source);
-		} else {
+		}
+		else {
 			result.failed.push_back(source);
 		}
 	}
 	return result;
 }
 
-template<typename T>
+template <typename T>
 void inspect_tests(const streams<T>& sources, bool all_should_pass) {
 	auto rrc_sources = create_rrc_sources(sources);
 	const auto get_sources = [rrc_sources, sources](const test_definition<T>& t) {
@@ -83,19 +86,20 @@ void inspect_tests(const streams<T>& sources, bool all_should_pass) {
 		}
 		auto result = inspect_test<T>(test_def, get_sources(test_def));
 		const auto& fail_sources = all_should_pass ? result.failed : result.passed;
-		bool passed = fail_sources.empty();
+		const bool passed = fail_sources.empty();
 		if (passed) {
 			std::cout << "PASS: " << test_def.name << "\n";
-		} else {
+		}
+		else {
 			for (const auto& s : fail_sources) {
 				std::cout << "FAIL: " << test_def.name << ": " << s.name << "\n";
 			}
 		}
-	}	
+	}
 }
 
-template<typename T>
-inline void inspect_test_command() {
+template <typename T>
+void inspect_test_command() {
 	std::cout << "==============================================\n";
 	std::cout << "Fail sources, " << bit_sizeof<T>() << " bits\n";
 	std::cout << "==============================================\n";
