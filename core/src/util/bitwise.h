@@ -44,6 +44,12 @@ T flip_bit(T i, int bit) {
 }
 
 template <typename T>
+bool is_bit_set(T i, int bit) {
+	assertion(bit >= 0 && bit < bit_sizeof<T>(), "is bit set out of range");
+	return ((i >> bit) & 1) != 0;
+}
+
+template <typename T>
 int bit_count(T x) {
 	return std::popcount(x);
 }

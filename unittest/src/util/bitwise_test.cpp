@@ -18,6 +18,26 @@ TEST(bitwise, flip_bit) {
 	EXPECT_EQ(flip_bit(1ull, 63), 9223372036854775809ull);
 }
 
+TEST(bitwise, is_bit_set) {
+	EXPECT_FALSE(is_bit_set(0, 0));
+	EXPECT_FALSE(is_bit_set(0xfe, 0));
+
+	EXPECT_FALSE(is_bit_set(2, 0));
+	EXPECT_TRUE(is_bit_set(2, 1));
+	EXPECT_FALSE(is_bit_set(2, 2));
+
+	using T = uint8_t;
+	EXPECT_TRUE(is_bit_set<T>(0b10101011, 0));
+	EXPECT_TRUE(is_bit_set<T>(0b10101011, 1));
+	EXPECT_FALSE(is_bit_set<T>(0b10101011, 2));
+	EXPECT_TRUE(is_bit_set<T>(0b10101011, 3));
+	EXPECT_FALSE(is_bit_set<T>(0b10101011, 4));
+	EXPECT_TRUE(is_bit_set<T>(0b10101011, 5));
+	EXPECT_FALSE(is_bit_set<T>(0b10101011, 6));
+	EXPECT_TRUE(is_bit_set<T>(0b10101011, 7));
+}
+
+
 TEST(bitwise, bit_count) {
 	EXPECT_EQ(bit_count(0u), 0);
 	EXPECT_EQ(bit_count(1u), 1);
