@@ -63,6 +63,21 @@ TEST(binomial_pdf, basic) {
 	EXPECT_NEAR(binomial_pdf(40, 0.5, 20), 0.1253, 1e-4);
 	EXPECT_NEAR(binomial_pdf(1, 0, 0), 1, 1e-4);
 	EXPECT_NEAR(binomial_pdf(1, 1, 0), 0, 1e-4);
+
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 10), 0.01502, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 11), 0.03004, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 12), 0.05257, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 13), 0.08087, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 14), 0.1097, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 15), 0.1317, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 16), 0.1399, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 17), 0.1317, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 18), 0.1097, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 19), 0.08087, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 20), 0.05257, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 21), 0.03004, 1e-4);
+	EXPECT_NEAR(binomial_pdf(32, 0.5, 22), 0.01502, 1e-4);
+
 }
 
 TEST(negative_binomial_pdf, basic) {
