@@ -44,21 +44,23 @@ inline std::vector<double> generate_gap_probabilities(double a, double b) {
 template <typename T>
 sub_test_results gap_test(uint64_t n, const stream<T>& source) {
 	sub_test_results results;
-	constexpr int wanted_gaps = 3;
-	constexpr double gap_size = 1. / static_cast<double>(wanted_gaps);
-	const uint64_t expected_total_count = n / wanted_gaps;
-	for (int gi = 0; gi < wanted_gaps; ++gi) {
 
-		const double a = snap_to_01(gi * gap_size);
-		const double b = snap_to_01(a + gap_size);
+	for (int wanted_gaps = 3; wanted_gaps <= 3; ++wanted_gaps) {
+		const double gap_size = 1. / static_cast<double>(wanted_gaps);
+		const uint64_t expected_total_count = n / wanted_gaps;
+		for (int gi = 0; gi < wanted_gaps; ++gi) {
 
-		const auto& ps = generate_gap_probabilities(a, b);
-		const auto& gaps = generate_gaps(ps.size(), a, b, ranged_stream(rescale_type_to_01(source), n));
+			const double a = snap_to_01(gi * gap_size);
+			const double b = snap_to_01(a + gap_size);
 
-		if (const auto s = chi2_stats(gaps.size(), to_data(gaps),
-		                              mul(to_data(ps), to_data(expected_total_count)),
-		                              1.)) {
-			results.push_back({"g" + std::to_string(gi), s});
+			const auto& ps = generate_gap_probabilities(a, b);
+			const auto& gaps = generate_gaps(ps.size(), a, b, ranged_stream(rescale_type_to_01(source), n));
+
+			if (const auto s = chi2_stats(gaps.size(), to_data(gaps),
+			                              mul(to_data(ps), to_data(expected_total_count)),
+			                              1.)) {
+				results.push_back({"g" + std::to_string(gi), s});
+			}
 		}
 	}
 	return results;
