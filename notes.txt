@@ -82,147 +82,62 @@ OTHER:
 
 Tried sffs over jenkins came to 2^12 ish. Not worth it. (see jenkins-config branch)
 Tried sffs over xxmxx with different variations. Not worth it.
-
-without ks meta trng still fails (a bit later):
-KEY           VALUE                             
-test subject  trng                              
-2^k           28                                
-samples       128                               
-n per sample  268435456                         
--------       -------                           
-uniform-m     failure (10) trng-71(p=0.000000)  
-ww-s136       very suspicious (7)               
--------       -------                           
-SUMMARY       FAIL: failure (10)  
+Divisible test seems very weak.
+Tested bit matrix, very weak.
 
 
-Testing trng as prng fails at 2^26:
+With ww fix:
 KEY           VALUE
-test subject  trng
-2^k           26
+test subject  pcg
+2^k           33
 samples       128
-n per sample  67108864
+n per sample  8589934592
 -------       -------
-uniform-m     failure (10) trng-75(p=0.000763)
-ww-s45        suspicious (4)
--------       -------
-SUMMARY       FAIL: failure (10)
-
-ww also seems to be buggy:
-KEY           VALUE
-test subject  trng
-2^k           29
-samples       128
-n per sample  536870912
--------       -------
-ww-s136       very suspicious (7)
-ww-s213       suspicious (4)
-ww-s214       suspicious (4)
-ww-s260       suspicious (4)
-ww-s307       suspicious (4)
-ww-s311       suspicious (5)
-ww-s353       suspicious (4)
-ww-s412       suspicious (4)
-ww-s45        suspicious (4)
+ww-s1321      suspicious (5)
+ww-s2012      suspicious (5)
+ww-s2517      suspicious (5)
+ww-s3209      very suspicious (7)
+ww-s4279      suspicious (5)
+ww-s5483      suspicious (5)
+ww-s5947      suspicious (5)
+ww-s6580      suspicious (5)
+ww-s6926      suspicious (6)
+ww-s7910      suspicious (5)
+ww-s850       suspicious (5)
 -------       -------
 SUMMARY       PASS: very suspicious (7)
-
-
-TRNG without ww and uniform:
 
 Executing command -test
-Reading trng stream from disk... done!
-KEY           VALUE
-test subject  trng
-2^k           27
-samples       128
-n per sample  134217728
--------       -------
-coupon-m      suspicious (4)
--------       -------
-SUMMARY       PASS: suspicious (4)
+KEY                     VALUE
+test subject            pcg-1
+2^k                     30
+samples                 128
+n per sample            1073741824
+-------                 -------
+ww-pcg-3062792213-s850  suspicious (5)
+-------                 -------
+SUMMARY                 PASS: suspicious (5)
 
-KEY              VALUE
-test subject     trng
-2^k              28
-samples          128
-n per sample     268435456
--------          -------
-coupon-m         very suspicious (7)
-divisibility-d3  suspicious (4)
--------          -------
-SUMMARY          PASS: very suspicious (7)
 
 KEY           VALUE
-test subject  trng
+test subject  mt
 2^k           29
 samples       128
 n per sample  536870912
 -------       -------
-mean-m        suspicious (5)
-gap-g1        very suspicious (7)
-gap-g2        suspicious (4)
-coupon-m      suspicious (6)
+ww-mt-s125    suspicious (5)
 -------       -------
-SUMMARY       PASS: very suspicious (7)
-
-KEY           VALUE
-test subject  trng
-2^k           30
-samples       128
-n per sample  1073741824
--------       -------
-mean-m        suspicious (4)
-gap-g1        suspicious (6)
-coupon-m      failure (10) trng-41(p=0.047130)
--------       -------
-SUMMARY       FAIL: failure (10)
+SUMMARY       PASS: suspicious (5)
 
 
-TRNG only using worst (without ww and uniform)
-
-KEY           VALUE
-test subject  trng
-2^k           27
-samples       128
-n per sample  134217728
--------       -------
--------       -------
-SUMMARY       PASS: minor (3)
-
-KEY              VALUE
-test subject     trng
-2^k              28
-samples          128
-n per sample     268435456
--------          -------
-divisibility-d3  suspicious (4)
--------          -------
-SUMMARY          PASS: suspicious (4)
-
-KEY           VALUE
-test subject  trng
-2^k           29
-samples       128
-n per sample  536870912
--------       -------
--------       -------
-SUMMARY       PASS: minor (3)
-
-KEY           VALUE
-test subject  trng
-2^k           30
-samples       128
-n per sample  1073741824
--------       -------
--------       -------
-SUMMARY       PASS: minor (3)
-
-KEY           VALUE
-test subject  trng
-2^k           31
-samples       128
-n per sample  2147483648
--------       -------
--------       -------
-SUMMARY       PASS: minor (2)
+KEY                          VALUE
+test subject                 xoshiro128plusplus
+2^k                          31
+samples                      128
+n per sample                 2147483648
+-------                      -------
+ww-xoshiro128plusplus-s1482  suspicious (5)
+ww-xoshiro128plusplus-s1613  suspicious (5)
+ww-xoshiro128plusplus-s621   suspicious (5)
+-------                      -------
+SUMMARY                      PASS: suspicious (5)
