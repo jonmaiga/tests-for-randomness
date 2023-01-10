@@ -78,6 +78,9 @@ TEST(binomial_pdf, basic) {
 	EXPECT_NEAR(binomial_pdf(32, 0.5, 21), 0.03004, 1e-4);
 	EXPECT_NEAR(binomial_pdf(32, 0.5, 22), 0.01502, 1e-4);
 
+	EXPECT_NEAR(binomial_pdf(64, 0.5, 31), 0.09633, 1e-4);
+	EXPECT_NEAR(binomial_pdf(64, 0.5, 32), 0.09934, 1e-4);
+	EXPECT_NEAR(binomial_pdf(64, 0.5, 33), 0.09633, 1e-4);
 }
 
 TEST(negative_binomial_pdf, basic) {
