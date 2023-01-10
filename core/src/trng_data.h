@@ -20,8 +20,8 @@ const std::vector<T>& get_trng_data() {
 }
 
 template <typename T>
-stream<T> create_trng_stream() {
-	return create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
+stream<T> create_trng_stream(std::size_t start_index = 0) {
+	return create_stream_from_data_by_ref<T>("trng", get_trng_data<T>(), start_index);
 }
 
 
