@@ -6,6 +6,8 @@
 
 #include <random>
 
+#include "util/bitwise.h"
+
 namespace mixer {
 
 using prng32 = prng<uint32_t>;
@@ -45,10 +47,10 @@ inline prng32 pcg(uint32_t seed) {
 	};
 }
 
-inline prng32 xoroshift(uint32_t seed) {
+inline prng32 xorshift(uint32_t seed) {
+	/* Algorithm "xor" from p. 4 of Marsaglia, "Xorshift RNGs" */
 	return {
-		"xoroshift", [x = seed]() mutable {
-			/* Algorithm "xor" from p. 4 of Marsaglia, "Xorshift RNGs" */
+		"xorshift", [x = seed]() mutable {
 			x ^= x << 13;
 			x ^= x >> 17;
 			x ^= x << 5;
@@ -56,6 +58,30 @@ inline prng32 xoroshift(uint32_t seed) {
 		}
 	};
 }
+
+inline prng32 xoshiro128plusplus(uint32_t seed) {
+	// https://prng.di.unimi.it/xoshiro128plusplus.c
+	uint32_t s[4]{seed, seed, seed, seed};
+	return {
+		"xoshiro128plusplus", [s]() mutable {
+
+			const uint32_t result = rol(s[0] + s[3], 7) + s[0];
+			const uint32_t t = s[1] << 9;
+
+			s[2] ^= s[0];
+			s[3] ^= s[1];
+			s[1] ^= s[2];
+			s[0] ^= s[3];
+
+			s[2] ^= t;
+
+			s[3] = rol(s[3], 11);
+
+			return result;
+		}
+	};
+}
+
 
 inline prng32 mt19337(uint32_t seed) {
 	std::mt19937 gen(seed);
@@ -86,9 +112,10 @@ inline std::vector<prng32> get_prngs(uint32_t seed) {
 		rng32::xmx(seed), // 24 bcc
 		rng32::xm2x(seed), // 29 uniform-m     failure (10) xm2x(p=0.000000) 
 		rng32::xm3x(seed), // 26, bcc, uniform
-		rng32::pcg(seed), // 29 ww-s443       failure (10) pcg(p=0.000000) ????
+		rng32::pcg(seed), // > 35
 		rng32::minstd_rand(seed), // 10 mean, uniform, gap, coupon
-		rng32::xoroshift(seed), // 
+		rng32::xorshift(seed), // 
+		rng32::xoshiro128plusplus(seed), //  >34 (only bcc)
 	};
 }
 
