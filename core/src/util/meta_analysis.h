@@ -1,5 +1,6 @@
 #pragma once
 
+#include "statistics/kolmogorov.h"
 #include "types.h"
 
 #include <vector>
@@ -93,19 +94,24 @@ public:
 	statistic stat;
 };
 
+inline meta_analysis create_uniform_p_values_result(const std::vector<test_result>& test_results) {
+	return meta_analysis(*kolmogorov_smirnov_stats(to_p_values(test_results)));
+}
+
 inline meta_analysis create_meta_analysis(const std::vector<test_result>& test_results) {
 	return meta_analysis(get_worst_result(test_results).stats);
 }
 
 inline std::optional<meta_analysis> get_worst_meta_analysis(const test_battery_result& battery_result) {
-	std::optional<meta_analysis> worst;
+	std::optional<meta_analysis> r;
 	for (const auto& e : battery_result.results) {
-		const auto interpretation = create_meta_analysis(e.second);
-		if (!worst || worst->get_p_value_cmp() < interpretation.get_p_value_cmp()) {
-			worst = interpretation;
+		const auto worst_test = get_worst_result(e.second);
+		const auto meta = meta_analysis(worst_test.stats);
+		if (!r || meta.get_p_value_cmp() < r->get_p_value_cmp()) {
+			r = meta;
 		}
 	}
-	return worst;
+	return r;
 }
 
 
