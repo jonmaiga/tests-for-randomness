@@ -13,7 +13,7 @@ TEST(meta_analysis, p_value_zero) {
 	EXPECT_TRUE(m.has_suspicion());
 	EXPECT_TRUE(m.has_remark());
 	EXPECT_EQ(m.get_failure_strength(), 10);
-	EXPECT_EQ(m.to_string(), "failure (10)");
+	EXPECT_EQ(m.to_string(), "failure(10)");
 }
 
 TEST(meta_analysis, p_value_01) {
@@ -23,7 +23,7 @@ TEST(meta_analysis, p_value_01) {
 	EXPECT_FALSE(m.has_suspicion());
 	EXPECT_TRUE(m.has_remark());
 	EXPECT_EQ(m.get_failure_strength(), 1);
-	EXPECT_EQ(m.to_string(), "minor (1)");
+	EXPECT_EQ(m.to_string(), "minor(1)");
 }
 
 TEST(meta_analysis, p_value_001) {
@@ -33,7 +33,7 @@ TEST(meta_analysis, p_value_001) {
 	EXPECT_FALSE(m.has_suspicion());
 	EXPECT_TRUE(m.has_remark());
 	EXPECT_EQ(m.get_failure_strength(), 2);
-	EXPECT_EQ(m.to_string(), "minor (2)");
+	EXPECT_EQ(m.to_string(), "minor(2)");
 }
 
 TEST(meta_analysis, p_value_0002321) {
@@ -43,7 +43,7 @@ TEST(meta_analysis, p_value_0002321) {
 	EXPECT_FALSE(m.has_suspicion());
 	EXPECT_TRUE(m.has_remark());
 	EXPECT_EQ(m.get_failure_strength(), 2);
-	EXPECT_EQ(m.to_string(), "minor (2)");
+	EXPECT_EQ(m.to_string(), "minor(2)");
 }
 
 

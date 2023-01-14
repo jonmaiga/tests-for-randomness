@@ -73,16 +73,16 @@ public:
 	std::string to_string() const {
 		static const std::vector<std::string> strings = {
 			"no remarks",
-			"minor (1)",
-			"minor (2)",
-			"minor (3)",
-			"minor (4)",
-			"suspicious (5)",
-			"suspicious (6)",
-			"very suspicious (7)",
-			"very suspicious (8)",
-			"failure (9)",
-			"failure (10)",
+			"minor(1)",
+			"minor(2)",
+			"minor(3)",
+			"minor(4)",
+			"suspicious(5)",
+			"suspicious(6)",
+			"very suspicious(7)",
+			"very suspicious(8)",
+			"failure(9)",
+			"failure(10)",
 		};
 		return strings[get_failure_strength()];
 	}
