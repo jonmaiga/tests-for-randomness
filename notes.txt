@@ -1,6 +1,9 @@
 TODO:
 -----
-- testable: mixers, combiners, hashers, prngs
+- inspect tests: ww fails after bug fix.
+- bc3d trng fails
+- permutation trng fails (64bit, trng seed 301071360, 2^20)
+
 - use trng to see if we can get evaluate_multi_pass working from 2^4 ? 
 - Select maximize or minimize in sffs.
 - Determine false positive rate
@@ -11,6 +14,8 @@ TODO:
 
 DONE:
 -----
+- fix formatting of suspicous streams (should be in value column)
+- testable: mixers, combiners, hashers, prngs
 - add sanity tests
 - self-inspect tests?
 - which tests are two sided? ww? z-test should only look on values close to zero. z-score only checks near 0

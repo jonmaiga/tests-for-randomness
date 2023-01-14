@@ -36,7 +36,7 @@ inline std::string list_worst_results(std::vector<test_result> results) {
 	std::vector<std::string> streams;
 	for (int i = 0; i < std::min(static_cast<std::size_t>(1), results.size()); ++i) {
 		const auto& r = results[i];
-		streams.push_back(r.stream_name + "(p=" + std::to_string(r.stats.p_value) + ")");
+		streams.push_back(" (p=" + std::to_string(r.stats.p_value) + ") " + r.stream_name);
 	}
 	return join(streams, ", ");
 }
@@ -164,7 +164,7 @@ inline meta_analysis create_meta_analysis(const std::vector<test_result>& test_r
 	return meta_analysis(*worst);
 }
 
-inline std::optional<meta_analysis> get_meta_analysis(const test_battery_result& battery_result) {
+inline std::optional<meta_analysis> get_worst_meta_analysis(const test_battery_result& battery_result) {
 	std::optional<meta_analysis> worst;
 	for (const auto& e : battery_result.results) {
 		const auto interpretation = create_meta_analysis(e.second);
@@ -201,17 +201,16 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 	t.col("n per sample").col(battery_result.n).row();
 	t.col("-------").col("-------").row();
 	for (const auto& e : battery_result.results) {
-		const auto interpretation = create_meta_analysis(e.second);
-		if (interpretation.has_suspicion()) {
+		const auto meta = create_meta_analysis(e.second);
+		if (meta.has_suspicion()) {
 			t.col(to_string(e.first));
-			std::string desc = interpretation.to_string();
-			t.col(desc + (interpretation.pass() ? "" : (" " + list_worst_results(e.second))));
+			t.col(meta.to_string() + list_worst_results(e.second));
 			t.row();
 		}
 	}
 
 	t.col("-------").col("-------").row();
-	if (const auto meta = get_meta_analysis(battery_result)) {
+	if (const auto meta = get_worst_meta_analysis(battery_result)) {
 		t.col("SUMMARY").col((meta->pass() ? "PASS: " : "FAIL: ") + meta->to_string()).row();
 	}
 

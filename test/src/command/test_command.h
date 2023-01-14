@@ -14,7 +14,7 @@ namespace mixer {
 
 inline auto create_result_callback(int max_power, bool print_intermediate_results = true) {
 	return [max_power, print_intermediate_results](const test_battery_result& br) {
-		const auto meta = get_meta_analysis(br);
+		const auto meta = get_worst_meta_analysis(br);
 		if (!meta) {
 			return true;
 		}
@@ -47,8 +47,9 @@ streams<T> create_seeded_trng(int sample_count) {
 	const auto& data = get_trng_data<T>();
 	const auto interval = data.size() / sample_count;
 	for (int i = 0; i < sample_count; ++i) {
+		auto start_index = i * interval;
 		ts.push_back(
-			create_stream_from_data_by_ref<T>("trng-" + std::to_string(i), data, i * interval)
+			create_stream_from_data_by_ref<T>("trng-" + std::to_string(start_index), data, start_index)
 		);
 	}
 	return ts;
@@ -68,7 +69,7 @@ template <typename T>
 test_setup<T> create_trng_test_setup() {
 	return test_setup<T>{
 		"trng",
-		create_seeded_trng<T>(1),
+		create_seeded_trng<T>(128),
 		all_test_types
 	};
 }
@@ -114,9 +115,9 @@ inline void test_command() {
 	// 	evaluate_multi_pass(callback, create_prng_setup(m));
 	// }
 
-	// evaluate_multi_pass(callback, create_prng_setup<T>([](T seed) {
-	// 	return rng32::xoroshift(seed);
-	// }));
+	 evaluate_multi_pass(callback, create_prng_setup<T>([](T seed) {
+	 	return rng32::pcg(seed);
+	 }));
 }
 
 }

@@ -52,7 +52,7 @@ sub_test_results bit_count_2d_test(uint64_t n, const stream<T>& stream) {
 	for (int count = 0; count < bit_sizeof<T>(); ++count) {
 		const double expected_total_count = n * binomial_pdf(bit_sizeof<T>(), .5, count);
 		if (const auto stat = bit_count_stats<T>(counts[count], expected_total_count)) {
-			results.push_back({stream.name + "-bit(" + std::to_string(count) + ")", stat});
+			results.push_back({"bit(" + std::to_string(count) + ")", stat});
 		}
 	}
 	return results;
@@ -69,7 +69,7 @@ sub_test_results bit_count_3d_test(uint64_t n, const stream<T>& stream) {
 			const double pb = binomial_pdf(bit_sizeof<T>(), .5, b);
 			const double expected_total_count = n * pa * pb;
 			if (const auto stat = bit_count_stats<T>(matrix[b], expected_total_count)) {
-				results.push_back({stream.name + "-bit(" + std::to_string(a) + "," + std::to_string(b) + ")", stat});
+				results.push_back({"bit(" + std::to_string(a) + "," + std::to_string(b) + ")", stat});
 			}
 		}
 	}
