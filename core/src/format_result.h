@@ -11,17 +11,9 @@
 
 namespace mixer {
 
-inline std::string list_worst_results(std::vector<test_result> results) {
-	std::sort(results.begin(), results.end(), [](const test_result& a, const test_result& b) {
-		return a.stats.p_value < b.stats.p_value;
-	});
 
-	std::vector<std::string> streams;
-	for (int i = 0; i < std::min(static_cast<std::size_t>(1), results.size()); ++i) {
-		const auto& r = results[i];
-		streams.push_back(" (p=" + std::to_string(r.stats.p_value) + ") " + r.stream_name);
-	}
-	return join(streams, ", ");
+inline std::string to_string(const test_result& result) {
+	return " (p=" + std::to_string(result.stats.p_value) + ") " + result.stream_name;
 }
 
 inline void draw_histogram(const std::vector<double>& data) {
@@ -74,17 +66,6 @@ inline std::vector<test_result> find_by_stream_name(const std::vector<test_resul
 	return found;
 }
 
-inline std::optional<meta_analysis> get_worst_meta_analysis(const test_battery_result& battery_result) {
-	std::optional<meta_analysis> worst;
-	for (const auto& e : battery_result.results) {
-		const auto interpretation = create_meta_analysis(e.second);
-		if (!worst || worst->get_failure_strength() < interpretation.get_failure_strength()) {
-			worst = interpretation;
-		}
-	}
-	return worst;
-}
-
 struct result_analysis {
 	test_key key;
 	std::vector<test_result> results;
@@ -111,10 +92,11 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 	t.col("n per sample").col(battery_result.n).row();
 	t.col("-------").col("-------").row();
 	for (const auto& e : battery_result.results) {
-		const auto meta = create_meta_analysis(e.second);
+		const auto& worst = get_worst_result(e.second);
+		const auto meta = meta_analysis(worst.stats);
 		if (meta.has_suspicion()) {
 			t.col(to_string(e.first));
-			t.col(meta.to_string() + list_worst_results(e.second));
+			t.col(meta.to_string() + to_string(worst));
 			t.row();
 		}
 	}

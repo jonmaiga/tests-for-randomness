@@ -1,5 +1,9 @@
 #pragma once
 
+#include "types.h"
+
+#include <vector>
+
 namespace mixer {
 
 inline std::vector<double> to_statistics(const std::vector<test_result>& results) {
@@ -27,6 +31,16 @@ inline double get_comparable_p_value(statistic stat) {
 	return std::min(stat.p_value, 1. - stat.p_value);
 }
 
+inline test_result get_worst_result(const std::vector<test_result>& test_results) {
+	std::optional<test_result> worst;
+	for (const auto& tr : test_results) {
+		const double p_value = get_comparable_p_value(tr.stats);
+		if (!worst || p_value < get_comparable_p_value(worst->stats)) {
+			worst = tr;
+		}
+	}
+	return *worst;
+}
 
 class meta_analysis {
 public:
@@ -72,26 +86,27 @@ public:
 		return strings[get_failure_strength()];
 	}
 
+	double get_p_value_cmp() const {
+		return get_comparable_p_value(stat);
+	}
+
 	statistic stat;
 };
 
 inline meta_analysis create_meta_analysis(const std::vector<test_result>& test_results) {
-	//return meta_analysis(*kolmogorov_smirnov_stats(to_p_values(test_results)));
-	const auto p_values = to_p_values(test_results);
-	std::optional<statistic> worst;
-	if (p_values.size() >= 32) {
-		//worst = kolmogorov_smirnov_stats(p_values);
-	}
+	return meta_analysis(get_worst_result(test_results).stats);
+}
 
-	double worst_p_value = worst ? worst->p_value : 1000;
-	for (const auto& tr : test_results) {
-		const double p_value = get_comparable_p_value(tr.stats);
-		if (p_value < worst_p_value) {
-			worst = tr.stats;
-			worst_p_value = p_value;
+inline std::optional<meta_analysis> get_worst_meta_analysis(const test_battery_result& battery_result) {
+	std::optional<meta_analysis> worst;
+	for (const auto& e : battery_result.results) {
+		const auto interpretation = create_meta_analysis(e.second);
+		if (!worst || worst->get_p_value_cmp() < interpretation.get_p_value_cmp()) {
+			worst = interpretation;
 		}
 	}
-	return meta_analysis(*worst);
+	return worst;
 }
+
 
 }
