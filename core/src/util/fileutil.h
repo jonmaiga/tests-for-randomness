@@ -47,4 +47,13 @@ std::vector<T> readBinaryMustExist(const std::string& path, size_t max_elements 
 	return data;
 }
 
+template <typename T>
+bool write_binary(const std::string& filename, const T& data, bool append) {
+	std::ofstream file(filename, std::ios::out | (append ? std::ios::app : std::ios::trunc) | std::ios::binary);
+	file.write(reinterpret_cast<const char*>(data.data()), data.size() * sizeof(typename T::value_type));
+	file.close();
+	return !file.fail();
+}
+
+
 }

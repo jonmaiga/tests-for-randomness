@@ -27,7 +27,6 @@ std::vector<std::size_t> get_ranks(const std::vector<T>& vec, Compare& compare) 
 	return p;
 }
 
-
 template <typename T>
 std::vector<T> get_raw_by_ref(uint64_t n, stream<T>& stream) {
 	std::vector<T> data;

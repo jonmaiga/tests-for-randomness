@@ -27,5 +27,4 @@ sub_test_results permutation_test(const uint64_t n, const stream<T>& stream) {
 	return results;
 }
 
-
 }
