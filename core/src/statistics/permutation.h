@@ -21,7 +21,7 @@ sub_test_results permutation_test(const uint64_t n, const stream<T>& stream) {
 	for (int permutation_size = 5; permutation_size <= 5; ++permutation_size) {
 		const auto histogram = get_permutation_histogram(ranged_stream<T>(stream, n), permutation_size);
 		constexpr auto Bits = bit_sizeof<T>();
-		const double expected_count = std::floor(Bits * n / permutation_size) / histogram.size(); //static_cast<double>(accumulate(histogram)) / histogram.size();
+		const double expected_count = std::floor(Bits * n / permutation_size) / histogram.size();
 		results.push_back({"w" + std::to_string(permutation_size), chi2_stats(histogram, expected_count)});
 	}
 	return results;
