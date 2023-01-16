@@ -149,39 +149,31 @@ typename T::value_type accumulate(const T& data) {
 }
 
 template <typename T>
-void sliding_bit_window(
-	const T& data,
-	int window_size,
-	int increments,
-	const std::function<void(uint64_t)>& callback) {
+void for_each_bit(const T& data, std::function<void(bool)> callback) {
 	constexpr auto Size = bit_sizeof<typename T::value_type>();
-	assertion(window_size >= 1 && window_size <= Size-1, "bad window size");
-	assertion(increments >= 1 && increments + window_size <= Size, "bad increments");
-
-	std::bitset<2 * Size> left_mask;
-	left_mask |= (1ull << window_size) - 1;
-
-	auto it = data.begin();
-	const auto end = data.end();
-	std::bitset<2 * Size> bits;
-	bits |= *it;
-	int bits_left_to_consume = Size;
-	while (it != end) {
-		while (bits_left_to_consume >= window_size) {
-			callback((bits & left_mask).to_ullong());
-			bits >>= increments;
-			bits_left_to_consume -= increments;
-		}
-		++ it;
-		if (it != end) {
-			std::bitset<2 * Size> refill;
-			refill |= *it;
-			refill <<= bits_left_to_consume;
-			bits |= refill;
-			bits_left_to_consume += Size;
+	for (const auto v : data) {
+		for (int b = 0; b < Size; ++b) {
+			callback(is_bit_set(v, b));
 		}
 	}
 }
 
+template <typename T>
+void sliding_bit_window(const T& data, int window_size, const std::function<void(uint64_t)>& callback) {
+	uint64_t v = 0;	
+	uint64_t c = 0;
+
+	const auto acc = [callback, c, v, window_size](bool is_set) mutable {
+		v |= (is_set ? 1 : 0) << c;
+		++c;
+		if (c == window_size) {
+			callback(v);
+			c = 0;
+			v = 0;
+		}
+	};
+
+	for_each_bit(data, acc);
+}
 
 }
