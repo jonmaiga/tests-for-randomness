@@ -2,7 +2,7 @@ TODO:
 -----
 - inspect tests: ww fails after bug fix.
 - bc3d trng fails
-- permutation trng fails (64bit, trng seed 301071360, 2^20)
+- permutation trng fails (64bit, trng seed 301071360, 2^20), (32-bit, trngs seed 602142720, 2^20/21: C:\tmp\random.org\raw\random.org-pregenerated-2012-11-bin\2012-11-30.bin) 
 
 - use trng to see if we can get evaluate_multi_pass working from 2^4 ? 
 - Select maximize or minimize in sffs.
