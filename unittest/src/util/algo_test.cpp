@@ -77,7 +77,7 @@ TEST(algo, sliding_bit_window_128bits_explicit_even) {
 }
 
 TEST(algo, sliding_window_irl) {
-	auto r = sliding_bit_window<uint32_t>({4068143377, 1617203981, 3574511604}, 5, 5);
+	auto r = sliding_bit_window<uint32_t>({4068143377, 1617203981, 3574511604}, 5);
 	EXPECT_EQ(r, (std::vector<uint64_t>{17,8,28,21,7,25,23,1,19,4,25,0,6,26,31,22,14,8,21}));
 }
 
