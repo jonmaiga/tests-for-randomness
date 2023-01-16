@@ -13,7 +13,9 @@ namespace mixer {
 
 
 inline std::string to_string(const test_result& result) {
-	return " (p=" + std::to_string(result.stats.p_value) + ") " + result.stream_name;
+	std::stringstream ss;
+	ss << " (p=" << result.stats.p_value << + ") " << result.stream_name;
+	return ss.str();
 }
 
 inline void draw_histogram(const std::vector<double>& data) {
