@@ -92,12 +92,23 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 	t.col("n per sample").col(battery_result.n).row();
 	t.col("-------").col("-------").row();
 	for (const auto& e : battery_result.results) {
-		const auto& worst = get_worst_result(e.second);
-		const auto meta = meta_analysis(worst.stats);
-		if (meta.has_suspicion()) {
-			t.col(to_string(e.first));
-			t.col(meta.to_string() + to_string(worst));
-			t.row();
+		{
+			const auto& worst = get_worst_result(e.second);
+			const auto meta = meta_analysis(worst.stats);
+			if (meta.has_suspicion()) {
+				t.col(to_string(e.first));
+				t.col(meta.to_string() + to_string(worst));
+				t.row();
+			}
+		}
+
+		{
+			auto uniform_meta = create_uniform_p_values_result(e.second);
+			if (uniform_meta.has_suspicion()) {
+				t.col(to_string(e.first));
+				t.col(uniform_meta.to_string() + " (p_value uniformity)");
+				t.row();
+			}
 		}
 	}
 
