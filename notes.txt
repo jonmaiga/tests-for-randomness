@@ -1,8 +1,5 @@
 TODO:
 -----
-
-- bc3d trng fails
-
 - use trng to see if we can get evaluate_multi_pass working from 2^4 ? 
 - Select maximize or minimize in sffs.
 - Determine false positive rate
@@ -13,6 +10,7 @@ TODO:
 
 DONE:
 -----
+- bc3d trng fails. "fixed" by using at least 25 expected per bin
 - inspect tests: ww fails after bug fix. (added semiugly exception)
 - permutation trng fails (64bit, trng seed 301071360, 2^20), (32-bit, trngs seed 602142720, 2^20/21: C:\tmp\random.org\raw\random.org-pregenerated-2012-11-bin\2012-11-30.bin) 
 	* rescale histo to 0-1 is too discrete for chi2/ad/ks

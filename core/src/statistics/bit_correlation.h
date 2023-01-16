@@ -39,10 +39,10 @@ cube bit_count_3d(uint64_t n, stream<T> stream) {
 }
 
 template <typename T>
-std::optional<statistic> bit_count_stats(const histogram& bit_counts, double expected_total_count) {
+std::optional<statistic> bit_count_stats(const histogram& bit_counts, double expected_total_count, double expected_threshold) {
 	return chi2_stats(bit_counts.size(), to_data(bit_counts), [expected_total_count](std::size_t i) {
 		return expected_total_count * binomial_pdf(bit_sizeof<T>(), .5, i);
-	}, 5.);
+	}, expected_threshold);
 }
 
 template <typename T>
@@ -51,7 +51,7 @@ sub_test_results bit_count_2d_test(uint64_t n, const stream<T>& stream) {
 	sub_test_results results;
 	for (int count = 0; count < bit_sizeof<T>(); ++count) {
 		const double expected_total_count = n * binomial_pdf(bit_sizeof<T>(), .5, count);
-		if (const auto stat = bit_count_stats<T>(counts[count], expected_total_count)) {
+		if (const auto stat = bit_count_stats<T>(counts[count], expected_total_count, 5)) {
 			results.push_back({"bit(" + std::to_string(count) + ")", stat});
 		}
 	}
@@ -68,7 +68,7 @@ sub_test_results bit_count_3d_test(uint64_t n, const stream<T>& stream) {
 		for (int b = 0; b < matrix.size(); ++b) {
 			const double pb = binomial_pdf(bit_sizeof<T>(), .5, b);
 			const double expected_total_count = n * pa * pb;
-			if (const auto stat = bit_count_stats<T>(matrix[b], expected_total_count)) {
+			if (const auto stat = bit_count_stats<T>(matrix[b], expected_total_count, 25)) {
 				results.push_back({"bit(" + std::to_string(a) + "," + std::to_string(b) + ")", stat});
 			}
 		}
