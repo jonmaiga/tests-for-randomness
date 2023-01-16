@@ -6,8 +6,9 @@
 
 namespace mixer {
 
-inline std::vector<uint64_t> sliding_bit_window(const std::vector<uint64_t>& data,
-                                                int window_size, int increments = 1) {
+template <typename T = uint64_t>
+std::vector<uint64_t> sliding_bit_window(const std::vector<T>& data,
+                                         int window_size, int increments = 1) {
 	std::vector<uint64_t> r;
 	sliding_bit_window(data, window_size, increments, [&r](uint64_t v) { r.push_back(v); });
 	return r;
@@ -115,6 +116,11 @@ TEST(algo, sliding_bit_window_128bits_explicit_even) {
 	EXPECT_EQ(r[3], 0b1110010101011011);
 	EXPECT_EQ(r[4], 0b1011111100010001);
 	EXPECT_EQ(r[7], 0b1001111011101110);
+}
+
+TEST(algo, sliding_window_irl) {
+	auto r = sliding_bit_window<uint32_t>({4068143377, 1617203981, 3574511604}, 5, 5);
+	EXPECT_EQ(r, (std::vector<uint64_t>{17,8,28,21,7,25,23,1,19,4,25,0,6,26,31,22,14,8,21}));
 }
 
 TEST(algo, isolate_bit_0) {
