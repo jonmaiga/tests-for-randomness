@@ -15,4 +15,6 @@ struct combiner {
 };
 
 
+template <typename T> std::vector<combiner<T>> get_combiners() = delete;
+
 }
