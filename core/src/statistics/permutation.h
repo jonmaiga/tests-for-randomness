@@ -17,14 +17,16 @@ std::vector<uint64_t> get_permutation_histogram(const T& data, int window_size) 
 
 template <typename T>
 sub_test_results permutation_test(const uint64_t n, const stream<T>& stream) {
-	sub_test_results results;
-	for (int permutation_size = 5; permutation_size <= 5; ++permutation_size) {
-		const auto histogram = get_permutation_histogram(ranged_stream<T>(stream, n), permutation_size);
-		constexpr auto Bits = bit_sizeof<T>();
-		const double expected_count = std::floor(Bits * n / permutation_size) / histogram.size();
-		results.push_back({"w" + std::to_string(permutation_size), chi2_stats(histogram, expected_count)});
-	}
-	return results;
+	// solve n*bits/expected_count = x*2^x, where x is permutation_size
+	static const auto log2 = std::log(2);
+	constexpr auto Bits = bit_sizeof<T>();
+	constexpr double approximated_count_per_bin = 1000;
+	const double y = n * Bits / approximated_count_per_bin;
+	const int permutation_size = static_cast<int>(lambert_w_approximation(y * log2) / log2);
+
+	const auto histogram = get_permutation_histogram(ranged_stream<T>(stream, n), permutation_size);
+	const double expected_count = std::floor(Bits * n / permutation_size) / histogram.size();
+	return main_sub_test(chi2_stats(histogram, expected_count));
 }
 
 }

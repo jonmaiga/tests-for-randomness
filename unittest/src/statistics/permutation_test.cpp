@@ -7,22 +7,27 @@
 
 namespace mixer {
 
-TEST(permutation, no_change) {
-	const auto r = permutation_test(1000, test_stream()).front().stats;
-	EXPECT_NEAR(r->value, 46.7550, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.03450, 1e-4);
-}
-
-//TEST(permutation, permutation_fail_irl) {
-//	const auto r = permutation_test(1ull << 21, create_trng_stream<uint32_t>(602142720)).front().stats; //64-bit: 301071360
-//	EXPECT_GT(r->p_value, 1e-4, 1e-4);
-//}
-
 template <typename T>
 std::vector<uint64_t> get_histogram(const std::vector<T>& d) {
 	auto s = create_stream_from_data_by_ref<T>("d", d, 0);
 	return get_permutation_histogram(ranged_stream(s, d.size()), 5);
 }
+
+TEST(permutation, no_change) {
+	const auto r = permutation_test(1000, test_stream()).front().stats;
+	EXPECT_NEAR(r->value, 23.2259, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.07945, 1e-4);
+}
+
+//TEST(permutation, permutation_fail_with_to_few_buckets_32bit) {
+//	const auto r = permutation_test(1ull << 21, create_trng_stream<uint32_t>(602142720)).front().stats; //64-bit: 301071360
+//	EXPECT_GT(r->p_value, 1e-4, 1e-4);
+//}
+//
+//TEST(permutation, permutation_fail_with_to_few_buckets_64bit) {
+//	const auto r = permutation_test(1ull << 21, create_trng_stream<uint64_t>(301071360)).front().stats;
+//	EXPECT_GT(r->p_value, 1e-4, 1e-4);
+//}
 
 TEST(permutation, histogram_zeroes) {
 	using T = uint32_t;

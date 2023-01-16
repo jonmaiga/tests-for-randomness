@@ -78,4 +78,15 @@ inline double to_one_sided(double p) {
 	return 1. - 2. * std::abs(p - 0.5);
 }
 
+inline double lambert_w_approximation(double x) {
+	// from https://en.wikipedia.org/wiki/Lambert_W_function#Asymptotic_expansions
+	assertion(x >= 1, "lambert approximation with to low x");
+	if (is_near(x, 1)) {
+		return 0.5600;
+	}
+	const auto l1 = log(x);
+	const auto l2 = log(l1);
+	return l1 - l2 + l2 / l1 + l2 * (l2 - 2) / (2 * l1 * l1);
+}
+
 }

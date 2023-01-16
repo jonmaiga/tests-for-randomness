@@ -62,5 +62,14 @@ TEST(math, harmonic_numerical) {
 	EXPECT_NEAR(harmonic(1000), 7.4854708605503449127, 1e-13);
 }
 
+TEST(math, lambert_w) {
+	EXPECT_NEAR(lambert_w_approximation(1), 0.5600, 1e-4); //mma 0.5671
+	EXPECT_NEAR(lambert_w_approximation(2), 1.4335, 1e-4); //mma 0.8526
+	EXPECT_NEAR(lambert_w_approximation(10), 1.7390, 1e-4); //mma 1.7455
+	EXPECT_NEAR(lambert_w_approximation(100), 3.3925, 1e-4);
+	EXPECT_NEAR(lambert_w_approximation(1000), 5.2535, 1e-4);
+	EXPECT_NEAR(lambert_w_approximation(1000000), 11.3840, 1e-4);
+	EXPECT_NEAR(lambert_w_approximation(1000000000), 17.8419, 1e-4);
+}
 
 }
