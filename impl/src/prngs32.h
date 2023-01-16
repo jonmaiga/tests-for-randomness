@@ -103,20 +103,22 @@ inline prng32 minstd_rand(uint32_t seed) {
 
 }
 
-template <typename T> std::vector<stream<T>> get_prngs(T seed) = delete;
 
 template <>
-inline std::vector<prng32> get_prngs(uint32_t seed) {
+inline std::vector<prng_factory<uint32_t>> get_prngs() {
 	return {
-		rng32::mt19337(seed), // >30 ww-s172       very suspicious (8)
-		rng32::xmx(seed), // 24 bcc
-		rng32::xm2x(seed), // 29 uniform-m     failure (10) xm2x(p=0.000000) 
-		rng32::xm3x(seed), // 26, bcc, uniform
-		rng32::pcg(seed), // > 35
-		rng32::minstd_rand(seed), // 10 mean, uniform, gap, coupon
-		rng32::xorshift(seed), // 
-		rng32::xoshiro128plusplus(seed), //  >34 (only bcc)
+		rng32::mt19337,
+		rng32::pcg,
+		rng32::xoshiro128plusplus,
+
+		rng32::xmx,
+		rng32::xm2x,
+		rng32::xm3x,
+
+		rng32::xorshift,
+		rng32::minstd_rand,
 	};
 }
+
 
 }

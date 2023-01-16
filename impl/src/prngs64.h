@@ -61,13 +61,13 @@ inline prng64 xoroshiroplus(uint64_t seed) {
 }
 
 template <>
-inline std::vector<prng64> get_prngs(uint64_t seed) {
+inline std::vector<prng_factory<uint64_t>> get_prngs() {
 	return {
-		rng64::pcg(seed), // >31 suspicous (4)
-		//rng64::xoroshiroplus(seed), // >31
-		//rng64::xmx(seed), // >31
-		//rng64::xm2x(seed), // >31
-		//rng64::xm3x(seed), // >31
+		rng64::pcg,
+		rng64::xoroshiroplus,
+		rng64::xmx,
+		rng64::xm2x,
+		rng64::xm3x,
 	};
 }
 
