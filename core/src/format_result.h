@@ -12,9 +12,9 @@
 namespace mixer {
 
 
-inline std::string to_string(const test_result& result) {
+inline std::string to_string(std::string name, const double p_value) {
 	std::stringstream ss;
-	ss << " (p=" << result.stats.p_value << + ") " << result.stream_name;
+	ss << " (p=" << p_value << + ") " << name;
 	return ss.str();
 }
 
@@ -99,7 +99,7 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 			const auto meta = meta_analysis(worst.stats);
 			if (meta.has_suspicion()) {
 				t.col(to_string(e.first));
-				t.col(meta.to_string() + to_string(worst));
+				t.col(meta.to_string() + to_string(worst.stream_name, worst.stats.p_value));
 				t.row();
 			}
 		}
@@ -108,7 +108,7 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 			auto uniform_meta = create_uniform_p_values_result(e.second);
 			if (uniform_meta.has_suspicion()) {
 				t.col(to_string(e.first));
-				t.col(uniform_meta.to_string() + " (p_value uniformity)");
+				t.col(uniform_meta.to_string() + to_string("p-value uniformity", uniform_meta.stat.p_value));
 				t.row();
 			}
 		}

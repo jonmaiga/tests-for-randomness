@@ -1,5 +1,6 @@
 TODO:
 -----
+- investigate how far each individual test goes.
 - use trng to see if we can get evaluate_multi_pass working from 2^4 ? 
 - Select maximize or minimize in sffs.
 - Determine false positive rate
