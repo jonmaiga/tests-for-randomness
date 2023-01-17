@@ -41,9 +41,10 @@ streams<T> create_pass_sources() {
 
 inline auto create_test_inspect_callback(int max_power) {
 	return [max_power](const test_battery_result& br) {
-		const auto meta = get_worst_meta_analysis(br);
-		const bool proceed = meta->pass() && br.power_of_two() < max_power;
-		return proceed;
+		if (const auto meta = get_worst_meta_analysis(br)) {
+			return meta->pass();
+		}
+		return br.power_of_two() < max_power;
 	};
 }
 
