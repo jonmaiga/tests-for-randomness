@@ -13,24 +13,12 @@ namespace mixer {
 
 void build_trng() {
 	std::vector<char> data;
-	forEachFileRecursively(R"(C:\tmp\random.org\raw\random.org-pregenerated-2022-09-bin\)", ".bin", [&data](const auto& path) {
+	forEachFileRecursively(R"(C:\tmp\random.org\raw\)", ".bin", [&data](const auto& path) {
 		auto r = readBinaryMustExist<char>(path.string());
 		data.insert(data.end(), r.begin(), r.end());
 		std::cout << path.string() << "\n";
 	});
-
-	const std::string data_str(data.begin(), data.end());
-	write(R"(C:\tmp\random.org\raw\trng_small.bin)", data_str);
-}
-
-void write_stream(const mixer64& m, uint64_t n) {
-	std::vector<uint64_t> data;
-	for (uint64_t i = 0; i < n; ++i) {
-		data.push_back(m(i));
-	}
-	const auto from = reinterpret_cast<char*>(data.data());
-	const std::string data_str(from, from + data.size() * sizeof(uint64_t));
-	write(R"(/Users/jonkagstrom/root/github/bit_mixer_evaluation/mx3.bin)", data_str);
+	write_binary(R"(C:\tmp\random.org\trng.bin)", data, false);
 }
 
 }
@@ -72,6 +60,8 @@ int main(int argc, char** args) {
 		if (command == "-inspect-test") {
 			inspect_test_command<uint32_t>();
 			inspect_test_command<uint64_t>();
+			inspect_per_test_command<uint32_t>();
+			inspect_per_test_command<uint64_t>();
 			return 0;
 		}
 

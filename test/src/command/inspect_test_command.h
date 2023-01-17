@@ -1,6 +1,7 @@
 #pragma once
 
 #include "combiners32.h"
+#include "combiners64.h"
 #include "evaluate.h"
 #include "mixers32.h"
 #include "mixers64.h"
@@ -178,14 +179,17 @@ void write(const per_test_result& result) {
 }
 
 
-inline void per_test() {
-	using T = uint32_t;
-
+template <typename T>
+void inspect_per_test_command() {
 	per_test_result result;
 
 	const auto callback = create_per_test_callback(result, 20, false);
 
 	for (const auto& test : get_tests<T>()) {
+		std::cout << "========================\n";
+		std::cout << test.name << "\n";
+		std::cout << "========================\n";
+
 		// trng
 		evaluate_multi_pass(callback, create_trng_test_setup<T>().set_tests({test.type}));
 

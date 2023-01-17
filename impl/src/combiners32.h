@@ -78,12 +78,11 @@ const combiner32 boost = {
 
 
 template <>
-inline std::vector<combiner<uint32_t>> get_combiners() {
+inline std::vector<combiner32> get_combiners() {
 	return {
 		combine32::xmx,
 		combine32::xm2x,
 		combine32::xm3x,
-
 		combine32::boost
 	};
 }
