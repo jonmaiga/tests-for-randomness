@@ -41,8 +41,8 @@ streams<T> create_pass_sources() {
 
 inline auto create_test_inspect_callback(int max_power) {
 	return [max_power](const test_battery_result& br) {
-		if (const auto meta = get_worst_statistic_analysis(br)) {
-			return meta->pass();
+		if (const auto analysis = get_worst_statistic_analysis(br)) {
+			return analysis->pass();
 		}
 		return br.power_of_two() < max_power;
 	};
@@ -68,8 +68,8 @@ inspect_result<T> inspect_test(const test_definition<T>& test_def, const streams
 	for (const auto& source : sources) {
 		auto setup = test_setup<T>{test_def.name, {source}, {test_def.type}, identity_mixer};
 		auto br = evaluate_multi_pass(callback, setup);
-		auto meta = get_worst_statistic_analysis(br);
-		if (meta->pass()) {
+		auto analysis = get_worst_statistic_analysis(br);
+		if (analysis->pass()) {
 			result.passed.push_back(source);
 		}
 		else {
@@ -137,8 +137,8 @@ inline auto create_per_test_callback(per_test_result& result, int max_power, boo
 	return [&result, max_power, print_intermediate_results](const test_battery_result& br) {
 		bool proceed = br.power_of_two() < max_power;
 		if (proceed) {
-			if (const auto meta = get_worst_statistic_analysis(br)) {
-				proceed = meta->pass();
+			if (const auto analysis = get_worst_statistic_analysis(br)) {
+				proceed = analysis->pass();
 			}
 		}
 		if (print_intermediate_results || !proceed) {

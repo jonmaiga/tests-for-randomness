@@ -12,11 +12,11 @@ inline void exhaust_command() {
 
 	constexpr int max_power = 27;
 	const auto cb = [max_power](const test_battery_result& br) {
-		const auto meta = get_worst_statistic_analysis(br);
-		if (!meta) {
+		const auto analysis = get_worst_statistic_analysis(br);
+		if (!analysis) {
 			return true;
 		}
-		return meta->pass() && br.power_of_two() < max_power;
+		return analysis->pass() && br.power_of_two() < max_power;
 	};
 
 	struct res {

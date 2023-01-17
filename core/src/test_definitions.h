@@ -48,12 +48,12 @@ std::vector<test_definition<T>> get_tests() {
 
 template <typename T>
 test_definition<T> get_test_definition(test_type type) {
-	for (const auto& meta : get_tests<T>()) {
-		if (meta.type == type) {
-			return meta;
+	for (const auto& test_def : get_tests<T>()) {
+		if (test_def.type == type) {
+			return test_def;
 		}
 	}
-	assertion(false, "could not find meta");
+	assertion(false, "could not find test definition");
 	return {};
 }
 
@@ -63,8 +63,8 @@ inline std::string get_test_name(test_type type) {
 
 inline std::vector<test_type> all_test_types = []() {
 	std::vector<test_type> types;
-	for (const auto& meta : get_tests<uint64_t>()) {
-		types.push_back(meta.type);
+	for (const auto& test_def : get_tests<uint64_t>()) {
+		types.push_back(test_def.type);
 	}
 	return types;
 }();

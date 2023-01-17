@@ -16,9 +16,9 @@ inline auto create_result_callback(int max_power, bool print_intermediate_result
 		bool proceed = br.power_of_two() < max_power;
 		bool pass = true;
 		if (proceed) {
-			if (const auto meta = get_worst_statistic_analysis(br)) {
-				proceed = meta->pass();
-				pass = meta->pass();
+			if (const auto analysis = get_worst_statistic_analysis(br)) {
+				proceed = analysis->pass();
+				pass = analysis->pass();
 			}
 		}
 		if (print_intermediate_results || !proceed) {

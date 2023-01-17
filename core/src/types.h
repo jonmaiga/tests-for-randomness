@@ -55,12 +55,6 @@ enum class test_type {
 	size
 };
 
-struct statistic_meta {
-	test_type type;
-	std::string name;
-};
-
-
 struct statistic {
 	statistic(statistic_type type, double value, double p_value, double df) :
 		type(type), value(value), p_value(p_value), df(df) {
