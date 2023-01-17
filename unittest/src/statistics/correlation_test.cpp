@@ -42,7 +42,7 @@ TEST(spearman_correlation, basic) {
 	EXPECT_NEAR(spearman_correlation_stats({1,2,3}, {3,2,1})->value, -0, 1e-4);
 	EXPECT_NEAR(spearman_correlation_stats(
 		            {10,20,1,19,-5,0,-1,21},
-		            {20,44,1,-11,-12,0,7,10})->value, -0.3761, 1e-4); // 0.5952 not agreeing with mma rank test (no regards to duplicates) 
+		            {20,44,1,-11,-12,0,7,10})->value, -0.3653, 1e-4); // 0.5952 not agreeing with mma rank test (no regards to duplicates) 
 }
 
 TEST(spearman_correlation, p_value) {
@@ -59,8 +59,8 @@ TEST(pearson_correlation, no_change) {
 TEST(spearman_correlation, no_change) {
 	const auto s = create_stream_from_mixer(test_stream(), mix64::mx3);
 	const auto r = spearman_correlation_test(50, s).front().stats;
-	EXPECT_NEAR(r->value,  0.2690, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.7878, 1e-4);
+	EXPECT_NEAR(r->value,  0.2613, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.7938, 1e-4);
 }
 
 TEST(kendall_correlation, no_change) {

@@ -26,7 +26,7 @@ inline double correlation_student_p_value(double r, double n) {
 	return student_t_cdf(t, n - 2);
 }
 
-inline std::optional<statistic> pearson_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
+inline std::optional<statistic> pearson_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys, double z_adjustment = 1.) {
 	const auto n = xs.size();
 	if (n < 3) {
 		return {};
@@ -57,19 +57,17 @@ inline std::optional<statistic> pearson_correlation_stats(const std::vector<doub
 	const auto r = adjust_correlation(sum_xy / (std::sqrt(sum_xs) * std::sqrt(sum_ys)));
 	const auto mean = fishers_transformation_safe(r);
 	assertion(is_valid(mean), "fishers transform failed");
-	const auto z = mean * std::sqrt(n - 3);
+	const auto z = mean * std::sqrt((n - 3) / z_adjustment);
 	const auto p = normal_two_tailed_cdf(z);
 	return statistic(statistic_type::z_score, z, p, n);
 }
 
 inline std::optional<statistic> spearman_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
-	// from: https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient#Determining_significance
 	// @attn get_ranks does not handle non-unique data
-	// @attn z should be divided by sqrt(1.06)
 	const auto cmp = [](double a, double b) { return a < b; };
 	return pearson_correlation_stats(
 		rescale_to_01(get_ranks(xs, cmp)),
-		rescale_to_01(get_ranks(ys, cmp)));
+		rescale_to_01(get_ranks(ys, cmp)), 1.06);
 }
 
 inline std::optional<statistic> kendall_correlation_stats(const std::vector<double>& xs, const std::vector<double>& ys) {
