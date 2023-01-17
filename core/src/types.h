@@ -31,8 +31,7 @@ enum class statistic_type {
 	kolmogorov_smirnov_d,
 	anderson_darling_A2,
 	pearson_r,
-	spearman_r,
-	kendall_tau
+	spearman_r
 };
 
 enum class test_type {

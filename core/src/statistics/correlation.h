@@ -95,12 +95,13 @@ inline std::optional<statistic> kendall_correlation_stats(const std::vector<doub
 	if (n1 == 0 || n2 == 0) {
 		return {};
 	}
+
+	// from https://en.wikipedia.org/wiki/Kendall_rank_correlation_coefficient#Hypothesis_test
 	const auto tau = adjust_correlation(static_cast<double>(is) / (std::sqrt(n1) * std::sqrt(n2)));
-	const auto var = ((4. * n + 10.) / (9. * n * (n - 1.)));
+	const auto var = (4. * n + 10.) / (9. * n * (n - 1.));
 	const auto z = tau / std::sqrt(var);
 	const auto p_value = normal_two_tailed_cdf(z);
-	// todo: df
-	return statistic{statistic_type::kendall_tau, tau, p_value, static_cast<double>(n)};
+	return statistic{statistic_type::z_score, z, p_value, static_cast<double>(n)};
 }
 
 template <typename T>
