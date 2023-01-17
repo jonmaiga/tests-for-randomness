@@ -46,13 +46,7 @@ double sffs_fitness_test(const test_setup<T>& ts) {
 
 template <typename T>
 double sffs_fitness_test(const mixer<T>& mixer) {
-	const test_setup<T> ts{
-		mixer.name,
-		create_sources<T>(),
-		all_test_types,
-		mixer
-	};
-	return sffs_fitness_test<T>(ts);
+	return sffs_fitness_test<T>(create_mixer_test_setup<T>(mixer));
 }
 
 template <typename T>

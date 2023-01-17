@@ -2,8 +2,8 @@
 
 #include "evaluate.h"
 #include "format_result.h"
-#include "util/stream_sources.h"
 #include "search/mixer_constructions.h"
+#include "util/test_setups.h"
 
 namespace mixer {
 
@@ -33,15 +33,7 @@ inline void exhaust_command() {
 			for (T c3 = 9; c3 < 20; ++c3) {
 				const xm2x_constants<T> c{c1, c2, c3, 2471660141};
 				const auto mixer = create_xm2x_mixer<T>(c);
-				const test_setup<T> ts{
-					mixer.name,
-					create_sources<T>(),
-					all_test_types,
-					mixer,
-					default_max_threads()
-				};
-
-				const auto r = evaluate_multi_pass<T>(cb, ts);
+				const auto r = evaluate_multi_pass<T>(cb, create_mixer_test_setup<T>(mixer));
 				results.push_back({c, r});
 				sum += r.power_of_two();
 				std::cout << r.power_of_two() << ";";

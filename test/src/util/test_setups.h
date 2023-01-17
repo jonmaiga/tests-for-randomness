@@ -11,8 +11,9 @@ std::vector<T> generate_seeds(int n) {
 		seeds.insert(seed);
 	}
 	uint32_t x = 1234;
+	const auto mix = get_default_mixer<T>();
 	while (seeds.size() < n) {
-		seeds.insert(mix32::xm3x(x++));
+		seeds.insert(mix(x++));
 	}
 	return {seeds.begin(), seeds.end()};
 }

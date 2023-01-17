@@ -22,15 +22,7 @@ double tune_fitness(T c) {
 			for (T c3 = 13; c3 <= 16; ++c3) {
 				const xm2x_constants<T> constants{c1, c2, c3, c};
 				const auto mixer = create_xm2x_mixer(constants);
-				const test_setup<T> ts{
-					mixer.name,
-					create_sources<T>(),
-					all_test_types,
-					mixer,
-					default_max_threads()
-				};
-
-				const auto r = evaluate_multi_pass<T>(cb, ts);
+				const auto r = evaluate_multi_pass<T>(cb, create_mixer_test_setup<T>(mixer));
 				sum += r.power_of_two();
 				max += max_power;
 			}
@@ -43,7 +35,6 @@ double tune_fitness(T c) {
 
 
 inline void tune_command() {
-
 	auto to_str = [](const bit_vector& bits) {
 		return std::to_string(bits.get(0, 32));
 	};
