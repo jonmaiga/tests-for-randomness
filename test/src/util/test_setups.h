@@ -5,6 +5,19 @@
 namespace mixer {
 
 template <typename T>
+std::vector<T> generate_seeds(int n) {
+	std::set<T> seeds;
+	for (const auto& seed : get_rrc_permutations<T>(1)) {
+		seeds.insert(seed);
+	}
+	uint32_t x = 1234;
+	while (seeds.size() < n) {
+		seeds.insert(mix32::xm3x(x++));
+	}
+	return {seeds.begin(), seeds.end()};
+}
+
+template <typename T>
 streams<T> create_seeded_trng(int sample_count) {
 	streams<T> ts;
 	const auto& data = get_trng_data<T>();
