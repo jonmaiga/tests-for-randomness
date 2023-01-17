@@ -192,7 +192,7 @@ void inspect_per_test_command() {
 
 		// mixers
 		for (const auto& m : get_mixers<T>()) {
-			evaluate_multi_pass(callback, create_test_setup(m).set_tests({test.type}));
+			evaluate_multi_pass(callback, create_mixer_test_setup(m).set_tests({test.type}));
 		}
 
 		// combiners
@@ -202,7 +202,7 @@ void inspect_per_test_command() {
 
 		// prngs
 		for (const auto& prng : get_prngs<T>()) {
-			evaluate_multi_pass(callback, create_prng_setup<T>(prng).set_tests({test.type}));
+			evaluate_multi_pass(callback, create_prng_test_setup<T>(prng).set_tests({test.type}));
 		}
 		write<T>(result);
 	}

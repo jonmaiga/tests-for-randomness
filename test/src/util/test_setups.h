@@ -50,7 +50,7 @@ test_setup<T> create_combiner_test_setup(combiner<T> combiner) {
 }
 
 template <typename T>
-test_setup<T> create_test_setup(const mixer<T> mixer) {
+test_setup<T> create_mixer_test_setup(const mixer<T> mixer) {
 	return test_setup<T>{
 		mixer.name,
 		create_sources<T>(),
@@ -60,7 +60,7 @@ test_setup<T> create_test_setup(const mixer<T> mixer) {
 }
 
 template <typename T>
-test_setup<T> create_prng_setup(std::function<stream<T>(T seed)> create_prng) {
+test_setup<T> create_prng_test_setup(std::function<stream<T>(T seed)> create_prng) {
 	streams<T> to_test;
 	for (auto seed : generate_seeds<T>(4 * bit_sizeof<T>())) {
 		to_test.push_back(create_prng(seed));

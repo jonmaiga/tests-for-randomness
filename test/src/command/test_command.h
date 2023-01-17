@@ -43,7 +43,7 @@ inline void test_command() {
 
 	// mixers
 	for (const auto& m : get_mixers<T>()) {
-		evaluate_multi_pass(callback, create_test_setup(m));
+		evaluate_multi_pass(callback, create_mixer_test_setup(m));
 	}
 
 	// combiners
@@ -53,7 +53,7 @@ inline void test_command() {
 
 	// prngs
 	for (const auto& prng : get_prngs<T>()) {
-		evaluate_multi_pass(callback, create_prng_setup<T>(prng));
+		evaluate_multi_pass(callback, create_prng_test_setup<T>(prng));
 	}
 }
 
