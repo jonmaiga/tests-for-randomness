@@ -1,7 +1,14 @@
 #pragma once
 
+#include "combiners32.h"
 #include "evaluate.h"
+#include "mixers32.h"
+#include "mixers64.h"
+#include "mixers8.h"
+#include "prngs32.h"
+#include "prngs64.h"
 #include "streams.h"
+#include "util/test_setups.h"
 
 namespace mixer {
 
@@ -120,6 +127,84 @@ void inspect_test_command() {
 	std::cout << "Pass sources, " << bit_sizeof<T>() << " bits\n";
 	std::cout << "==============================================\n";
 	inspect_tests<T>(create_pass_sources<T>(), true);
+}
+
+using per_test_result = std::map<std::string, std::map<std::string, std::string>>;
+
+inline auto create_per_test_callback(per_test_result& result, int max_power, bool print_intermediate_results = true) {
+	return [&result, max_power, print_intermediate_results](const test_battery_result& br) {
+		if (br.results.empty()) {
+			print_battery_result(br);
+			return false;
+		}
+		const auto meta = get_worst_meta_analysis(br);
+		if (!meta) {
+			return true;
+		}
+
+		const bool proceed = meta->pass() && br.power_of_two() < max_power;
+		if (print_intermediate_results || !proceed) {
+			print_battery_result(br);
+		}
+		if (!proceed) {
+			const auto test_name = get_test_name(br.results.begin()->first.type);
+			result[br.test_subject_name][test_name] = std::to_string(br.power_of_two());
+		}
+		return proceed;
+	};
+}
+
+
+template <typename T>
+void write(const per_test_result& result) {
+	std::stringstream ss;
+	ss << ";";
+	for (const auto& test : get_tests<T>()) {
+		ss << test.name << ";";
+	}
+	ss << "\n";
+	for (const auto& e : result) {
+		ss << e.first << ";";
+		for (const auto& test : get_tests<T>()) {
+			auto it = e.second.find(test.name);
+			if (it != e.second.end()) {
+				ss << it->second;
+			}
+			ss << ";";
+		}
+		ss << "\n";
+	}
+	write(get_config().result_path() + "per_test.txt", ss.str());
+}
+
+
+inline void per_test() {
+	using T = uint32_t;
+
+	per_test_result result;
+
+	const auto callback = create_per_test_callback(result, 20, false);
+
+	for (const auto& test : get_tests<T>()) {
+		// trng
+		evaluate_multi_pass(callback, create_trng_test_setup<T>().set_tests({test.type}));
+
+		// mixers
+		for (const auto& m : get_mixers<T>()) {
+			evaluate_multi_pass(callback, create_test_setup(m).set_tests({test.type}));
+		}
+
+		// combiners
+		for (const auto& combiner : get_combiners<T>()) {
+			evaluate_multi_pass(callback, create_combiner_test_setup<T>(combiner).set_tests({test.type}));
+		}
+
+		// prngs
+		for (const auto& prng : get_prngs<T>()) {
+			evaluate_multi_pass(callback, create_prng_setup<T>(prng).set_tests({test.type}));
+		}
+		write<T>(result);
+	}
 }
 
 }
