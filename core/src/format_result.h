@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "util/table.h"
-#include "util/meta_analysis.h"
+#include "util/statistic_analysis.h"
 
 namespace mixer {
 

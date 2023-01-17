@@ -1,4 +1,4 @@
-#include <util/meta_analysis.h>
+#include <util/statistic_analysis.h>
 
 #include <gtest/gtest.h>
 
@@ -6,7 +6,7 @@
 
 namespace mixer {
 
-TEST(meta_analysis, p_value_zero) {
+TEST(statistic_analysis, p_value_zero) {
 	const statistic_analysis m(statistic(statistic_type::chi2, 0, 0, 10));
 
 	EXPECT_FALSE(m.pass());
@@ -16,7 +16,7 @@ TEST(meta_analysis, p_value_zero) {
 	EXPECT_EQ(m.to_string(), "failure(10)");
 }
 
-TEST(meta_analysis, p_value_01) {
+TEST(statistic_analysis, p_value_01) {
 	const statistic_analysis m(statistic(statistic_type::chi2, 0, 0.1, 10));
 
 	EXPECT_TRUE(m.pass());
@@ -26,7 +26,7 @@ TEST(meta_analysis, p_value_01) {
 	EXPECT_EQ(m.to_string(), "minor(1)");
 }
 
-TEST(meta_analysis, p_value_001) {
+TEST(statistic_analysis, p_value_001) {
 	const statistic_analysis m(statistic(statistic_type::chi2, 0, 0.01, 10));
 
 	EXPECT_TRUE(m.pass());
@@ -36,7 +36,7 @@ TEST(meta_analysis, p_value_001) {
 	EXPECT_EQ(m.to_string(), "minor(2)");
 }
 
-TEST(meta_analysis, p_value_0002321) {
+TEST(statistic_analysis, p_value_0002321) {
 	const statistic_analysis m(statistic(statistic_type::chi2, 0, 0.002321, 10));
 
 	EXPECT_TRUE(m.pass());
