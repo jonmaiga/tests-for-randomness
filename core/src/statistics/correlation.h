@@ -21,7 +21,7 @@ inline double adjust_correlation(double d) {
 	return d;
 }
 
-inline double correlation_p_value(double r, double n) {
+inline double correlation_student_p_value(double r, double n) {
 	const double t = std::abs(r * std::sqrt((n - 2) / (1 - r * r)));
 	return student_t_cdf(t, n - 2);
 }

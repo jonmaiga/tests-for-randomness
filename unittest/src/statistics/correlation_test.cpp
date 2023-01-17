@@ -22,12 +22,12 @@ TEST(pearson_correlation, basic) {
 	EXPECT_NEAR(pearson_correlation_stats({1,2,3,5}, {5,4,2,1})->value, -1.9739, 1e-4);
 }
 
-TEST(pearson_correlation, p_value) {
+TEST(pearson_correlation, student_p_value) {
 	// same as mma
-	EXPECT_NEAR(correlation_p_value(0.9861, 6), 0.0002862, 1e-4);
-	EXPECT_NEAR(correlation_p_value(0.5727, 6), 0.2348, 1e-4);
-	EXPECT_NEAR(correlation_p_value(-0.9621, 4), 0.03785, 1e-4);
-	EXPECT_NEAR(correlation_p_value(0.9621, 4), 0.03785, 1e-4);
+	EXPECT_NEAR(correlation_student_p_value(0.9861, 6), 0.0002862, 1e-4);
+	EXPECT_NEAR(correlation_student_p_value(0.5727, 6), 0.2348, 1e-4);
+	EXPECT_NEAR(correlation_student_p_value(-0.9621, 4), 0.03785, 1e-4);
+	EXPECT_NEAR(correlation_student_p_value(0.9621, 4), 0.03785, 1e-4);
 }
 
 TEST(spearman_correlation, unset) {
@@ -46,7 +46,7 @@ TEST(spearman_correlation, basic) {
 }
 
 TEST(spearman_correlation, p_value) {
-	EXPECT_NEAR(correlation_p_value(0.5952, 6), 0.2126, 1e-4); // 0.1195 not agreeing with mma rank test
+	EXPECT_NEAR(correlation_student_p_value(0.5952, 6), 0.2126, 1e-4); // 0.1195 not agreeing with mma rank test
 }
 
 TEST(pearson_correlation, no_change) {
