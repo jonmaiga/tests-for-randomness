@@ -1,6 +1,5 @@
 TODO:
 -----
-- investigate how far each individual test goes.
 - use trng to see if we can get evaluate_multi_pass working from 2^4 ? 
 - Select maximize or minimize in sffs.
 - Determine false positive rate
@@ -11,6 +10,7 @@ TODO:
 
 DONE:
 -----
+- investigate how far each individual test goes.
 - correlation/kendall tau should only be checked on one side like ztest?
 - bc3d trng fails. "fixed" by using at least 25 expected per bin
 - inspect tests: ww fails after bug fix. (added semiugly exception)
