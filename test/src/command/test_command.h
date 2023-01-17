@@ -13,23 +13,20 @@ namespace mixer {
 
 inline auto create_result_callback(int max_power, bool print_intermediate_results = true) {
 	return [max_power, print_intermediate_results](const test_battery_result& br) {
-		if (br.results.empty()) {
-			print_battery_result(br);
-			return false;
+		bool proceed = br.power_of_two() < max_power;
+		bool pass = true;
+		if (proceed) {
+			if (const auto meta = get_worst_meta_analysis(br)) {
+				proceed = meta->pass();
+				pass = meta->pass();
+			}
 		}
-
-		const auto meta = get_worst_meta_analysis(br);
-		if (!meta) {
-			return true;
-		}
-
-		const bool proceed = meta->pass() && br.power_of_two() < max_power;
 		if (print_intermediate_results || !proceed) {
 			print_battery_result(br);
 		}
 		if (!proceed) {
 			std::ostringstream os;
-			os << br.test_subject_name << ";" << br.power_of_two() << ";" << (meta->pass() ? "PASS" : "FAIL") << "\n";
+			os << br.test_subject_name << ";" << br.power_of_two() << ";" << (pass ? "PASS" : "FAIL") << "\n";
 			write_append(get_config().result_path() + "result_" + std::to_string(br.bits) + ".txt", os.str());
 		}
 		return proceed;

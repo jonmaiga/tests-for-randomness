@@ -134,16 +134,12 @@ using per_test_result = std::map<std::string, std::map<std::string, std::string>
 
 inline auto create_per_test_callback(per_test_result& result, int max_power, bool print_intermediate_results = true) {
 	return [&result, max_power, print_intermediate_results](const test_battery_result& br) {
-		if (br.results.empty()) {
-			print_battery_result(br);
-			return false;
+		bool proceed = br.power_of_two() < max_power;
+		if (proceed) {
+			if (const auto meta = get_worst_meta_analysis(br)) {
+				proceed = meta->pass();
+			}
 		}
-		const auto meta = get_worst_meta_analysis(br);
-		if (!meta) {
-			return true;
-		}
-
-		const bool proceed = meta->pass() && br.power_of_two() < max_power;
 		if (print_intermediate_results || !proceed) {
 			print_battery_result(br);
 		}
@@ -175,7 +171,7 @@ void write(const per_test_result& result) {
 		}
 		ss << "\n";
 	}
-	write(get_config().result_path() + "per_test.txt", ss.str());
+	write(get_config().result_path() + "per_test" + std::to_string(bit_sizeof<T>()) + ".txt", ss.str());
 }
 
 
