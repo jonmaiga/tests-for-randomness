@@ -72,4 +72,13 @@ TEST(math, lambert_w) {
 	EXPECT_NEAR(lambert_w_approximation(1000000000), 17.8419, 1e-4);
 }
 
+TEST(math, fishers_transformation_safe) {
+	EXPECT_EQ(fishers_transformation_safe(0), 0);
+	EXPECT_EQ(fishers_transformation_safe(.5), std::atanh(.5));
+	EXPECT_EQ(fishers_transformation_safe(-.5), std::atanh(-.5));
+	EXPECT_NEAR(fishers_transformation_safe(.99), 2.6466, 1e-4);
+	EXPECT_NEAR(fishers_transformation_safe(-1), -18.715, 1e-4);
+	EXPECT_NEAR(fishers_transformation_safe(1), 18.715, 1e-4);
+}
+
 }

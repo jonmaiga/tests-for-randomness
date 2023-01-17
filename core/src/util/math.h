@@ -44,6 +44,18 @@ inline double log_safe(double x) {
 	return std::log(std::max(min_p, x));
 }
 
+inline double fishers_transformation_safe(double x) {
+	assertion(is_valid_between_01(std::abs(x)), "x is not valid");
+	constexpr double a = 1e-16;
+	if (is_near(x, -1)) {
+		x = (-1 + a);
+	}
+	else if (is_near(x, 1)) {
+		x = (1 - a);
+	}
+	return std::atanh(x);
+}
+
 inline double snap_to_01(double x) {
 	if (x < 0 && is_near(x, 0)) return 0;
 	if (x > 1 && is_near(x, 1)) return 1;

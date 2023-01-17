@@ -30,8 +30,6 @@ enum class statistic_type {
 	chi2,
 	kolmogorov_smirnov_d,
 	anderson_darling_A2,
-	pearson_r,
-	spearman_r
 };
 
 enum class test_type {
