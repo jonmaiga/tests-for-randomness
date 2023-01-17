@@ -15,18 +15,4 @@ std::vector<T> generate_seeds(int n) {
 	return {seeds.begin(), seeds.end()};
 }
 
-template <typename T>
-test_setup<T> create_prng_setup(std::function<stream<T>(T seed)> create_prng) {
-	streams<T> to_test;
-	for (auto seed : generate_seeds<T>(4 * bit_sizeof<T>())) {
-		to_test.push_back(create_prng(seed));
-	}
-
-	return test_setup<T>{
-		to_test.front().name,
-		to_test,
-		all_test_types,
-	};
-}
-
 }
