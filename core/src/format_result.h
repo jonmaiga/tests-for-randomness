@@ -119,6 +119,10 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		t.col("SUMMARY").col((meta->pass() ? "PASS: " : "FAIL: ") + meta->to_string()).row();
 	}
 
+	if (battery_result.results.empty()) {
+		t.col("SUMMARY").col("INCONCLUSIVE").row();
+	}
+
 	std::cout << t.to_string() << "\n";
 }
 

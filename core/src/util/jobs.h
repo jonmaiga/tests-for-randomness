@@ -17,6 +17,9 @@ template <typename T>
 void run_jobs(jobs<T> jobs,
               const std::function<void(const T&)>& result_collector,
               unsigned int num_threads) {
+	if (jobs.empty()) {
+		return;
+	}
 	const auto job_queue = [&jobs]()-> std::optional<job<T>> {
 		static std::mutex m;
 		std::lock_guard lg(m);

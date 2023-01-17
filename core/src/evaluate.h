@@ -16,6 +16,11 @@ struct test_setup {
 	std::vector<test_type> tests;
 	std::optional<mixer<T>> mix;
 	unsigned int max_threads = default_max_threads();
+
+	test_setup& set_tests(const std::vector<test_type>& test_types) {
+		tests = test_types;
+		return *this;
+	}
 };
 
 
