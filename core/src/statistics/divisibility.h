@@ -50,10 +50,9 @@ inline std::vector<double> divisible_expected_probabilities(const uint64_t divis
 
 template <typename T>
 sub_test_results divisibility_test(uint64_t n, const stream<T>& stream) {
-	constexpr auto wanted = 5;
-
 	sub_test_results results;
 	for (uint64_t divisor = 2; divisor <= 3; ++divisor) {
+		constexpr auto wanted = 5;
 		const auto ps = divisible_expected_probabilities(divisor, wanted);
 		const auto collected = collect_divisible(divisor, wanted, ps.size(), ranged_stream(stream, n));
 		assertion(collected.size() == ps.size(), "Unexpected size in divisible");

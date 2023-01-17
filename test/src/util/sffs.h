@@ -4,7 +4,6 @@
 
 #include "sffs_types.h"
 #include "util/bitvector.h"
-#include "util/timer.h"
 
 namespace mixer {
 

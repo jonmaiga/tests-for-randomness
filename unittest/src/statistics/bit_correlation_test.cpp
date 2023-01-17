@@ -35,7 +35,7 @@ TEST(bit_correlation, bit_count_3d_no_change) {
 }
 
 
-// TEST(bit_correlation, bit_count_3d_fail_with_expected_threasholdfive) {
+// TEST(bit_correlation, bit_count_3d_fail_with_expected_threashold_five) {
 // 	using T = uint32_t;
 // 	const auto rs = bit_count_3d_test(1ull << 13, create_trng_stream<T>(224327680));
 // 	EXPECT_EQ(rs.size(), 89);

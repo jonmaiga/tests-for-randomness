@@ -1,13 +1,11 @@
 #pragma once
 
-#include <vector>
-
 #include "distributions.h"
 #include "util/math.h"
 
 namespace mixer {
 
-template<typename T>
+template <typename T>
 double fishers_combined_probabilities(const T& p_values) {
 	static_assert(std::is_floating_point_v<typename T::value_type>);
 	double sum = 0;

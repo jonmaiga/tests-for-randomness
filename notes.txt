@@ -7,6 +7,7 @@ TODO:
 - Speed up tests, bad CPU utilization atm, this should done in the jobs, keeping X threads, jumping between job queues.
 	- for now just increasing sffs threads works (but probably has a ton of overhead)
 - ww, coupons at k=0 hangs...
+- lgamma is not thread safe
 
 DONE:
 -----

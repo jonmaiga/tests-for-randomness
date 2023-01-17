@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "bitwise.h"
-#include "math.h"
 #include "stream.h"
 #include "types.h"
 
@@ -149,7 +148,7 @@ typename T::value_type accumulate(const T& data) {
 }
 
 template <typename T>
-void for_each_bit(const T& data, std::function<void(bool)> callback) {
+void for_each_bit(const T& data, const std::function<void(bool)>& callback) {
 	constexpr auto Size = bit_sizeof<typename T::value_type>();
 	for (const auto v : data) {
 		for (int b = 0; b < Size; ++b) {
