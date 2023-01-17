@@ -11,6 +11,7 @@ TODO:
 
 DONE:
 -----
+- correlation/kendall tau should only be checked on one side like ztest?
 - bc3d trng fails. "fixed" by using at least 25 expected per bin
 - inspect tests: ww fails after bug fix. (added semiugly exception)
 - permutation trng fails (64bit, trng seed 301071360, 2^20), (32-bit, trngs seed 602142720, 2^20/21: C:\tmp\random.org\raw\random.org-pregenerated-2012-11-bin\2012-11-30.bin) 
