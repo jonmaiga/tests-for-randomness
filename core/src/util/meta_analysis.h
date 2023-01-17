@@ -43,9 +43,9 @@ inline test_result get_worst_result(const std::vector<test_result>& test_results
 	return *worst;
 }
 
-class meta_analysis {
+class statistic_analysis {
 public:
-	explicit meta_analysis(statistic stat) : stat(stat) {
+	explicit statistic_analysis(statistic stat) : stat(stat) {
 	}
 
 	bool has_remark() const {
@@ -94,21 +94,21 @@ public:
 	statistic stat;
 };
 
-inline meta_analysis create_uniform_p_values_result(const std::vector<test_result>& test_results) {
-	return meta_analysis(*kolmogorov_smirnov_stats(to_p_values(test_results)));
+inline statistic_analysis create_uniform_p_values_analysis(const std::vector<test_result>& test_results) {
+	return statistic_analysis(*kolmogorov_smirnov_stats(to_p_values(test_results)));
 }
 
-inline meta_analysis create_meta_analysis(const std::vector<test_result>& test_results) {
-	return meta_analysis(get_worst_result(test_results).stats);
+inline statistic_analysis create_statistic_analysis(const std::vector<test_result>& test_results) {
+	return statistic_analysis(get_worst_result(test_results).stats);
 }
 
-inline std::optional<meta_analysis> get_worst_meta_analysis(const test_battery_result& battery_result) {
-	std::optional<meta_analysis> r;
+inline std::optional<statistic_analysis> get_worst_statistic_analysis(const test_battery_result& battery_result) {
+	std::optional<statistic_analysis> r;
 	for (const auto& e : battery_result.results) {
 		const auto worst_test = get_worst_result(e.second);
-		const auto meta = meta_analysis(worst_test.stats);
-		if (!r || meta.get_p_value_cmp() < r->get_p_value_cmp()) {
-			r = meta;
+		const statistic_analysis analysis(worst_test.stats);
+		if (!r || analysis.get_p_value_cmp() < r->get_p_value_cmp()) {
+			r = analysis;
 		}
 	}
 	return r;

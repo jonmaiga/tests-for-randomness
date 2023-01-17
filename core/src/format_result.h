@@ -45,27 +45,27 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 	for (const auto& e : battery_result.results) {
 		{
 			const auto& worst = get_worst_result(e.second);
-			const auto meta = meta_analysis(worst.stats);
-			if (meta.has_suspicion()) {
+			const auto analysis = statistic_analysis(worst.stats);
+			if (analysis.has_suspicion()) {
 				t.col(to_string(e.first));
-				t.col(meta.to_string() + to_string(worst.stream_name, worst.stats.p_value));
+				t.col(analysis.to_string() + to_string(worst.stream_name, worst.stats.p_value));
 				t.row();
 			}
 		}
 
 		{
-			auto uniform_meta = create_uniform_p_values_result(e.second);
-			if (uniform_meta.has_suspicion()) {
+			auto analysis = create_uniform_p_values_analysis(e.second);
+			if (analysis.has_suspicion()) {
 				t.col(to_string(e.first));
-				t.col(uniform_meta.to_string() + to_string("p-value uniformity", uniform_meta.stat.p_value));
+				t.col(analysis.to_string() + to_string("p-value uniformity", analysis.stat.p_value));
 				t.row();
 			}
 		}
 	}
 
 	t.col("-------").col("-------").row();
-	if (const auto meta = get_worst_meta_analysis(battery_result)) {
-		t.col("SUMMARY").col((meta->pass() ? "PASS: " : "FAIL: ") + meta->to_string()).row();
+	if (const auto analysis = get_worst_statistic_analysis(battery_result)) {
+		t.col("SUMMARY").col((analysis->pass() ? "PASS: " : "FAIL: ") + analysis->to_string()).row();
 	}
 
 	if (battery_result.results.empty()) {

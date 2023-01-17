@@ -7,7 +7,7 @@
 namespace mixer {
 
 TEST(meta_analysis, p_value_zero) {
-	const meta_analysis m(statistic(statistic_type::chi2, 0, 0, 10));
+	const statistic_analysis m(statistic(statistic_type::chi2, 0, 0, 10));
 
 	EXPECT_FALSE(m.pass());
 	EXPECT_TRUE(m.has_suspicion());
@@ -17,7 +17,7 @@ TEST(meta_analysis, p_value_zero) {
 }
 
 TEST(meta_analysis, p_value_01) {
-	const meta_analysis m(statistic(statistic_type::chi2, 0, 0.1, 10));
+	const statistic_analysis m(statistic(statistic_type::chi2, 0, 0.1, 10));
 
 	EXPECT_TRUE(m.pass());
 	EXPECT_FALSE(m.has_suspicion());
@@ -27,7 +27,7 @@ TEST(meta_analysis, p_value_01) {
 }
 
 TEST(meta_analysis, p_value_001) {
-	const meta_analysis m(statistic(statistic_type::chi2, 0, 0.01, 10));
+	const statistic_analysis m(statistic(statistic_type::chi2, 0, 0.01, 10));
 
 	EXPECT_TRUE(m.pass());
 	EXPECT_FALSE(m.has_suspicion());
@@ -37,7 +37,7 @@ TEST(meta_analysis, p_value_001) {
 }
 
 TEST(meta_analysis, p_value_0002321) {
-	const meta_analysis m(statistic(statistic_type::chi2, 0, 0.002321, 10));
+	const statistic_analysis m(statistic(statistic_type::chi2, 0, 0.002321, 10));
 
 	EXPECT_TRUE(m.pass());
 	EXPECT_FALSE(m.has_suspicion());
