@@ -16,9 +16,15 @@ struct test_setup {
 	std::vector<test_type> tests;
 	std::optional<mixer<T>> mix;
 	unsigned int max_threads = default_max_threads();
+	int start_power_of_two = 10;
 
 	test_setup& set_tests(const std::vector<test_type>& test_types) {
 		tests = test_types;
+		return *this;
+	}
+
+	test_setup& set_start_power(int start_power) {
+		start_power_of_two = start_power;
 		return *this;
 	}
 };
@@ -117,7 +123,7 @@ using test_callback = std::function<bool(test_battery_result)>;
 template <typename T>
 test_battery_result evaluate_multi_pass(const test_callback& result_callback,
                                         const test_setup<T>& setup) {
-	int power = 10;
+	int power = setup.start_power_of_two;
 	while (true) {
 		const auto& result = evaluate(1ull << power, setup);
 		if (!result_callback(result)) {
