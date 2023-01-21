@@ -98,6 +98,19 @@ Divisible test seems very weak.
 Tested bit matrix, very weak.
 
 
+TRNG p-value uniform:
+2^24
+bc2d-bit(3)    very suspicious(7) (p=9.45235e-08) p-value uniformity
+permutation-m  failure(10) (p=1.28603e-16) p-value uniformity
+
+2^29 (may spin around)
+uniform-m      failure(10) (p=3.77766e-22) p-value uniformity
+gap-g1         suspicious(6) (p=1.81138e-07) p-value uniformity
+
+2^30 (may spin around)
+mean-m         failure(9) (p=5.08189e-10) p-value uniformity
+
+
 With ww fix:
 KEY           VALUE
 test subject  pcg
