@@ -41,25 +41,34 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 	t.col("2^k").col(battery_result.power_of_two()).row();
 	t.col("samples").col(battery_result.samples).row();
 	t.col("n per sample").col(battery_result.n).row();
-	t.col("-------").col("-------").row();
-	for (const auto& e : battery_result.results) {
-		{
-			const auto& worst = get_worst_result(e.second);
-			const auto analysis = statistic_analysis(worst.stats);
-			if (analysis.has_suspicion()) {
-				t.col(to_string(e.first));
-				t.col(analysis.to_string() + to_string(worst.stream_name, worst.stats.p_value));
-				t.row();
-			}
-		}
 
-		{
-			auto analysis = create_uniform_p_values_analysis(e.second);
-			if (analysis.has_suspicion()) {
-				t.col(to_string(e.first));
-				t.col(analysis.to_string() + to_string("p-value uniformity", analysis.stat.p_value));
-				t.row();
-			}
+	t.col().col().row();
+	t.col("sample results:").col().row();
+
+	std::vector<test_result> sorted_results;
+	for (const auto& e : battery_result.results) {
+		sorted_results.push_back(get_worst_result(e.second));
+	}
+	std::sort(sorted_results.begin(), sorted_results.end(), [](const test_result& a, const test_result& b) {
+		return get_comparable_p_value(a.stats) < get_comparable_p_value(b.stats);
+	});
+
+	for (const auto& result : sorted_results) {
+		const auto analysis = statistic_analysis(result.stats);
+		if (analysis.has_suspicion()) {
+			t.col(to_string(result.key));
+			t.col(analysis.to_string() + to_string(result.stream_name, result.stats.p_value));
+			t.row();
+		}
+	}
+	t.col().col().row();
+	t.col("meta analysis:").col().row();
+	for (const auto& e : battery_result.results) {
+		auto analysis = create_uniform_p_values_analysis(e.second);
+		if (analysis.has_suspicion()) {
+			t.col(to_string(e.first));
+			t.col(analysis.to_string() + to_string("p-value uniformity", analysis.stat.p_value));
+			t.row();
 		}
 	}
 
