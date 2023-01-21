@@ -99,8 +99,10 @@ Tested bit matrix, very weak.
 
 
 TRNG p-value uniform:
+2^20
+bc2d-bit(5)      suspicious(6) (p=4.91204e-07) p-value uniformity
+
 2^24
-bc2d-bit(3)    very suspicious(7) (p=9.45235e-08) p-value uniformity
 permutation-m  failure(10) (p=1.28603e-16) p-value uniformity
 
 2^29 (may spin around)
