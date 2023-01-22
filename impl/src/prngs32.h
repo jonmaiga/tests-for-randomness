@@ -107,9 +107,9 @@ inline prng32 minstd_rand(uint32_t seed) {
 template <>
 inline std::vector<prng_factory<uint32_t>> get_prngs() {
 	return {
-		rng32::mt19337,
 		rng32::pcg,
 		rng32::xoshiro128plusplus,
+		rng32::mt19337,
 
 		rng32::xmx,
 		rng32::xm2x,
