@@ -23,6 +23,8 @@ streams<T> create_seeded_trng(int sample_count) {
 	streams<T> ts;
 	const auto& data = get_trng_data<T>();
 	const uint64_t interval = data.size() / sample_count;
+	std::cout << "Warning: TRNG data samples will overlap for >2^" << std::floor(std::log2(interval)) << ", this will make meta analysis unreliable.\n";
+	std::cout << "Warning: TRNG data will rotate for >2^" << std::floor(std::log2(data.size())) << ", this will make sample results unreliable.\n";
 	for (uint64_t i = 0; i < sample_count; ++i) {
 		const auto start_index = i * interval;
 		ts.push_back(
@@ -33,10 +35,10 @@ streams<T> create_seeded_trng(int sample_count) {
 }
 
 template <typename T>
-test_setup<T> create_trng_test_setup() {
+test_setup<T> create_trng_test_setup(int sample_count = 128) {
 	return test_setup<T>{
 		"trng",
-		create_seeded_trng<T>(128),
+		create_seeded_trng<T>(sample_count),
 		all_test_types
 	};
 }
