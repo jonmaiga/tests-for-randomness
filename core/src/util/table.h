@@ -27,6 +27,10 @@ public:
 		return app(std::to_string(i));
 	}
 
+	table& app(int64_t i) {
+		return app(std::to_string(i));
+	}
+
 	table& app(uint64_t i) {
 		return app(std::to_string(i));
 	}
