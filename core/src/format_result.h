@@ -65,8 +65,8 @@ inline std::vector<result_analysis> filter_to_show(std::vector<result_analysis> 
 	std::vector<result_analysis> to_show;
 	for (const auto& e : per_test) {
 		const auto& ras = e.second;
-		const auto suspicious_count = std::count_if(ras.begin(), ras.end(), [](const result_analysis& ra) { return ra.analysis.has_suspicion(); });
-		const auto showing_count = std::min(suspicious_count, static_cast<int64_t>(3));
+		const uint64_t suspicious_count = std::count_if(ras.begin(), ras.end(), [](const result_analysis& ra) { return ra.analysis.has_suspicion(); });
+		const uint64_t showing_count = std::min(suspicious_count, static_cast<uint64_t>(3));
 		const auto& worst = ras.front();
 		if (worst.analysis.has_suspicion()) {
 			int added = 0;
