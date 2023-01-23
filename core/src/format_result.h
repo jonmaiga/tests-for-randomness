@@ -125,7 +125,7 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		const auto failures = std::ranges::count_if(ras, [](const result_analysis& r) { return !r.analysis.pass(); });
 		const auto suspicious = std::ranges::count_if(ras, [](const result_analysis& r) { return r.analysis.has_suspicion(); }) - failures;
 		const auto& ra = ras.front();
-		std::cout << (ra.analysis.pass() ? "PASSED" : "***FAILED*** AT");
+		std::cout << (ra.analysis.pass() ? "PASSED" : "***FAILED*** at");
 		std::cout << " 2^" << battery_result.power_of_two() << " with a total of ";
 		std::cout << failures << " failures and " << suspicious << " suspicious results.\n";
 	}

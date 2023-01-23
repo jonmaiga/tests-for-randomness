@@ -112,6 +112,79 @@ gap-g1         suspicious(6) (p=1.81138e-07) p-value uniformity
 2^30 (may spin around)
 mean-m         failure(9) (p=5.08189e-10) p-value uniformity
 
+Executing command -test
+==========================================================================================
+rdrand 2^20 with 128 samples using 32-bits.
+==========================================================================================
+test             p-value      failure-strength  stream/description
+bc3d-bit(13,24)  7.12808e-12  failure(10)       meta analysis over 128 samples
+bc3d-bit(19,8)   2.75242e-11  failure(10)       meta analysis over 128 samples
+bc3d-bit(11,9)   3.49372e-11  failure(10)       meta analysis over 128 samples
+
+***FAILED*** at 2^20 with a total of 3 failures and 17 suspicious results.
+
+==========================================================================================
+rdrand 2^21 with 128 samples using 32-bits.
+==========================================================================================
+test            p-value      failure-strength  stream/description
+bc3d-bit(17,7)  2.81951e-14  failure(10)       meta analysis over 128 samples
+bc3d-bit(9,10)  6.4145e-12   failure(10)       meta analysis over 128 samples
+bc3d-bit(7,17)  8.58904e-11  failure(10)       meta analysis over 128 samples
+
+***FAILED*** at 2^21 with a total of 5 failures and 15 suspicious results.
+
+==========================================================================================
+rdrand 2^22 with 128 samples using 32-bits.
+==========================================================================================
+test             p-value      failure-strength    stream/description
+bc3d-bit(8,21)   3.49538e-08  very suspicious(7)  meta analysis over 128 samples
+bc3d-bit(10,23)  1.07998e-07  suspicious(6)       meta analysis over 128 samples
+bc3d-bit(8,11)   5.25851e-07  suspicious(6)       meta analysis over 128 samples
+
+PASSED 2^22 with a total of 0 failures and 8 suspicious results.
+
+
+
+
+AES:
+==========================================================================================
+aes 2^24 with 128 samples using 32-bits.
+==========================================================================================
+test             p-value      failure-strength    stream/description
+bc3d-bit(7,22)   1.32906e-13  failure(10)         meta analysis over 128 samples
+bc3d-bit(25,22)  3.31667e-08  very suspicious(7)  meta analysis over 128 samples
+bc3d-bit(10,25)  5.27121e-08  very suspicious(7)  meta analysis over 128 samples
+
+***FAILED*** at 2^24 with a total of 1 failures and 14 suspicious results.
+
+==========================================================================================
+aes 2^25 with 128 samples using 32-bits.
+==========================================================================================
+test             p-value      failure-strength    stream/description
+permutation-m    1.48736e-58  failure(10)         meta analysis over 128 samples
+bc2d-bit(3)      7.40687e-12  failure(10)         meta analysis over 128 samples
+bc3d-bit(24,24)  2.42735e-11  failure(10)         meta analysis over 128 samples
+bc3d-bit(11,26)  4.05491e-10  failure(9)          meta analysis over 128 samples
+bc3d-bit(5,15)   8.53038e-10  failure(9)          meta analysis over 128 samples
+bc2d-bit(29)     7.12284e-08  very suspicious(7)  meta analysis over 128 samples
+permutation-m    1            suspicious(6)       aes
+
+***FAILED*** at 2^25 with a total of 5 failures and 24 suspicious results.
+
+==========================================================================================
+aes 2^26 with 128 samples using 32-bits.
+==========================================================================================
+test             p-value      failure-strength    stream/description
+uniform-m        0            failure(10)         aes
+permutation-m    0            failure(10)         aes
+permutation-m    1.49513e-90  failure(10)         meta analysis over 128 samples
+bc3d-bit(26,10)  1.04562e-11  failure(10)         meta analysis over 128 samples
+bc3d-bit(23,25)  5.0869e-11   failure(10)         meta analysis over 128 samples
+bc3d-bit(22,26)  1.42098e-08  very suspicious(7)  meta analysis over 128 samples
+uniform-m        5.15819e-08  very suspicious(7)  meta analysis over 128 samples
+bc2d-bit(29)     5.67662e-07  suspicious(6)       meta analysis over 128 samples
+
+***FAILED*** at 2^26 with a total of 5 failures and 20 suspicious results.
 
 With ww fix:
 KEY           VALUE
