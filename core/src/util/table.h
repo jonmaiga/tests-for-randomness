@@ -27,6 +27,10 @@ public:
 		return app(std::to_string(i));
 	}
 
+	table& app(unsigned int i) {
+		return app(std::to_string(i));
+	}
+
 	table& app(int64_t i) {
 		return app(std::to_string(i));
 	}
@@ -45,31 +49,38 @@ public:
 		return app(b ? "true" : "false");
 	}
 
-	table& col(const std::string& text) {
-		app(text);
+	template <typename T>
+	table& col(const T& x) {
+		app(x);
 		return col();
 	}
 
-	table& col(int i) {
-		app(i);
-		return col();
-	}
-
-	table& col(uint64_t i) {
-		app(i);
-		return col();
-	}
-
-	table& col(double d) {
-		app(d);
-		return col();
-	}
-
-	table& col_bool(bool b) {
-		app_bool(b);
-		return col();
-	}
-
+	/*
+		table& col(int i) {
+			app(i);
+			return col();
+		}
+	
+		table& col(unsigned int i) {
+			app(i);
+			return col();
+		}
+	
+		table& col(uint64_t i) {
+			app(i);
+			return col();
+		}
+	
+		table& col(double d) {
+			app(d);
+			return col();
+		}
+	
+		table& col_bool(bool b) {
+			app_bool(b);
+			return col();
+		}
+	*/
 	table& col() {
 		_spaces[_current_column_index] = std::max(_spaces[_current_column_index], _current_column.size() + 2);
 		_getRow().push_back(_current_column);
@@ -105,6 +116,10 @@ public:
 			}
 		}
 		return sb;
+	}
+
+	std::size_t get_column_size(std::size_t col) const {
+		return _spaces[col];
 	}
 
 private:

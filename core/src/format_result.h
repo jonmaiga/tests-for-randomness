@@ -27,7 +27,7 @@ inline void draw_histogram(const std::vector<double>& data) {
 
 inline std::string p_value_to_string(const double p_value) {
 	std::stringstream ss;
-	ss << "(p=" << p_value << + ")";
+	ss << p_value;
 	return ss.str();
 }
 
@@ -88,12 +88,13 @@ inline std::vector<result_analysis> filter_to_show(std::vector<result_analysis> 
 
 
 inline void print_battery_result(const test_battery_result& battery_result) {
-	table t({"KEY", "VALUE"});
-	t.col("test subject").col(battery_result.test_subject_name).row();
-	t.col("2^k").col(battery_result.power_of_two()).row();
-	t.col("samples").col(battery_result.samples).row();
-	t.col("n per sample").col(battery_result.n).row();
-	t.col("-------").col("-------").row();
+	std::cout << "==========================================================================================\n";
+	std::cout
+		<< battery_result.test_subject_name
+		<< " 2^" << battery_result.power_of_two()
+		<< " with " << battery_result.samples << " samples using "
+		<< battery_result.bits << "-bits.\n";
+	std::cout << "==========================================================================================\n";
 
 	// SAMPLE ANALYSIS
 	std::vector<result_analysis> ras;
@@ -107,31 +108,28 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 	}
 	std::sort(ras.begin(), ras.end());
 
-	const auto to_show = filter_to_show(ras);
-	for (const auto& ra : to_show) {
-		t.col(to_string(ra.key));
-		t.col(ra.to_string());
-		t.row();
+	table tests_table({"test", "p-value", "failure-strength", "stream/description"});
+	for (const auto& ra : filter_to_show(ras)) {
+		tests_table.col(to_string(ra.key))
+		           .col(p_value_to_string(ra.analysis.stat.p_value))
+		           .col(ra.analysis.to_string())
+		           .col(ra.name)
+		           .row();
 	}
-
-	t.col("-------").col("-------").row();
+	std::cout << tests_table.to_string() << "\n";
 
 	if (battery_result.results.empty()) {
-		t.col("SUMMARY").col("INCONCLUSIVE").row();
+		std::cout << "INCONCLUSIVE\n";
 	}
 	else {
 		const auto failures = std::ranges::count_if(ras, [](const result_analysis& r) { return !r.analysis.pass(); });
 		const auto suspicious = std::ranges::count_if(ras, [](const result_analysis& r) { return r.analysis.has_suspicion(); }) - failures;
 		const auto& ra = ras.front();
-		t.col("SUMMARY")
-		 .app(ra.analysis.pass() ? "PASSED" : "FAILED AT")
-		 .app(" 2^")
-		 .app(battery_result.power_of_two())
-		 .app(" with ").app(suspicious).app(" suspicious and ").app(failures).app(" failures.").col()
-		 .row();
+		std::cout << (ra.analysis.pass() ? "PASSED" : "***FAILED*** AT");
+		std::cout << " 2^" << battery_result.power_of_two() << " with a total of ";
+		std::cout << failures << " failures and " << suspicious << " suspicious results.\n";
 	}
-
-	std::cout << t.to_string() << "\n\n";
+	std::cout << "\n";
 }
 
 }
