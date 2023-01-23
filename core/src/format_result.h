@@ -65,7 +65,7 @@ inline std::vector<result_analysis> filter_to_show(std::vector<result_analysis> 
 	std::vector<result_analysis> to_show;
 	for (const auto& e : per_test) {
 		const auto& ras = e.second;
-		const auto suspicious_count = std::ranges::count_if(ras, [](const result_analysis& ra) { return ra.analysis.has_suspicion(); });
+		const auto suspicious_count = std::count_if(ras.begin(), ras.end(), [](const result_analysis& ra) { return ra.analysis.has_suspicion(); });
 		const auto showing_count = std::min(suspicious_count, static_cast<int64_t>(3));
 		const auto& worst = ras.front();
 		if (worst.analysis.has_suspicion()) {
@@ -122,8 +122,8 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		std::cout << "INCONCLUSIVE\n";
 	}
 	else {
-		const auto failures = std::ranges::count_if(ras, [](const result_analysis& r) { return !r.analysis.pass(); });
-		const auto suspicious = std::ranges::count_if(ras, [](const result_analysis& r) { return r.analysis.has_suspicion(); }) - failures;
+		const auto failures = std::count_if(ras.begin(), ras.end(), [](const result_analysis& r) { return !r.analysis.pass(); });
+		const auto suspicious = std::count_if(ras.begin(), ras.end(), [](const result_analysis& r) { return r.analysis.has_suspicion(); }) - failures;
 		const auto& ra = ras.front();
 		std::cout << (ra.analysis.pass() ? "PASSED" : "***FAILED*** at");
 		std::cout << " 2^" << battery_result.power_of_two() << " with a total of ";
