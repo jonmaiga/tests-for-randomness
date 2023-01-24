@@ -19,13 +19,13 @@ template <typename T>
 sub_test_results permutation_test(const uint64_t n, const stream<T>& stream) {
 	// solve n*bits/expected_count = x*2^x, where x is permutation_size
 	static const auto log2 = std::log(2);
-	constexpr auto Bits = bit_sizeof<T>();
+	const auto total_bits = n * bit_sizeof<T>();
 	constexpr double approximated_count_per_bin = 1000;
-	const double y = n * Bits / approximated_count_per_bin;
+	const double y = total_bits / approximated_count_per_bin;
 	const int permutation_size = static_cast<int>(lambert_w_approximation(y * log2) / log2);
 
 	const auto histogram = get_permutation_histogram(ranged_stream<T>(stream, n), permutation_size);
-	const double expected_count = std::floor(Bits * n / permutation_size) / histogram.size();
+	const double expected_count = std::floor(total_bits / permutation_size) / histogram.size();
 	return main_sub_test(chi2_stats(histogram, expected_count));
 }
 
