@@ -7,12 +7,14 @@
 
 namespace mixer {
 
-inline void draw_histogram(const std::vector<double>& data) {
+template <typename T>
+void draw_histogram(const T& data) {
 	std::vector<uint64_t> bins(30);
 	uint64_t max_count = 0;
-	for (const auto r : rescale_to_01(data)) {
+	for (const auto r : data) {
+		assertion(is_valid_between_01(r), "invalid or out of range histogram value, rescale first.");
 		const size_t index = std::min(static_cast<size_t>(r * bins.size()), bins.size() - 1);
-		bins[index] ++;
+		++ bins[index];
 		max_count = std::max(bins[index], max_count);
 	}
 	const double scale = std::min(1., 80. / static_cast<double>(max_count));
@@ -23,6 +25,10 @@ inline void draw_histogram(const std::vector<double>& data) {
 		std::cout << "\n";
 	}
 	std::cout << "\n";
+}
+
+inline void draw_histogram_rescale(const std::vector<double>& data) {
+	draw_histogram(rescale_to_01(data));
 }
 
 inline std::string p_value_to_string(const double p_value) {
@@ -96,7 +102,6 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		<< battery_result.bits << "-bits.\n";
 	std::cout << "==========================================================================================\n";
 
-	// SAMPLE ANALYSIS
 	std::vector<result_analysis> ras;
 	for (const auto& e : battery_result.results) {
 		const auto worst = get_worst_result(e.second);
@@ -120,6 +125,7 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 
 	if (battery_result.results.empty()) {
 		std::cout << "INCONCLUSIVE\n";
+		std::cout << "\n";
 	}
 	else {
 		const auto failures = std::count_if(ras.begin(), ras.end(), [](const result_analysis& r) { return !r.analysis.pass(); });
@@ -128,8 +134,9 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		std::cout << (ra.analysis.pass() ? "PASSED" : "***FAILED*** at");
 		std::cout << " 2^" << battery_result.power_of_two() << " with a total of ";
 		std::cout << failures << " failures and " << suspicious << " suspicious results.\n";
+		std::cout << "\n";
 	}
-	std::cout << "\n";
+
 }
 
 }
