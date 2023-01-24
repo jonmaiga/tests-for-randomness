@@ -6,6 +6,7 @@
 #include "mixers32.h"
 #include "prng.h"
 
+#include <array>
 #include <random>
 
 #include "util/bitwise.h"
@@ -16,7 +17,7 @@ using prng32 = prng<uint32_t>;
 
 namespace rng32 {
 
-inline prng32 rdrand(uint32_t seed) {
+inline prng32 rdrand(uint32_t) {
 	return {
 		"rdrand", []() mutable {
 			return rdrand_32();
@@ -28,13 +29,21 @@ inline prng32 aes(uint32_t seed) {
 	return {
 		"aes", [state = seed]() mutable {
 			for (int i = 0; i < 1; ++i) {
-				state = aes32(state);
+				state = aes_mix(state);
 			}
 			return state;
 		}
 	};
 }
 
+inline prng32 aes128(uint32_t seed) {
+	std::array state{seed, seed, seed, seed};
+	return {
+		"aes128", [state]() mutable {
+			return aes_prng128(state);
+		}
+	};
+}
 
 inline prng32 xmx(uint32_t seed) {
 	return {
