@@ -16,7 +16,7 @@ std::vector<uint64_t> get_permutation_histogram(const T& data, int window_size) 
 }
 
 template <typename T>
-sub_test_results permutation_test(const uint64_t n, const stream<T>& stream) {
+std::optional<statistic> permutation_stat(const uint64_t n, const stream<T>& stream) {
 	// solve n*bits/expected_count = x*2^x, where x is permutation_size
 	static const auto log2 = std::log(2);
 	const auto total_bits = n * bit_sizeof<T>();
@@ -26,7 +26,14 @@ sub_test_results permutation_test(const uint64_t n, const stream<T>& stream) {
 
 	const auto histogram = get_permutation_histogram(ranged_stream<T>(stream, n), permutation_size);
 	const double expected_count = std::floor(total_bits / permutation_size) / histogram.size();
-	return main_sub_test(chi2_stats(histogram, expected_count));
+	return chi2_stats(histogram, expected_count);
+}
+
+template <typename T>
+sub_test_results permutation_test(const uint64_t n, stream<T> source) {
+	return split_test(n, 1000000, [&source](uint64_t size) {
+		return permutation_stat(size, source);
+	});
 }
 
 }
