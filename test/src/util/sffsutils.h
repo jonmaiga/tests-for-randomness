@@ -26,13 +26,12 @@ inline auto create_sffs_printer(const bit_vector_to_string& to_arr_str) {
 
 template <typename T>
 double sffs_fitness_test(const test_setup<T>& ts) {
-	constexpr int max_power = 27;
-	auto cb = [max_power](const test_battery_result& br) {
+	auto cb = [](const test_battery_result& br, bool) {
 		const auto analysis = get_worst_statistic_analysis(br);
 		if (!analysis) {
 			return true;
 		}
-		return analysis->pass() && br.power_of_two() < max_power;
+		return analysis->pass();
 	};
 
 	const auto r = evaluate_multi_pass<T>(cb, ts);
@@ -41,7 +40,7 @@ double sffs_fitness_test(const test_setup<T>& ts) {
 	for (const auto& tr : r.results) {
 		append(all_p_values, to_p_values(tr.second));
 	}
-	return (max_power - r.power_of_two()) + kolmogorov_smirnov_stats(all_p_values)->value;
+	return (ts.stop_power_of_two - r.power_of_two()) + kolmogorov_smirnov_stats(all_p_values)->value;
 }
 
 template <typename T>

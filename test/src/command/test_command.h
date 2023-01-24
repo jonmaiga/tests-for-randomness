@@ -11,9 +11,9 @@
 
 namespace mixer {
 
-inline auto create_result_callback(int max_power, bool print_intermediate_results = true) {
-	return [max_power, print_intermediate_results](const test_battery_result& br) {
-		bool proceed = br.power_of_two() < max_power;
+inline auto create_result_callback(bool print_intermediate_results = true) {
+	return [print_intermediate_results](const test_battery_result& br, bool is_last) {
+		bool proceed = !is_last;
 		bool pass = true;
 		if (proceed) {
 			if (const auto analysis = get_worst_statistic_analysis(br)) {
@@ -36,24 +36,24 @@ inline auto create_result_callback(int max_power, bool print_intermediate_result
 inline void test_command() {
 	using T = uint32_t;
 
-	const auto callback = create_result_callback(20, false);
-
-	// trng
-	evaluate_multi_pass(callback, create_trng_test_setup<T>());
-
-	// mixers
-	for (const auto& m : get_mixers<T>()) {
-		evaluate_multi_pass(callback, create_mixer_test_setup(m));
-	}
-
-	// combiners
-	for (const auto& combiner : get_combiners<T>()) {
-		evaluate_multi_pass(callback, create_combiner_test_setup<T>(combiner));
-	}
-
+	const auto callback = create_result_callback(false);
+	/*
+		// trng
+		evaluate_multi_pass(callback, create_trng_test_setup<T>());
+	
+		// mixers
+		for (const auto& m : get_mixers<T>()) {
+			evaluate_multi_pass(callback, create_mixer_test_setup(m));
+		}
+	
+		// combiners
+		for (const auto& combiner : get_combiners<T>()) {
+			evaluate_multi_pass(callback, create_combiner_test_setup<T>(combiner));
+		}
+	*/
 	// prngs
 	for (const auto& prng : get_prngs<T>()) {
-		evaluate_multi_pass(callback, create_prng_test_setup<T>(prng));
+		evaluate_multi_pass(callback, create_prng_test_setup<T>(prng).range(10, 25));
 	}
 }
 

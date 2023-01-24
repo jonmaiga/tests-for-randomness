@@ -5,13 +5,12 @@ namespace mixer {
 
 template <typename T>
 double tune_fitness(T c) {
-	constexpr int max_power = 27;
-	const auto cb = [max_power](const test_battery_result& br) {
+	const auto cb = [](const test_battery_result& br, bool) {
 		const auto analysis = get_worst_statistic_analysis(br);
 		if (!analysis) {
 			return true;
 		}
-		return analysis->pass() && br.power_of_two() < max_power;
+		return analysis->pass();
 	};
 
 	int total = 0;
@@ -22,9 +21,10 @@ double tune_fitness(T c) {
 			for (T c3 = 13; c3 <= 16; ++c3) {
 				const xm2x_constants<T> constants{c1, c2, c3, c};
 				const auto mixer = create_xm2x_mixer(constants);
-				const auto r = evaluate_multi_pass<T>(cb, create_mixer_test_setup<T>(mixer));
+				const auto setup = create_mixer_test_setup<T>(mixer);
+				const auto r = evaluate_multi_pass<T>(cb, setup);
 				sum += r.power_of_two();
-				max += max_power;
+				max += setup.stop_power_of_two;
 			}
 		}
 		total += sum;

@@ -72,7 +72,7 @@ void run_sffs() {
 	const auto result = start_search<T>("NAME HERE", cfg);
 
 	const auto mixer = create_xmx_mixer<T>(result.data);
-	evaluate_multi_pass(create_result_callback(25, false), create_mixer_test_setup<T>(mixer));
+	evaluate_multi_pass(create_result_callback(false), create_mixer_test_setup<T>(mixer));
 }
 
 }

@@ -39,11 +39,8 @@ streams<T> create_pass_sources() {
 	return {trng()};
 }
 
-inline auto create_test_inspect_callback(int max_power) {
-	return [max_power](const test_battery_result& br) {
-		if (br.power_of_two() >= max_power) {
-			return false;
-		}
+inline auto create_test_inspect_callback() {
+	return [](const test_battery_result& br, bool) {
 		if (const auto analysis = get_worst_statistic_analysis(br)) {
 			return analysis->pass();
 		}
@@ -59,7 +56,7 @@ struct inspect_result {
 
 template <typename T>
 inspect_result<T> inspect_test(const test_definition<T>& test_def, const streams<T>& sources) {
-	const auto callback = create_test_inspect_callback(20);
+	const auto callback = create_test_inspect_callback();
 
 	const mixer<T> identity_mixer = {
 		"identity", [](T x) {
@@ -137,9 +134,9 @@ void inspect_test_command() {
 
 using per_test_result = std::map<std::string, std::map<std::string, std::string>>;
 
-inline auto create_per_test_callback(per_test_result& result, int max_power, bool print_intermediate_results = true) {
-	return [&result, max_power, print_intermediate_results](const test_battery_result& br) {
-		bool proceed = br.power_of_two() < max_power;
+inline auto create_per_test_callback(per_test_result& result, bool print_intermediate_results = true) {
+	return [&result, print_intermediate_results](const test_battery_result& br, bool is_last) {
+		bool proceed = !is_last;
 		if (proceed) {
 			if (const auto analysis = get_worst_statistic_analysis(br)) {
 				proceed = analysis->pass();
@@ -184,7 +181,7 @@ template <typename T>
 void inspect_per_test_command() {
 	per_test_result result;
 
-	const auto callback = create_per_test_callback(result, 20, false);
+	const auto callback = create_per_test_callback(result, false);
 
 	for (const auto& test : get_tests<T>()) {
 		std::cout << "========================\n";

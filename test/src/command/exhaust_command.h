@@ -9,14 +9,12 @@ namespace mixer {
 
 inline void exhaust_command() {
 	using T = uint32_t;
-
-	constexpr int max_power = 27;
-	const auto cb = [max_power](const test_battery_result& br) {
+	const auto cb = [](const test_battery_result& br, bool) {
 		const auto analysis = get_worst_statistic_analysis(br);
 		if (!analysis) {
 			return true;
 		}
-		return analysis->pass() && br.power_of_two() < max_power;
+		return analysis->pass();
 	};
 
 	struct res {
@@ -33,7 +31,7 @@ inline void exhaust_command() {
 			for (T c3 = 9; c3 < 20; ++c3) {
 				const xm2x_constants<T> c{c1, c2, c3, 2471660141};
 				const auto mixer = create_xm2x_mixer<T>(c);
-				const auto r = evaluate_multi_pass<T>(cb, create_mixer_test_setup<T>(mixer));
+				const auto r = evaluate_multi_pass<T>(cb, create_mixer_test_setup<T>(mixer).range(10, 27));
 				results.push_back({c, r});
 				sum += r.power_of_two();
 				std::cout << r.power_of_two() << ";";

@@ -17,14 +17,16 @@ struct test_setup {
 	std::optional<mixer<T>> mix;
 	unsigned int max_threads = default_max_threads();
 	int start_power_of_two = 10;
+	int stop_power_of_two = 20;
 
 	test_setup& set_tests(const std::vector<test_type>& test_types) {
 		tests = test_types;
 		return *this;
 	}
 
-	test_setup& set_start_power(int start_power) {
+	test_setup& range(int start_power, int stop_power) {
 		start_power_of_two = start_power;
+		stop_power_of_two = stop_power;
 		return *this;
 	}
 };
@@ -118,20 +120,22 @@ test_battery_result evaluate(uint64_t n, const test_setup<T>& setup) {
 	return test_result;
 }
 
-using test_callback = std::function<bool(test_battery_result)>;
+using test_callback = std::function<bool(test_battery_result, bool last)>;
 
 template <typename T>
 test_battery_result evaluate_multi_pass(const test_callback& result_callback,
                                         const test_setup<T>& setup) {
+	assertion(setup.start_power_of_two <= setup.stop_power_of_two, "start stop power of to not valid");
 	int power = setup.start_power_of_two;
-	while (true) {
-		const auto& result = evaluate(1ull << power, setup);
-		if (!result_callback(result)) {
+	test_battery_result result = {};
+	while (power <= setup.stop_power_of_two) {
+		result = evaluate(1ull << power, setup);
+		if (!result_callback(result, power == setup.stop_power_of_two)) {
 			return result;
 		}
 		++power;
 	}
-	return {};
+	return result;
 }
 
 }
