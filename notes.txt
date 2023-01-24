@@ -11,6 +11,8 @@ TODO:
 
 DONE:
 -----
+- permutation is sensitive to too manu bins - meta analysis gets no p-values close to 0.5.
+	- split? <-- fixes it
 - investigate how far each individual test goes.
 - correlation/kendall tau should only be checked on one side like ztest?
 - bc3d trng fails. "fixed" by using at least 25 expected per bin
@@ -143,6 +145,88 @@ bc3d-bit(8,11)   5.25851e-07  suspicious(6)       meta analysis over 128 samples
 
 PASSED 2^22 with a total of 0 failures and 8 suspicious results.
 
+DRNG:
+==========================================================================================
+trng 2^24 with 128 samples using 32-bits.
+==========================================================================================
+test            p-value      failure-strength    stream/description
+bc3d-bit(7,22)  1.05343e-10  failure(9)          meta analysis over 128 samples
+bc3d-bit(10,7)  2.52485e-08  very suspicious(7)  meta analysis over 128 samples
+bc3d-bit(13,6)  7.44488e-08  very suspicious(7)  meta analysis over 128 samples
+
+***FAILED*** at 2^24 with a total of 1 failures and 18 suspicious results.
+
+==========================================================================================
+trng 2^25 with 128 samples using 32-bits.
+==========================================================================================
+test             p-value      failure-strength    stream/description
+bc3d-bit(27,15)  3.77851e-15  failure(10)         meta analysis over 128 samples
+bc3d-bit(27,17)  5.59138e-14  failure(10)         meta analysis over 128 samples
+bc3d-bit(17,5)   2.90128e-11  failure(10)         meta analysis over 128 samples
+permutation-m    9.26749e-08  very suspicious(7)  meta analysis over 128 samples
+bc2d-bit(3)      1.0663e-06   suspicious(5)       meta analysis over 128 samples
+bc2d-bit(8)      4.04683e-06  suspicious(5)       meta analysis over 128 samples
+
+***FAILED*** at 2^25 with a total of 6 failures and 22 suspicious results.
+
+==========================================================================================
+trng 2^26 with 128 samples using 32-bits.
+==========================================================================================
+test            p-value      failure-strength    stream/description
+bc3d-bit(7,23)  5.5059e-12   failure(10)         meta analysis over 128 samples
+bc3d-bit(7,9)   3.97865e-11  failure(10)         meta analysis over 128 samples
+bc3d-bit(6,22)  2.89074e-10  failure(9)          meta analysis over 128 samples
+bc2d-bit(8)     1.03483e-08  very suspicious(7)  meta analysis over 128 samples
+bc2d-bit(20)    4.58711e-08  very suspicious(7)  meta analysis over 128 samples
+permutation-m   3.25524e-07  suspicious(6)       meta analysis over 128 samples
+bc2d-bit(17)    1.65811e-06  suspicious(5)       meta analysis over 128 samples
+
+***FAILED*** at 2^26 with a total of 6 failures and 23 suspicious results.
+
+==========================================================================================
+trng 2^27 with 128 samples using 32-bits.
+==========================================================================================
+test             p-value      failure-strength  stream/description
+bc2d-bit(8)      3.02805e-22  failure(10)       meta analysis over 128 samples
+bc3d-bit(8,25)   5.11296e-16  failure(10)       meta analysis over 128 samples
+bc3d-bit(7,23)   5.54483e-16  failure(10)       meta analysis over 128 samples
+bc3d-bit(25,22)  1.77229e-14  failure(10)       meta analysis over 128 samples
+permutation-m    1.6407e-12   failure(10)       meta analysis over 128 samples
+bc2d-bit(28)     1.25644e-10  failure(9)        meta analysis over 128 samples
+bc2d-bit(15)     1.63084e-10  failure(9)        meta analysis over 128 samples
+
+***FAILED*** at 2^27 with a total of 13 failures and 41 suspicious results.
+
+==========================================================================================
+trng 2^28 with 128 samples using 32-bits.
+==========================================================================================
+test             p-value      failure-strength  stream/description
+bc2d-bit(8)      1.58155e-37  failure(10)       meta analysis over 128 samples
+permutation-m    9.70474e-31  failure(10)       meta analysis over 128 samples
+bc3d-bit(18,21)  1.87822e-25  failure(10)       meta analysis over 128 samples
+bc3d-bit(17,25)  3.07374e-22  failure(10)       meta analysis over 128 samples
+bc3d-bit(7,9)    2.11476e-21  failure(10)       meta analysis over 128 samples
+bc2d-bit(22)     8.59966e-16  failure(10)       meta analysis over 128 samples
+bc2d-bit(11)     2.41014e-15  failure(10)       meta analysis over 128 samples
+
+***FAILED*** at 2^28 with a total of 41 failures and 94 suspicious results.
+
+==========================================================================================
+trng 2^29 with 128 samples using 32-bits.
+==========================================================================================
+test             p-value      failure-strength    stream/description
+bc3d-bit(7,9)    8.37397e-53  failure(10)         meta analysis over 128 samples
+bc3d-bit(18,21)  5.19397e-45  failure(10)         meta analysis over 128 samples
+bc2d-bit(16)     2.39794e-37  failure(10)         meta analysis over 128 samples
+bc3d-bit(11,24)  4.75533e-36  failure(10)         meta analysis over 128 samples
+bc2d-bit(11)     1.75667e-31  failure(10)         meta analysis over 128 samples
+bc2d-bit(22)     2.80669e-29  failure(10)         meta analysis over 128 samples
+permutation-m    6.22537e-14  failure(10)         meta analysis over 128 samples
+divisibility-d2  1.34559e-09  very suspicious(8)  meta analysis over 128 samples
+gap-g2           7.666e-09    very suspicious(8)  meta analysis over 128 samples
+gap-g1           2.29765e-08  very suspicious(7)  meta analysis over 128 samples
+
+***FAILED*** at 2^29 with a total of 111 failures and 126 suspicious results.
 
 
 
