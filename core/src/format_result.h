@@ -113,7 +113,7 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 	}
 	std::sort(ras.begin(), ras.end());
 
-	table tests_table({"test", "p-value", "failure-strength", "stream/description"});
+	table tests_table({"test", "p-value", "remark", "stream/description"});
 	for (const auto& ra : filter_to_show(ras)) {
 		tests_table.col(to_string(ra.key))
 		           .col(p_value_to_string(ra.analysis.stat.p_value))
