@@ -55,9 +55,8 @@ inline double expected_draws_per_coupon(uint64_t wanted_coupons) {
 	// from: https://en.wikipedia.org/wiki/Coupon_collector%27s_problem
 	if (wanted_coupons < 1024) {
 		return wanted_coupons * harmonic(wanted_coupons);
-	} else {
-		return wanted_coupons * harmonic_asymptotic(wanted_coupons);
 	}
+	return wanted_coupons * harmonic_asymptotic(wanted_coupons);
 }
 
 template <typename T>
