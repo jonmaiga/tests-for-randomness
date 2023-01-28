@@ -100,6 +100,43 @@ Divisible test seems very weak.
 Tested bit matrix, very weak.
 
 
+==========================================================================================
+xm3x 2^27 with 128 samples using 32-bits.
+==========================================================================================
+test       p-value      remark       stream/description
+uniform-m  7.34232e-27  failure(10)  meta analysis over 128 samples
+bic-m      2.19467e-25  failure(10)  meta analysis over 128 samples
+sac-m      8.01611e-11  failure(10)  meta analysis over 128 samples
+
+***FAILED*** at 2^27 with a total of 3 failures and 0 suspicious results.
+
+==========================================================================================
+mx3 2^26 with 128 samples using 32-bits.
+==========================================================================================
+test       p-value     remark      stream/description
+uniform-m  5.6372e-10  failure(9)  meta analysis over 128 samples
+
+***FAILED*** at 2^26 with a total of 1 failures and 0 suspicious results.
+==========================================================================================
+mx3 2^27 with 128 samples using 32-bits.
+==========================================================================================
+test       p-value      remark       stream/description
+uniform-m  6.58793e-33  failure(10)  meta analysis over 128 samples
+bic-m      2.12371e-18  failure(10)  meta analysis over 128 samples
+
+***FAILED*** at 2^27 with a total of 2 failures and 0 suspicious results.
+
+==========================================================================================
+xm2x 2^17 with 128 samples using 32-bits.
+==========================================================================================
+test       p-value      remark         stream/description
+uniform-m  2.11782e-11  failure(10)    xm2x(reverse-29(counter-1))
+sac-m      4.37924e-07  suspicious(6)  meta analysis over 128 samples
+bic-m      6.3598e-06   suspicious(5)  meta analysis over 128 samples
+
+***FAILED*** at 2^17 with a total of 1 failures and 2 suspicious results.
+
+
 TRNG p-value uniform:
 2^20
 bc2d-bit(5)      suspicious(6) (p=4.91204e-07) p-value uniformity
