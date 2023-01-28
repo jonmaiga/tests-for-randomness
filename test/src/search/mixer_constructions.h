@@ -53,6 +53,7 @@ template <typename T>
 xm2x_constants<T> to_xm2x_constants(const bit_vector& bits) {
 	constexpr auto s = shift_sizeof<T>();
 	constexpr auto m = bit_sizeof<T>();
+	//return {16,15,14, bits.get<T>(0, 32)};
 	return {bits.get<T>(0 * s, s), bits.get<T>(1 * s, s), bits.get<T>(2 * s, s), bits.get<T>(3 * s, m)};
 }
 
