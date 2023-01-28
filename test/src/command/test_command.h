@@ -37,20 +37,19 @@ inline void test_command() {
 	using T = uint32_t;
 
 	const auto callback = create_result_callback(false);
-	/*
-		// trng
-		evaluate_multi_pass(callback, create_trng_test_setup<T>());
-	
-		// mixers
-		for (const auto& m : get_mixers<T>()) {
-			evaluate_multi_pass(callback, create_mixer_test_setup(m));
-		}
-	
-		// combiners
-		for (const auto& combiner : get_combiners<T>()) {
-			evaluate_multi_pass(callback, create_combiner_test_setup<T>(combiner));
-		}
-	*/
+	// trng
+	evaluate_multi_pass(callback, create_trng_test_setup<T>());
+
+	// mixers
+	for (const auto& m : get_mixers<T>()) {
+		evaluate_multi_pass(callback, create_mixer_test_setup(m));
+	}
+
+	// combiners
+	for (const auto& combiner : get_combiners<T>()) {
+		evaluate_multi_pass(callback, create_combiner_test_setup<T>(combiner));
+	}
+
 	// prngs
 	for (const auto& prng : get_prngs<T>()) {
 		evaluate_multi_pass(callback, create_prng_test_setup<T>(prng).range(10, 25));
