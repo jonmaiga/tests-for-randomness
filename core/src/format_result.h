@@ -31,12 +31,6 @@ inline void draw_histogram_rescale(const std::vector<double>& data) {
 	draw_histogram(rescale_to_01(data));
 }
 
-inline std::string p_value_to_string(const double p_value) {
-	std::stringstream ss;
-	ss << p_value;
-	return ss.str();
-}
-
 inline std::string to_string(const std::string& name, const double p_value) {
 	return p_value_to_string(p_value) + " " + name;
 }
@@ -44,21 +38,6 @@ inline std::string to_string(const std::string& name, const double p_value) {
 inline std::string to_string(const test_key& key) {
 	return get_test_name(key.type) + "-" + key.name;
 }
-
-struct result_analysis {
-	std::string name;
-	test_key key;
-	statistic_analysis analysis;
-	std::vector<test_result> results;
-
-	std::string to_string() const {
-		return p_value_to_string(analysis.stat.p_value) + " " + analysis.to_string() + " " + name;
-	}
-
-	bool operator <(const result_analysis& rhs) const {
-		return get_comparable_p_value(analysis.stat) < get_comparable_p_value(rhs.analysis.stat);
-	}
-};
 
 inline std::vector<result_analysis> filter_to_show(std::vector<result_analysis> results) {
 	std::sort(results.begin(), results.end());
@@ -102,17 +81,7 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		<< battery_result.bits << "-bits.\n";
 	std::cout << "==========================================================================================\n";
 
-	std::vector<result_analysis> ras;
-	for (const auto& e : battery_result.results) {
-		const auto worst = get_worst_result(e.second);
-		ras.push_back({worst.stream_name, e.first, statistic_analysis{worst.stats}, e.second});
-
-		const auto analysis = create_uniform_p_values_analysis(e.second);
-		const auto name = "meta analysis over " + std::to_string(e.second.size()) + " samples";
-		ras.push_back({name, e.first, analysis, e.second});
-	}
-	std::sort(ras.begin(), ras.end());
-
+	const auto ras = get_analysis(battery_result);
 	table tests_table({"test", "p-value", "remark", "stream/description"});
 	for (const auto& ra : filter_to_show(ras)) {
 		tests_table.col(to_string(ra.key))

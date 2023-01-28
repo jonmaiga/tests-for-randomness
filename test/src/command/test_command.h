@@ -52,7 +52,7 @@ inline void test_command() {
 
 	// prngs
 	for (const auto& prng : get_prngs<T>()) {
-		evaluate_multi_pass(callback, create_prng_test_setup<T>(prng).range(10, 25));
+		evaluate_multi_pass(callback, create_prng_test_setup<T>(prng));
 	}
 }
 

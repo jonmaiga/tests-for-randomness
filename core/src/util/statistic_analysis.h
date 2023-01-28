@@ -3,6 +3,7 @@
 #include "statistics/kolmogorov.h"
 #include "types.h"
 
+#include <sstream>
 #include <vector>
 
 namespace mixer {
@@ -102,16 +103,51 @@ inline statistic_analysis create_statistic_analysis(const std::vector<test_resul
 	return statistic_analysis(get_worst_result(test_results).stats);
 }
 
-inline std::optional<statistic_analysis> get_worst_statistic_analysis(const test_battery_result& battery_result) {
-	std::optional<statistic_analysis> r;
-	for (const auto& e : battery_result.results) {
-		const auto worst_test = get_worst_result(e.second);
-		const statistic_analysis analysis(worst_test.stats);
-		if (!r || analysis.get_p_value_cmp() < r->get_p_value_cmp()) {
-			r = analysis;
-		}
+inline std::string p_value_to_string(const double p_value) {
+	std::stringstream ss;
+	ss << p_value;
+	return ss.str();
+}
+
+struct result_analysis {
+	enum class type { Sample, Meta };
+
+	type type;
+	std::string name;
+	test_key key;
+	statistic_analysis analysis;
+	std::vector<test_result> results;
+
+
+	std::string to_string() const {
+		return p_value_to_string(analysis.stat.p_value) + " " + analysis.to_string() + " " + name;
 	}
-	return r;
+
+	bool operator <(const result_analysis& rhs) const {
+		return get_comparable_p_value(analysis.stat) < get_comparable_p_value(rhs.analysis.stat);
+	}
+};
+
+inline std::vector<result_analysis> get_analysis(const test_battery_result& battery_result) {
+	std::vector<result_analysis> ras;
+	for (const auto& e : battery_result.results) {
+		const auto worst = get_worst_result(e.second);
+		ras.push_back({result_analysis::type::Sample, worst.stream_name, e.first, statistic_analysis{worst.stats}, e.second});
+
+		const auto analysis = create_uniform_p_values_analysis(e.second);
+		const auto name = "meta analysis over " + std::to_string(e.second.size()) + " samples";
+		ras.push_back({result_analysis::type::Meta, name, e.first, analysis, e.second});
+	}
+	std::sort(ras.begin(), ras.end());
+	return ras;
+}
+
+inline std::optional<statistic_analysis> get_worst_statistic_analysis(const test_battery_result& battery_result) {
+	const auto ras = get_analysis(battery_result);
+	if (ras.empty()) {
+		return {};
+	}
+	return ras.front().analysis;
 }
 
 
