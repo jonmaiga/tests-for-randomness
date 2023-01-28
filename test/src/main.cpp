@@ -21,6 +21,20 @@ void build_trng() {
 	write_binary(R"(C:\tmp\random.org\trng.bin)", data, false);
 }
 
+void export_rdrand(int power_of_two) {
+	const auto n = 1ull << power_of_two;
+	const auto& cfg = get_config();
+	std::vector<uint64_t> data;
+	data.reserve(n);
+	for (std::size_t i = 0; i < n; ++i) {
+		data.push_back(rdrand_64());
+		if (i % 10000000 == 0) {
+			std::cout << ".";
+		}
+	}
+	write_binary(cfg.drng_path(), data, true);
+}
+
 }
 
 int main(int argc, char** args) {
