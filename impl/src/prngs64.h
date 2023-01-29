@@ -42,10 +42,27 @@ inline prng64 pcg(uint64_t seed) {
 	};
 }
 
-inline prng64 xoroshiroplus(uint64_t seed) {
+inline prng64 xorshift128plus(uint64_t seed) {
 	uint64_t s[]{seed, seed};
 	return {
-		"xoroshiroplus", [s]() mutable {
+		"xorshift128+", [s]() mutable {
+			// from https://lemire.me/blog/2017/09/08/the-xorshift128-random-number-generator-fails-bigcrush/
+			uint64_t s1 = s[0];
+			const uint64_t s0 = s[1];
+			const uint64_t result = s0 + s1;
+			s[0] = s0;
+			s1 ^= s1 << 23; // a
+			s[1] = s1 ^ s0 ^ (s1 >> 18) ^ (s0 >> 5); // b, c
+			return result;
+		}
+	};
+}
+
+inline prng64 xoroshiro128plus(uint64_t seed) {
+	uint64_t s[]{seed, seed};
+	return {
+		"xoroshiro128+", [s]() mutable {
+			// from https://prng.di.unimi.it/xoroshiro128plus.c
 			const uint64_t s0 = s[0];
 			uint64_t s1 = s[1];
 			const uint64_t result = s0 + s1;
@@ -64,7 +81,8 @@ template <>
 inline std::vector<prng_factory<uint64_t>> get_prngs() {
 	return {
 		rng64::pcg,
-		rng64::xoroshiroplus,
+		rng64::xoroshiro128plus,
+		rng64::xorshift128plus,
 		rng64::xmx,
 		rng64::xm2x,
 		rng64::xm3x,
