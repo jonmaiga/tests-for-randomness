@@ -109,12 +109,89 @@ TEST(chi2_distribution_cdf, basic) {
 	EXPECT_NEAR(chi2_distribution_cdf(10.1, 5), 1-0.9275, 1e-4);
 	EXPECT_NEAR(chi2_distribution_cdf(13.1, 3.3), 1-0.994, 1e-4);
 	EXPECT_NEAR(chi2_distribution_cdf(3.71429, 4), 1-0.5539, 1e-4);
-
 	EXPECT_NEAR(chi2_distribution_cdf(0, 5), 1-0, 1e-4);
 	EXPECT_NEAR(chi2_distribution_cdf(0, 0), 0, 1e-4);
-
 	EXPECT_NEAR(chi2_distribution_cdf(2008, 200000), 1, 1e-4);
+
+	EXPECT_NEAR(chi2_distribution_cdf(9, 10), 0.5321, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(10, 10), 0.4404, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(11, 10), 0.3575, 1e-4);
+
+	EXPECT_NEAR(chi2_distribution_cdf(90, 100), 0.7531, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(99, 100), 0.5094, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(100, 100), 0.4811, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(101, 100), 0.4531, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(110, 100), 0.2322, 1e-4);
+
+	EXPECT_NEAR(chi2_distribution_cdf(490, 500), 0.6168, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(499, 500), 0.5042, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(500, 500), 0.4915, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(501, 500), 0.4789, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(510, 500), 0.3687, 1e-4);
+
+	EXPECT_NEAR(chi2_distribution_cdf(990, 1000), 0.5829, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(999, 1000), 0.5029, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(1000, 1000), 0.4940, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(1001, 1000), 0.4851, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(1010, 1000), 0.4060, 1e-4);
+
+	EXPECT_NEAR(chi2_distribution_cdf(9990, 10000), 0.5263, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(10000, 10000), 0.4981, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(10010, 10000), 0.4699, 1e-4);
+
+	//EXPECT_NEAR(chi2_distribution_cdf(999900, 1000000), 0.5280, 1e-4); // 0.5279 mma
+	//EXPECT_NEAR(chi2_distribution_cdf(1000000, 1000000), 0.4998, 1e-4); // 0.4998 mma
+	//EXPECT_NEAR(chi2_distribution_cdf(1000100, 1000000), 0.4716, 1e-4); // 0.0.4716 mma
 }
+
+TEST(chi2_distribution_cdf, large_0) {
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(9990, 10000), 0.5267, 1e-4);  // mma 0.5263
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(10000, 10000), 0.4985, 1e-4); // mma 0.4981
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(10010, 10000), 0.4704, 1e-4); // mma 0.4699
+}
+
+TEST(chi2_distribution_cdf, large_1) {
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32437.3, 32767), 0.9014, 1e-4);
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32600, 32767), 0.7425, 1e-4);
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32767, 32767), 0.4992, 1e-4);
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32800, 32767), 0.4479, 1e-4);
+}
+
+TEST(chi2_distribution_cdf, large_2) {
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(31500, 32000), 0.9762, 1e-4); // 0.9763 mma
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32000, 32000), 0.4992, 1e-4); // 0.4989 mma
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32500, 32000), 0.02437, 1e-4); // 0.02448 mma
+}
+
+TEST(chi2_distribution_cdf, large_3) {
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(999900, 1000000), 0.5280, 1e-4); // 0.5279 mma
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(1000000, 1000000), 0.4998, 1e-4); // 0.4998 mma
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(1000100, 1000000), 0.4716, 1e-4); // 0.0.4716 mma
+}
+
+TEST(chi2_distribution_cdf, large_4) {
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(1e12, 1e12), 0.4999, 1e-4); // 0.4991 mma
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(1e12-1e6, 1e12), 0.7602, 1e-4); // 0.7606 mma
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(1e12+1e6, 1e12), 0.2397, 1e-4); // 0.2400 mma
+}
+
+
+//TEST(chi2_distribution_cdf_approx, basic) {
+//	// https://en.wikipedia.org/wiki/Chi-squared_distribution#Computational_methods
+//	// matches mma 1-CDF[ChiSquareDistribution[...], x]
+//
+//	auto x2 = 32437.3;
+//	auto df = 32767;
+//	auto z = std::sqrt(2 * x2) - std::sqrt(2 * df - 1);
+//	auto z2 = chi2_distribution_normal_approximation_cdf(x2, df);
+//
+//	auto p_chi = chi2_distribution_cdf(x2, df);
+//	auto p_z = 1 - normal_cdf(z);
+//	auto p_z2 = normal_two_tailed_cdf(z2);
+//
+//
+//	EXPECT_NEAR(p_chi, p_z, 1e-4);
+//}
 
 TEST(kolmogorov_smirnov_cdf, basic) {
 	// there are links to ks cdf implementations here: https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test#Kolmogorov_distribution 

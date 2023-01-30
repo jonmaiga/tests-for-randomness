@@ -1,7 +1,10 @@
 #pragma once
 
 #include "distributions.h"
+#include "types.h"
 #include "util/math.h"
+
+#include <optional>
 
 namespace mixer {
 
