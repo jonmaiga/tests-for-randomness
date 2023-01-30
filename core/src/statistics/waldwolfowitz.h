@@ -12,17 +12,15 @@ struct wald_wolfowitz_data {
 };
 
 template <typename T>
-wald_wolfowitz_data generate_wald_wolfowitz_data(const std::vector<T>& data) {
+wald_wolfowitz_data generate_wald_wolfowitz_data(const T& data) {
 	if (data.empty()) {
 		return {};
 	}
-	auto sorted = data;
-	std::sort(sorted.begin(), sorted.end());
-	const auto cutoff = get_median(sorted);
+	const auto cutoff = get_mean(data);
 	uint64_t n_plus = 0;
 	uint64_t n_minus = 0;
 	uint64_t runs = 1;
-	bool is_current_run_greater = data[0] > cutoff;
+	bool is_current_run_greater = *data.begin() > cutoff;
 	for (const auto v : data) {
 		const auto is_greater = v > cutoff;
 		if (v != cutoff) {
@@ -55,9 +53,9 @@ inline std::optional<statistic> wald_wolfowitz_stats(wald_wolfowitz_data s) {
 
 template <typename T>
 sub_test_results wald_wolfowitz_test(const uint64_t n, stream<T> source) {
-	return split_test(n, 1000000, [&source](uint64_t size) {
-		return wald_wolfowitz_stats(generate_wald_wolfowitz_data(get_raw_by_ref(size, source)));
-	});
+	return main_sub_test(wald_wolfowitz_stats(
+		generate_wald_wolfowitz_data(ranged_stream(source, n))
+	));
 }
 
 

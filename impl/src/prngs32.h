@@ -94,7 +94,7 @@ inline prng32 xoshiro128plusplus(uint32_t seed) {
 	// https://prng.di.unimi.it/xoshiro128plusplus.c
 	uint32_t s[4]{seed, seed, seed, seed};
 	return {
-		"xoshiro128plusplus", [s]() mutable {
+		"xoshiro128++", [s]() mutable {
 
 			const uint32_t result = rol(s[0] + s[3], 7) + s[0];
 			const uint32_t t = s[1] << 9;
