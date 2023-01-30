@@ -101,4 +101,6 @@ inline double lambert_w_approximation(double x) {
 	return l1 - l2 + l2 / l1 + l2 * (l2 - 2) / (2 * l1 * l1);
 }
 
+double log_gamma(double);
+
 }

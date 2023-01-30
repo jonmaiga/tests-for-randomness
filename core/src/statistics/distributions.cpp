@@ -20,7 +20,7 @@ double beta_regularized(double a, double b, double x) {
 	}
 
 	/*Find the first part before the continued fraction.*/
-	const double lbeta_ab = lgamma(a) + lgamma(b) - lgamma(a + b);
+	const double lbeta_ab = log_gamma(a) + log_gamma(b) - log_gamma(a + b);
 	const double front = exp(log(x) * a + log(1.0 - x) * b - lbeta_ab) / a;
 
 	/*Use Lentz's algorithm to evaluate the continued fraction.*/
@@ -61,21 +61,6 @@ double beta_regularized(double a, double b, double x) {
 	return INFINITY; /*Needed more loops, did not converge.*/
 }
 
-// gamma from: https://github.com/samtools/htslib/blob/develop/kfunc.c
-double kf_lgamma(double z) {
-	double x = 0;
-	x += 0.1659470187408462e-06 / (z + 7);
-	x += 0.9934937113930748e-05 / (z + 6);
-	x -= 0.1385710331296526 / (z + 5);
-	x += 12.50734324009056 / (z + 4);
-	x -= 176.6150291498386 / (z + 3);
-	x += 771.3234287757674 / (z + 2);
-	x -= 1259.139216722289 / (z + 1);
-	x += 676.5203681218835 / z;
-	x += 0.9999999999995183;
-	return log(x) - 5.58106146679532777 - z + (z - 0.5) * log(z + 6.5);
-}
-
 constexpr double KF_GAMMA_EPS = 1e-14;
 constexpr double KF_TINY = 1e-290;
 
@@ -87,7 +72,7 @@ double _kf_gammap(double s, double z) {
 		sum += (x *= z / (s + k));
 		if (x / sum < KF_GAMMA_EPS) break;
 	}
-	return exp(s * log(z) - z - kf_lgamma(s + 1.) + log(sum));
+	return exp(s * log(z) - z - log_gamma(s + 1.) + log(sum));
 }
 
 // regularized upper incomplete gamma function, by continued fraction
@@ -110,7 +95,7 @@ double _kf_gammaq(double s, double z) {
 		f *= d;
 		if (fabs(d - 1.) < KF_GAMMA_EPS) break;
 	}
-	return exp(s * log(z) - z - kf_lgamma(s) - log(f));
+	return exp(s * log(z) - z - log_gamma(s) - log(f));
 }
 
 double kf_gammap(double s, double z) {
