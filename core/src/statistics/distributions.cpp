@@ -6,11 +6,12 @@
 #include "util/math.h"
 
 namespace mixer {
-// https://github.com/codeplea/incbeta
-constexpr double STOP = 1.0e-8;
-constexpr double TINY = 1.0e-30;
 
 double beta_regularized(double a, double b, double x) {
+	// from https://github.com/codeplea/incbeta
+	constexpr double STOP = 1.0e-8;
+	constexpr double TINY = 1.0e-30;
+
 	assertion(x >= 0 && x <= 1., "incomplete beta out of range");
 	if (x < 0.0 || x > 1.0) return INFINITY;
 
@@ -63,12 +64,13 @@ double beta_regularized(double a, double b, double x) {
 
 constexpr double KF_GAMMA_EPS = 1e-14;
 constexpr double KF_TINY = 1e-290;
+constexpr int MAX_ITERATIONS = 10000;
 
 // regularized lower incomplete gamma function, by series expansion
 double _kf_gammap(double s, double z) {
 	double sum, x;
 	int k;
-	for (k = 1, sum = x = 1.; k < 100; ++k) {
+	for (k = 1, sum = x = 1.; k < MAX_ITERATIONS; ++k) {
 		sum += (x *= z / (s + k));
 		if (x / sum < KF_GAMMA_EPS) break;
 	}
@@ -84,7 +86,7 @@ double _kf_gammaq(double s, double z) {
 	D = 0.;
 	// Modified Lentz's algorithm for computing continued fraction
 	// See Numerical Recipes in C, 2nd edition, section 5.2
-	for (j = 1; j < 100; ++j) {
+	for (j = 1; j < MAX_ITERATIONS; ++j) {
 		double a = j * (s - j), b = (j << 1) + 1 + z - s, d;
 		D = b + a * D;
 		if (D < KF_TINY) D = KF_TINY;

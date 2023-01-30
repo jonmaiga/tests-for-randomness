@@ -135,41 +135,51 @@ TEST(chi2_distribution_cdf, basic) {
 	EXPECT_NEAR(chi2_distribution_cdf(1001, 1000), 0.4851, 1e-4);
 	EXPECT_NEAR(chi2_distribution_cdf(1010, 1000), 0.4060, 1e-4);
 
+	EXPECT_NEAR(chi2_distribution_cdf(1990, 2000), 0.5587, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(2990, 3000), 0.5480, 1e-4);
+	EXPECT_NEAR(chi2_distribution_cdf(4990, 5000), 0.5372, 1e-4);
+
 	EXPECT_NEAR(chi2_distribution_cdf(9990, 10000), 0.5263, 1e-4);
 	EXPECT_NEAR(chi2_distribution_cdf(10000, 10000), 0.4981, 1e-4);
 	EXPECT_NEAR(chi2_distribution_cdf(10010, 10000), 0.4699, 1e-4);
 
-	//EXPECT_NEAR(chi2_distribution_cdf(999900, 1000000), 0.5280, 1e-4); // 0.5279 mma
-	//EXPECT_NEAR(chi2_distribution_cdf(1000000, 1000000), 0.4998, 1e-4); // 0.4998 mma
-	//EXPECT_NEAR(chi2_distribution_cdf(1000100, 1000000), 0.4716, 1e-4); // 0.0.4716 mma
+	EXPECT_NEAR(chi2_distribution_cdf(999900, 1000000), 0.5280, 1e-4); // 0.5279 mma
+	EXPECT_NEAR(chi2_distribution_cdf(1000000, 1000000), 0.4998, 1e-4); // 0.4998 mma
+	EXPECT_NEAR(chi2_distribution_cdf(1000100, 1000000), 0.4716, 1e-4); // 0.4716 mma
 }
 
-TEST(chi2_distribution_cdf, large_0) {
-	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(9990, 10000), 0.5267, 1e-4);  // mma 0.5263
+TEST(chi2_distribution_cdf, uses_approximation) {
+	EXPECT_NEAR(chi2_distribution_cdf(1999900, 2000000), 0.5198, 1e-4); // 0.5198 mma
+	EXPECT_NEAR(chi2_distribution_cdf(2000000, 2000000), 0.4999, 1e-4); // 0.4998 mma
+	EXPECT_NEAR(chi2_distribution_cdf(2000100, 2000000), 0.4799, 1e-4); // 0.4799 mma
+}
+
+TEST(chi2_distribution_cdf, approximation_large_1) {
+	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(9990, 10000), 0.5267, 1e-4); // mma 0.5263
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(10000, 10000), 0.4985, 1e-4); // mma 0.4981
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(10010, 10000), 0.4704, 1e-4); // mma 0.4699
 }
 
-TEST(chi2_distribution_cdf, large_1) {
+TEST(chi2_distribution_cdf, approximation_large_2) {
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32437.3, 32767), 0.9014, 1e-4);
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32600, 32767), 0.7425, 1e-4);
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32767, 32767), 0.4992, 1e-4);
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32800, 32767), 0.4479, 1e-4);
 }
 
-TEST(chi2_distribution_cdf, large_2) {
+TEST(chi2_distribution_cdf, approximation_large_3) {
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(31500, 32000), 0.9762, 1e-4); // 0.9763 mma
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32000, 32000), 0.4992, 1e-4); // 0.4989 mma
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(32500, 32000), 0.02437, 1e-4); // 0.02448 mma
 }
 
-TEST(chi2_distribution_cdf, large_3) {
+TEST(chi2_distribution_cdf, approximation_large_4) {
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(999900, 1000000), 0.5280, 1e-4); // 0.5279 mma
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(1000000, 1000000), 0.4998, 1e-4); // 0.4998 mma
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(1000100, 1000000), 0.4716, 1e-4); // 0.0.4716 mma
 }
 
-TEST(chi2_distribution_cdf, large_4) {
+TEST(chi2_distribution_cdf, approximation_large_5) {
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(1e12, 1e12), 0.4999, 1e-4); // 0.4991 mma
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(1e12-1e6, 1e12), 0.7602, 1e-4); // 0.7606 mma
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(1e12+1e6, 1e12), 0.2397, 1e-4); // 0.2400 mma

@@ -39,6 +39,9 @@ inline double chi2_distribution_cdf(double chi2, double df) {
 	if (is_near(df, 0)) {
 		return 0;
 	}
+	if (df >= 1100000) {
+		return chi2_distribution_normal_approximation_cdf(chi2, df);
+	}
 	return gamma_regularized(.5 * df, .5 * chi2);
 }
 
