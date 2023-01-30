@@ -1,6 +1,5 @@
 TODO:
 -----
-- splits are not good see if it can be avoided.
 - use meta? show 3 meta + 3 sample results?
 - use trng to see if we can get evaluate_multi_pass working from 2^4 ? 
 - Select maximize or minimize in sffs.
@@ -12,6 +11,7 @@ TODO:
 
 DONE:
 -----
+- splits are not good see if it can be avoided.
 - lgamma is not thread safe
 - permutation is sensitive to too manu bins - meta analysis gets no p-values close to 0.5.
 	- split? <-- fixes it
