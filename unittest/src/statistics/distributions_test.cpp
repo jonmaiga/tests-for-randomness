@@ -185,24 +185,6 @@ TEST(chi2_distribution_cdf, approximation_large_5) {
 	EXPECT_NEAR(chi2_distribution_normal_approximation_cdf(1e12+1e6, 1e12), 0.2397, 1e-4); // 0.2400 mma
 }
 
-
-//TEST(chi2_distribution_cdf_approx, basic) {
-//	// https://en.wikipedia.org/wiki/Chi-squared_distribution#Computational_methods
-//	// matches mma 1-CDF[ChiSquareDistribution[...], x]
-//
-//	auto x2 = 32437.3;
-//	auto df = 32767;
-//	auto z = std::sqrt(2 * x2) - std::sqrt(2 * df - 1);
-//	auto z2 = chi2_distribution_normal_approximation_cdf(x2, df);
-//
-//	auto p_chi = chi2_distribution_cdf(x2, df);
-//	auto p_z = 1 - normal_cdf(z);
-//	auto p_z2 = normal_two_tailed_cdf(z2);
-//
-//
-//	EXPECT_NEAR(p_chi, p_z, 1e-4);
-//}
-
 TEST(kolmogorov_smirnov_cdf, basic) {
 	// there are links to ks cdf implementations here: https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test#Kolmogorov_distribution 
 	EXPECT_NEAR(kolmogorov_smirnov_cdf(0.4, 5, 1000), 0.3128, 1e-4); // boost have a theta function maybe use that (doesn't match mma right now 0.8095)
