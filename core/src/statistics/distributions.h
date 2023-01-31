@@ -54,6 +54,13 @@ inline double binomial_coefficient(int n, int k) {
 	return 1 / ((n + 1) * beta(n - k + 1, k + 1));
 }
 
+inline uint64_t bin_c(uint64_t n, uint64_t k) {
+	double res = 1;
+	for (int i = 1; i <= k; ++i)
+		res = res * (n - k + i) / i;
+	return static_cast<uint64_t>(std::round(res));
+}
+
 inline double binomial_pdf(uint64_t n, double p, uint64_t k) {
 	return binomial_coefficient(n, k) * std::pow(p, k) * std::pow((1 - p), n - k);
 }
@@ -62,6 +69,12 @@ inline double negative_binomial_pdf(uint64_t successes, double p, uint64_t failu
 	return binomial_coefficient(failures + successes - 1, successes - 1) *
 		std::pow(1 - p, failures) *
 		std::pow(p, successes);
+}
+
+inline double flip_coin_pdf(uint64_t n, uint64_t k) {
+	const auto C = bin_c(n, k);
+	const auto p = std::pow(2, n);
+	return C / p;
 }
 
 double kolmogorov_smirnov_cdf(double D, double df, int conv);

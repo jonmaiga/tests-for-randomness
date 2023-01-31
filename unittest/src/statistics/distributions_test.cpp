@@ -83,13 +83,57 @@ TEST(binomial_pdf, basic) {
 	EXPECT_NEAR(binomial_pdf(64, 0.5, 33), 0.09633, 1e-4);
 }
 
+TEST(flip_coin_pdf, basic) {
+	// matches mma PDF[BinomialDistribution[...], x]
+	EXPECT_NEAR(flip_coin_pdf(40, 20), 0.1253, 1e-4);
+
+	EXPECT_NEAR(flip_coin_pdf(32, 10), 0.01502, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 11), 0.03004, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 12), 0.05257, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 13), 0.08087, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 14), 0.1097, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 15), 0.1317, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 16), 0.1399, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 17), 0.1317, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 18), 0.1097, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 19), 0.08087, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 20), 0.05257, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 21), 0.03004, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(32, 22), 0.01502, 1e-4);
+
+	EXPECT_NEAR(flip_coin_pdf(64, 31), 0.09633, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(64, 32), 0.09934, 1e-4);
+	EXPECT_NEAR(flip_coin_pdf(64, 33), 0.09633, 1e-4);
+}
+
+TEST(flip_coin_pdf, accuracy) {
+	const std::vector<double> mma = {
+		2.328306436538698e-10, 7.450580596923824e-9,
+		1.1548399925231957e-7, 1.154839992523197e-6,
+		8.37258994579318e-6, 0.0000468865036964417,
+		0.00021098926663398775, 0.0007836744189262385, 0.002448982559144491,
+		0.006530620157718642, 0.015020426362752953, 0.030040852725505853,
+		0.052571492269635034, 0.08087921887636176, 0.1097646541893478,
+		0.131717585027218, 0.13994993409141898, 0.131717585027218,
+		0.1097646541893478, 0.08087921887636176, 0.052571492269635034,
+		0.030040852725505853, 0.015020426362752953, 0.006530620157718642,
+		0.002448982559144491, 0.0007836744189262385, 0.00021098926663398775,
+		0.0000468865036964417, 8.372589945793167e-6,
+		1.154839992523197e-6, 1.1548399925231957e-7,
+		7.450580596923824e-9, 2.328306436538698e-10
+	};
+
+	for (auto k = 0; k <= 32; ++k) {
+		EXPECT_NEAR(binomial_pdf(32, .5, k), mma[k], 1e-14);
+	}
+}
+
 TEST(negative_binomial_pdf, basic) {
 	// matches mma PDF[NegativeBinomialDistribution[...], x]
 	EXPECT_NEAR(negative_binomial_pdf(1, 0, 0), 0, 1e-4);
 	EXPECT_NEAR(negative_binomial_pdf(1, 1, 0), 1, 1e-4);
 	EXPECT_NEAR(negative_binomial_pdf(10, 0.5, 4), 0.0436, 1e-4);
 }
-
 
 TEST(students_t_cdf, basic) {
 	// does not match mma CDF[StudentTDistribution[...], x]

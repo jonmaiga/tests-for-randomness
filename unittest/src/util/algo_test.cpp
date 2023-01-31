@@ -7,7 +7,7 @@
 namespace mixer {
 
 template <typename T = uint64_t>
-inline std::vector<uint64_t> sliding_bit_window(const std::vector<T>& data, int window_size) {
+std::vector<uint64_t> sliding_bit_window(const std::vector<T>& data, int window_size) {
 	std::vector<uint64_t> r;
 	sliding_bit_window(data, window_size, [&r](uint64_t v) { r.push_back(v); });
 	return r;
@@ -124,5 +124,27 @@ TEST(algo, isolate_bit_by_ref) {
 	EXPECT_NE(r1, r2);
 }
 
+bool operator==(const merge_bins_result& a, const merge_bins_result& b) {
+	return a.expected == b.expected && a.observed == b.observed;
+}
+
+TEST(algo, merge_bins) {
+	EXPECT_EQ(merge_bins({}, {}, 0), (merge_bins_result{{},{}}));
+
+	EXPECT_EQ(merge_bins({1}, {1}, 0), (merge_bins_result{{1},{1}}));
+	EXPECT_EQ(merge_bins({1}, {1}, 1), (merge_bins_result{{1},{1}}));
+	EXPECT_EQ(merge_bins({1}, {1}, 2), (merge_bins_result{{},{}}));
+
+	EXPECT_EQ(merge_bins({1,2}, {1,2}, 0), (merge_bins_result{{1,2},{1,2}}));
+	EXPECT_EQ(merge_bins({1,2}, {1,2}, 1), (merge_bins_result{{1,2},{1,2}}));
+	EXPECT_EQ(merge_bins({1,2}, {1,2}, 2), (merge_bins_result{{3},{3}}));
+	EXPECT_EQ(merge_bins({1,2}, {1,2}, 3), (merge_bins_result{{3},{3}}));
+	EXPECT_EQ(merge_bins({1,2}, {1,2}, 4), (merge_bins_result{{},{}}));
+
+	// need to go from right as well
+	EXPECT_EQ(merge_bins({2,4,8}, {1,2,1}, 2), (merge_bins_result{{14},{4}}));
+	EXPECT_EQ(merge_bins({1,2,3,4,5}, {1,1,1,1,1}, 2), (merge_bins_result{{3,12},{2,3}}));
+	EXPECT_EQ(merge_bins({1,1,1,1,1,1,1}, {1,1,1,1,1,1,2}, 3), (merge_bins_result{{3,4},{3,5}}));
+}
 
 }

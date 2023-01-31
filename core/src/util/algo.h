@@ -159,7 +159,7 @@ void for_each_bit(const T& data, const std::function<void(bool)>& callback) {
 
 template <typename T>
 void sliding_bit_window(const T& data, int window_size, const std::function<void(uint64_t)>& callback) {
-	uint64_t v = 0;	
+	uint64_t v = 0;
 	uint64_t c = 0;
 
 	const auto acc = [callback, c, v, window_size](bool is_set) mutable {
@@ -173,6 +173,38 @@ void sliding_bit_window(const T& data, int window_size, const std::function<void
 	};
 
 	for_each_bit(data, acc);
+}
+
+struct merge_bins_result {
+	std::vector<uint64_t> observed;
+	std::vector<double> expected;
+};
+
+inline merge_bins_result merge_bins(
+	const std::vector<uint64_t>& observed_counts,
+	const std::vector<double>& expected_counts,
+	double expected_threshold) {
+	assertion(observed_counts.size() == expected_counts.size(), "observed size should equal expected size");
+
+	merge_bins_result result{};
+	uint64_t observed_sum = 0;
+	double expected_sum = 0;
+	for (std::size_t i = 0; i < observed_counts.size(); ++i) {
+		expected_sum += expected_counts[i];
+		observed_sum += observed_counts[i];
+		if (expected_sum >= expected_threshold) {
+			result.expected.push_back(expected_sum);
+			result.observed.push_back(observed_sum);
+			expected_sum = 0;
+			observed_sum = 0;
+		}
+	}
+	if (result.expected.empty()) {
+		return result;
+	}
+	result.expected.back() += expected_sum;
+	result.observed.back() += observed_sum;
+	return result;
 }
 
 }
