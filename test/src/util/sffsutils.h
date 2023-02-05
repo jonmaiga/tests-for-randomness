@@ -24,6 +24,24 @@ inline auto create_sffs_printer(const bit_vector_to_string& to_arr_str) {
 	};
 }
 
+inline double get_score(const test_battery_result& result, int max_power_of_two) {
+	const double s1 = max_power_of_two - result.power_of_two();
+
+	std::vector<double> all_p_values;
+	for (const auto& tr : result.results) {
+		append(all_p_values, to_p_values(tr.second));
+	}
+
+	const double s2 = kolmogorov_smirnov_stats(all_p_values)->value;
+	double s3 = 0;
+	for (const auto& analysis : get_analysis(result)) {
+		s3 = create_uniform_p_values_analysis(analysis.results).stat.value;
+		break;
+	}
+
+	return s1 + s2 + s3;
+}
+
 template <typename T>
 double sffs_fitness_test(const test_setup<T>& ts) {
 	auto cb = [](const test_battery_result& br, bool) {
@@ -35,12 +53,7 @@ double sffs_fitness_test(const test_setup<T>& ts) {
 	};
 
 	const auto r = evaluate_multi_pass<T>(cb, ts);
-
-	std::vector<double> all_p_values;
-	for (const auto& tr : r.results) {
-		append(all_p_values, to_p_values(tr.second));
-	}
-	return (ts.stop_power_of_two - r.power_of_two()) + kolmogorov_smirnov_stats(all_p_values)->value;
+	return get_score(r, ts.stop_power_of_two);
 }
 
 template <typename T>

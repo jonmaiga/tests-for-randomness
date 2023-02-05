@@ -59,19 +59,19 @@ sffs_state start_search(const std::string& name, const sffs_config& config) {
 template <typename T>
 void run_sffs() {
 	bit_vector seed;
-	seed.add(13, 5);
-	seed.add(17, 5);
-	seed.add(5, 5);
+	seed.add(16, 5);
+	seed.add(15, 5);
+	seed.add(14, 5);
 	seed.add(19, 5);
 	seed.add(7, 5);
 
-	auto cfg = get_xmx_config<T>();
+	auto cfg = get_xm2x_config<T>();
 	//cfg.seed = seed;
 	cfg.seed = find_seed(cfg, 100);
 
 	const auto result = start_search<T>("NAME HERE", cfg);
 
-	const auto mixer = create_xmx_mixer<T>(result.data);
+	const auto mixer = create_xm2x_mixer<T>(result.data);
 	evaluate_multi_pass(create_result_callback(false), create_mixer_test_setup<T>(mixer));
 }
 
