@@ -3,7 +3,7 @@
 #include "distributions.h"
 #include "util/math.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 double fishers_combined_probabilities(const T& p_values) {

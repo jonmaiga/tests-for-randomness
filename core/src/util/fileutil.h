@@ -8,7 +8,7 @@
 
 #include "assertion.h"
 
-namespace mixer {
+namespace tfr {
 
 std::optional<std::string> readAsString(const std::string& filename, size_t maxSize = SIZE_MAX);
 std::string readAsStringMustExist(const std::string& filename, size_t maxSize = SIZE_MAX);

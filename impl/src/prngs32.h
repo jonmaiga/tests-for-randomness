@@ -11,7 +11,7 @@
 
 #include "util/bitwise.h"
 
-namespace mixer {
+namespace tfr {
 
 using prng32 = prng<uint32_t>;
 

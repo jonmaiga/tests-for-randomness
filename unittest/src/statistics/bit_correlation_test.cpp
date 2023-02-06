@@ -4,7 +4,7 @@
 
 #include "testutil.h"
 
-namespace mixer {
+namespace tfr {
 
 TEST(bit_correlation, bit_count_2d_no_change) {
 	using T = uint64_t;

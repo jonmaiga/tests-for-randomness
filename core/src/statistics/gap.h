@@ -8,7 +8,7 @@
 #include "types.h"
 #include "util/algo.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, const T& data01) {

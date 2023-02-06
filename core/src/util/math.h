@@ -7,7 +7,7 @@
 
 #include "assertion.h"
 
-namespace mixer {namespace constants {
+namespace tfr {namespace constants {
 constexpr double EulerGamma = 0.5772156649015328606065120900824024310421593359399235988057672348;
 constexpr double Pi = 3.1415926535897932384626433832795028841971693993751058209749445923;
 constexpr double PiSqr = Pi * Pi;

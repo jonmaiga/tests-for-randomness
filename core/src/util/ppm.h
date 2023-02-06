@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-namespace mixer {
+namespace tfr {
 
 inline bool write_ppm(const std::string& path, const std::vector<char>& data, int width, int height, int max) {
 	std::ofstream outfile(path, std::ofstream::binary);

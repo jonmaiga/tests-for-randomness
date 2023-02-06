@@ -5,7 +5,7 @@
 #include "mixers64.h"
 #include "testutil.h"
 
-namespace mixer {
+namespace tfr {
 
 TEST(avalanche, sac_data_no_change) {
 	EXPECT_EQ(hash64(avalanche_generate_sac(10, test_stream(), mix64::mx3)), 1240375597136458279ull);

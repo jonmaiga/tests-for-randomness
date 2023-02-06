@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-namespace mixer {
+namespace tfr {
 
 TEST(streams, rescale_64_to_01) {
 	const auto s = rescale_type_to_01(test_stream());

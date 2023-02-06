@@ -5,7 +5,7 @@
 #include "streams.h"
 #include "trng_data.h"
 
-namespace mixer {
+namespace tfr {
 
 
 template <typename T> mixer<T> get_test_mixer();

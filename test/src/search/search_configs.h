@@ -4,7 +4,7 @@
 #include "util/sffsutils.h"
 #include "util/sffs_types.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 sffs_config get_xmx_config() {

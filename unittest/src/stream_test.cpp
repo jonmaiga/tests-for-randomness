@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-namespace mixer {
+namespace tfr {
 
 
 TEST(stream, expected_behavior) {

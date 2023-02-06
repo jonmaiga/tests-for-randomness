@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-namespace mixer {
+namespace tfr {
 
 TEST(z_test, unset) {
 	EXPECT_FALSE(z_test(0, 10., 1., 0.1));

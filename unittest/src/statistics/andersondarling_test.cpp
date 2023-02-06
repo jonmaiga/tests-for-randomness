@@ -4,7 +4,7 @@
 
 #include "testutil.h"
 
-namespace mixer {
+namespace tfr {
 
 TEST(anderson_darling, unset) {
 	EXPECT_FALSE(anderson_darling_stats({}));

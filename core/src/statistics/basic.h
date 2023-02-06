@@ -5,7 +5,7 @@
 #include "util/algo.h"
 
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 typename T::value_type get_median(const T& sorted) {

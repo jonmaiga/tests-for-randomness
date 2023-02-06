@@ -5,7 +5,7 @@
 #include "util/algo.h"
 #include "stream.h"
 
-namespace mixer {
+namespace tfr {
 
 struct correlation_stats {
 	double pearson_r = 0;

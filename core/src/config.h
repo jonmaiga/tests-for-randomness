@@ -3,7 +3,7 @@
 #include "util/bitwise.h"
 #include <string>
 
-namespace mixer {
+namespace tfr {
 
 struct config {
 	std::string root_path;

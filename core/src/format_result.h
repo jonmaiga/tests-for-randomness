@@ -5,7 +5,7 @@
 #include "util/table.h"
 #include "util/statistic_analysis.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 void draw_histogram(const T& data) {

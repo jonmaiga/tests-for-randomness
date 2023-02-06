@@ -3,7 +3,7 @@
 #include "mixers64.h"
 #include "stream.h"
 
-namespace mixer {
+namespace tfr {
 
 using prng64 = prng<uint64_t>;
 

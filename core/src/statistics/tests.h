@@ -6,7 +6,7 @@
 
 #include <optional>
 
-namespace mixer {
+namespace tfr {
 
 inline double t_test(
 	double a_n, double a_mean, double a_variance,

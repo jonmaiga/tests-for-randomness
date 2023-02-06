@@ -3,7 +3,7 @@
 #include "combiner.h"
 #include "mixers32.h"
 
-namespace mixer {
+namespace tfr {
 
 using combiner32 = combiner<uint32_t>;
 

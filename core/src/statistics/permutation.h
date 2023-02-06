@@ -3,7 +3,7 @@
 #include "statistics/chi2.h"
 #include "util/algo.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 std::vector<uint64_t> get_permutation_histogram(const T& data, int window_size) {

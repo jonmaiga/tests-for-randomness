@@ -3,7 +3,7 @@
 #include <vector>
 #include "basic.h"
 
-namespace mixer {
+namespace tfr {
 
 struct wald_wolfowitz_data {
 	double runs{};

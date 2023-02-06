@@ -8,7 +8,7 @@
 #include "types.h"
 #include "util/algo.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 std::vector<uint64_t> collect_divisible(uint64_t divisor, uint64_t wanted, uint64_t tracked, const T& data) {

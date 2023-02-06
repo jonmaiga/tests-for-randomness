@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-namespace mixer {
+namespace tfr {
 
 TEST(math, rescale_basic) {
 	EXPECT_EQ(rescale_to_01(0, 0, 0), 0.5);

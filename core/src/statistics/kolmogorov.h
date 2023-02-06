@@ -5,7 +5,7 @@
 #include "distributions.h"
 #include "types.h"
 
-namespace mixer {
+namespace tfr {
 
 inline std::optional<statistic> kolmogorov_smirnov_stats(std::vector<double> data01) {
 	std::sort(data01.begin(), data01.end());

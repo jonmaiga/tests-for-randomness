@@ -5,7 +5,7 @@
 #include "mixers64.h"
 #include "testutil.h"
 
-namespace mixer {
+namespace tfr {
 
 TEST(pearson_correlation, unset) {
 	EXPECT_FALSE(pearson_correlation_stats({},{}));

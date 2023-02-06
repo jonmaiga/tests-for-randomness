@@ -6,7 +6,7 @@
 #include "util/algo.h"
 #include "util/math.h"
 
-namespace mixer {
+namespace tfr {
 
 inline uint64_t get_bin_count(uint64_t n) {
 	return static_cast<uint64_t>(std::ceil(2 * pow(n, .4)));

@@ -2,7 +2,7 @@
 
 #include "rrc.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 stream<T> add_rrc(stream<T> source, int rotation, rrc_type type) {

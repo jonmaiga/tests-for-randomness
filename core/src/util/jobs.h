@@ -5,7 +5,7 @@
 #include <thread>
 
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 using job = std::function<T()>;

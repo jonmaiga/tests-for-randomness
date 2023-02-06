@@ -4,7 +4,7 @@
 
 #include "testutil.h"
 
-namespace mixer {
+namespace tfr {
 
 TEST(statistics_basic, median) {
 	using T = std::vector<double>;

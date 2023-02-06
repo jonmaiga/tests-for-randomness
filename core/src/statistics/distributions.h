@@ -3,7 +3,7 @@
 #include <cmath>
 #include "util/math.h"
 
-namespace mixer {
+namespace tfr {
 
 double beta_regularized(double a, double b, double x);
 double gamma_regularized(double s, double z);

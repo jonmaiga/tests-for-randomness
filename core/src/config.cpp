@@ -2,7 +2,7 @@
 
 #include <optional>
 
-namespace mixer {
+namespace tfr {
 
 std::optional<config> g_config;
 

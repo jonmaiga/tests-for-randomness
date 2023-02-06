@@ -4,7 +4,7 @@
 
 #include "types.h"
 
-namespace mixer {
+namespace tfr {
 
 TEST(statistic_analysis, p_value_zero) {
 	const statistic_analysis m(statistic(statistic_type::chi2, 0, 0, 10));

@@ -5,7 +5,7 @@
 #include "testutil.h"
 
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 std::vector<uint64_t> get_histogram(const std::vector<T>& d) {

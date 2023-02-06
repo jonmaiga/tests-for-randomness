@@ -5,7 +5,7 @@
 
 #include "assertion.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 constexpr int bit_sizeof() {

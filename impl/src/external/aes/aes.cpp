@@ -3,10 +3,10 @@
 #include <immintrin.h>
 #include "mixers32.h"
 
-namespace mixer {
+namespace tfr {
 
 uint32_t aes_mix(uint32_t x) {
-	// see https://www.jandrewrogers.com/2019/02/12/fast-perfect-hashing/
+	// from: https://www.jandrewrogers.com/2019/02/12/fast-perfect-hashing/
 	static const __m128i key = _mm_set1_epi32(static_cast<int>(2471660141));
 
 	auto a = _mm_set1_epi32(x);
@@ -25,6 +25,5 @@ uint32_t aes_prng128(std::array<uint32_t, 4>& state32) {
 	_mm_storeu_si128((__m128i*)&state32[0], s);
 	return _mm_extract_epi32(s, 0);
 }
-
 
 }

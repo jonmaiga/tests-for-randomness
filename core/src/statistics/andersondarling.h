@@ -6,7 +6,7 @@
 #include "distributions.h"
 #include "types.h"
 
-namespace mixer {
+namespace tfr {
 
 inline std::optional<statistic> anderson_darling_stats(std::vector<double> data01) {
 	if (data01.empty()) {

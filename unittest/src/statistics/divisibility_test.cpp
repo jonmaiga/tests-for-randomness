@@ -5,7 +5,7 @@
 #include "testutil.h"
 
 
-namespace mixer {
+namespace tfr {
 
 TEST(divisibility, collect_divisbility) {
 	using T = std::vector<uint64_t>;

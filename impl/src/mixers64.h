@@ -3,7 +3,7 @@
 #include "util/bitwise.h"
 #include "types.h"
 
-namespace mixer {
+namespace tfr {
 
 using mixer64 = mixer<uint64_t>;
 

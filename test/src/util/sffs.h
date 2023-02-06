@@ -5,7 +5,7 @@
 #include "sffs_types.h"
 #include "util/bitvector.h"
 
-namespace mixer {
+namespace tfr {
 
 struct sffs_state {
 	bit_vector data;

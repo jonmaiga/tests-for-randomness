@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-namespace mixer {
+namespace tfr {
 
 TEST(fishersmethod, basic) {
 	using T = std::vector<double>;

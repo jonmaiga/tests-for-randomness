@@ -6,7 +6,7 @@
 
 #include "util/assertion.h"
 
-namespace mixer {
+namespace tfr {
 
 uint32_t rdrand_32() {
 	uint32_t x = 0;

@@ -2,7 +2,7 @@
 
 #include "combiner.h"
 
-namespace mixer {
+namespace tfr {
 
 using combiner64 = combiner<uint64_t>;
 

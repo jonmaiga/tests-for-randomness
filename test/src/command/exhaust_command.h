@@ -5,7 +5,7 @@
 #include "search/mixer_constructions.h"
 #include "util/test_setups.h"
 
-namespace mixer {
+namespace tfr {
 
 inline void exhaust_command() {
 	using T = uint32_t;

@@ -10,7 +10,7 @@
 #include "stream.h"
 #include "types.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename Container, typename ContainerRhs>
 void append(Container& destination, const ContainerRhs& source) {

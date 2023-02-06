@@ -12,7 +12,7 @@
 #include "statistics/waldwolfowitz.h"
 
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 struct test_definition {

@@ -3,7 +3,7 @@
 #include <vector>
 #include "mixer.h"
 
-namespace mixer {
+namespace tfr {
 
 using mixer8 = mixer<uint8_t>;
 

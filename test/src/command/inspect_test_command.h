@@ -11,7 +11,7 @@
 #include "streams.h"
 #include "util/test_setups.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 streams<T> create_fail_sources() {

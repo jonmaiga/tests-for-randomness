@@ -9,7 +9,7 @@
 #include "prngs64.h"
 #include "util/test_setups.h"
 
-namespace mixer {
+namespace tfr {
 
 inline auto create_result_callback(bool print_intermediate_results = true) {
 	return [print_intermediate_results](const test_battery_result& br, bool is_last) {

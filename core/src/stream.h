@@ -5,7 +5,7 @@
 
 #include "util/assertion.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 class stream {

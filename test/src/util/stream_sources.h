@@ -5,7 +5,7 @@
 #include "util/algo.h"
 #include "trng_data.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 streams<T> create_sources() {

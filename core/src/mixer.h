@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 struct mixer {

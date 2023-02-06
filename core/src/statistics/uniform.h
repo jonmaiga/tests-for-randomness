@@ -2,7 +2,7 @@
 
 #include "chi2.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 sub_test_results uniform_test(const uint64_t n, const stream<T>& source) {

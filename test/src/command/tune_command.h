@@ -1,7 +1,7 @@
 #pragma once
 #include "search/search_setup.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 double tune_fitness(T c) {

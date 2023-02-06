@@ -7,7 +7,7 @@
 #include "test_definitions.h"
 #include "util/jobs.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 struct test_setup {

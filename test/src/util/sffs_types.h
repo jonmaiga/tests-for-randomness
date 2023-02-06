@@ -2,7 +2,7 @@
 
 #include "util/bitvector.h"
 
-namespace mixer {
+namespace tfr {
 
 using fitness_function = std::function<double(const bit_vector&)>;
 using bit_vector_to_string = std::function<std::string(const bit_vector&)>;

@@ -3,7 +3,7 @@
 #include "util/assertion.h"
 #include "util/bitwise.h"
 
-namespace mixer {
+namespace tfr {
 
 enum class rrc_type {
 	identity,

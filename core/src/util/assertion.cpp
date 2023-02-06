@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-namespace mixer_internal {
+namespace tfr_internal {
 
 void assertion_impl(bool condition, const char* message, const char* conditionStr, const char* file, int line) {
 	if (!condition) {

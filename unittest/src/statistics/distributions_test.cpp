@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-namespace mixer {
+namespace tfr {
 
 TEST(normal_cdf, basic) {
 	// matches mma CDF[NormalDistribution[]], x]

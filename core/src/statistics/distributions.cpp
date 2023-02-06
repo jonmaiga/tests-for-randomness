@@ -5,7 +5,7 @@
 #include "util/assertion.h"
 #include "util/math.h"
 
-namespace mixer {
+namespace tfr {
 
 double beta_regularized(double a, double b, double x) {
 	// from https://github.com/codeplea/incbeta

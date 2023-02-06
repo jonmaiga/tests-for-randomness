@@ -3,7 +3,7 @@
 #include <array>
 #include <cstdint>
 
-namespace mixer {
+namespace tfr {
 
 uint32_t aes_mix(uint32_t);
 uint64_t aes_mix(uint64_t);

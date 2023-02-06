@@ -2,7 +2,7 @@
 
 #include <random>
 
-namespace mixer {
+namespace tfr {
 
 class random {
 public:

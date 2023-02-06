@@ -5,7 +5,7 @@
 
 #include "sffs.h"
 
-namespace mixer {
+namespace tfr {
 
 inline std::string to_string(const sffs_state& s, const bit_vector_to_string& to_arr_str) {
 	std::stringstream ss;

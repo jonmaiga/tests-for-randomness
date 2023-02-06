@@ -6,7 +6,7 @@
 #include <sstream>
 #include <vector>
 
-namespace mixer {
+namespace tfr {
 
 inline std::vector<double> to_statistics(const std::vector<test_result>& results) {
 	std::vector<double> statistics;

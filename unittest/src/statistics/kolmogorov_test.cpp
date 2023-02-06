@@ -4,7 +4,7 @@
 
 #include "testutil.h"
 
-namespace mixer {
+namespace tfr {
 
 TEST(kolmogorov, large) {
 	auto s = test_stream();

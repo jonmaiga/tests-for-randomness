@@ -6,7 +6,7 @@
 
 #include "assertion.h"
 
-namespace mixer {
+namespace tfr {
 
 struct bit_vector {
 	bit_vector() = default;

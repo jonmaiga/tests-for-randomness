@@ -1,6 +1,6 @@
 #include "math.h"
 
-namespace mixer {
+namespace tfr {
 
 double log_gamma(double z) {
 	// from: https://github.com/samtools/htslib/blob/develop/kfunc.c

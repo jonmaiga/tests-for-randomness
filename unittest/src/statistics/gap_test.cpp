@@ -4,7 +4,7 @@
 
 #include "testutil.h"
 
-namespace mixer {
+namespace tfr {
 
 TEST(gap, generate_gaps) {
 	using T = std::vector<double>;

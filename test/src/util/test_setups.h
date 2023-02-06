@@ -2,7 +2,7 @@
 
 #include "util/stream_sources.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 std::vector<T> generate_seeds(int n) {

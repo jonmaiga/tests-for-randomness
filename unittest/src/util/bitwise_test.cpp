@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-namespace mixer {
+namespace tfr {
 
 TEST(bitwise, flip_bit) {
 	EXPECT_EQ(flip_bit(0, 0), 1);

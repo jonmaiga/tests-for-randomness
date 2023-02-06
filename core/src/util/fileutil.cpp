@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <fstream>
 
-namespace mixer {
+namespace tfr {
 
 std::optional<std::string> readAsString(const std::string& filename, size_t maxSize) {
 	std::ifstream t(filename, std::ios::binary);

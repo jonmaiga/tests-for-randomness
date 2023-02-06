@@ -4,7 +4,7 @@
 
 #include "testutil.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T = uint64_t>
 std::vector<uint64_t> sliding_bit_window(const std::vector<T>& data, int window_size) {

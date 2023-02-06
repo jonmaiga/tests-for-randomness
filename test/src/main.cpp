@@ -9,7 +9,7 @@
 
 #include "search/search_setup.h"
 
-namespace mixer {
+namespace tfr {
 
 void build_trng() {
 	std::vector<char> data;
@@ -38,7 +38,7 @@ void export_rdrand(int power_of_two) {
 }
 
 int main(int argc, char** args) {
-	using namespace mixer;
+	using namespace tfr;
 	try {
 		if (argc != 3) {
 			std::cout << "Usage: mixer.exe root-path command\n";

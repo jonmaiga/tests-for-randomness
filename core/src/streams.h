@@ -6,7 +6,7 @@
 #include "util/fileutil.h"
 #include "combiner.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 struct counter_stream {

@@ -4,7 +4,7 @@
 
 #include "testutil.h"
 
-namespace mixer {
+namespace tfr {
 
 TEST(waldwolfowitz, empty) {
 	using V = std::vector<uint64_t>;

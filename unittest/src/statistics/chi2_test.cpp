@@ -4,7 +4,7 @@
 
 #include "testutil.h"
 
-namespace mixer {
+namespace tfr {
 
 TEST(chi2, unset) {
 	EXPECT_FALSE(chi2_stats({}, 0));

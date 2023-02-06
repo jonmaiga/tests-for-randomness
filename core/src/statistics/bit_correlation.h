@@ -6,7 +6,7 @@
 
 #include <vector>
 
-namespace mixer {
+namespace tfr {
 
 using histogram = std::vector<uint64_t>;
 using matrix = std::vector<histogram>;

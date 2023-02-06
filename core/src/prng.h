@@ -2,7 +2,7 @@
 
 #include "stream.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T> using prng = stream<T>;
 

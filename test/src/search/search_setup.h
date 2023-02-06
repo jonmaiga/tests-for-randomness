@@ -5,7 +5,7 @@
 #include "util/sffs.h"
 #include "util/sffsutils.h"
 
-namespace mixer {
+namespace tfr {
 
 
 inline bit_vector random_bit_vector(int bits) {

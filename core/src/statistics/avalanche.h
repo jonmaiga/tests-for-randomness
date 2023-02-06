@@ -4,7 +4,7 @@
 #include "util/bitwise.h"
 #include "types.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 std::vector<uint64_t> avalanche_generate_sac(uint64_t n, stream<T> stream, const mixer<T>& mixer) {

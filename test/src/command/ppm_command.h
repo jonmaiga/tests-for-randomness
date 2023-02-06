@@ -2,7 +2,7 @@
 
 #include "util/ppm.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 void ppm_command() {

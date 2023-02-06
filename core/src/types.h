@@ -12,7 +12,7 @@
 #include "util/assertion.h"
 #include "util/math.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 using stream_factory = std::function<stream<T>()>;

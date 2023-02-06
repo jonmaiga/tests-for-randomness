@@ -5,7 +5,7 @@
 #include "config.h"
 #include "util/fileutil.h"
 
-namespace mixer {
+namespace tfr {
 
 template <typename T>
 const std::vector<T>& get_trng_data() {

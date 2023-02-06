@@ -5,7 +5,7 @@
 #include "testutil.h"
 
 
-namespace mixer {
+namespace tfr {
 
 TEST(coupon, collect_coupons) {
 	using D = std::vector<double>;
