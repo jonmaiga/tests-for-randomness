@@ -1,5 +1,5 @@
-project(mixer-test)
+project(tfr-test)
 include_directories(src ../impl/src)
 file(GLOB_RECURSE SOURCES "src/*.*")
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} mixer-core mixer-impl Threads::Threads ${CXX_FILESYSTEM_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} tfr-core tfr-impl Threads::Threads ${CXX_FILESYSTEM_LIBRARIES})
