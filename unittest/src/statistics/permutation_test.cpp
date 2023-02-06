@@ -19,15 +19,15 @@ TEST(permutation, no_change) {
 	EXPECT_NEAR(r->p_value, 0.07945, 1e-4);
 }
 
-//TEST(permutation, permutation_fail_with_to_few_buckets_32bit) {
-//	const auto r = permutation_test(1ull << 21, create_trng_stream<uint32_t>(602142720)).front().stats;
-//	EXPECT_GT(r->p_value, 1e-4);
-//}
+// TEST(permutation, permutation_fail_with_to_few_buckets_32bit) {
+// 	const auto r = permutation_test(1ull << 21, create_trng_stream<uint32_t>(602142720)).front().stats;
+// 	EXPECT_GT(r->p_value, 1e-4);
+// }
 //
-//TEST(permutation, permutation_fail_with_to_few_buckets_64bit) {
-//	const auto r = permutation_test(1ull << 21, create_trng_stream<uint64_t>(301071360)).front().stats;
-//	EXPECT_GT(r->p_value, 1e-4);
-//}
+// TEST(permutation, permutation_fail_with_to_few_buckets_64bit) {
+// 	const auto r = permutation_test(1ull << 21, create_trng_stream<uint64_t>(301071360)).front().stats;
+// 	EXPECT_GT(r->p_value, 1e-4);
+// }
 
 TEST(permutation, histogram_zeroes) {
 	using T = uint32_t;

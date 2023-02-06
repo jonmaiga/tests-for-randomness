@@ -31,7 +31,10 @@ std::optional<statistic> permutation_stat(const uint64_t n, const stream<T>& str
 
 template <typename T>
 sub_test_results permutation_test(const uint64_t n, stream<T> source) {
-	return main_sub_test(permutation_stat(n, source));
+	auto sub_tests = split_test(n, 1000000, [&source](uint64_t size) {
+		return permutation_stat(size, source);
+	});
+	return sub_tests;
 }
 
 }
