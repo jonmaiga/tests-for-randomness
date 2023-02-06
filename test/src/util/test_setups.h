@@ -39,7 +39,7 @@ test_setup<T> create_trng_test_setup(int sample_count = 128) {
 	return test_setup<T>{
 		"trng",
 		create_seeded_trng<T>(sample_count),
-		all_test_types
+		default_test_types
 	};
 }
 
@@ -48,7 +48,7 @@ test_setup<T> create_combiner_test_setup(combiner<T> combiner) {
 	return test_setup<T>{
 		combiner.name,
 		create_combiner_sources<T>(combiner),
-		all_test_types
+		default_test_types
 	};
 }
 
@@ -57,7 +57,7 @@ test_setup<T> create_mixer_test_setup(const mixer<T> mixer) {
 	return test_setup<T>{
 		mixer.name,
 		create_sources<T>(),
-		all_test_types,
+		default_test_types,
 		mixer,
 	};
 }
@@ -72,7 +72,7 @@ test_setup<T> create_prng_test_setup(std::function<stream<T>(T seed)> create_prn
 	return test_setup<T>{
 		to_test.front().name,
 		to_test,
-		all_test_types,
+		default_test_types,
 	};
 }
 

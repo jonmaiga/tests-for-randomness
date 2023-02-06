@@ -57,13 +57,23 @@ test_definition<T> get_test_definition(test_type type) {
 	return {};
 }
 
+template <typename T>
+std::vector<test_definition<T>> get_most_effective_tests() {
+	return {
+		get_test_definition<T>(test_type::uniform),
+		get_test_definition<T>(test_type::bit_count_2d),
+		get_test_definition<T>(test_type::sac),
+
+	};
+}
+
 inline std::string get_test_name(test_type type) {
 	return get_test_definition<uint64_t>(type).name;
 }
 
-inline std::vector<test_type> all_test_types = []() {
+inline std::vector<test_type> default_test_types = []() {
 	std::vector<test_type> types;
-	for (const auto& test_def : get_tests<uint64_t>()) {
+	for (const auto& test_def : get_most_effective_tests<uint64_t>()) {
 		types.push_back(test_def.type);
 	}
 	return types;
