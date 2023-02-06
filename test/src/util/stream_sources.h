@@ -12,9 +12,6 @@ streams<T> create_sources() {
 	const auto counter1 = [] {
 		return create_counter_stream<T>(1);
 	};
-	const auto graycode2 = [] {
-		return create_gray_code<T>(2);
-	};
 	const auto trng = [] {
 		return create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
 	};

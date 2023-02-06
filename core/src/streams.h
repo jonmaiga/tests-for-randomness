@@ -44,15 +44,6 @@ stream<T> create_counter_stream(T increment) {
 	return create_counter_stream<T>(increment, 0);
 }
 
-#define FUNC(exp) [=](T i) { return exp; }
-
-template <typename T>
-stream<T> create_gray_code(T d) {
-	return {"graycode-" + std::to_string(d), function_stream<T>{FUNC(i ^ (i / d))}};
-}
-
-#undef FUNC
-
 template <typename T>
 stream<T> create_stream_from_data_by_ref(const std::string& name, const std::vector<T>& data, std::size_t start_index = 0) {
 	std::size_t index = start_index;
@@ -62,7 +53,6 @@ stream<T> create_stream_from_data_by_ref(const std::string& name, const std::vec
 		}
 	};
 }
-
 
 template <typename T>
 stream<T> create_stream_from_data_by_ref_thread_safe(const std::string& name, const std::vector<T>& data) {

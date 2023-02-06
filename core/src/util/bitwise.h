@@ -81,7 +81,6 @@ inline uint16_t reverse_bits(uint16_t x) {
 	return (x >> 8) | (x << 8);
 }
 
-
 template <>
 inline uint32_t reverse_bits(uint32_t x) {
 	x = ((x >> 1) & 0x55555555) | ((x & 0x55555555) << 1);

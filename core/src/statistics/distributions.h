@@ -81,7 +81,6 @@ double kolmogorov_smirnov_cdf(double D, double df, int conv);
 
 double anderson_darling_cdf(double A2, double df);
 
-
 inline double kolmogorov_smirnov(double D, double df) {
 	using namespace constants;
 	double sum = 0;
@@ -98,21 +97,5 @@ inline double kolmogorov_smirnov(double D, double df) {
 	sum *= std::sqrt(2. * Pi) / x;
 	return sum;
 }
-
-inline double kolmogorov_smirnov2(double D, double df) {
-	// from here: https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test
-	double x = std::sqrt(df) * D;
-	x = x + 1. / (6. * std::sqrt(df)) + (x - 1.) / (4. * df);
-	int sign = 1;
-	const double xx2 = - 2. * x * x;
-	double sum = 0;
-	for (uint64_t k = 1; k <= 1000; ++k) {
-		const auto t = xx2 * k * k;
-		sum += sign * std::exp(t);
-		sign *= -1;
-	}
-	return 1. - 2. * sum;
-}
-
 
 }
