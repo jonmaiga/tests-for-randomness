@@ -1,6 +1,5 @@
 TODO:
 -----
-- Takes a lot of memory - find out why
 - change name to "tests for randomness"
 - make a comparison table with practrand mixers + prngs
 - bc3d still get pretty low p-values (1e-5)
@@ -15,6 +14,7 @@ TODO:
 
 DONE:
 -----
+- Takes a lot of memory - find out why, this was because of permutations - restored splits (should work now since chi2 uses approximation when manu df)
 - splits are not good see if it can be avoided.
 - lgamma is not thread safe
 - permutation is sensitive to too manu bins - meta analysis gets no p-values close to 0.5.
