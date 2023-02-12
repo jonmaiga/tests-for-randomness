@@ -1,18 +1,22 @@
 TODO:
 -----
+- rename test to tool
+- Create issues instead of the list
+- use sffs to find out which test are effective
 - make a comparison table with practrand mixers + prngs
 - bc3d still get pretty low p-values (1e-5)
 - use meta? show 3 meta + 3 sample results?
 - use trng to see if we can get evaluate_multi_pass working from 2^4 ? 
 - Select maximize or minimize in sffs.
 - Determine false positive rate
-- Splits are added many times if same result formatter is used when n increases (see e.g. kendall_tau).
 - Speed up tests, bad CPU utilization atm, this should done in the jobs, keeping X threads, jumping between job queues.
 	- for now just increasing sffs threads works (but probably has a ton of overhead)
 - ww, coupons at k=0 hangs...
 
+
 DONE:
 -----
+- Splits are added many times if same result formatter is used when n increases (see e.g. kendall_tau). (Have removed queries etc)
 - add readme.md
 - change name to "tests for randomness"
 - Takes a lot of memory - find out why, this was because of permutations - restored splits (should work now since chi2 uses approximation when manu df)
