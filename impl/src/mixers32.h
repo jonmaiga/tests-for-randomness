@@ -40,7 +40,7 @@ const mixer32 xm3x = {
 
 const mixer32 xm2x = {
 	"xm2x", [](uint32_t x) {
-		constexpr uint32_t C = 2471660141;
+		constexpr uint32_t C = 1939508389; //2471660141;
 		x ^= x >> 16;
 		x *= C;
 		x ^= x >> 15;
@@ -81,6 +81,17 @@ const mixer32 murmur = {
 		x *= 0xc2b2ae35U;
 		x ^= x >> 16;
 		return x;
+	}
+};
+
+const mixer32 splitmix = {
+	"splitmix64", [](uint32_t x) {
+		uint64_t z = x;
+		z ^= z >> 33;
+		z *= 0x62a9d9ed799705f5ull;
+		z ^= z >> 28;
+		z *= 0xcb24d0a5c88c35b3ull;
+		return static_cast<uint32_t>(z >> 32);
 	}
 };
 

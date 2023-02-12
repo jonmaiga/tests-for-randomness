@@ -55,7 +55,6 @@ const mixer64 xm2x_sffs = {
 	}
 };
 
-
 const mixer64 xmx = {
 	"xmx", [](uint64_t x) {
 		x ^= x >> 32;
@@ -64,7 +63,6 @@ const mixer64 xmx = {
 		return x;
 	}
 };
-
 
 const mixer64 murmur3 = {
 	"murmur3", [](uint64_t x) {
@@ -77,7 +75,6 @@ const mixer64 murmur3 = {
 	}
 };
 
-
 const mixer64 split_mix = {
 	"splitmix", [](uint64_t x) {
 		x ^= x >> 30;
@@ -89,6 +86,16 @@ const mixer64 split_mix = {
 	}
 };
 
+const mixer64 split_mix_v13 = {
+	"splitmix_v13", [](uint64_t x) {
+		x ^= x >> 30;
+		x *= 0xbf58476d1ce4e5b9ull;
+		x ^= x >> 27;
+		x *= 0x94d049bb133111ebull;
+		x ^= x >> 31;
+		return x;
+	}
+};
 
 const mixer64 nasam = {
 	"nasam", [](uint64_t x) {
