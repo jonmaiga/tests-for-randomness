@@ -61,6 +61,7 @@ template <typename T>
 std::vector<test_definition<T>> get_most_effective_tests() {
 	return {
 		get_test_definition<T>(test_type::uniform),
+		get_test_definition<T>(test_type::divisibility), // stops 32/32/28/1049346062286479453 at 17 instead of 25
 		get_test_definition<T>(test_type::bit_count_2d),
 		get_test_definition<T>(test_type::sac),
 
@@ -73,7 +74,7 @@ inline std::string get_test_name(test_type type) {
 
 inline std::vector<test_type> default_test_types = []() {
 	std::vector<test_type> types;
-	for (const auto& test_def : get_most_effective_tests<uint64_t>()) {
+	for (const auto& test_def : get_tests<uint64_t>()) {
 		types.push_back(test_def.type);
 	}
 	return types;
