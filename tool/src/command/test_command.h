@@ -27,7 +27,7 @@ inline auto create_result_callback(bool print_intermediate_results = true) {
 		if (!proceed) {
 			std::ostringstream os;
 			os << br.test_subject_name << ";" << br.power_of_two() << ";" << (pass ? "PASS" : "FAIL") << "\n";
-			write_append(get_config().result_path() + "result_" + std::to_string(br.bits) + ".txt", os.str());
+			write_append(get_config().result_dir() + "result_" + std::to_string(br.bits) + ".txt", os.str());
 		}
 		return proceed;
 	};

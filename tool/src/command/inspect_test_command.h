@@ -173,7 +173,7 @@ void write(const per_test_result& result) {
 		}
 		ss << "\n";
 	}
-	write(get_config().result_path() + "per_test" + std::to_string(bit_sizeof<T>()) + ".txt", ss.str());
+	write(get_config().result_dir() + "per_test" + std::to_string(bit_sizeof<T>()) + ".txt", ss.str());
 }
 
 

@@ -31,7 +31,7 @@ void export_rdrand(int power_of_two) {
 			std::cout << ".";
 		}
 	}
-	write_binary(cfg.drng_path(), data, true);
+	write_binary(cfg.drng_file_path(), data, true);
 }
 
 }
