@@ -1,9 +1,21 @@
-# Tests for randomness
+# Tests for Randomness (TFR)
 
 A collection of tests for randomness.
 
-## Background
-I've previously used PractRand for randomness evaluation. The goal of this project was to get a better understanding of how the actual tests and the statistics behind it work.
+## Overview
+
+Arbitrary streams are passed through a set of tests which uses different statistical methods to check for randomness.
+
+It's inspired by the excellent [PractRand](https://pracrand.sourceforge.net/) randomness test. For mixers Pelle Evensen's powerful [RRC](http://mostlymangling.blogspot.com/2019/01/better-stronger-mixer-and-test-procedure.html) test is used by default.
+
+TFR uses `uint8_t`, `uint16_t`, `uint32_t` or `uint64_t` streams.
+
+Uses c++20,cmake and is tested with msvc, clang and gcc.
+
+## Install
+Uses external dependency on [googletest-release-1.12.1](https://github.com/google/googletest/releases/tag/release-1.12.1) just place it directly under your cloned directory.
+
+TODO
 
 ## Tests
 - Mean
@@ -17,6 +29,14 @@ I've previously used PractRand for randomness evaluation. The goal of this proje
 - Strict Avalanche Criterion (for mixers)
 - Bit Independence Criterion (for mixers)
 
+Many of the tests are pretty standard and can be found on wikipedia or by googling.
+
+### Divisibility test
+The divisibility test is a variation on the coupon test, where we collect numbers that are divisible by some constant. For example every second number is divisible by two, every third by three and so on. Statistically this should hold for randomness too.
+
+### Bit correlection test
+For mixers we can employ sac and bic since we can control the input. This is an attempt to do something similar for prngs (that uses an internal state). It basically creates a matrix of the consecutive stream outputs counting the number of bits set. Each row in the matrix (with enough information) should be approximately binomially distributed.
+
 ## Randomness
 - PRNGs
 - Mixers
@@ -24,45 +44,15 @@ I've previously used PractRand for randomness evaluation. The goal of this proje
 - TODO Hashers
 
 ## Tools
-- Test random sources
-- Search for better random sources
-- Inspect tests
+- Test for randomness (`-test`)
+- Search for better randomness (`-search`)
+- Inspect tests (`-inspect-test`)
 
-## Some 64-bit results
+## Unittests
+There is some coverage especially over the more complicated parts such as different special math functions for different distributions.
 
-Mixer|TFR|PractRand RRC|
--|-|-|
-xm2x|||
-splitmix|17||
-murmur3|10||
+## Disclaimer / Contributions
+I'm not a statistician and have probably made a lot of mistakes (feel free to open an issue or PR).
 
-Prng|TFR|PractRand|
--|-|-|
-xm2x|||
-pcg|||
-xoroshift128\+\+|||
-
-Combiners|TFR|PractRand|
--|-|-|
-xm2x|||
-
-
-## Some 32-bit results
-
-Mixer|TFR|PractRand RRC|
--|-|-|
-xm2x|18|18|
-prospector|18|16|
-murmur|12||
-
-Prng|TFR|PractRand|
--|-|-|
-xm2x|||
-pcg|>35||
-xoroshift128\+\+|>35||
-
-
-Combiners|TFR|PractRand|
--|-|-|
-xm2x|||
-
+## Future
+This is nowhere finished work, for some unfinished tasks please see the incomplete issue list!
