@@ -159,8 +159,9 @@ void for_each_bit(const T& data, const std::function<void(bool)>& callback) {
 
 template <typename T>
 void sliding_bit_window(const T& data, int window_size, const std::function<void(uint64_t)>& callback) {
+	assertion(window_size > 0 && window_size < 64, "Invalid window size");
 	uint64_t v = 0;
-	uint64_t c = 0;
+	int c = 0;
 
 	const auto acc = [callback, c, v, window_size](bool is_set) mutable {
 		v |= (is_set ? 1ull : 0ull) << c;
