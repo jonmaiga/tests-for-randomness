@@ -64,13 +64,13 @@ int main(int argc, char** args) {
 			inspect_per_test_command<uint64_t>();
 			return 0;
 		}
-		if (command == "-exhaust") {
-			exhaust_command();
-			return 0;
-		}
 		if (command == "-ppm") {
 			using T = uint32_t;
 			ppm_command<T>();
+			return 0;
+		}
+		if (command == "-exhaust") {
+			exhaust_command();
 			return 0;
 		}
 

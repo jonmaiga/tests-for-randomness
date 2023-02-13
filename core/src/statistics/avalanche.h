@@ -10,7 +10,7 @@ template <typename T>
 std::vector<uint64_t> avalanche_generate_sac(uint64_t n, stream<T> stream, const mixer<T>& mixer) {
 	// @attn, using x = stream() directly will make all mixers fail for all counter streams with increments
 	// of a power of 2, 1,2,4... I believe this is an error in the test rather than the mixers,
-	// maybe the bit flip causes too many duplicates and it becomes biased.
+	// maybe the bit flip causes too many duplicates and it becomes biased/too correlated.
 	// This happens for +10 rounds of AES and Sha256 as well...
 	constexpr auto Bits = bit_sizeof<T>();
 	std::vector<uint64_t> sac(Bits + 1);

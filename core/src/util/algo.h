@@ -163,7 +163,7 @@ void sliding_bit_window(const T& data, int window_size, const std::function<void
 	uint64_t c = 0;
 
 	const auto acc = [callback, c, v, window_size](bool is_set) mutable {
-		v |= (is_set ? 1 : 0) << c;
+		v |= (is_set ? 1ull : 0ull) << c;
 		++c;
 		if (c == window_size) {
 			callback(v);

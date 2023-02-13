@@ -31,7 +31,6 @@ inline double f_distribution_cdf(double f, double d1, double d2) {
 
 inline double chi2_distribution_normal_approximation_cdf(double chi2, double df) {
 	return 1 - normal_cdf(std::sqrt(2 * chi2) - std::sqrt(2 * df - 1));
-	// return 1. - 0.5 * (1 + std::erf((chi2 - df) / (2 * std::sqrt(df))));
 }
 
 inline double chi2_distribution_cdf(double chi2, double df) {
@@ -46,7 +45,7 @@ inline double chi2_distribution_cdf(double chi2, double df) {
 }
 
 inline double beta(double a, double b) {
-	//return std::beta(a, b);
+	// return std::beta(a, b);
 	return exp(log_gamma(a) + log_gamma(b) - log_gamma(a + b));
 }
 
