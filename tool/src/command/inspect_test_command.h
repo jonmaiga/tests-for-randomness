@@ -32,7 +32,17 @@ streams<T> create_fail_sources() {
 
 template <typename T>
 streams<T> create_pass_sources() {
-	return {create_trng_stream<T>()};
+	streams<T> sources;
+	if (const auto trng_stream = create_trng_stream<T>()) {
+		sources.push_back(*trng_stream);
+	}
+	if (const auto drng_stream = create_drng_stream<T>()) {
+		sources.push_back(*drng_stream);
+	}
+	if (sources.empty()) {
+		std::cout << "Warning: No passable trng/drng sources was found\n";
+	}
+	return sources;
 }
 
 inline auto create_test_inspect_callback() {
@@ -185,7 +195,14 @@ void inspect_per_test_command() {
 		std::cout << "========================\n";
 
 		// trng
-		evaluate_multi_pass(callback, create_trng_test_setup<T>().set_tests({test.type}));
+		if (const auto* data = get_trng_data<T>()) {
+			evaluate_multi_pass(callback, create_data_test_setup<T>("trng", *data).set_tests({test.type}));
+		}
+
+		// drng
+		if (const auto* data = get_drng_data<T>()) {
+			evaluate_multi_pass(callback, create_data_test_setup<T>("drng", *data).set_tests({test.type}));
+		}
 
 		// mixers
 		for (const auto& m : get_mixers<T>()) {

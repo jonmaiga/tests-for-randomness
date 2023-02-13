@@ -1,7 +1,6 @@
 #pragma once
 
 #include <functional>
-#include <optional>
 #include <string>
 #include <filesystem>
 #include <fstream>
@@ -15,6 +14,7 @@ bool write_append(const std::string& filename, const std::string& data);
 void for_each_file(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>&);
 void for_each_file_recursively(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>&);
 void create_directories(const std::string& path);
+bool file_exists(const std::string& path);
 
 template <typename T>
 std::vector<T> read_binary_must_exist_skip_remainder(const std::string& path, size_t max_elements = -1) {

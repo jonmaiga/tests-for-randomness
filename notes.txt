@@ -1,9 +1,9 @@
 TODO:
 -----
-- rename test to tool
 - Create issues instead of the list
-- use sffs to find out which test are effective
 - make a comparison table with practrand mixers + prngs
+- license file
+- simple timer
 - bc3d still get pretty low p-values (1e-5)
 - use meta? show 3 meta + 3 sample results?
 - use trng to see if we can get evaluate_multi_pass working from 2^4 ? 
@@ -16,6 +16,8 @@ TODO:
 
 DONE:
 -----
+- rename test to tool
+- use sffs to find out which test are effective (not very interesting)
 - Splits are added many times if same result formatter is used when n increases (see e.g. kendall_tau). (Have removed queries etc)
 - add readme.md
 - change name to "tests for randomness"

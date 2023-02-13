@@ -49,4 +49,8 @@ void create_directories(const std::string& path) {
 	std::filesystem::create_directories(path);
 }
 
+bool file_exists(const std::string& path) {
+	return std::filesystem::exists(path);
+}
+
 }

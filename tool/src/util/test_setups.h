@@ -19,26 +19,25 @@ std::vector<T> generate_seeds(int n) {
 }
 
 template <typename T>
-streams<T> create_seeded_trng(int sample_count) {
+streams<T> create_evenly_seeded_stream(const std::string& name, const std::vector<T>& data, int sample_count) {
 	streams<T> ts;
-	const auto& data = get_trng_data<T>();
 	const uint64_t interval = data.size() / sample_count;
-	std::cout << "Warning: TRNG data samples will overlap for >2^" << std::floor(std::log2(interval)) << ", this will make meta analysis unreliable.\n";
-	std::cout << "Warning: TRNG data will rotate for >2^" << std::floor(std::log2(data.size())) << ", this will make sample results unreliable.\n";
+	std::cout << "Warning: " << name << " data samples will overlap for >2^" << std::floor(std::log2(interval)) << ", this will make meta analysis unreliable.\n";
+	std::cout << "Warning: " << name << " data will rotate for >2^" << std::floor(std::log2(data.size())) << ", this will make sample results unreliable.\n";
 	for (uint64_t i = 0; i < sample_count; ++i) {
 		const auto start_index = i * interval;
 		ts.push_back(
-			create_stream_from_data_by_ref<T>("trng-" + std::to_string(start_index), data, start_index)
+			create_stream_from_data_by_ref<T>(name + "-" + std::to_string(start_index), data, start_index)
 		);
 	}
 	return ts;
 }
 
 template <typename T>
-test_setup<T> create_trng_test_setup(int sample_count = 128) {
+test_setup<T> create_data_test_setup(const std::string& name, const std::vector<T>& data, int sample_count = 128) {
 	return test_setup<T>{
-		"trng",
-		create_seeded_trng<T>(sample_count),
+		name,
+		create_evenly_seeded_stream<T>(name, data, sample_count),
 		default_test_types
 	};
 }

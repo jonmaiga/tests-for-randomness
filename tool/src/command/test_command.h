@@ -36,9 +36,17 @@ inline auto create_result_callback(bool print_intermediate_results = true) {
 inline void test_command() {
 	using T = uint32_t;
 
-	const auto callback = create_result_callback(false);
+	const auto callback = create_result_callback(true);
+
 	// trng
-	evaluate_multi_pass(callback, create_trng_test_setup<T>());
+	if (const auto* data = get_trng_data<T>()) {
+		evaluate_multi_pass(callback, create_data_test_setup<T>("trng", *data));
+	}
+
+	// drng
+	if (const auto* data = get_drng_data<T>()) {
+		evaluate_multi_pass(callback, create_data_test_setup<T>("drng", *data));
+	}
 
 	// mixers
 	for (const auto& m : get_mixers<T>()) {
