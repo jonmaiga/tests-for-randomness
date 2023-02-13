@@ -36,7 +36,7 @@ inline auto create_result_callback(bool print_intermediate_results = true) {
 inline void test_command() {
 	using T = uint32_t;
 
-	const auto callback = create_result_callback(true);
+	const auto callback = create_result_callback(false);
 
 	// trng
 	if (const auto* data = get_trng_data<T>()) {
