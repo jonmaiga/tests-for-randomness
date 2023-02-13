@@ -62,6 +62,8 @@ int main(int argc, char** args) {
 			inspect_test_command<uint64_t>();
 			inspect_per_test_command<uint32_t>();
 			inspect_per_test_command<uint64_t>();
+			inspect_test_speed_command<uint32_t>();
+			inspect_test_speed_command<uint64_t>();
 			return 0;
 		}
 		if (command == "-ppm") {

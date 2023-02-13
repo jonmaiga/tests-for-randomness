@@ -79,6 +79,13 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		<< " 2^" << battery_result.power_of_two()
 		<< " with " << battery_result.samples << " samples using "
 		<< battery_result.bits << "-bits (" << battery_result.passed_milliseconds / 1000 << "s)\n";
+
+	std::set<std::string> test_names;
+	for (const auto& result : battery_result.results) {
+		test_names.insert(get_test_name(result.first.type));
+	}
+	std::cout << join(std::vector(test_names.begin(), test_names.end()), ",") << "\n";
+
 	std::cout << "==========================================================================================\n";
 
 	const auto ras = get_analysis(battery_result);

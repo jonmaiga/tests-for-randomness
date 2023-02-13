@@ -140,8 +140,10 @@ void inspect_test_command() {
 
 using per_test_result = std::map<std::string, std::map<std::string, std::string>>;
 
-inline auto create_per_test_callback(per_test_result& result, bool print_intermediate_results = true) {
-	return [&result, print_intermediate_results](const test_battery_result& br, bool is_last) {
+inline auto create_per_test_callback(per_test_result& result,
+                                     std::function<std::string(const test_battery_result&)> extract_property,
+                                     bool print_intermediate_results = true) {
+	return [&result, print_intermediate_results, extract_property](const test_battery_result& br, bool is_last) {
 		bool proceed = !is_last;
 		if (proceed) {
 			if (const auto analysis = get_worst_statistic_analysis(br)) {
@@ -153,15 +155,14 @@ inline auto create_per_test_callback(per_test_result& result, bool print_interme
 		}
 		if (!proceed) {
 			const auto test_name = get_test_name(br.results.begin()->first.type);
-			result[br.test_subject_name][test_name] = std::to_string(br.power_of_two());
+			result[br.test_subject_name][test_name] = extract_property(br);
 		}
 		return proceed;
 	};
 }
 
-
 template <typename T>
-void write(const per_test_result& result) {
+void write(const std::string& name, const per_test_result& result) {
 	std::stringstream ss;
 	ss << ";";
 	for (const auto& test : get_tests<T>()) {
@@ -179,15 +180,17 @@ void write(const per_test_result& result) {
 		}
 		ss << "\n";
 	}
-	write(get_config().result_dir() + "per_test" + std::to_string(bit_sizeof<T>()) + ".txt", ss.str());
+	write(get_config().result_dir() + name + "_per_test" + std::to_string(bit_sizeof<T>()) + ".txt", ss.str());
 }
 
 
 template <typename T>
 void inspect_per_test_command() {
 	per_test_result result;
-
-	const auto callback = create_per_test_callback(result, false);
+	const auto extract_power_of_two = [](const test_battery_result& br) {
+		return std::to_string(br.power_of_two());
+	};
+	const auto callback = create_per_test_callback(result, extract_power_of_two, false);
 
 	for (const auto& test : get_tests<T>()) {
 		std::cout << "========================\n";
@@ -218,8 +221,25 @@ void inspect_per_test_command() {
 		for (const auto& prng : get_prngs<T>()) {
 			evaluate_multi_pass(callback, create_prng_test_setup<T>(prng).set_tests({test.type}));
 		}
-		write<T>(result);
+		write<T>("power_of_two", result);
 	}
 }
+
+template <typename T>
+void inspect_test_speed_command() {
+	per_test_result result;
+	const auto extract_time = [](const test_battery_result& br) {
+		return std::to_string(br.passed_milliseconds);
+	};
+	const auto callback = create_per_test_callback(result, extract_time, false);
+
+	for (const auto& test : get_tests<T>()) {
+		evaluate_multi_pass(callback, create_mixer_test_setup(get_default_mixer<T>())
+		                              .range(10, 25)
+		                              .set_tests({test.type}));
+		write<T>("speed", result);
+	}
+}
+
 
 }
