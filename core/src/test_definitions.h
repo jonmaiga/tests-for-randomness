@@ -29,11 +29,7 @@ std::vector<test_definition<T>> get_tests() {
 		{test_type::uniform, uniform_test<T>, {}, "uniform"},
 
 		{test_type::wald_wolfowitz_runs, wald_wolfowitz_test<T>, {}, "ww"},
-		// {test_type::pearson_r, pearson_correlation_test<T>, {}, "pearson_r"},
-		// {test_type::spearman_r, spearman_correlation_test<T>, {}, "spearman_r"},
-		// {test_type::kendall_tau, kendall_correlation_test<T>, {}, "kendall_tau"},
 		{test_type::bit_count_2d, bit_count_2d_test<T>, {}, "bc2d"},
-		{test_type::bit_count_3d, bit_count_3d_test<T>, {}, "bc3d"},
 
 		{test_type::gap, gap_test<T>, {}, "gap"},
 		{test_type::coupon, coupon_test<T>, {}, "coupon"},

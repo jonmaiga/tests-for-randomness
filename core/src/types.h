@@ -35,14 +35,8 @@ enum class statistic_type {
 enum class test_type {
 	mean,
 	uniform,
-
 	wald_wolfowitz_runs,
-	pearson_r,
-	spearman_r,
-	kendall_tau,
 	bit_count_2d,
-	bit_count_3d,
-
 	gap,
 	coupon,
 	divisibility,
@@ -51,8 +45,6 @@ enum class test_type {
 	// mixer
 	sac,
 	bic,
-
-	size
 };
 
 struct statistic {

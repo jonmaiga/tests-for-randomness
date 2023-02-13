@@ -106,6 +106,7 @@ inline std::optional<statistic> kendall_correlation_stats(const std::vector<doub
 	return statistic{statistic_type::z_score, z, p_value, static_cast<double>(n)};
 }
 
+// @attn those linear correlation tests are slow and hardly finds anything
 template <typename T>
 sub_test_results pearson_correlation_test(uint64_t n, stream<T> source) {
 	return split_test(n, 1000000, [&source](uint64_t size) {
