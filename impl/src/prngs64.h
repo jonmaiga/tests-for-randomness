@@ -9,10 +9,10 @@ using prng64 = prng<uint64_t>;
 
 namespace rng64 {
 
-inline prng64 xmx(uint64_t seed) {
+inline prng64 xm3x(uint64_t seed) {
 	return {
-		"xmx", [state = seed]() mutable {
-			return state = mix64::xmx(state);
+		"xm3x", [state = seed]() mutable {
+			return state = mix64::mx3(state);
 		}
 	};
 }
@@ -25,10 +25,10 @@ inline prng64 xm2x(uint64_t seed) {
 	};
 }
 
-inline prng64 xm3x(uint64_t seed) {
+inline prng64 xmx(uint64_t seed) {
 	return {
-		"xm3x", [state = seed]() mutable {
-			return state = mix64::mx3(state);
+		"xmx", [state = seed]() mutable {
+			return state = mix64::xmx(state);
 		}
 	};
 }

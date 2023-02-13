@@ -18,10 +18,10 @@ TEST(avalanche, bic_data_no_change) {
 TEST(avalanche, sac_data_large) {
 	using T = uint32_t;
 	constexpr auto n = 200000;
-	const auto counts = avalanche_generate_sac<T>(n, test_stream<T>(), mix32::mx3);
+	const auto counts = avalanche_generate_sac<T>(n, test_stream<T>(), get_default_mixer<T>());
 	auto s = avalanche_sac_stats<T>(n, counts);
-	EXPECT_NEAR(s->value, 17.7571, 1e-4);
-	EXPECT_NEAR(s->p_value, 0.8844, 1e-4);
+	EXPECT_NEAR(s->value, 19.7613, 1e-4);
+	EXPECT_NEAR(s->p_value, 0.8027, 1e-4);
 }
 
 TEST(avalanche, sac_no_change) {

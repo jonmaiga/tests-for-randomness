@@ -9,20 +9,6 @@ using mixer32 = mixer<uint32_t>;
 
 namespace mix32 {
 
-const mixer32 mx3 = {
-	"mx3", [](uint32_t x) {
-		constexpr uint32_t C = 0xeb34556d;
-		x ^= (x >> 16);
-		x *= C;
-		x ^= (x >> 15);
-		x *= C;
-		x ^= (x >> 16);
-		x *= C;
-		x ^= (x >> 15);
-		return x;
-	}
-};
-
 const mixer32 xm3x = {
 	"xm3x", [](uint32_t x) {
 		constexpr uint32_t C = 2471660141;
@@ -37,7 +23,6 @@ const mixer32 xm3x = {
 	}
 };
 
-
 const mixer32 xm2x = {
 	"xm2x", [](uint32_t x) {
 		constexpr uint32_t C = 1939508389; //2471660141;
@@ -46,62 +31,6 @@ const mixer32 xm2x = {
 		x ^= x >> 15;
 		x *= C;
 		x ^= x >> 14;
-		return x;
-	}
-};
-
-const mixer32 sffs_xm2x_best_pr = {
-	"xm2x_sffs_BEST_PR", [](uint32_t x) {
-		x ^= x >> 16;
-		x *= 3016919661;
-		x ^= x >> 15;
-		x *= 3016919661;
-		x ^= x >> 14;
-		return x;
-	}
-};
-
-
-const mixer32 xmx = {
-	"xmx", [](uint32_t x) {
-		constexpr uint32_t C = 2471660141;
-		x ^= x >> 15;
-		x *= C;
-		x ^= x >> 16;
-		return x;
-	}
-};
-
-
-const mixer32 murmur = {
-	"murmur", [](uint32_t x) {
-		x ^= x >> 16;
-		x *= 0x85ebca6bU;
-		x ^= x >> 13;
-		x *= 0xc2b2ae35U;
-		x ^= x >> 16;
-		return x;
-	}
-};
-
-const mixer32 splitmix = {
-	"splitmix64", [](uint32_t x) {
-		uint64_t z = x;
-		z ^= z >> 33;
-		z *= 0x62a9d9ed799705f5ull;
-		z ^= z >> 28;
-		z *= 0xcb24d0a5c88c35b3ull;
-		return static_cast<uint32_t>(z >> 32);
-	}
-};
-
-const mixer32 wang_1 = {
-	"wang_1", [](uint32_t x) {
-		x = (x ^ 61) ^ (x >> 16);
-		x *= 9;
-		x ^= x >> 4;
-		x *= 0x27d4eb2d;
-		x ^= x >> 15;
 		return x;
 	}
 };
@@ -138,6 +67,38 @@ const mixer32 h2_sql = {
 	}
 };
 
+const mixer32 murmur = {
+	"murmur", [](uint32_t x) {
+		x ^= x >> 16;
+		x *= 0x85ebca6bU;
+		x ^= x >> 13;
+		x *= 0xc2b2ae35U;
+		x ^= x >> 16;
+		return x;
+	}
+};
+
+const mixer32 xmx = {
+	"xmx", [](uint32_t x) {
+		constexpr uint32_t C = 2471660141;
+		x ^= x >> 15;
+		x *= C;
+		x ^= x >> 16;
+		return x;
+	}
+};
+
+const mixer32 wang_1 = {
+	"wang_1", [](uint32_t x) {
+		x = (x ^ 61) ^ (x >> 16);
+		x *= 9;
+		x ^= x >> 4;
+		x *= 0x27d4eb2d;
+		x ^= x >> 15;
+		return x;
+	}
+};
+
 const mixer32 jenkins = {
 	"jenkins", [](uint32_t x) {
 		x = (x + 0x7ed55d16) + (x << 12);
@@ -150,6 +111,17 @@ const mixer32 jenkins = {
 	}
 };
 
+// uses 64-bits
+const mixer32 splitmix64 = {
+	"splitmix64", [](uint32_t x) {
+		uint64_t z = x;
+		z ^= z >> 33;
+		z *= 0x62a9d9ed799705f5ull;
+		z ^= z >> 28;
+		z *= 0xcb24d0a5c88c35b3ull;
+		return static_cast<uint32_t>(z >> 32);
+	}
+};
 
 }
 
@@ -163,17 +135,12 @@ template <>
 inline std::vector<mixer32> get_mixers() {
 	return {
 		mix32::xm3x,
-		mix32::mx3,
-
-
 		mix32::xm2x,
-		mix32::sffs_xm2x_best_pr,
 		mix32::prospector,
-		mix32::murmur,
+		mix32::prospector_boost,
 		mix32::h2_sql,
-
+		mix32::murmur,
 		mix32::xmx,
-
 		mix32::wang_1,
 		mix32::jenkins
 	};
