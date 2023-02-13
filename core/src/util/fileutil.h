@@ -12,12 +12,12 @@ namespace tfr {
 
 bool write(const std::string& filename, const std::string& data);
 bool write_append(const std::string& filename, const std::string& data);
-void forEachFile(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>&);
-void forEachFileRecursively(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>&);
-void createDirectories(const std::string& path);
+void for_each_file(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>&);
+void for_each_file_recursively(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>&);
+void create_directories(const std::string& path);
 
 template <typename T>
-std::vector<T> readBinaryMustExist(const std::string& path, size_t max_elements = -1) {
+std::vector<T> read_binary_must_exist_skip_remainder(const std::string& path, size_t max_elements = -1) {
 	std::ifstream t(path, std::ios::binary);
 	assertion_2(t.good(), "Could not open file ", path.c_str());
 

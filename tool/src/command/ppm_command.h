@@ -7,7 +7,7 @@ namespace tfr {
 template <typename T>
 void ppm_command() {
 	const auto dir = get_config().root_path + "ppm" + std::to_string(bit_sizeof<T>()) + "/";
-	auto trng_stream = create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
+	auto trng_stream = create_trng_stream<T>();
 	write_ppm(dir + trng_stream.name + ".ppm", trng_stream);
 
 	for (const auto& mix : get_mixers<T>()) {

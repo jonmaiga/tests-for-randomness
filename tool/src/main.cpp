@@ -12,8 +12,8 @@ namespace tfr {
 
 void build_trng() {
 	std::vector<char> data;
-	forEachFileRecursively(R"(C:\tmp\random.org\raw\)", ".bin", [&data](const auto& path) {
-		auto r = readBinaryMustExist<char>(path.string());
+	for_each_file_recursively(R"(C:\tmp\random.org\raw\)", ".bin", [&data](const auto& path) {
+		auto r = read_binary_must_exist_skip_remainder<char>(path.string());
 		data.insert(data.end(), r.begin(), r.end());
 		std::cout << path.string() << "\n";
 	});

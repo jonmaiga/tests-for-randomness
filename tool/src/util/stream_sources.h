@@ -3,20 +3,12 @@
 #include "rrc_streams.h"
 #include "streams.h"
 #include "util/algo.h"
-#include "trng_data.h"
 
 namespace tfr {
 
 template <typename T>
 streams<T> create_sources() {
-	const auto counter1 = [] {
-		return create_counter_stream<T>(1);
-	};
-	const auto trng = [] {
-		return create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
-	};
-
-	return create_rrc_sources<T>({counter1()});
+	return create_rrc_sources<T>({create_counter_stream<T>(1)});
 }
 
 template <typename T>

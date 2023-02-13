@@ -18,7 +18,7 @@ bool write_append(const std::string& filename, const std::string& data) {
 	return write(filename, data, true);
 }
 
-void forEachFile(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>& callback) {
+void for_each_file(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>& callback) {
 	for (const auto& dirEntry : std::filesystem::directory_iterator(root)) {
 		if (!is_regular_file(dirEntry)) {
 			continue;
@@ -30,7 +30,7 @@ void forEachFile(const std::string& root, const std::string& matchExtension, con
 	}
 }
 
-void forEachFileRecursively(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>& callback) {
+void for_each_file_recursively(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>& callback) {
 	for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(root)) {
 		if (!is_regular_file(dirEntry)) {
 			continue;
@@ -42,7 +42,7 @@ void forEachFileRecursively(const std::string& root, const std::string& matchExt
 	}
 }
 
-void createDirectories(const std::string& path) {
+void create_directories(const std::string& path) {
 	if (std::filesystem::is_directory(path)) {
 		return;
 	}

@@ -32,11 +32,7 @@ streams<T> create_fail_sources() {
 
 template <typename T>
 streams<T> create_pass_sources() {
-	const auto trng = [] {
-		return create_stream_from_data_by_ref<T>("trng", get_trng_data<T>());
-		//return create_stream_from_mixer<T>(create_counter_stream<T>(1), get_default_mixer<T>());
-	};
-	return {trng()};
+	return {create_trng_stream<T>()};
 }
 
 inline auto create_test_inspect_callback() {
