@@ -10,20 +10,11 @@
 
 namespace tfr {
 
-std::optional<std::string> readAsString(const std::string& filename, size_t maxSize = SIZE_MAX);
-std::string readAsStringMustExist(const std::string& filename, size_t maxSize = SIZE_MAX);
-std::string readPartOfFileMustExist(const std::string& filename, size_t size);
-
 bool write(const std::string& filename, const std::string& data);
 bool write_append(const std::string& filename, const std::string& data);
-
 void forEachFile(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>&);
 void forEachFileRecursively(const std::string& root, const std::string& matchExtension, const std::function<void(const std::filesystem::path&)>&);
-
 void createDirectories(const std::string& path);
-void mustExist(const std::string& path);
-
-std::size_t countFiles(const std::string& dir);
 
 template <typename T>
 std::vector<T> readBinaryMustExist(const std::string& path, size_t max_elements = -1) {
