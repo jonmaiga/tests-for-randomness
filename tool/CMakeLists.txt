@@ -1,4 +1,4 @@
-project(tfr-test)
+project(tfr-tool)
 include_directories(src ../impl/src)
 file(GLOB_RECURSE SOURCES "src/*.*")
 add_executable(${PROJECT_NAME} ${SOURCES})

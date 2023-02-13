@@ -41,7 +41,7 @@ int main(int argc, char** args) {
 	using namespace tfr;
 	try {
 		if (argc != 3) {
-			std::cout << "Usage: mixer.exe root-path command\n";
+			std::cout << "Usage: tfr-tool.exe root-path command\n";
 			return 1;
 		}
 		const std::string root_path = args[1];
