@@ -78,7 +78,7 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		<< battery_result.test_subject_name
 		<< " 2^" << battery_result.power_of_two()
 		<< " with " << battery_result.samples << " samples using "
-		<< battery_result.bits << "-bits.\n";
+		<< battery_result.bits << "-bits (" << battery_result.passed_milliseconds / 1000 << "s)\n";
 	std::cout << "==========================================================================================\n";
 
 	const auto ras = get_analysis(battery_result);

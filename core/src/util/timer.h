@@ -9,11 +9,11 @@ public:
 	timer() : _start(std::chrono::steady_clock::now()) {
 	}
 
-	long long millie_seconds() const {
+	long long milliseconds() const {
 		return _passed<std::chrono::milliseconds>(std::chrono::steady_clock::now());
 	}
 
-	long long nano_seconds() const {
+	long long nanoseconds() const {
 		return _passed<std::chrono::nanoseconds>(std::chrono::steady_clock::now());
 	}
 

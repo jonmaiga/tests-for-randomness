@@ -108,6 +108,7 @@ struct test_battery_result {
 	uint64_t samples{};
 	int bits{};
 	test_result_map results;
+	uint64_t passed_milliseconds{};
 
 	void add(const test_result& r) {
 		results[r.key].push_back(r);
