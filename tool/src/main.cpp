@@ -1,12 +1,10 @@
 #include <iostream>
 #include "evaluate.h"
 #include "trng_data.h"
-#include "command/ppm_command.h"
 #include "command/exhaust_command.h"
 #include "command/inspect_test_command.h"
+#include "command/ppm_command.h"
 #include "command/test_command.h"
-#include "command/tune_command.h"
-
 #include "search/search_setup.h"
 
 namespace tfr {
@@ -58,6 +56,13 @@ int main(int argc, char** args) {
 			run_sffs<T>();
 			return 0;
 		}
+		if (command == "-inspect-test") {
+			inspect_test_command<uint32_t>();
+			inspect_test_command<uint64_t>();
+			inspect_per_test_command<uint32_t>();
+			inspect_per_test_command<uint64_t>();
+			return 0;
+		}
 		if (command == "-exhaust") {
 			exhaust_command();
 			return 0;
@@ -65,17 +70,6 @@ int main(int argc, char** args) {
 		if (command == "-ppm") {
 			using T = uint32_t;
 			ppm_command<T>();
-			return 0;
-		}
-		if (command == "-tune") {
-			tune_command();
-			return 0;
-		}
-		if (command == "-inspect-test") {
-			inspect_test_command<uint32_t>();
-			inspect_test_command<uint64_t>();
-			inspect_per_test_command<uint32_t>();
-			inspect_per_test_command<uint64_t>();
 			return 0;
 		}
 
