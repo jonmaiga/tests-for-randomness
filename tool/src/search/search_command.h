@@ -57,7 +57,7 @@ sffs_state start_search(const std::string& name, const sffs_config& config) {
 }
 
 template <typename T>
-void run_sffs() {
+void search_command() {
 	bit_vector seed;
 	seed.add(16, 5);
 	seed.add(15, 5);

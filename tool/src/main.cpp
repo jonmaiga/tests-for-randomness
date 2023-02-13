@@ -1,11 +1,12 @@
 #include <iostream>
+
 #include "evaluate.h"
 #include "trng_data.h"
 #include "command/exhaust_command.h"
 #include "command/inspect_test_command.h"
 #include "command/ppm_command.h"
 #include "command/test_command.h"
-#include "search/search_setup.h"
+#include "search/search_command.h"
 
 namespace tfr {
 
@@ -51,9 +52,9 @@ int main(int argc, char** args) {
 			test_command();
 			return 0;
 		}
-		if (command == "-sffs") {
+		if (command == "-search") {
 			using T = uint32_t;
-			run_sffs<T>();
+			search_command<T>();
 			return 0;
 		}
 		if (command == "-inspect-test") {
@@ -72,7 +73,6 @@ int main(int argc, char** args) {
 			ppm_command<T>();
 			return 0;
 		}
-
 
 		std::cout << "Unknown command\n";
 		return 1;
