@@ -1,21 +1,21 @@
 TODO:
 -----
-- Create issues instead of the list
-- make a comparison table with practrand mixers + prngs
-- license file
-- simple timer
-- bc3d still get pretty low p-values (1e-5)
-- use meta? show 3 meta + 3 sample results?
-- use trng to see if we can get evaluate_multi_pass working from 2^4 ? 
-- Select maximize or minimize in sffs.
-- Determine false positive rate
-- Speed up tests, bad CPU utilization atm, this should done in the jobs, keeping X threads, jumping between job queues.
+- license file (MIT?)
+- create issues instead of the list
+- make a short comparison table with practrand mixers + prngs
+- speed up tests, bad CPU utilization atm, this should done in the jobs, keeping X threads, jumping between job queues.
 	- for now just increasing sffs threads works (but probably has a ton of overhead)
-- ww, coupons at k=0 hangs...
-
+- mixers don't need to run bc2d tests (sac+bic is stronger)
 
 DONE:
 -----
+- ww, coupons at k=0 hangs... (not a practical problem)
+- Determine false positive rate (will ignore for now)
+- Select maximize or minimize in sffs (not doing)
+- use trng to see if we can get evaluate_multi_pass working from 2^4 (not doing)
+- use meta? show 3 meta + 3 sample results? using meta
+- bc3d still get pretty low p-values (1e-5) (removed it)
+- simple timer of tests
 - rename test to tool
 - use sffs to find out which test are effective (not very interesting)
 - Splits are added many times if same result formatter is used when n increases (see e.g. kendall_tau). (Have removed queries etc)
