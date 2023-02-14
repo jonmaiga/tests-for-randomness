@@ -1,11 +1,12 @@
 # 32-bit results
 _While TFR is new you should take the results with a grain of salt._
 
-Tests stop at 2^25 bytes.
+Tests stop at 2^25 stream elements have been tested.
 
 Source|TFR|
 -|-|
-trng|>22|
+file32::trng|>22|
+file32::drng|>25|
 mix32::xm3x|>25|
 mix32::xm2x|18|
 mix32::prospector|18|

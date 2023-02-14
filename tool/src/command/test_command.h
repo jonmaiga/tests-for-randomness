@@ -44,7 +44,7 @@ void test_command() {
 	std::ostringstream os;
 	os << "# " << bit_sizeof<T>() << "-bit results\n";
 	os << "_While TFR is new you should take the results with a grain of salt._\n\n";
-	os << "Tests stop at 2^" << max_power_of_two << " bytes.\n\n";
+	os << "Tests stop at 2^" << max_power_of_two << " stream elements have been tested.\n\n";
 	os << "Source|TFR|\n-|-|\n";
 	write(report_filename, os.str());
 	auto on_done_callback = [report_filename](const test_battery_result& br, bool pass) {
@@ -53,7 +53,7 @@ void test_command() {
 		write_append(report_filename, os.str());
 	};
 
-	const auto callback = create_result_callback(false, on_done_callback);
+	const auto callback = create_result_callback(true, on_done_callback);
 	const auto file_ns = "file" + std::to_string(bit_sizeof<T>()) + "::";
 	// trng
 	if (const auto* data = get_trng_data<T>()) {
@@ -62,7 +62,7 @@ void test_command() {
 
 	// drng
 	if (const auto* data = get_drng_data<T>()) {
-		evaluate_multi_pass(callback, create_data_test_setup<T>(file_ns + "drng", *data).range(10, 25));
+		evaluate_multi_pass(callback, create_data_test_setup<T>(file_ns + "drng", *data).range(10, 27));
 	}
 
 	// mixers
