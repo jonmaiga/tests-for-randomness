@@ -36,9 +36,8 @@ inline auto create_result_callback(bool print_intermediate_results = true, const
 	};
 }
 
-inline void test_command() {
-	using T = uint64_t;
-
+template <typename T>
+void test_command() {
 	constexpr int max_power_of_two = 20;
 
 	const auto report_filename = get_config().test_result_file_path<T>();
