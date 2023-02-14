@@ -35,9 +35,9 @@ const mixer64 mx3 = {
 const mixer64 nasam = {
 	"mix64::nasam", [](uint64_t x) {
 		x ^= ror(x, 25) ^ ror(x, 47);
-		x *= 0x9E6C63D0676A9A99UL;
+		x *= 0x9E6C63D0676A9A99ull;
 		x ^= x >> 23 ^ x >> 51;
-		x *= 0x9E6D62D06F6A9A9BUL;
+		x *= 0x9E6D62D06F6A9A9Bull;
 		x ^= x >> 23 ^ x >> 51;
 		return x;
 	}
@@ -59,9 +59,9 @@ const mixer64 xm2x = {
 const mixer64 moremur = {
 	"mix64::moremur", [](uint64_t x) {
 		x ^= x >> 27;
-		x *= 0x3C79AC492BA7B653UL;
+		x *= 0x3C79AC492BA7B653ull;
 		x ^= x >> 33;
-		x *= 0x1C69B3F74AC4AE35UL;
+		x *= 0x1C69B3F74AC4AE35ull;
 		x ^= x >> 27;
 		return x;
 	}

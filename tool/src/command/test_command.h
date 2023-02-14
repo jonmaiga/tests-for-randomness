@@ -57,12 +57,12 @@ void test_command() {
 	const auto file_ns = "file" + std::to_string(bit_sizeof<T>()) + "::";
 	// trng
 	if (const auto* data = get_trng_data<T>()) {
-		evaluate_multi_pass(callback, create_data_test_setup<T>(file_ns + "trng", *data).range(10, max_power_of_two));
+		evaluate_multi_pass(callback, create_data_test_setup<T>(file_ns + "trng", *data).range(10, 22));
 	}
 
 	// drng
 	if (const auto* data = get_drng_data<T>()) {
-		evaluate_multi_pass(callback, create_data_test_setup<T>(file_ns + "drng", *data).range(10, max_power_of_two));
+		evaluate_multi_pass(callback, create_data_test_setup<T>(file_ns + "drng", *data).range(10, 25));
 	}
 
 	// mixers
