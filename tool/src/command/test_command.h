@@ -54,15 +54,15 @@ void test_command() {
 	};
 
 	const auto callback = create_result_callback(false, on_done_callback);
-
+	const auto file_ns = "file" + std::to_string(bit_sizeof<T>()) + "::";
 	// trng
 	if (const auto* data = get_trng_data<T>()) {
-		evaluate_multi_pass(callback, create_data_test_setup<T>("trng", *data).range(10, max_power_of_two));
+		evaluate_multi_pass(callback, create_data_test_setup<T>(file_ns + "trng", *data).range(10, max_power_of_two));
 	}
 
 	// drng
 	if (const auto* data = get_drng_data<T>()) {
-		evaluate_multi_pass(callback, create_data_test_setup<T>("drng", *data).range(10, max_power_of_two));
+		evaluate_multi_pass(callback, create_data_test_setup<T>(file_ns + "drng", *data).range(10, max_power_of_two));
 	}
 
 	// mixers
