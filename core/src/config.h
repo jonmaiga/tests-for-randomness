@@ -17,6 +17,11 @@ struct config {
 	}
 
 	template <typename T>
+	std::string test_result_file_path() const {
+		return result_dir() + "result_" + std::to_string(bit_sizeof<T>()) + ".md";
+	}
+
+	template <typename T>
 	std::string ppm_dir() const {
 		return result_dir() + "ppm" + std::to_string(bit_sizeof<T>()) + "/";
 	}

@@ -124,7 +124,7 @@ inline bool contains(const std::string& str, const std::string& toFind) {
 	return str.find(toFind) != std::string::npos;
 }
 
-inline bool containsIgnoreCase(const std::string& str, const std::string& toFind) {
+inline bool contains_ignore_case(const std::string& str, const std::string& toFind) {
 	auto it = std::search(str.begin(), str.end(), toFind.begin(), toFind.end(), [](char ch1, char ch2) {
 		                      return std::tolower(ch1) == std::tolower(ch2);
 	                      }
@@ -206,6 +206,26 @@ inline merge_bins_result merge_bins(
 	result.expected.back() += expected_sum;
 	result.observed.back() += observed_sum;
 	return result;
+}
+
+inline std::string replace_all(std::string str, const std::string& find, const std::string& replace) {
+	if (find.empty()) {
+		return str;
+	}
+	size_t pos = str.find(find);
+	while (pos != std::string::npos) {
+		str.replace(pos, find.size(), replace);
+		pos = str.find(find, pos + replace.size());
+	}
+	return str;
+}
+
+inline std::string escape_for_md(std::string text) {
+	static const std::vector<std::string> special_chars = {"\\", "`", "*", "_", "{", "}", "[", "]", "(", ")", "#", "+", "-", ".", "!"};
+	for (const auto& c : special_chars) {
+		text = replace_all(text, c, "\\" + c);
+	}
+	return text;
 }
 
 }
