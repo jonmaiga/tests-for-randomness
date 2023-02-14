@@ -10,7 +10,7 @@ using mixer32 = mixer<uint32_t>;
 namespace mix32 {
 
 const mixer32 xm3x = {
-	"xm3x", [](uint32_t x) {
+	"mix32::xm3x", [](uint32_t x) {
 		constexpr uint32_t C = 2471660141;
 		x ^= (x >> 16);
 		x *= C;
@@ -24,7 +24,7 @@ const mixer32 xm3x = {
 };
 
 const mixer32 xm2x = {
-	"xm2x", [](uint32_t x) {
+	"mix32::xm2x", [](uint32_t x) {
 		constexpr uint32_t C = 1939508389; //2471660141;
 		x ^= x >> 16;
 		x *= C;
@@ -36,7 +36,7 @@ const mixer32 xm2x = {
 };
 
 const mixer32 prospector = {
-	"prospector", [](uint32_t x) {
+	"mix32::prospector", [](uint32_t x) {
 		x ^= x >> 15;
 		x *= 0x2c1b3c6dU;
 		x ^= x >> 12;
@@ -47,7 +47,7 @@ const mixer32 prospector = {
 };
 
 const mixer32 prospector_boost = {
-	"prospector_boost", [](uint32_t x) {
+	"mix32::prospector_boost", [](uint32_t x) {
 		x ^= x >> 16;
 		x *= 0x21f0aaad;
 		x ^= x >> 15;
@@ -58,7 +58,7 @@ const mixer32 prospector_boost = {
 };
 
 const mixer32 h2_sql = {
-	"h2sql", [](uint32_t x) {
+	"mix32::h2sql", [](uint32_t x) {
 		// Thomas Mueller
 		x = ((x >> 16) ^ x) * 0x45d9f3bU;
 		x = ((x >> 16) ^ x) * 0x45d9f3bU;
@@ -68,7 +68,7 @@ const mixer32 h2_sql = {
 };
 
 const mixer32 murmur = {
-	"murmur", [](uint32_t x) {
+	"mix32::murmur", [](uint32_t x) {
 		x ^= x >> 16;
 		x *= 0x85ebca6bU;
 		x ^= x >> 13;
@@ -79,7 +79,7 @@ const mixer32 murmur = {
 };
 
 const mixer32 xmx = {
-	"xmx", [](uint32_t x) {
+	"mix32::xmx", [](uint32_t x) {
 		constexpr uint32_t C = 2471660141;
 		x ^= x >> 15;
 		x *= C;
@@ -89,7 +89,7 @@ const mixer32 xmx = {
 };
 
 const mixer32 wang_1 = {
-	"wang_1", [](uint32_t x) {
+	"mix32::wang_1", [](uint32_t x) {
 		x = (x ^ 61) ^ (x >> 16);
 		x *= 9;
 		x ^= x >> 4;
@@ -100,7 +100,7 @@ const mixer32 wang_1 = {
 };
 
 const mixer32 jenkins = {
-	"jenkins", [](uint32_t x) {
+	"mix32::jenkins", [](uint32_t x) {
 		x = (x + 0x7ed55d16) + (x << 12);
 		x = (x ^ 0xc761c23c) ^ (x >> 19);
 		x = (x + 0x165667b1) + (x << 5);
@@ -113,7 +113,7 @@ const mixer32 jenkins = {
 
 // uses 64-bits
 const mixer32 splitmix64 = {
-	"splitmix64", [](uint32_t x) {
+	"mix32::splitmix64", [](uint32_t x) {
 		uint64_t z = x;
 		z ^= z >> 33;
 		z *= 0x62a9d9ed799705f5ull;

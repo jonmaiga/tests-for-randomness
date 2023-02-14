@@ -19,7 +19,7 @@ mixer<T> create_mixer_from_stream(const std::string& name, stream<T> source) {
 namespace mix64 {
 
 const mixer64 mx3 = {
-	"mx3", [](uint64_t x) {
+	"mix64::mx3", [](uint64_t x) {
 		constexpr uint64_t C = 0xbea225f9eb34556d;
 		x ^= (x >> 32);
 		x *= C;
@@ -33,7 +33,7 @@ const mixer64 mx3 = {
 };
 
 const mixer64 nasam = {
-	"nasam", [](uint64_t x) {
+	"mix64::nasam", [](uint64_t x) {
 		x ^= ror(x, 25) ^ ror(x, 47);
 		x *= 0x9E6C63D0676A9A99UL;
 		x ^= x >> 23 ^ x >> 51;
@@ -45,7 +45,7 @@ const mixer64 nasam = {
 
 
 const mixer64 xm2x = {
-	"xm2x", [](uint64_t x) {
+	"mix64::xm2x", [](uint64_t x) {
 		constexpr uint64_t C = 0xe9846af9b1a615dull;
 		x ^= x >> 32;
 		x *= C;
@@ -57,7 +57,7 @@ const mixer64 xm2x = {
 };
 
 const mixer64 moremur = {
-	"moremur", [](uint64_t x) {
+	"mix64::moremur", [](uint64_t x) {
 		x ^= x >> 27;
 		x *= 0x3C79AC492BA7B653UL;
 		x ^= x >> 33;
@@ -68,7 +68,7 @@ const mixer64 moremur = {
 };
 
 const mixer64 lea64 = {
-	"lea64", [](uint64_t x) {
+	"mix64::lea64", [](uint64_t x) {
 		x ^= (x >> 32);
 		x *= 0xdaba0b6eb09322e3ull;
 		x ^= (x >> 32);
@@ -78,7 +78,7 @@ const mixer64 lea64 = {
 };
 
 const mixer64 degski64 = {
-	"degski64", [](uint64_t x) {
+	"mix64::degski64", [](uint64_t x) {
 		x ^= (x >> 32);
 		x *= 0xd6e8feb86659fd93ull;
 		x ^= (x >> 32);
@@ -88,7 +88,7 @@ const mixer64 degski64 = {
 };
 
 const mixer64 split_mix_v13 = {
-	"splitmix_v13", [](uint64_t x) {
+	"mix64::splitmix_v13", [](uint64_t x) {
 		x ^= x >> 30;
 		x *= 0xbf58476d1ce4e5b9ull;
 		x ^= x >> 27;
@@ -99,7 +99,7 @@ const mixer64 split_mix_v13 = {
 };
 
 const mixer64 split_mix = {
-	"splitmix", [](uint64_t x) {
+	"mix64::splitmix", [](uint64_t x) {
 		x ^= x >> 30;
 		x *= 0xbf58476d1ce4e5b9;
 		x ^= x >> 27;
@@ -110,7 +110,7 @@ const mixer64 split_mix = {
 };
 
 const mixer64 murmur3 = {
-	"murmur3", [](uint64_t x) {
+	"mix64::murmur3", [](uint64_t x) {
 		x ^= x >> 33;
 		x *= 0xff51afd7ed558ccd;
 		x ^= x >> 33;
@@ -121,7 +121,7 @@ const mixer64 murmur3 = {
 };
 
 const mixer64 xmx = {
-	"xmx", [](uint64_t x) {
+	"mix64::xmx", [](uint64_t x) {
 		x ^= x >> 32;
 		x *= 0xe9846af9b1a615dull;
 		x ^= x >> 29;
@@ -130,7 +130,7 @@ const mixer64 xmx = {
 };
 
 const mixer64 xxh3 = {
-	"xxh3", [](uint64_t x) {
+	"mix64::xxh3", [](uint64_t x) {
 		x ^= x >> 37;
 		x *= 0x165667919E3779F9ULL;
 		x ^= x >> 32;
@@ -139,7 +139,7 @@ const mixer64 xxh3 = {
 };
 
 const mixer64 fast_hash = {
-	"fast_hash", [](uint64_t x) {
+	"mix64::fast_hash", [](uint64_t x) {
 		x ^= (x >> 23);
 		x *= 0x2127599bf4325c37ull;
 		x ^= (x >> 47);

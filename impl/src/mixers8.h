@@ -10,7 +10,7 @@ using mixer8 = mixer<uint8_t>;
 namespace mix8 {
 
 const mixer8 xm3x = {
-	"xm3x-8", [](uint8_t x) {
+	"mix8::xm3x-8", [](uint8_t x) {
 		constexpr uint8_t C = 119;
 		x ^= (x >> 4);
 		x *= C;
@@ -24,7 +24,7 @@ const mixer8 xm3x = {
 };
 
 const mixer8 xm2x = {
-	"xm2x-8", [](uint8_t x) {
+	"mix8::xm2x-8", [](uint8_t x) {
 		constexpr uint8_t C = 117;
 		x ^= x >> 4;
 		x *= C;

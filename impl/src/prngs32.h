@@ -19,7 +19,7 @@ namespace rng32 {
 
 inline prng32 xm3x(uint32_t seed) {
 	return {
-		"xm3x", [state = seed]() mutable {
+		"rng32::xm3x", [state = seed]() mutable {
 			return state = mix32::xm3x(state);
 		}
 	};
@@ -27,7 +27,7 @@ inline prng32 xm3x(uint32_t seed) {
 
 inline prng32 xm2x(uint32_t seed) {
 	return {
-		"xm2x", [state = seed]() mutable {
+		"rng32::xm2x", [state = seed]() mutable {
 			return state = mix32::xm2x(state);
 		}
 	};
@@ -35,7 +35,7 @@ inline prng32 xm2x(uint32_t seed) {
 
 inline prng32 xmx(uint32_t seed) {
 	return {
-		"xmx", [state = seed]() mutable {
+		"rng32::xmx", [state = seed]() mutable {
 			return state = mix32::xmx(state);
 		}
 	};
@@ -44,7 +44,7 @@ inline prng32 xmx(uint32_t seed) {
 inline prng32 pcg(uint32_t seed) {
 	pcg32 pcg(seed);
 	return {
-		"pcg-" + std::to_string(seed), [pcg]() mutable {
+		"rng32::pcg-" + std::to_string(seed), [pcg]() mutable {
 			return pcg();
 		}
 	};
@@ -54,7 +54,7 @@ inline prng32 xoshiro128plusplus(uint32_t seed) {
 	// https://prng.di.unimi.it/xoshiro128plusplus.c
 	uint32_t s[4]{seed, seed, seed, seed};
 	return {
-		"xoshiro128++", [s]() mutable {
+		"rng32::xoshiro128++", [s]() mutable {
 
 			const uint32_t result = rol(s[0] + s[3], 7) + s[0];
 			const uint32_t t = s[1] << 9;
@@ -76,7 +76,7 @@ inline prng32 xoshiro128plusplus(uint32_t seed) {
 inline prng32 xorshift(uint32_t seed) {
 	/* Algorithm "xor" from p. 4 of Marsaglia, "Xorshift RNGs" */
 	return {
-		"xorshift", [x = seed]() mutable {
+		"rng32::xorshift", [x = seed]() mutable {
 			x ^= x << 13;
 			x ^= x >> 17;
 			x ^= x << 5;
@@ -88,7 +88,7 @@ inline prng32 xorshift(uint32_t seed) {
 inline prng32 mt19337(uint32_t seed) {
 	std::mt19937 gen(seed);
 	return {
-		"mt", [gen]() mutable {
+		"rng32::mt19937", [gen]() mutable {
 			return gen();
 		}
 	};
@@ -97,7 +97,7 @@ inline prng32 mt19337(uint32_t seed) {
 inline prng32 minstd_rand(uint32_t seed) {
 	std::minstd_rand gen(seed);
 	return {
-		"minstd_rand", [gen]() mutable {
+		"rng32::minstd_rand", [gen]() mutable {
 			return gen();
 		}
 	};
@@ -105,7 +105,7 @@ inline prng32 minstd_rand(uint32_t seed) {
 
 inline prng32 rdrand(uint32_t) {
 	return {
-		"rdrand", []() mutable {
+		"rng32::rdrand", []() mutable {
 			return rdrand_32();
 		}
 	};
@@ -113,7 +113,7 @@ inline prng32 rdrand(uint32_t) {
 
 inline prng32 aes(uint32_t seed) {
 	return {
-		"aes", [state = seed]() mutable {
+		"rng32::aes", [state = seed]() mutable {
 			for (int i = 0; i < 1; ++i) {
 				state = aes_mix(state);
 			}
@@ -125,7 +125,7 @@ inline prng32 aes(uint32_t seed) {
 inline prng32 aes128(uint32_t seed) {
 	std::array state{seed, seed, seed, seed};
 	return {
-		"aes128", [state]() mutable {
+		"rng32::aes128", [state]() mutable {
 			return aes_prng128(state);
 		}
 	};
