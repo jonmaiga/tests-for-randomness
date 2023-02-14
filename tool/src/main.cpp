@@ -49,7 +49,8 @@ int main(int argc, char** args) {
 		const std::string command = args[2];
 		std::cout << "Executing command " << command << "\n";
 		if (command == "-test") {
-			test_command();
+			test_command<uint32_t>();
+			test_command<uint64_t>();
 			return 0;
 		}
 		if (command == "-search") {
