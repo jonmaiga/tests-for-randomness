@@ -3,7 +3,6 @@
 #include "statistics/avalanche.h"
 #include "statistics/basic.h"
 #include "statistics/bit_correlation.h"
-#include "statistics/correlation.h"
 #include "statistics/coupon.h"
 #include "statistics/divisibility.h"
 #include "statistics/gap.h"
