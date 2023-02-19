@@ -37,7 +37,7 @@ std::vector<test_definition<T>> get_tests() {
 
 		// mixer tests
 		{test_type::sac, {}, avalanche_mixer_sac_test<T>, "sac"},
-		{test_type::bic, {}, avalanche_mixer_bic_test<T>, "bic", 15},
+		{test_type::bic, {}, avalanche_mixer_bic_test<T>, "bic", 25},
 	};
 }
 
