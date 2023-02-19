@@ -28,7 +28,7 @@ std::vector<test_definition<T>> get_tests() {
 		{test_type::mean, mean_test<T>, {}, "mean"},
 		{test_type::uniform, uniform_test<T>, {}, "uniform"},
 
-		{test_type::wald_wolfowitz_runs, wald_wolfowitz_test<T>, {}, "ww"},
+		{test_type::wald_wolfowitz_runs, wald_wolfowitz_test<T>, {}, "runs"},
 		{test_type::bit_count_2d, bit_count_2d_test<T>, {}, "bc2d"},
 
 		{test_type::gap, gap_test<T>, {}, "gap"},
