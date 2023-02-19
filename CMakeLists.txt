@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 project(tests-for-randomness)
 link_directories(/usr/local/lib/)
 
