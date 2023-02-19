@@ -10,7 +10,6 @@
 #include "statistics/uniform.h"
 #include "statistics/waldwolfowitz.h"
 
-
 namespace tfr {
 
 template <typename T>
@@ -19,6 +18,7 @@ struct test_definition {
 	stream_test<T> test_stream;
 	mixer_test<T> test_mixer;
 	std::string name;
+	std::optional<int> max_power_of_two;
 };
 
 template <typename T>
@@ -37,7 +37,7 @@ std::vector<test_definition<T>> get_tests() {
 
 		// mixer tests
 		{test_type::sac, {}, avalanche_mixer_sac_test<T>, "sac"},
-		{test_type::bic, {}, avalanche_mixer_bic_test<T>, "bic"},
+		{test_type::bic, {}, avalanche_mixer_bic_test<T>, "bic", 15},
 	};
 }
 
@@ -50,17 +50,6 @@ test_definition<T> get_test_definition(test_type type) {
 	}
 	assertion(false, "could not find test definition");
 	return {};
-}
-
-template <typename T>
-std::vector<test_definition<T>> get_most_effective_tests() {
-	return {
-		get_test_definition<T>(test_type::uniform),
-		get_test_definition<T>(test_type::divisibility), // stops 32/32/28/1049346062286479453 at 17 instead of 25
-		get_test_definition<T>(test_type::bit_count_2d),
-		get_test_definition<T>(test_type::sac),
-
-	};
 }
 
 inline std::string get_test_name(test_type type) {

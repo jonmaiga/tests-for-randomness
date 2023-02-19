@@ -80,9 +80,12 @@ test_jobs create_test_jobs(const uint64_t n, const test_setup<T>& setup) {
 	test_jobs jobs;
 	const auto& test_subject_name = setup.test_subject_name;
 	const auto& mix = setup.mix;
-
+	const auto power_of_two = std::floor(std::log2(n));
 	for (const auto& test : setup.tests) {
 		const auto& test_def = get_test_definition<T>(test);
+		if (power_of_two > test_def.max_power_of_two.value_or(10000)) {
+			continue;
+		}
 		for (const auto& source : setup.sources) {
 			if (test_def.test_mixer && mix) {
 				// mixer test
