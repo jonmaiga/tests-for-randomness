@@ -2,6 +2,7 @@
 
 #include "combiners32.h"
 #include "evaluate.h"
+#include "format_result.h"
 #include "mixers32.h"
 #include "mixers64.h"
 #include "mixers8.h"
@@ -38,18 +39,20 @@ inline auto create_result_callback(bool print_intermediate_results = true, const
 
 template <typename T>
 void test_command() {
-	constexpr int max_power_of_two = 20;
+	constexpr int max_power_of_two = 15;
 
 	const auto report_filename = get_config().test_result_file_path<T>();
 	std::ostringstream os;
 	os << "# " << bit_sizeof<T>() << "-bit results\n";
 	os << "_While TFR is new you should take the results with a grain of salt._\n\n";
 	os << "Tests stop at 2^" << max_power_of_two << " stream elements have been tested.\n\n";
-	os << "Source|TFR|\n-|-|\n";
+	os << "Source|TFR|Failures|\n-|-|-|\n";
 	write(report_filename, os.str());
 	auto on_done_callback = [report_filename](const test_battery_result& br, bool pass) {
 		std::ostringstream os;
-		os << escape_for_md(br.test_subject_name) << "|" << (pass ? ">" : "") << br.power_of_two() << "|\n";
+		os << escape_for_md(br.test_subject_name) << "|"
+			<< (pass ? ">" : "") << br.power_of_two() << "|"
+			<< join(get_failed_tests(get_analysis(br)), ", ") << "\n";
 		write_append(report_filename, os.str());
 	};
 

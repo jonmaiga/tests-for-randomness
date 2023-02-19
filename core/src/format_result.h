@@ -71,6 +71,23 @@ inline std::vector<result_analysis> filter_to_show(std::vector<result_analysis> 
 	return to_show;
 }
 
+inline std::vector<std::string> get_tests(const test_battery_result& br) {
+	std::set<std::string> test_names;
+	for (const auto& result : br.results) {
+		test_names.insert(get_test_name(result.first.type));
+	}
+	return std::vector(test_names.begin(), test_names.end());
+}
+
+inline std::vector<std::string> get_failed_tests(const std::vector<result_analysis>& ras) {
+	std::set<std::string> test_names;
+	for (const auto& ra : ras) {
+		if (!ra.analysis.pass()) {
+			test_names.insert(get_test_name(ra.key.type));
+		}
+	}
+	return std::vector(test_names.begin(), test_names.end());
+}
 
 inline void print_battery_result(const test_battery_result& battery_result) {
 	std::cout << "==========================================================================================\n";
@@ -79,13 +96,7 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		<< " 2^" << battery_result.power_of_two()
 		<< " with " << battery_result.samples << " samples using "
 		<< battery_result.bits << "-bits (" << battery_result.passed_milliseconds / 1000 << "s)\n";
-
-	std::set<std::string> test_names;
-	for (const auto& result : battery_result.results) {
-		test_names.insert(get_test_name(result.first.type));
-	}
-	std::cout << join(std::vector(test_names.begin(), test_names.end()), ",") << "\n";
-
+	std::cout << join(get_tests(battery_result), ",") << "\n";
 	std::cout << "==========================================================================================\n";
 
 	const auto ras = get_analysis(battery_result);
