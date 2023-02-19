@@ -39,7 +39,7 @@ inline auto create_result_callback(bool print_intermediate_results = true, const
 
 template <typename T>
 void test_command() {
-	constexpr int max_power_of_two = 15;
+	constexpr int max_power_of_two = 25;
 
 	const auto report_filename = get_config().test_result_file_path<T>();
 	std::ostringstream os;
