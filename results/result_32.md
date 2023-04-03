@@ -1,7 +1,7 @@
 # 32-bit results
 _While TFR is new you should take the results with a grain of salt._
 
-Tests stop at 2^30 stream elements have been tested.
+Tests stop at 2^35 stream elements have been tested.
 
 Source|TFR|Failures|
 -|-|-|
@@ -19,9 +19,9 @@ mix32::jenkins|10|bic, coupon, gap, mean, runs, sac
 rng32::xm3x|26|bc2d, uniform
 rng32::xm2x|22|bc2d, uniform
 rng32::xmx|20|bc2d
-rng32::pcg\-1|>30|
-rng32::xoshiro128\+\+|>30|
-rng32::mt19937|>30|
+rng32::pcg\-1|>35|
+rng32::xoshiro128\+\+|>35|
+rng32::mt19937|>35|
 rng32::xorshift|16|bc2d
 rng32::minstd\_rand|10|coupon, gap, mean, permutation, uniform
 combine32::xmx|10|coupon, divisibility, gap, mean, permutation, runs, uniform
