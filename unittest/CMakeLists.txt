@@ -1,4 +1,5 @@
 project(tfr-unittest)
+set(gtest_disable_pthreads ON)
 include_directories(src ../impl/src)
 enable_testing()
 add_subdirectory("../googletest-release-1.12.1" "googletest-release-1.12.1")
