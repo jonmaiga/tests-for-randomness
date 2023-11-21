@@ -2,11 +2,11 @@
 
 #include <iostream>
 
+#include "prng.h"
 #include "util/table.h"
 #include "util/statistic_analysis.h"
 
 namespace tfr {
-
 template <typename T>
 void draw_histogram(const T& data) {
 	std::vector<uint64_t> bins(30);
@@ -14,7 +14,7 @@ void draw_histogram(const T& data) {
 	for (const auto r : data) {
 		assertion(is_valid_between_01(r), "invalid or out of range histogram value, rescale first.");
 		const size_t index = std::min(static_cast<size_t>(r * bins.size()), bins.size() - 1);
-		++ bins[index];
+		++bins[index];
 		max_count = std::max(bins[index], max_count);
 	}
 	const double scale = std::min(1., 80. / static_cast<double>(max_count));
@@ -37,6 +37,10 @@ inline std::string to_string(const std::string& name, const double p_value) {
 
 inline std::string to_string(const test_key& key) {
 	return get_test_name(key.type) + "-" + key.name;
+}
+
+inline std::string to_string(const seed_data& seed) {
+	return "[" + std::to_string(seed.s64()) + ", ...]";
 }
 
 inline std::vector<result_analysis> filter_to_show(std::vector<result_analysis> results) {
@@ -123,7 +127,5 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		std::cout << failures << " failures and " << suspicious << " suspicious results.\n";
 		std::cout << "\n";
 	}
-
 }
-
 }

@@ -76,13 +76,18 @@ test_setup<T> create_mixer_test_setup(const mixer<T> mixer) {
 
 template <typename T>
 test_setup<T> create_prng_test_setup(std::function<stream<T>(const seed_data& seed)> create_prng) {
+	std::string test_subject_name;
 	streams<T> to_test;
 	for (auto seed : generate_seeds<T>(4 * bit_sizeof<T>())) {
-		to_test.push_back(create_prng(seed));
+		auto& prng = to_test.emplace_back(create_prng(seed));
+		if (test_subject_name.empty()) {
+			test_subject_name = prng.name;
+		}
+		prng.name += " seed=" + to_string(seed);
 	}
 
 	return test_setup<T>{
-		to_test.front().name,
+		test_subject_name,
 		to_test,
 		default_test_types,
 	};
