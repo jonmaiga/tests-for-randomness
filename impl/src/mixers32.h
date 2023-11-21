@@ -25,7 +25,7 @@ const mixer32 xm3x = {
 
 const mixer32 xm2x = {
 	"mix32::xm2x", [](uint32_t x) {
-		constexpr uint32_t C = 1939508389; //2471660141;
+		constexpr uint32_t C = 1939508389;
 		x ^= x >> 16;
 		x *= C;
 		x ^= x >> 15;

@@ -63,7 +63,7 @@ double sffs_fitness_test(const mixer<T>& mixer) {
 
 template <typename T>
 double sffs_fitness_test_as_prng(const mixer<T>& mixer) {
-	const auto setup = create_prng_test_setup<T>([mixer](T seed) {
+	const auto setup = create_prng_test_setup<T>([mixer](const seed_data& seed) {
 		return create_prng_from_mixer<T>(mixer, seed);
 	});
 	return sffs_fitness_test<T>(setup);

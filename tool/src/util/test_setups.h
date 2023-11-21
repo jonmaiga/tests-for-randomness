@@ -1,21 +1,34 @@
 #pragma once
 
+#include "mixers64.h"
+#include "prng.h"
 #include "util/stream_sources.h"
 
 namespace tfr {
-
 template <typename T>
-std::vector<T> generate_seeds(int n) {
-	std::set<T> seeds;
+std::vector<seed_data> generate_seeds(int n) {
+	std::set<T> added;
 	for (const auto& seed : get_rrc_permutations<T>(1)) {
-		seeds.insert(seed);
+		added.insert(seed);
 	}
-	uint32_t x = 1234;
+	T x = 1234;
 	const auto mix = get_default_mixer<T>();
-	while (seeds.size() < n) {
-		seeds.insert(mix(x++));
+	while (added.size() < n) {
+		added.insert(mix(x++));
 	}
-	return {seeds.begin(), seeds.end()};
+
+	std::vector<seed_data> results;
+	uint64_t y = 12345;
+	for (auto primary : added) {
+		seed_data s = {
+			static_cast<uint64_t>(primary),
+			mix64::mx3(y++),
+			mix64::mx3(y++),
+			mix64::mx3(y++)
+		};
+		results.push_back(s);
+	}
+	return results;
 }
 
 template <typename T>
@@ -62,7 +75,7 @@ test_setup<T> create_mixer_test_setup(const mixer<T> mixer) {
 }
 
 template <typename T>
-test_setup<T> create_prng_test_setup(std::function<stream<T>(T seed)> create_prng) {
+test_setup<T> create_prng_test_setup(std::function<stream<T>(const seed_data& seed)> create_prng) {
 	streams<T> to_test;
 	for (auto seed : generate_seeds<T>(4 * bit_sizeof<T>())) {
 		to_test.push_back(create_prng(seed));
@@ -74,6 +87,4 @@ test_setup<T> create_prng_test_setup(std::function<stream<T>(T seed)> create_prn
 		default_test_types,
 	};
 }
-
-
 }
