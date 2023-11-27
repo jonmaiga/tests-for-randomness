@@ -4,11 +4,9 @@
 #include "stream.h"
 
 namespace tfr {
-
 using prng64 = prng<uint64_t>;
 
 namespace rng64 {
-
 inline prng64 xm3x(const seed_data& seed) {
 	return {
 		"rng64::xm3x", [state = seed.s64()]() mutable {
@@ -34,7 +32,7 @@ inline prng64 xmx(const seed_data& seed) {
 }
 
 inline prng64 pcg(const seed_data& seed) {
-	pcg64 pcg(seed.s64());
+	pcg64_once_insecure pcg(seed.s64());
 	return {
 		"rng64::pcg", [pcg]() mutable {
 			return pcg();
@@ -73,11 +71,27 @@ inline prng64 xoroshiro128plus(const seed_data& seed) {
 	};
 }
 
+inline prng64 splitmix(const seed_data& seed) {
+	return {
+		"rng64::xoroshiro128+", [state=seed.s64()]() mutable {
+			state += 0x9E3779B97F4A7C15;
+			uint64_t x = state;
+			// David Stafford's Mix13 for MurmurHash3's 64-bit finalizer
+			x ^= x >> 30;
+			x *= 0xBF58476D1CE4E5B9;
+			x ^= x >> 27;
+			x *= 0x94D049BB133111EB;
+			x ^= x >> 31;
+			return x;
+		}
+	};
+}
 }
 
 template <>
 inline std::vector<prng_factory<uint64_t>> get_prngs() {
 	return {
+		rng64::splitmix,
 		rng64::pcg,
 		rng64::xoroshiro128plus,
 		rng64::xorshift128plus,
@@ -86,5 +100,4 @@ inline std::vector<prng_factory<uint64_t>> get_prngs() {
 		rng64::xm3x,
 	};
 }
-
 }
