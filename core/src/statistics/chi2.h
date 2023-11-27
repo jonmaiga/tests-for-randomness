@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <vector>
 
 #include "distributions.h"
@@ -7,13 +8,27 @@
 #include "util/math.h"
 
 namespace tfr {
-
-inline uint64_t get_bin_count(uint64_t n) {
+inline uint64_t get_bin_count_mathematica(uint64_t n) {
 	return static_cast<uint64_t>(std::ceil(2 * pow(n, .4)));
 }
 
 template <typename T>
-std::vector<uint64_t> bin_data_for_chi2(const T& data01) {
+auto create_bin_count_pow2() {
+	return [](uint64_t n) {
+		const auto mma_bins = get_bin_count_mathematica(n);
+		const auto bins_log2 = static_cast<uint64_t>(std::ceil(std::log2(mma_bins)));
+		const auto bins_pow2 = static_cast<uint64_t>(1) << bins_log2;
+		if constexpr (std::is_same_v<T, uint64_t>) {
+			return bins_pow2;
+		}
+		return std::min(bins_pow2, static_cast<uint64_t>(std::numeric_limits<T>::max()) + 1);
+	};
+}
+
+using bin_count_function = std::function<uint64_t(uint64_t)>;
+
+template <typename T>
+std::vector<uint64_t> bin_data_for_chi2(const T& data01, const bin_count_function& get_bin_count) {
 	static_assert(std::is_floating_point_v<typename T::value_type>);
 	std::vector<uint64_t> bins(get_bin_count(data01.size()));
 	const auto bin_count = static_cast<double>(bins.size());
@@ -47,12 +62,11 @@ inline std::optional<statistic> chi2_stats(const std::vector<uint64_t>& bins, do
 	return chi2_stats(bins.size(), to_data(bins), to_data(expected_count), expected_threshold);
 }
 
-template <typename T>
-std::optional<statistic> chi2_uniform_stats(const T& data01) {
-	static_assert(std::is_floating_point_v<typename T::value_type>);
-	const auto& bins = bin_data_for_chi2(data01);
+template <typename RangeT>
+std::optional<statistic> chi2_uniform_stats(const RangeT& data01, const bin_count_function& bin_counter) {
+	static_assert(std::is_floating_point_v<typename RangeT::value_type>);
+	const auto& bins = bin_data_for_chi2(data01, bin_counter);
 	const double expected_count = static_cast<double>(data01.size()) / static_cast<double>(bins.size());
 	return chi2_stats(bins, expected_count);
 }
-
 }
