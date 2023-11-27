@@ -1,10 +1,12 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "util/assertion.h"
 #include "util/bitwise.h"
 
 namespace tfr {
-
 enum class rrc_type {
 	identity,
 	reverse,
@@ -12,15 +14,15 @@ enum class rrc_type {
 	reverse_complement
 };
 
-const auto rrc_types = {rrc_type::identity, rrc_type::reverse, rrc_type::complement, rrc_type::reverse_complement};
+constexpr auto rrc_types = {rrc_type::identity, rrc_type::reverse, rrc_type::complement, rrc_type::reverse_complement};
 
 template <typename T>
 T permute(T c, int rot, rrc_type type) {
 	switch (type) {
-	case rrc_type::identity: return ror(c, rot);
-	case rrc_type::reverse: return ror(reverse_bits(c), rot);
-	case rrc_type::complement: return ror(~c, rot);
-	case rrc_type::reverse_complement: return ror(~reverse_bits(c), rot);
+	case rrc_type::identity: return ror<T>(c, rot);
+	case rrc_type::reverse: return ror<T>(reverse_bits(c), rot);
+	case rrc_type::complement: return ror<T>(~c, rot);
+	case rrc_type::reverse_complement: return ror<T>(~reverse_bits(c), rot);
 	}
 	assertion(false, "unknown type");
 	return 0;
@@ -47,6 +49,4 @@ std::vector<T> get_rrc_permutations(T x) {
 	}
 	return xs;
 }
-
-
 }
