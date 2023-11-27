@@ -1,17 +1,22 @@
 #pragma once
 
+#include "combiners8.h"
+#include "combiners16.h"
 #include "combiners32.h"
+#include "combiners64.h"
 #include "evaluate.h"
 #include "format_result.h"
+#include "mixers8.h"
+#include "mixers16.h"
 #include "mixers32.h"
 #include "mixers64.h"
-#include "mixers8.h"
+#include "prngs8.h"
+#include "prngs16.h"
 #include "prngs32.h"
 #include "prngs64.h"
 #include "util/test_setups.h"
 
 namespace tfr {
-
 using on_done_callback = std::function<void(test_battery_result, bool pass)>;
 
 inline auto create_result_callback(bool print_intermediate_results = true, const on_done_callback& on_done = {}) {
@@ -83,6 +88,4 @@ void test_command() {
 		evaluate_multi_pass(callback, create_combiner_test_setup<T>(combiner).range(10, max_power_of_two));
 	}
 }
-
-
 }
