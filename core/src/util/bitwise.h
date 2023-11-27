@@ -28,12 +28,14 @@ constexpr int shift_sizeof() {
 template <typename T>
 T ror(T v, int r) {
 	constexpr auto Bits = bit_sizeof<T>();
+	assertion(r >= 0 && r < Bits, "ror out of range, should be in range 0 < r < bits in type");
 	return (v << r) | (v >> (Bits - r));
 }
 
 template <typename T>
 T rol(T v, int r) {
 	constexpr auto Bits = bit_sizeof<T>();
+	assertion(r >= 0 && r < Bits, "rol out of range, should be in range 0 < r < bits in type");
 	return (v >> r) | (v << (Bits - r));
 }
 
