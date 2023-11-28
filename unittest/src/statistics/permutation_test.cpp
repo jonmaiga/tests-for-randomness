@@ -6,7 +6,6 @@
 
 
 namespace tfr {
-
 template <typename T>
 std::vector<uint64_t> get_histogram(const std::vector<T>& d) {
 	auto s = create_stream_from_data_by_ref<T>("d", d, 0);
@@ -57,6 +56,18 @@ TEST(permutation, histogram) {
 		EXPECT_EQ(h[i], 1);
 	}
 	EXPECT_EQ(accumulate(h), 19);
+}
+
+TEST(permutation, no_change_8) {
+	auto s = test_stream();
+	std::vector<uint8_t> data;
+	for (int i = 0; i < (1 << 20); ++i) {
+		data.push_back(static_cast<uint8_t>(s()));
+	}
+	const auto s8 = create_stream_from_data_by_ref("test", data);
+	const auto r = permutation_test(data.size(), s8).front().stats;
+	EXPECT_NEAR(r->value, 523.6892, 1e-4);
+	EXPECT_NEAR(r->p_value, .3392, 1e-4);
 }
 
 }
