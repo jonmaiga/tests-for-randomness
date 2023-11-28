@@ -45,7 +45,7 @@ template <typename T>
 sub_test_results gap_test(uint64_t n, const stream<T>& source) {
 	sub_test_results results;
 
-	for (int wanted_gaps = 3; wanted_gaps <= 3; ++wanted_gaps) {
+	for (int wanted_gaps = 4; wanted_gaps <= 4; ++wanted_gaps) {
 		const double gap_size = 1. / static_cast<double>(wanted_gaps);
 		const uint64_t expected_total_count = n / wanted_gaps;
 		for (int gi = 0; gi < wanted_gaps; ++gi) {
