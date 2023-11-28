@@ -6,11 +6,26 @@
 #include "trng_data.h"
 
 namespace tfr {
-
-
 template <typename T> mixer<T> get_test_mixer();
 
-template <> inline mixer<uint32_t> get_test_mixer() { return mix32::prospector; }
+template <> inline mixer<uint8_t> get_test_mixer() {
+	return {
+		"mix8:mx3_64", [](uint8_t x) { return static_cast<uint8_t>(mix64::mx3(x)); }
+	};
+}
+
+template <> inline mixer<uint16_t> get_test_mixer() {
+	return {
+		"mix16:mx3_64", [](uint16_t x) { return static_cast<uint16_t>(mix64::mx3(x)); }
+	};
+}
+
+template <> inline mixer<uint32_t> get_test_mixer() {
+	return {
+		"mix32:mx3_64", [](uint32_t x) { return static_cast<uint32_t>(mix64::mx3(x)); }
+	};
+}
+
 template <> inline mixer<uint64_t> get_test_mixer() { return mix64::mx3; }
 
 template <typename T = uint64_t>
@@ -27,5 +42,4 @@ uint64_t hash64(const T& data) {
 	}
 	return h;
 }
-
 }
