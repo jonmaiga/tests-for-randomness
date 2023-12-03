@@ -4,12 +4,9 @@
 #include "mixers32.h"
 
 namespace tfr {
-
 using combiner32 = combiner<uint32_t>;
 
 namespace combine32 {
-
-// 10
 const combiner32 xmx = {
 	"combine32::xmx", [](uint32_t x, uint32_t y) {
 		x += 2471660141;
@@ -23,7 +20,6 @@ const combiner32 xmx = {
 	}
 };
 
-// 14, weak to (counter-1, c) (10)
 const combiner32 xm2x = {
 	"combine32::xm2x", [](uint32_t x, uint32_t y) {
 		x += 2471660141;
@@ -39,12 +35,11 @@ const combiner32 xm2x = {
 	}
 };
 
-// 21
 const combiner32 xm3x = {
 	"combine32::xm3x", [](uint32_t x, uint32_t y) {
 		x += 2471660141;
 		y -= 2471660141;
-		return mix32::xm2x(x ^ mix32::xmx(y));
+		return mix32::mx2(x ^ mix32::mx1(y));
 	}
 };
 
@@ -63,7 +58,6 @@ const combiner32 boost = {
 		return x;
 	}
 };
-
 }
 
 
@@ -76,5 +70,4 @@ inline std::vector<combiner32> get_combiners() {
 		combine32::boost
 	};
 }
-
 }
