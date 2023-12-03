@@ -16,9 +16,9 @@ mix32::murmur|12|sac
 mix32::h2sql|13|sac
 mix32::wang\_1|10|bic, coupon, gap, runs, sac
 mix32::jenkins|10|bic, coupon, gap, mean, runs, sac, uniform
-rng32::xmx|20|bc2d
-rng32::xm2x|22|bc2d, uniform
-rng32::xm3x|26|bc2d, uniform
+rng32::mx1|18|uniform
+rng32::mx2|26|uniform
+rng32::mx3|27|uniform
 rng32::pcg\-1|>35|
 rng32::xoshiro128\+\+|>35|
 rng32::mt19937|>35|

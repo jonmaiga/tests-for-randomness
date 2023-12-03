@@ -15,26 +15,29 @@ namespace tfr {
 using prng32 = prng<uint32_t>;
 
 namespace rng32 {
-inline prng32 xmx(const seed_data& seed) {
+inline prng32 mx1(const seed_data& seed) {
 	return {
-		"rng32::xmx", [state = seed.s32()]() mutable {
-			return state = mix32::mx1(state);
+		"rng32::mx1", [state = seed.s32()]() mutable {
+			state += 2471660141U;
+			return mix32::mx1(state);
 		}
 	};
 }
 
-inline prng32 xm2x(const seed_data& seed) {
+inline prng32 mx2(const seed_data& seed) {
 	return {
-		"rng32::xm2x", [state = seed.s32()]() mutable {
-			return state = mix32::mx2(state);
+		"rng32::mx2", [state = seed.s32()]() mutable {
+			state += 1159349557U;
+			return mix32::mx2(state);
 		}
 	};
 }
 
-inline prng32 xm3x(const seed_data& seed) {
+inline prng32 mx3(const seed_data& seed) {
 	return {
-		"rng32::xm3x", [state = seed.s32()]() mutable {
-			return state = mix32::mx3(state);
+		"rng32::mx3", [state = seed.s32()]() mutable {
+			state += 1159349557U;
+			return mix32::mx3(state);
 		}
 	};
 }
@@ -131,9 +134,9 @@ inline prng32 aes_128(const seed_data& seed) {
 template <>
 inline std::vector<prng_factory<uint32_t>> get_prngs() {
 	return {
-		rng32::xmx,
-		rng32::xm2x,
-		rng32::xm3x,
+		rng32::mx1,
+		rng32::mx2,
+		rng32::mx3,
 		rng32::pcg_64,
 		rng32::xoshiro128plusplus_128,
 		rng32::mt19337,

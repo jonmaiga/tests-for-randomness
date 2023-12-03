@@ -18,9 +18,9 @@ mix64::splitmix|17|sac
 mix64::murmur3|10|gap, runs, uniform
 mix64::xxh3|10|bic, coupon, divisibility, gap, mean, permutation, runs, sac, uniform
 mix64::fast\_hash|10|bic, coupon, divisibility, gap, mean, permutation, runs, sac, uniform
-rng64::xmx|30|bc2d
-rng64::xm2x|>35|
-rng64::xm3x|>35|
+rng64::mx1|28|uniform
+rng64::mx2|>31|
+rng64::mx3||
 rng64::pcg|>35|
 rng64::xoroshiro128\+|>35|
 rng64::xorshift128\+|>35|
