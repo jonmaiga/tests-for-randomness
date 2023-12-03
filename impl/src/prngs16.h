@@ -1,5 +1,6 @@
 #pragma once
 #include "prngs32.h"
+#include "prngs64.h"
 
 namespace tfr {
 using prng16 = prng<uint16_t>;

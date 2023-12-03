@@ -9,6 +9,8 @@
 #include <array>
 #include <random>
 
+#include "prngs16.h"
+#include "prngs64.h"
 #include "util/bitwise.h"
 
 namespace tfr {
@@ -42,11 +44,42 @@ inline prng32 mx3(const seed_data& seed) {
 	};
 }
 
-inline prng32 pcg_64(const seed_data& seed) {
-	pcg32 pcg(seed.s64());
+inline prng32 mx1_64(const seed_data& seed) {
 	return {
-		"rng32::pcg_64", [pcg]() mutable {
-			return pcg();
+		"rng32::mx1_64", [rng = rng64::mx1(seed)]() mutable {
+			return static_cast<uint32_t>(rng());
+		}
+	};
+}
+
+inline prng32 mx2_64(const seed_data& seed) {
+	return {
+		"rng32::mx2_64", [rng = rng64::mx2(seed)]() mutable {
+			return static_cast<uint32_t>(rng());
+		}
+	};
+}
+
+inline prng32 mx3_64(const seed_data& seed) {
+	return {
+		"rng32::mx3_64", [rng = rng64::mx3(seed)]() mutable {
+			return static_cast<uint32_t>(rng());
+		}
+	};
+}
+
+inline prng32 splitmix_64(const seed_data& seed) {
+	return {
+		"rng32::splitmix_64", [rng = rng64::splitmix(seed)]() mutable {
+			return static_cast<uint32_t>(rng());
+		}
+	};
+}
+
+inline prng32 pcg_64(const seed_data& seed) {
+	return {
+		"rng32::pcg_64", [rng = pcg32(seed.s64())]() mutable {
+			return rng();
 		}
 	};
 }
@@ -137,6 +170,10 @@ inline std::vector<prng_factory<uint32_t>> get_prngs() {
 		rng32::mx1,
 		rng32::mx2,
 		rng32::mx3,
+		rng32::mx1_64,
+		rng32::mx2_64,
+		rng32::mx3_64,
+		rng32::splitmix_64,
 		rng32::pcg_64,
 		rng32::xoshiro128plusplus_128,
 		rng32::mt19337,
