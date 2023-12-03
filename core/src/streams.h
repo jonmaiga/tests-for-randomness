@@ -7,30 +7,19 @@
 #include "combiner.h"
 
 namespace tfr {
-
 template <typename T>
 struct counter_stream {
-	T increment{};
-	T i{};
+	uint64_t increment{};
+	uint64_t state{};
 
 	T operator()() {
-		i += increment;
-		return i;
+		state += increment;
+		return static_cast<T>(state);
 	}
 };
 
 template <typename T>
-struct function_stream {
-	const std::function<T(T)> f;
-	T i{};
-
-	T operator()() {
-		return f(++i);
-	}
-};
-
-template <typename T>
-stream<T> create_counter_stream(T increment, T start) {
+stream<T> create_counter_stream(uint64_t increment, uint64_t start) {
 	return {"counter-" + std::to_string(increment), counter_stream<T>{increment, start}};
 }
 
@@ -40,7 +29,7 @@ stream<T> create_constant_stream(T c) {
 }
 
 template <typename T>
-stream<T> create_counter_stream(T increment) {
+stream<T> create_counter_stream(uint64_t increment) {
 	return create_counter_stream<T>(increment, 0);
 }
 
@@ -100,6 +89,4 @@ stream<T> create_combined_incremental_stream(T seed, stream<T> source, combiner<
 		}
 	};
 }
-
-
 }
