@@ -5,7 +5,6 @@
 #include "util/algo.h"
 
 namespace tfr {
-
 template <typename T>
 streams<T> create_sources() {
 	return create_rrc_sources<T>({create_counter_stream<T>(1)});
@@ -30,22 +29,20 @@ streams<T> create_combiner_sources(combiner<T> combiner) {
 		create_constant_stream<T>(0),
 		combiner));
 
-	const auto& mix = get_default_mixer<T>();
 	streams<T> streams_a;
 	streams<T> streams_b;
 
 	// a, b
-	constexpr int seed = 0;
-	streams_a.push_back(create_counter_stream<T>(seed + 1, mix(1000 + seed)));
-	streams_b.push_back(create_counter_stream<T>(seed + 1, mix(1 + seed)));
+	streams_a.push_back(create_counter_stream<T>(1, 1));
+	streams_b.push_back(create_counter_stream<T>(1, 2));
 
 	// a, a
-	streams_a.push_back(create_counter_stream<T>(1, mix(seed)));
-	streams_b.push_back(create_counter_stream<T>(1, mix(seed)));
+	streams_a.push_back(create_counter_stream<T>(1, 1ull << 32));
+	streams_b.push_back(create_counter_stream<T>(1, 1ull << 32));
 
 	// a, -a
-	streams_a.push_back(create_counter_stream<T>(1, mix(seed)));
-	streams_b.push_back(create_counter_stream<T>(1, -mix(seed)));
+	streams_a.push_back(create_counter_stream<T>(1, 1));
+	streams_b.push_back(create_counter_stream<T>(-1, 1));
 
 	const auto rrc_a = create_rrc_sources(streams_a);
 	const auto rrc_b = create_rrc_sources(streams_b);
@@ -55,5 +52,4 @@ streams<T> create_combiner_sources(combiner<T> combiner) {
 
 	return sources;
 }
-
 }
