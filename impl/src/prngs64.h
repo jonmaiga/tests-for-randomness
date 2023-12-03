@@ -7,26 +7,29 @@ namespace tfr {
 using prng64 = prng<uint64_t>;
 
 namespace rng64 {
-inline prng64 xmx(const seed_data& seed) {
+inline prng64 mx1(const seed_data& seed) {
 	return {
-		"rng64::xmx", [state = seed.s64()]() mutable {
-			return state = mix64::mx1(state);
+		"rng64::mx1", [state = seed.s64()]() mutable {
+			state += 0xe9846af9b1a615d;
+			return mix64::mx1(state);
 		}
 	};
 }
 
-inline prng64 xm2x(const seed_data& seed) {
+inline prng64 mx2(const seed_data& seed) {
 	return {
-		"rng64::xm2x", [state = seed.s64()]() mutable {
-			return state = mix64::mx2(state);
+		"rng64::mx2", [state = seed.s64()]() mutable {
+			state += 0x7574708ca19c768b;
+			return mix64::mx2(state);
 		}
 	};
 }
 
-inline prng64 xm3x(const seed_data& seed) {
+inline prng64 mx3(const seed_data& seed) {
 	return {
-		"rng64::xm3x", [state = seed.s64()]() mutable {
-			return state = mix64::mx3(state);
+		"rng64::mx3", [state = seed.s64()]() mutable {
+			state += 0xbea225f9eb34556d;
+			return mix64::mx3(state);
 		}
 	};
 }
@@ -91,9 +94,9 @@ inline prng64 xoroshiro128plus_128(const seed_data& seed) {
 template <>
 inline std::vector<prng_factory<uint64_t>> get_prngs() {
 	return {
-		rng64::xmx,
-		rng64::xm2x,
-		rng64::xm3x,
+		rng64::mx1,
+		rng64::mx2,
+		rng64::mx3,
 		rng64::splitmix,
 		rng64::pcg,
 		rng64::xorshift128plus_128,
