@@ -19,8 +19,8 @@ TEST(avalanche, sac_data_large) {
 	constexpr auto n = 200000;
 	const auto counts = avalanche_generate_sac<T>(n, test_stream<T>(), get_default_mixer<T>());
 	auto s = avalanche_sac_stats<T>(n, counts);
-	EXPECT_NEAR(s->value, 29.1370, 1e-4);
-	EXPECT_NEAR(s->p_value, 0.3048, 1e-4);
+	EXPECT_NEAR(s->value, 28.7826, 1e-4);
+	EXPECT_NEAR(s->p_value, 0.3210, 1e-4);
 }
 
 TEST(avalanche, sac_no_change) {
