@@ -7,39 +7,51 @@ namespace tfr {
 using combiner32 = combiner<uint32_t>;
 
 namespace combine32 {
-const combiner32 xmx = {
-	"combine32::xmx", [](uint32_t x, uint32_t y) {
-		x += 2471660141;
-		y -= 2471660141;
-
-		y ^= (y >> 16);
-		y *= 2471660141;
+const combiner32 mx1 = {
+	"combine32::mx1", [](uint32_t x, uint32_t y) {
+		constexpr uint32_t C = 2471660141U;
+		y ^= y >> 16;
+		y *= C;
 		x ^= y;
-		x ^= (x >> 15);
+		x += C;
+		x ^= x >> 14;
+		x *= C;
+		x ^= x >> 13;
 		return x;
 	}
 };
 
-const combiner32 xm2x = {
-	"combine32::xm2x", [](uint32_t x, uint32_t y) {
-		x += 2471660141;
-		y -= 2471660141;
-
-		y ^= (y >> 16);
-		y *= 2471660141;
+const combiner32 mx2 = {
+	"combine32::mx2", [](uint32_t x, uint32_t y) {
+		constexpr uint32_t C = 1159349557U;
+		y ^= y >> 16;
+		y *= C;
 		x ^= y;
-		x ^= (x >> 15);
-		x *= 2471660141;
-		x ^= (x >> 14);
+		x += C;
+		x ^= x >> 14;
+		x *= C;
+		x ^= x >> 13;
+		x *= C;
+		x ^= x >> 16;
 		return x;
 	}
 };
 
-const combiner32 xm3x = {
-	"combine32::xm3x", [](uint32_t x, uint32_t y) {
-		x += 2471660141;
-		y -= 2471660141;
-		return mix32::mx2(x ^ mix32::mx1(y));
+const combiner32 mx3 = {
+	"combine32::mx3", [](uint32_t x, uint32_t y) {
+		constexpr uint32_t C = 1159349557U;
+		y ^= y >> 16;
+		y *= C;
+		x ^= y;
+		x += C;
+		x ^= x >> 14;
+		x *= C;
+		x ^= x >> 13;
+		x *= C;
+		x ^= x >> 16;
+		x *= C;
+		x ^= x >> 14;
+		return x;
 	}
 };
 
@@ -55,7 +67,7 @@ const combiner32 boost = {
 		};
 
 		x ^= boost_hash(y) + 0x9e3779b9 + (x << 6) + (x >> 2);
-		return x;
+		return x; // 10/15
 	}
 };
 }
@@ -64,9 +76,9 @@ const combiner32 boost = {
 template <>
 inline std::vector<combiner32> get_combiners() {
 	return {
-		combine32::xmx,
-		combine32::xm2x,
-		combine32::xm3x,
+		combine32::mx1,
+		combine32::mx2,
+		combine32::mx3,
 		combine32::boost
 	};
 }
