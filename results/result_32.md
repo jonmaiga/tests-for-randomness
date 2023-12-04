@@ -24,7 +24,7 @@ rng32::xoshiro128\+\+|>35|
 rng32::mt19937|>35|
 rng32::xorshift|16|bc2d
 rng32::minstd\_rand|10|coupon, gap, mean, permutation, uniform
-combine32::xmx|10|coupon, divisibility, gap, mean, permutation, runs, uniform
-combine32::xm2x|10|coupon, divisibility, gap, runs, uniform
-combine32::xm3x|10|gap
+combine32::mx1|10|coupon, gap, runs
+combine32::mx2|25|bc2d
+combine32::mx3|27|uniform
 combine32::boost|10|coupon, divisibility, gap, mean, permutation, runs, uniform
