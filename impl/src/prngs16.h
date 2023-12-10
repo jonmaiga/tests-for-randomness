@@ -1,5 +1,4 @@
 #pragma once
-#include "prngs32.h"
 #include "prngs64.h"
 
 namespace tfr {
@@ -21,6 +20,14 @@ inline prng16 pcg_64(const seed_data& seed) {
 		}
 	};
 }
+
+inline prng16 sfc_64(const seed_data& seed) {
+	return {
+		"rng16::sfc_64", [rng_64 = sfc16(seed.s16())]() mutable {
+			return rng_64();
+		}
+	};
+}
 }
 
 
@@ -29,6 +36,7 @@ inline std::vector<prng_factory<uint16_t>> get_prngs() {
 	return {
 		rng16::splitmix_64,
 		rng16::pcg_64,
+		rng16::sfc_64,
 	};
 }
 }
