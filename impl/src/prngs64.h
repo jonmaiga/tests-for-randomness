@@ -2,6 +2,7 @@
 
 #include "mixers64.h"
 #include "stream.h"
+#include "external/sfc/sfc64.h"
 
 namespace tfr {
 using prng64 = prng<uint64_t>;
@@ -89,6 +90,15 @@ inline prng64 xoroshiro128plus_128(const seed_data& seed) {
 		}
 	};
 }
+
+inline prng64 sfc_256(const seed_data& seed) {
+	return {
+		"rng64::sfc_256", [rng = sfc64(seed.s64())]() mutable {
+			return rng();
+		}
+	};
+}
+
 }
 
 template <>
@@ -101,6 +111,7 @@ inline std::vector<prng_factory<uint64_t>> get_prngs() {
 		rng64::pcg,
 		rng64::xorshift128plus_128,
 		rng64::xoroshiro128plus_128,
+		rng64::sfc_256,
 	};
 }
 }

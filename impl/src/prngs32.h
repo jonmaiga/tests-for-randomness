@@ -161,6 +161,14 @@ inline prng32 aes_128(const seed_data& seed) {
 		}
 	};
 }
+
+inline prng32 sfc_128(const seed_data& seed) {
+	return {
+		"rng32::sfc_128", [rng = sfc32(seed.s32())]() mutable {
+			return rng();
+		}
+	};
+}
 }
 
 
@@ -176,6 +184,7 @@ inline std::vector<prng_factory<uint32_t>> get_prngs() {
 		rng32::splitmix_64,
 		rng32::pcg_64,
 		rng32::xoshiro128plusplus_128,
+		rng32::sfc_128,
 		rng32::mt19337,
 		rng32::xorshift,
 		rng32::minstd_rand,
