@@ -7,7 +7,6 @@
 #include <vector>
 
 namespace tfr {
-
 inline std::vector<double> to_statistics(const std::vector<test_result>& results) {
 	std::vector<double> statistics;
 	statistics.reserve(results.size());
@@ -26,7 +25,7 @@ inline std::vector<double> to_p_values(const std::vector<test_result>& results) 
 	return statistics;
 }
 
-inline double get_comparable_p_value(statistic stat) {
+inline double get_comparable_p_value(const statistic& stat) {
 	if (stat.type == statistic_type::z_score) {
 		return stat.p_value;
 	}
@@ -46,7 +45,7 @@ inline test_result get_worst_result(const std::vector<test_result>& test_results
 
 class statistic_analysis {
 public:
-	explicit statistic_analysis(statistic stat) : stat(stat) {
+	explicit statistic_analysis(const statistic& stat) : stat(stat) {
 	}
 
 	bool has_remark() const {
@@ -149,6 +148,4 @@ inline std::optional<statistic_analysis> get_worst_statistic_analysis(const test
 	}
 	return ras.front().analysis;
 }
-
-
 }
