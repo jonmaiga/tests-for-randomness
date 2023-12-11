@@ -108,11 +108,19 @@ std::optional<statistic> binary_rank_stats(uint64_t n, stream<T> stream, uint64_
 	                });
 
 	return chi2_stats(rank_counts.size(), to_data(rank_counts),
-	                  mul(to_data(ps), to_data(matrix_count)), 1.);
+	                  mul(to_data(ps), to_data(matrix_count)), 5.);
+}
+
+template <typename T>
+uint64_t get_matrix_size(uint64_t n) {
+	constexpr double wanted_matrices = 5. / 0.0052387863054258942636;
+	constexpr double multiplier = bit_sizeof<T>() / wanted_matrices;
+	return std::bit_floor(static_cast<uint64_t>(std::sqrt(n * multiplier)));
 }
 
 template <typename T>
 sub_test_results binary_rank_test(uint64_t n, const stream<T>& source) {
-	return main_sub_test(binary_rank_stats(n, source, 32));
+	const auto matrix_size = get_matrix_size<T>(n);
+	return {{std::to_string(matrix_size), binary_rank_stats(n, source, matrix_size)}};
 }
 }
