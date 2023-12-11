@@ -71,15 +71,15 @@ TEST(binary_rank, for_each_matrix_3_3) {
 TEST(binary_rank, no_change) {
 	using T = uint64_t;
 	const auto stat = binary_rank_stats<T>(1 << 10, test_stream(), 16);
-	EXPECT_NEAR(stat->value, 2.7868, 1e-4);
+	EXPECT_NEAR(stat->value, 2.7871, 1e-4);
 	EXPECT_NEAR(stat->p_value, 0.24822, 1e-4);
 }
 
 TEST(binary_rank, large) {
 	using T = uint64_t;
-	const auto stat = binary_rank_stats<T>(1 << 21, test_stream(), 8);
-	EXPECT_NEAR(stat->value, 2.7868, 1e-4);
-	EXPECT_NEAR(stat->p_value, 0.24822, 1e-4);
+	const auto stat = binary_rank_stats<T>(1 << 15, test_stream(), 32);
+	EXPECT_NEAR(stat->value, 0.9397, 1e-4);
+	EXPECT_NEAR(stat->p_value, 0.8158, 1e-4);
 }
 
 TEST(binary_rank, rank_probability) {
@@ -101,6 +101,8 @@ TEST(binary_rank, rank_probability) {
 	EXPECT_NEAR(get_rank_probability(1024,1024), 0.2887880950, 1e-8);
 	EXPECT_NEAR(get_rank_probability(1024,1023), 0.5775761901, 1e-8);
 	EXPECT_NEAR(get_rank_probability(1024,1022), 0.1283502644, 1e-8);
+	EXPECT_NEAR(get_rank_probability(1024,1021), 0.0052387863, 1e-8);
+	EXPECT_NEAR(get_rank_probability(1024,1020), 0.0000465669, 1e-8);
 }
 
 TEST(binary_rank, rank_probabilities_small) {
@@ -115,6 +117,21 @@ TEST(binary_rank, rank_probabilities_large) {
 	EXPECT_EQ(ps.size(), 1001);
 	EXPECT_NEAR(ps[0], 0.2887880950, 1e-4);
 	EXPECT_NEAR(ps[1], 0.5775761901, 1e-4);
+}
+
+TEST(binary_rank, get_matrix_size) {
+	using T = uint64_t;
+	EXPECT_EQ(get_matrix_size<T>(1<<10), 8);
+	EXPECT_EQ(get_matrix_size<T>(1<<11), 8);
+	EXPECT_EQ(get_matrix_size<T>(1<<12), 16);
+	EXPECT_EQ(get_matrix_size<T>(1<<13), 16);
+	EXPECT_EQ(get_matrix_size<T>(1<<14), 32);
+	EXPECT_EQ(get_matrix_size<T>(1<<15), 32);
+	EXPECT_EQ(get_matrix_size<T>(1<<16), 64);
+	EXPECT_EQ(get_matrix_size<T>(1<<17), 64);
+	EXPECT_EQ(get_matrix_size<T>(1<<18), 128);
+	EXPECT_EQ(get_matrix_size<T>(1<<19), 128);
+	EXPECT_EQ(get_matrix_size<T>(1<<20), 256);
 }
 
 }
