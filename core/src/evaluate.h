@@ -9,7 +9,6 @@
 #include "util/timer.h"
 
 namespace tfr {
-
 template <typename T>
 struct test_setup {
 	std::string test_subject_name;
@@ -36,7 +35,6 @@ struct test_setup {
 
 
 namespace internal {
-
 using test_job_return = std::vector<test_result>;
 using test_job = job<test_job_return>;
 using test_jobs = jobs<test_job_return>;
@@ -82,12 +80,8 @@ test_jobs create_test_jobs(const uint64_t n, const test_setup<T>& setup) {
 	test_jobs jobs;
 	const auto& test_subject_name = setup.test_subject_name;
 	const auto& mix = setup.mix;
-	const auto power_of_two = std::floor(std::log2(n));
 	for (const auto& test : setup.tests) {
 		const auto& test_def = get_test_definition<T>(test);
-		if (power_of_two > test_def.max_power_of_two.value_or(10000)) {
-			continue;
-		}
 		for (const auto& source : setup.sources) {
 			if (test_def.test_mixer && mix) {
 				// mixer test
@@ -114,7 +108,6 @@ inline auto create_collector(test_battery_result& test_result) {
 		}
 	};
 }
-
 }
 
 template <typename T>
@@ -145,5 +138,4 @@ test_battery_result evaluate_multi_pass(const test_callback& result_callback,
 	}
 	return result;
 }
-
 }

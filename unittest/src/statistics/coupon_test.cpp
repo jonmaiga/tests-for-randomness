@@ -6,7 +6,6 @@
 
 
 namespace tfr {
-
 TEST(coupon, collect_coupons) {
 	using D = std::vector<double>;
 	using T = std::vector<uint64_t>;
@@ -60,9 +59,9 @@ TEST(coupon, expected_probabilities_10_20) {
 }
 
 TEST(coupon, coupon_no_change) {
-	const auto r = coupon_test(10000, test_stream()).front().stats;
+	constexpr auto n = 10000;
+	const auto r = coupon_stats(n, ranged_stream(rescale_type_to_01(test_stream()), n));
 	EXPECT_NEAR(r->value, 29.3991, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.2054, 1e-4);
 }
-
 }

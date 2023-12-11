@@ -13,7 +13,7 @@ std::vector<uint64_t> get_histogram(const std::vector<T>& d) {
 }
 
 TEST(permutation, no_change) {
-	const auto r = permutation_test(1000, test_stream()).front().stats;
+	const auto r = permutation_stat(1000, test_stream());
 	EXPECT_NEAR(r->value, 23.2259, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.07945, 1e-4);
 }
@@ -66,8 +66,8 @@ TEST(permutation, no_change_8) {
 	}
 	const auto s8 = create_stream_from_data_by_ref("test", data);
 	const auto r = permutation_test(data.size(), s8).front().stats;
-	EXPECT_NEAR(r->value, 523.6892, 1e-4);
-	EXPECT_NEAR(r->p_value, .3392, 1e-4);
+	EXPECT_NEAR(r->value, 118.4100, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.6948, 1e-4);
 }
 
 }

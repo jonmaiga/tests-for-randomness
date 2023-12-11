@@ -9,7 +9,6 @@
 #include "util/algo.h"
 
 namespace tfr {
-
 template <typename T>
 std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t tracked_draws, const T& data01) {
 	static_assert(std::is_floating_point_v<typename T::value_type>);
@@ -26,7 +25,7 @@ std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t tracked_
 		if (coupons_collected.size() == wanted_coupons) {
 			std::size_t index = draw_count - wanted_coupons;
 			index = std::min(draws_histogram.size() - 1, index);
-			draws_histogram[index] ++;
+			draws_histogram[index]++;
 			draw_count = 0;
 			coupons_collected = {};
 		}
@@ -72,8 +71,10 @@ std::optional<statistic> coupon_stats(uint64_t n, const T& data01) {
 
 template <typename T>
 sub_test_results coupon_test(uint64_t n, const stream<T>& stream) {
-	return main_sub_test(coupon_stats(n, ranged_stream(rescale_type_to_01(stream), n)));
+	if (const auto slow_n = slow_down_cubic_tests(n)) {
+		n = *slow_n;
+		return main_sub_test(coupon_stats(n, ranged_stream(rescale_type_to_01(stream), n)));
+	}
+	return {};
 }
-
-
 }

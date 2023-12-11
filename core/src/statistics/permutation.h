@@ -4,13 +4,12 @@
 #include "util/algo.h"
 
 namespace tfr {
-
 template <typename T>
 std::vector<uint64_t> get_permutation_histogram(const T& data, int window_size) {
 	static_assert(std::is_integral_v<typename T::value_type>);
 	std::vector<uint64_t> histogram(1ull << window_size);
 	sliding_bit_window(data, window_size, [&histogram](uint64_t v) {
-		histogram[v] ++;
+		histogram[v]++;
 	});
 	return histogram;
 }
@@ -30,11 +29,14 @@ std::optional<statistic> permutation_stat(const uint64_t n, const stream<T>& str
 }
 
 template <typename T>
-sub_test_results permutation_test(const uint64_t n, stream<T> source) {
-	auto sub_tests = split_test(n, 1000000, [&source](uint64_t size) {
-		return permutation_stat(size, source);
-	});
-	return sub_tests;
+sub_test_results permutation_test(uint64_t n, stream<T> source) {
+	if (const auto slow_n = slow_down_quadratic_tests(n)) {
+		n = *slow_n;
+		auto sub_tests = split_test(n, 1 << 20, [&source](uint64_t size) {
+			return permutation_stat(size, source);
+		});
+		return sub_tests;
+	}
+	return {};
 }
-
 }

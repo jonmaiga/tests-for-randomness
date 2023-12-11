@@ -11,14 +11,12 @@
 #include "statistics/waldwolfowitz.h"
 
 namespace tfr {
-
 template <typename T>
 struct test_definition {
 	test_type type{};
 	stream_test<T> test_stream;
 	mixer_test<T> test_mixer;
 	std::string name;
-	std::optional<int> max_power_of_two;
 };
 
 template <typename T>
@@ -37,7 +35,7 @@ std::vector<test_definition<T>> get_tests() {
 
 		// mixer tests
 		{test_type::sac, {}, avalanche_mixer_sac_test<T>, "sac"},
-		{test_type::bic, {}, avalanche_mixer_bic_test<T>, "bic", 25},
+		{test_type::bic, {}, avalanche_mixer_bic_test<T>, "bic"},
 	};
 }
 
@@ -63,6 +61,4 @@ inline std::vector<test_type> default_test_types = []() {
 	}
 	return types;
 }();
-
-
 }

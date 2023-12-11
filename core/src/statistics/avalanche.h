@@ -5,7 +5,6 @@
 #include "types.h"
 
 namespace tfr {
-
 template <typename T>
 std::vector<uint64_t> avalanche_generate_sac(uint64_t n, stream<T> stream, const mixer<T>& mixer) {
 	// @attn, using x = stream() directly will make all mixers fail for all counter streams with increments
@@ -59,14 +58,21 @@ inline std::optional<statistic> avalanche_bic_stats(const double n, const std::v
 
 template <typename T>
 sub_test_results avalanche_mixer_sac_test(uint64_t n, const stream<T>& stream, const mixer<T>& mixer) {
-	const auto counts = avalanche_generate_sac<T>(n, stream, mixer);
-	return main_sub_test(avalanche_sac_stats<T>(n, counts));
+	if (const auto slow_n = slow_down_quadratic_tests(n)) {
+		n = *slow_n;
+		const auto counts = avalanche_generate_sac<T>(n, stream, mixer);
+		return main_sub_test(avalanche_sac_stats<T>(n, counts));
+	}
+	return {};
 }
 
 template <typename T>
 sub_test_results avalanche_mixer_bic_test(uint64_t n, const stream<T>& stream, const mixer<T>& mixer) {
-	const auto counts = avalanche_generate_bic(n, stream, mixer);
-	return main_sub_test(avalanche_bic_stats(n, counts));
+	if (const auto slow_n = slow_down_cubic_tests(n)) {
+		n = *slow_n;
+		const auto counts = avalanche_generate_bic(n, stream, mixer);
+		return main_sub_test(avalanche_bic_stats(n, counts));
+	}
+	return {};
 }
-
 }

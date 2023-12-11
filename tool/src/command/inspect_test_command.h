@@ -12,7 +12,6 @@
 #include "util/test_setups.h"
 
 namespace tfr {
-
 template <typename T>
 streams<T> create_fail_sources() {
 	const auto& mix = get_default_mixer<T>();
@@ -141,7 +140,7 @@ void inspect_test_command() {
 using per_test_result = std::map<std::string, std::map<std::string, std::string>>;
 
 inline auto create_per_test_callback(per_test_result& result,
-                                     std::function<std::string(const test_battery_result&)> extract_property,
+                                     const std::function<std::string(const test_battery_result&)>& extract_property,
                                      bool print_intermediate_results = true) {
 	return [&result, print_intermediate_results, extract_property](const test_battery_result& br, bool is_last) {
 		bool proceed = !is_last;
@@ -164,23 +163,28 @@ inline auto create_per_test_callback(per_test_result& result,
 template <typename T>
 void write(const std::string& name, const per_test_result& result) {
 	std::stringstream ss;
-	ss << ";";
+	ss << "name|";
 	for (const auto& test : get_tests<T>()) {
-		ss << test.name << ";";
+		ss << test.name << "|";
 	}
 	ss << "\n";
+	for (int i = 0; i < get_tests<T>().size(); ++i) {
+		ss << "-|";
+	}
+	ss << "-\n";
+
 	for (const auto& e : result) {
-		ss << e.first << ";";
+		ss << e.first << "|";
 		for (const auto& test : get_tests<T>()) {
 			auto it = e.second.find(test.name);
 			if (it != e.second.end()) {
 				ss << it->second;
 			}
-			ss << ";";
+			ss << "|";
 		}
 		ss << "\n";
 	}
-	write(get_config().result_dir() + name + "_per_test" + std::to_string(bit_sizeof<T>()) + ".txt", ss.str());
+	write(get_config().result_dir() + name + "_per_test" + std::to_string(bit_sizeof<T>()) + ".md", ss.str());
 }
 
 
@@ -240,6 +244,4 @@ void inspect_test_speed_command() {
 		write<T>("speed", result);
 	}
 }
-
-
 }
