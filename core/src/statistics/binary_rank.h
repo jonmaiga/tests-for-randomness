@@ -120,6 +120,11 @@ uint64_t get_matrix_size(uint64_t n) {
 
 template <typename T>
 sub_test_results binary_rank_test(uint64_t n, const stream<T>& source) {
+	constexpr auto slow_down = 5. / 7.; // (2^25)^x=(2^35)
+	n = static_cast<uint64_t>(std::pow(n, slow_down));
+	if (n < 1 << 10) {
+		return {};
+	}
 	const auto matrix_size = get_matrix_size<T>(n);
 	return {{std::to_string(matrix_size), binary_rank_stats(n, source, matrix_size)}};
 }
