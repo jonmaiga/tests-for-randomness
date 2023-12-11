@@ -26,6 +26,8 @@ struct test_setup {
 	}
 
 	test_setup& range(int start_power, int stop_power) {
+		assertion(start_power > 0 && start_power <= 63, "Start power should be between 1-63");
+		assertion(stop_power >= start_power && stop_power <= 63, "Start power should be between start_power-63");
 		start_power_of_two = start_power;
 		stop_power_of_two = stop_power;
 		return *this;
