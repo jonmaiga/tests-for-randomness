@@ -1,12 +1,11 @@
 #pragma once
 
 #include <deque>
+#include <vector>
 
 #include "chi2.h"
 #include "util/bitwise.h"
 #include "types.h"
-
-#include <vector>
 
 namespace tfr {
 // todo: unify with other matrix
@@ -120,12 +119,11 @@ uint64_t get_matrix_size(uint64_t n) {
 
 template <typename T>
 sub_test_results binary_rank_test(uint64_t n, const stream<T>& source) {
-	constexpr auto slow_down = 5. / 7.; // (2^25)^x=(2^35)
-	n = static_cast<uint64_t>(std::pow(n, slow_down));
-	if (n < 1 << 10) {
-		return {};
+	if (const auto slow_n = slow_down_cubic_tests(n)) {
+		n = *slow_n;
+		const auto matrix_size = get_matrix_size<T>(n);
+		return {{std::to_string(matrix_size), binary_rank_stats(n, source, matrix_size)}};
 	}
-	const auto matrix_size = get_matrix_size<T>(n);
-	return {{std::to_string(matrix_size), binary_rank_stats(n, source, matrix_size)}};
+	return {};
 }
 }

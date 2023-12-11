@@ -13,7 +13,6 @@
 #include "util/math.h"
 
 namespace tfr {
-
 template <typename T>
 using stream_factory = std::function<stream<T>()>;
 
@@ -145,6 +144,19 @@ inline sub_test_results split_test(const uint64_t n, const uint64_t max_size, co
 	return results;
 }
 
+inline std::optional<uint64_t> slow_down(uint64_t n, double exp) {
+	const auto slow_n = static_cast<uint64_t>(std::pow(n, exp));
+	return slow_n >= 1 << 10 ? slow_n : std::optional<uint64_t>{};
+}
+
+inline std::optional<uint64_t> slow_down_quadratic_tests(uint64_t n) {
+	return slow_down(n, 6. / 7.); // (2^35)^x=(2^30)
+}
+
+inline std::optional<uint64_t> slow_down_cubic_tests(uint64_t n) {
+	return slow_down(n, 5. / 7.); // (2^35)^x=(2^25)
+}
+
 ///////////////////////////////////////////////////////////////
 /// DATA TYPES
 ///////////////////////////////////////////////////////////////
@@ -174,5 +186,4 @@ inline data_fn mul(const data_fn& a, const data_fn& b) {
 inline unsigned int default_max_threads() {
 	return std::max(std::thread::hardware_concurrency() - 4, 2u);
 }
-
 }
