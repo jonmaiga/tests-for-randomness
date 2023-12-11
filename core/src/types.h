@@ -40,6 +40,7 @@ enum class test_type {
 	coupon,
 	divisibility,
 	permutation,
+	binary_rank,
 
 	// mixer
 	sac,

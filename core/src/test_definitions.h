@@ -2,6 +2,7 @@
 
 #include "statistics/avalanche.h"
 #include "statistics/basic.h"
+#include "statistics/binary_rank.h"
 #include "statistics/bit_correlation.h"
 #include "statistics/coupon.h"
 #include "statistics/divisibility.h"
@@ -32,6 +33,7 @@ std::vector<test_definition<T>> get_tests() {
 		{test_type::coupon, limit_n_slower<T>(coupon_test<T>), {}, "coupon"},
 		{test_type::divisibility, limit_n_slow<T>(divisibility_test<T>), {}, "divisibility"},
 		{test_type::permutation, limit_n_slow<T>(permutation_test<T>), {}, "permutation"},
+		{test_type::binary_rank, limit_n_slower<T>(binary_rank_test<T>), {}, "binary-rank"},
 
 		// mixer tests
 		{test_type::sac, {}, limit_n_slow<T>(avalanche_mixer_sac_test<T>), "sac"},
