@@ -30,13 +30,9 @@ std::optional<statistic> permutation_stat(const uint64_t n, const stream<T>& str
 
 template <typename T>
 sub_test_results permutation_test(uint64_t n, stream<T> source) {
-	if (const auto slow_n = slow_down_quadratic_tests(n)) {
-		n = *slow_n;
-		auto sub_tests = split_test(n, 1 << 20, [&source](uint64_t size) {
-			return permutation_stat(size, source);
-		});
-		return sub_tests;
-	}
-	return {};
+	auto sub_tests = split_test(n, 1 << 20, [&source](uint64_t size) {
+		return permutation_stat(size, source);
+	});
+	return sub_tests;
 }
 }

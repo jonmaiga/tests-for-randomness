@@ -66,8 +66,8 @@ TEST(permutation, no_change_8) {
 	}
 	const auto s8 = create_stream_from_data_by_ref("test", data);
 	const auto r = permutation_test(data.size(), s8).front().stats;
-	EXPECT_NEAR(r->value, 118.4100, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.6948, 1e-4);
+	EXPECT_NEAR(r->value, 519.98341, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.3820, 1e-4);
 }
 
 }
