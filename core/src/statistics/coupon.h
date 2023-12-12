@@ -71,10 +71,6 @@ std::optional<statistic> coupon_stats(uint64_t n, const T& data01) {
 
 template <typename T>
 sub_test_results coupon_test(uint64_t n, const stream<T>& stream) {
-	if (const auto slow_n = slow_down_cubic_tests(n)) {
-		n = *slow_n;
-		return main_sub_test(coupon_stats(n, ranged_stream(rescale_type_to_01(stream), n)));
-	}
-	return {};
+	return main_sub_test(coupon_stats(n, ranged_stream(rescale_type_to_01(stream), n)));
 }
 }

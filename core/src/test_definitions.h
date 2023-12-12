@@ -28,14 +28,14 @@ std::vector<test_definition<T>> get_tests() {
 		{test_type::wald_wolfowitz_runs, wald_wolfowitz_test<T>, {}, "runs"},
 		{test_type::bit_count_2d, bit_count_2d_test<T>, {}, "bc2d"},
 
-		{test_type::gap, gap_test<T>, {}, "gap"},
-		{test_type::coupon, coupon_test<T>, {}, "coupon"},
-		{test_type::divisibility, divisibility_test<T>, {}, "divisibility"},
-		{test_type::permutation, permutation_test<T>, {}, "permutation"},
+		{test_type::gap, limit_n_slow<T>(gap_test<T>), {}, "gap"},
+		{test_type::coupon, limit_n_slower<T>(coupon_test<T>), {}, "coupon"},
+		{test_type::divisibility, limit_n_slow<T>(divisibility_test<T>), {}, "divisibility"},
+		{test_type::permutation, limit_n_slow<T>(permutation_test<T>), {}, "permutation"},
 
 		// mixer tests
-		{test_type::sac, {}, avalanche_mixer_sac_test<T>, "sac"},
-		{test_type::bic, {}, avalanche_mixer_bic_test<T>, "bic"},
+		{test_type::sac, {}, limit_n_slow<T>(avalanche_mixer_sac_test<T>), "sac"},
+		{test_type::bic, {}, limit_n_slower<T>(avalanche_mixer_bic_test<T>), "bic"},
 	};
 }
 

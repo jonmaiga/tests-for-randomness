@@ -144,18 +144,58 @@ inline sub_test_results split_test(const uint64_t n, const uint64_t max_size, co
 	return results;
 }
 
-inline std::optional<uint64_t> slow_down(uint64_t n, double exp) {
+///////////////////////////////////////////////////////////////
+/// LIMIT N IN TESTS
+///////////////////////////////////////////////////////////////
+namespace detail {
+inline std::optional<uint64_t> limit_n(uint64_t n, double exp) {
 	const auto slow_n = static_cast<uint64_t>(std::pow(n, exp));
 	return slow_n >= 1 << 10 ? slow_n : std::optional<uint64_t>{};
 }
 
-inline std::optional<uint64_t> slow_down_quadratic_tests(uint64_t n) {
-	return slow_down(n, 6. / 7.); // (2^35)^x=(2^30)
+inline std::optional<uint64_t> limit_n_slow(uint64_t n) {
+	return limit_n(n, 6. / 7.); // (2^35)^x=(2^30)
 }
 
-inline std::optional<uint64_t> slow_down_cubic_tests(uint64_t n) {
-	return slow_down(n, 5. / 7.); // (2^35)^x=(2^25)
+inline std::optional<uint64_t> limit_n_slower(uint64_t n) {
+	return limit_n(n, 5. / 7.); // (2^35)^x=(2^25)
 }
+
+using limit_n_function = std::function<std::optional<uint64_t>(uint64_t)>;
+
+template <typename T>
+stream_test<T> limit_n(const stream_test<T>& test, const limit_n_function& limit_n) {
+	return [test, limit_n](uint64_t n, const stream<T>& source)-> sub_test_results {
+		if (const auto slow_n = limit_n(n)) {
+			return test(*slow_n, source);
+		}
+		return {};
+	};
+}
+
+template <typename T>
+mixer_test<T> limit_n(const mixer_test<T>& test, const limit_n_function& limit_n) {
+	return [test, limit_n](uint64_t n, const stream<T>& source, const mixer<T>& mixer)-> sub_test_results {
+		if (const auto slow_n = limit_n(n)) {
+			return test(*slow_n, source, mixer);
+		}
+		return {};
+	};
+}
+}
+
+template <typename T>
+stream_test<T> limit_n_slow(const stream_test<T>& test) { return detail::limit_n<T>(test, detail::limit_n_slow); }
+
+template <typename T>
+stream_test<T> limit_n_slower(const stream_test<T>& test) { return detail::limit_n<T>(test, detail::limit_n_slower); }
+
+template <typename T>
+mixer_test<T> limit_n_slow(const mixer_test<T>& test) { return detail::limit_n<T>(test, detail::limit_n_slow); }
+
+template <typename T>
+mixer_test<T> limit_n_slower(const mixer_test<T>& test) { return detail::limit_n<T>(test, detail::limit_n_slower); }
+
 
 ///////////////////////////////////////////////////////////////
 /// DATA TYPES

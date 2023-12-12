@@ -119,11 +119,7 @@ uint64_t get_matrix_size(uint64_t n) {
 
 template <typename T>
 sub_test_results binary_rank_test(uint64_t n, const stream<T>& source) {
-	if (const auto slow_n = slow_down_cubic_tests(n)) {
-		n = *slow_n;
-		const auto matrix_size = get_matrix_size<T>(n);
-		return {{std::to_string(matrix_size), binary_rank_stats(n, source, matrix_size)}};
-	}
-	return {};
+	const auto matrix_size = get_matrix_size<T>(n);
+	return {{std::to_string(matrix_size), binary_rank_stats(n, source, matrix_size)}};
 }
 }
