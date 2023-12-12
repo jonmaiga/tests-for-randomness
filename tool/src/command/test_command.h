@@ -46,22 +46,25 @@ template <typename T>
 void test_command() {
 	constexpr int max_power_of_two = 25;
 
-	const auto report_filename = get_config().test_result_file_path<T>();
-	std::ostringstream os;
-	os << "# " << bit_sizeof<T>() << "-bit results\n";
-	os << "_While TFR is new you should take the results with a grain of salt._\n\n";
-	os << "Tests stop at 2^" << max_power_of_two << " stream elements have been tested.\n\n";
-	os << "Source|TFR|Failures|\n-|-|-|\n";
-	write(report_filename, os.str());
-	auto on_done_callback = [report_filename](const test_battery_result& br, bool pass) {
+	on_done_callback on_done;
+	if (!is_debug()) {
+		const auto report_filename = get_config().test_result_file_path<T>();
 		std::ostringstream os;
-		os << escape_for_md(br.test_subject_name) << "|"
-			<< (pass ? ">" : "") << br.power_of_two() << "|"
-			<< join(get_failed_tests(get_analysis(br)), ", ") << "\n";
-		write_append(report_filename, os.str());
-	};
+		os << "# " << bit_sizeof<T>() << "-bit results\n";
+		os << "_While TFR is new you should take the results with a grain of salt._\n\n";
+		os << "Tests stop at 2^" << max_power_of_two << " stream elements have been tested.\n\n";
+		os << "Source|TFR|Failures|\n-|-|-|\n";
+		write(report_filename, os.str());
+		on_done = [report_filename](const test_battery_result& br, bool pass) {
+			std::ostringstream os;
+			os << escape_for_md(br.test_subject_name) << "|"
+				<< (pass ? ">" : "") << br.power_of_two() << "|"
+				<< join(get_failed_tests(get_analysis(br)), ", ") << "\n";
+			write_append(report_filename, os.str());
+		};
+	}
 
-	const auto callback = create_result_callback(true, on_done_callback);
+	const auto callback = create_result_callback(true, on_done);
 	const auto file_ns = "file" + std::to_string(bit_sizeof<T>()) + "::";
 	// trng
 	if (const auto* data = get_trng_data<T>()) {
