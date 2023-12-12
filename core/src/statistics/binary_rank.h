@@ -11,13 +11,6 @@ namespace tfr {
 // todo: unify with other matrix
 using binary_matrix = std::vector<std::vector<int>>;
 
-inline void swap_rows(binary_matrix& matrix, int row1, int row2) {
-	for (size_t i = 0; i < matrix[0].size(); ++i) {
-		std::swap(matrix[row1][i], matrix[row2][i]);
-	}
-}
-
-
 inline uint64_t calculate_rank(binary_matrix m) {
 	const auto rows = m.size();
 	const auto cols = m[0].size();
