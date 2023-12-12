@@ -37,5 +37,6 @@ struct config {
 
 const config& get_config();
 void set_config(const config&);
+bool is_debug();
 
 }

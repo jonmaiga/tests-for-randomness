@@ -11,6 +11,13 @@ const config& get_config(){
 }  
 void set_config(const config& config){
     g_config = config;
-} 
+}
 
+bool is_debug() {
+#ifdef TFR_DEVELOPMENT
+    return true;
+#else
+    return false;
+#endif
+}
 }
