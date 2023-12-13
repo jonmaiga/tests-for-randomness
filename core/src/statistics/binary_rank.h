@@ -12,6 +12,7 @@ namespace tfr {
 using binary_matrix = std::vector<std::vector<int>>;
 
 inline uint64_t calculate_rank(binary_matrix m) {
+	if (m.empty()) { return 0; }
 	const auto rows = m.size();
 	const auto cols = m[0].size();
 	uint64_t rank = 0;
