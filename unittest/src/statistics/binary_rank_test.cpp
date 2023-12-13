@@ -10,7 +10,7 @@ uint64_t calculate_rank(binary_matrix m) {
 }
 
 TEST(binary_rank, calculate_rank_small) {
-	EXPECT_EQ(calculate_rank({{}}), 0);
+	EXPECT_EQ(calculate_rank({}), 0);
 	EXPECT_EQ(calculate_rank({{0}}), 0);
 	EXPECT_EQ(calculate_rank({{1}}), 1);
 

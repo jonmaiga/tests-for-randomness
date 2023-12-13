@@ -8,8 +8,11 @@
 #include "types.h"
 
 namespace tfr {
-// todo: unify with other matrix
-using binary_matrix = std::vector<std::vector<int>>;
+using binary_matrix = std::vector<std::vector<uint8_t>>;
+
+inline binary_matrix create_binary_matrix(uint64_t size) {
+	return {size, binary_matrix::value_type(size, 0)};
+}
 
 inline uint64_t row_reduce_and_rank(binary_matrix& m) {
 	if (m.empty()) { return 0; }
@@ -41,10 +44,10 @@ inline uint64_t row_reduce_and_rank(binary_matrix& m) {
 
 template <typename RangeT>
 void for_each_matrix(const RangeT& data, uint64_t matrix_size, const std::function<void(binary_matrix&)>& callback) {
-	binary_matrix tmp_matrix(matrix_size, std::vector(matrix_size, 0));
+	auto tmp_matrix = create_binary_matrix(matrix_size);
 
 	for_each_bit(data, [c=0ull, r=0ull, matrix_size, &tmp_matrix, callback](int bit) mutable {
-		tmp_matrix[r][c] = bit;
+		tmp_matrix[r][c] = static_cast<uint8_t>(bit);
 		if (++c == matrix_size) {
 			++r;
 			c = 0;
