@@ -16,22 +16,21 @@ inline uint64_t calculate_rank(binary_matrix m) {
 	const auto cols = m[0].size();
 	uint64_t rank = 0;
 
-	for (size_t i = 0; i < rows; ++i) {
+	for (size_t row = 0; row < rows; ++row) {
 		// Find the leftmost non-zero element in the current row
 		size_t col = 0;
-		while (m[i][col] == 0 && col < cols) {
+		while (col < cols && m[row][col] == 0) {
 			col++;
 		}
 
-		// If a non-zero element is found, increment the rank
 		if (col < cols) {
 			rank++;
 
 			// Eliminate non-zero elements in the current column in other rows
 			for (size_t j = 0; j < rows; ++j) {
-				if (m[j][col] == 1 && j != i) {
+				if (m[j][col] == 1 && j != row) {
 					for (size_t k = 0; k < cols; ++k) {
-						m[j][k] ^= m[i][k];
+						m[j][k] ^= m[row][k];
 					}
 				}
 			}
