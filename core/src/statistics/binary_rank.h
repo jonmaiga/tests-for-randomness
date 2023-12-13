@@ -18,7 +18,6 @@ inline uint64_t calculate_rank(binary_matrix m) {
 	uint64_t rank = 0;
 
 	for (size_t row = 0; row < rows; ++row) {
-		// Find the leftmost non-zero element in the current row
 		size_t col = 0;
 		while (col < cols && m[row][col] == 0) {
 			col++;
