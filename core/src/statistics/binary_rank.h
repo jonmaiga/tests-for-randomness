@@ -26,10 +26,9 @@ inline uint64_t calculate_rank(binary_matrix m) {
 		if (col < cols) {
 			rank++;
 
-			// Eliminate non-zero elements in the current column in other rows
-			for (size_t j = 0; j < rows; ++j) {
-				if (m[j][col] == 1 && j != row) {
-					for (size_t k = 0; k < cols; ++k) {
+			for (size_t j = row + 1; j < rows; ++j) {
+				if (m[j][col] == 1) {
+					for (size_t k = col; k < cols; ++k) {
 						m[j][k] ^= m[row][k];
 					}
 				}
@@ -37,6 +36,33 @@ inline uint64_t calculate_rank(binary_matrix m) {
 		}
 	}
 
+	return rank;
+}
+
+inline uint64_t gauss_elimination(binary_matrix mat) {
+	const auto size = mat.size();
+	auto rank = size;
+	for (int i = 0; i < size; i++) {
+		if (!mat[i][i]) {
+			int j;
+			for (j = i + 1; j < size && !mat[j][i]; j++);
+			if (j == size) {
+				rank--;
+				continue;
+			}
+			for (int k = i; k < size; k++) {
+				bool t = mat[i][k];
+				mat[i][k] = mat[j][k];
+				mat[j][k] = t;
+			}
+		}
+		for (int j = i + 1; j < size; j++) {
+			if (mat[j][i]) {
+				for (int k = i; k < size; k++)
+					mat[j][k] = mat[j][k] - mat[i][k];
+			}
+		}
+	}
 	return rank;
 }
 
