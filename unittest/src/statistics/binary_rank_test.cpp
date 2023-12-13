@@ -5,6 +5,10 @@
 #include "testutil.h"
 
 namespace tfr {
+uint64_t calculate_rank(binary_matrix m) {
+	return row_reduce_and_rank(m);
+}
+
 TEST(binary_rank, calculate_rank_small) {
 	EXPECT_EQ(calculate_rank({{}}), 0);
 	EXPECT_EQ(calculate_rank({{0}}), 0);

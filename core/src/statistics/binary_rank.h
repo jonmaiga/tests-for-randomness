@@ -11,7 +11,7 @@ namespace tfr {
 // todo: unify with other matrix
 using binary_matrix = std::vector<std::vector<int>>;
 
-inline uint64_t calculate_rank(binary_matrix m) {
+inline uint64_t row_reduce_and_rank(binary_matrix& m) {
 	if (m.empty()) { return 0; }
 	const auto rows = m.size();
 	const auto cols = m[0].size();
@@ -40,7 +40,7 @@ inline uint64_t calculate_rank(binary_matrix m) {
 }
 
 template <typename RangeT>
-void for_each_matrix(const RangeT& data, uint64_t matrix_size, const std::function<void(const binary_matrix&)>& callback) {
+void for_each_matrix(const RangeT& data, uint64_t matrix_size, const std::function<void(binary_matrix&)>& callback) {
 	binary_matrix tmp_matrix(matrix_size, std::vector(matrix_size, 0));
 
 	for_each_bit(data, [c=0ull, r=0ull, matrix_size, &tmp_matrix, callback](int bit) mutable {
@@ -90,8 +90,8 @@ std::optional<statistic> binary_rank_stats(uint64_t n, stream<T> stream, uint64_
 	std::vector<uint64_t> rank_counts(ps.size(), 0);
 	auto matrix_count = 0;
 	for_each_matrix(ranged_stream<T>(stream, n), matrix_size,
-	                [&rank_counts, matrix_size, &matrix_count](const binary_matrix& m) {
-		                const auto r = calculate_rank(m);
+	                [&rank_counts, matrix_size, &matrix_count](binary_matrix& m) {
+		                const auto r = row_reduce_and_rank(m);
 		                const auto s = matrix_size - r;
 		                rank_counts[s]++;
 		                ++matrix_count;
