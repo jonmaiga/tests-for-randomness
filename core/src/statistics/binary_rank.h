@@ -19,7 +19,7 @@ inline uint64_t calculate_rank(binary_matrix m) {
 	for (size_t i = 0; i < rows; ++i) {
 		// Find the leftmost non-zero element in the current row
 		size_t col = 0;
-		while (col < cols && m[i][col] == 0) {
+		while (m[i][col] == 0 && col < cols) {
 			col++;
 		}
 
@@ -29,9 +29,9 @@ inline uint64_t calculate_rank(binary_matrix m) {
 
 			// Eliminate non-zero elements in the current column in other rows
 			for (size_t j = 0; j < rows; ++j) {
-				if (j != i && m[j][col] == 1) {
+				if (m[j][col] == 1 && j != i) {
 					for (size_t k = 0; k < cols; ++k) {
-						m[j][k] = m[j][k] ^ m[i][k];
+						m[j][k] ^= m[i][k];
 					}
 				}
 			}
