@@ -34,10 +34,10 @@ std::vector<uint64_t> collect_divisible(uint64_t divisor, uint64_t wanted, uint6
 	return draws_histogram;
 }
 
-inline std::vector<double> divisible_expected_probabilities(const uint64_t divisor, const uint64_t wanted) {
+inline std::vector<double> divisible_expected_probabilities(const uint32_t divisor, const uint32_t wanted) {
 	std::vector<double> expected;
 	double sum = 0;
-	uint64_t k = 0;
+	uint32_t k = 0;
 	while (sum < 0.99) {
 		const auto p = negative_binomial_pdf(wanted, 1. / divisor, k);
 		expected.push_back(p);
@@ -51,7 +51,7 @@ inline std::vector<double> divisible_expected_probabilities(const uint64_t divis
 template <typename T>
 sub_test_results divisibility_test(uint64_t n, const stream<T>& stream) {
 	sub_test_results results;
-	for (uint64_t divisor = 2; divisor <= 3; ++divisor) {
+	for (uint32_t divisor = 2; divisor <= 3; ++divisor) {
 		constexpr auto wanted = 5;
 		const auto ps = divisible_expected_probabilities(divisor, wanted);
 		const auto collected = collect_divisible(divisor, wanted, ps.size(), ranged_stream(stream, n));

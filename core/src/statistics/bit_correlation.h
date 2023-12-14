@@ -7,7 +7,6 @@
 #include <vector>
 
 namespace tfr {
-
 using histogram = std::vector<uint64_t>;
 using matrix = std::vector<histogram>;
 
@@ -26,8 +25,8 @@ matrix bit_count_2d(uint64_t n, stream<T> stream) {
 template <typename T>
 std::optional<statistic> bit_count_stats(const histogram& bit_counts, double expected_total_count) {
 	std::vector<double> expected;
-	for (std::size_t i = 0; i < bit_counts.size(); ++i) {
-		expected.push_back(expected_total_count * flip_coin_pdf(bit_sizeof<T>(), i));
+	for (uint32_t k = 0; k < bit_counts.size(); ++k) {
+		expected.push_back(expected_total_count * flip_coin_pdf(bit_sizeof<T>(), k));
 	}
 
 	const auto merged = merge_bins(bit_counts, expected, 5);
@@ -43,13 +42,12 @@ template <typename T>
 sub_test_results bit_count_2d_test(uint64_t n, const stream<T>& stream) {
 	const auto counts = bit_count_2d<T>(n, stream);
 	sub_test_results results;
-	for (int count = 0; count < bit_sizeof<T>(); ++count) {
+	for (uint32_t count = 0; count < bit_sizeof<T>(); ++count) {
 		const double expected_total_count = n * flip_coin_pdf(bit_sizeof<T>(), count);
 		if (const auto stat = bit_count_stats<T>(counts[count], expected_total_count)) {
-			results.push_back({ "bit(" + std::to_string(count) + ")", stat });
+			results.push_back({"bit(" + std::to_string(count) + ")", stat});
 		}
 	}
 	return results;
 }
-
 }
