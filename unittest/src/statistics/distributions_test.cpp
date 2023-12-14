@@ -3,7 +3,6 @@
 #include <gtest/gtest.h>
 
 namespace tfr {
-
 TEST(normal_cdf, basic) {
 	// matches mma CDF[NormalDistribution[]], x]
 	EXPECT_NEAR(normal_cdf(-10), 0., 1e-4);
@@ -83,6 +82,46 @@ TEST(binomial_pdf, basic) {
 	EXPECT_NEAR(binomial_pdf(64, 0.5, 33), 0.09633, 1e-4);
 }
 
+TEST(binomial_coefficent, basic) {
+	EXPECT_NEAR(binomial_coefficient_reals(0, 0), 1, 1e-4);
+	EXPECT_NEAR(binomial_coefficient_reals(0, 1), 0, 1e-4);
+
+	EXPECT_NEAR(binomial_coefficient_reals(1, 0), 1, 1e-4);
+	EXPECT_NEAR(binomial_coefficient_reals(1, 1), 1, 1e-4);
+	EXPECT_NEAR(binomial_coefficient_reals(1, 2), 0, 1e-4);
+
+	EXPECT_NEAR(binomial_coefficient_reals(2, 0), 1, 1e-4);
+	EXPECT_NEAR(binomial_coefficient_reals(2, 1), 2, 1e-4);
+	EXPECT_NEAR(binomial_coefficient_reals(2, 2), 1, 1e-4);
+	EXPECT_NEAR(binomial_coefficient_reals(2, 3), 0, 1e-4);
+
+	EXPECT_NEAR(binomial_coefficient_reals(31, 17), 265182525, 1e-4);
+
+	EXPECT_NEAR(binomial_coefficient_reals(3.5, 2), 4.375, 1e-4);
+	EXPECT_NEAR(binomial_coefficient_reals(3, 1.5), 3.3953, 1e-4);
+	EXPECT_NEAR(binomial_coefficient_reals(5.5, 2.5), 14.4375, 1e-4);
+}
+
+TEST(binomial_coefficent_integral, basic) {
+	EXPECT_EQ(binomial_coefficient(0, 0), 1);
+	EXPECT_EQ(binomial_coefficient(0, 1), 0);
+
+	EXPECT_EQ(binomial_coefficient(1, 0), 1);
+	EXPECT_EQ(binomial_coefficient(1, 1), 1);
+	EXPECT_EQ(binomial_coefficient(1, 2), 0);
+
+	EXPECT_EQ(binomial_coefficient(2, 0), 1);
+	EXPECT_EQ(binomial_coefficient(2, 1), 2);
+	EXPECT_EQ(binomial_coefficient(2, 2), 1);
+	EXPECT_EQ(binomial_coefficient(2, 3), 0);
+
+	EXPECT_EQ(binomial_coefficient(31, 0), 1);
+	EXPECT_EQ(binomial_coefficient(31, 1), 31);
+	EXPECT_EQ(binomial_coefficient(31, 17), 265182525);
+	EXPECT_EQ(binomial_coefficient(31, 31), 1);
+	EXPECT_EQ(binomial_coefficient(31, 32), 0);
+}
+
 TEST(flip_coin_pdf, basic) {
 	// matches mma PDF[BinomialDistribution[...], x]
 	EXPECT_NEAR(flip_coin_pdf(40, 20), 0.1253, 1e-4);
@@ -125,6 +164,7 @@ TEST(flip_coin_pdf, accuracy) {
 
 	for (auto k = 0; k <= 32; ++k) {
 		EXPECT_NEAR(binomial_pdf(32, .5, k), mma[k], 1e-14);
+		EXPECT_NEAR(flip_coin_pdf(32, k), mma[k], 1e-14);
 	}
 }
 
@@ -242,5 +282,4 @@ TEST(kolmogorov_smirnov, basic) {
 	// there are links to ks cdf implementations here: https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test#Kolmogorov_distribution 
 	EXPECT_NEAR(kolmogorov_smirnov(0.4, 5), 0.6890, 1e-4); // boost have a theta function maybe use that (doesn't match mma right now 0.8095)
 }
-
 }

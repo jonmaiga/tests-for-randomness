@@ -47,7 +47,7 @@ std::optional<statistic> avalanche_sac_stats(const double n, const std::vector<u
 	constexpr auto Bits = bit_sizeof<T>();
 	const double total_count = n * Bits;
 	return chi2_stats(bit_counts.size(), to_data(bit_counts), [total_count](std::size_t i) {
-		return total_count * binomial_pdf(Bits, .5, i);
+		return total_count * flip_coin_pdf(Bits, i);
 	}, 5.);
 }
 
