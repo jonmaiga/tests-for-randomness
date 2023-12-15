@@ -17,7 +17,7 @@ struct test_setup {
 	std::optional<mixer<T>> mix;
 	unsigned int max_threads = default_max_threads();
 	int start_power_of_two = 10;
-	int stop_power_of_two = 20;
+	int stop_power_of_two = 25;
 
 	test_setup& set_tests(const std::vector<test_type>& test_types) {
 		tests = test_types;

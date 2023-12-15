@@ -152,7 +152,7 @@ inline auto create_per_test_callback(per_test_result& result,
 		if (print_intermediate_results || !proceed) {
 			print_battery_result(br);
 		}
-		if (!proceed) {
+		if (!proceed && !br.results.empty()) {
 			const auto test_name = get_test_name(br.results.begin()->first.type);
 			result[br.test_subject_name][test_name] = extract_property(br);
 		}
@@ -190,9 +190,18 @@ void write(const std::string& name, const per_test_result& result) {
 
 template <typename T>
 void inspect_per_test_command() {
+	constexpr auto max_power_of_two = 25;
+
+	uint64_t test_score = 0;
 	per_test_result result;
-	const auto extract_power_of_two = [](const test_battery_result& br) {
-		return std::to_string(br.power_of_two());
+	const auto extract_power_of_two = [&test_score](const test_battery_result& br)-> std::string {
+		test_score += max_power_of_two - br.power_of_two();
+		const auto ras = get_analysis(br);
+		if (ras.empty()) {
+			return "NA";
+		}
+		const std::string result = ras.front().analysis.pass() ? ">" : "";
+		return result + std::to_string(br.power_of_two());
 	};
 	const auto callback = create_per_test_callback(result, extract_power_of_two, false);
 
@@ -200,10 +209,10 @@ void inspect_per_test_command() {
 		std::cout << "========================\n";
 		std::cout << test.name << "\n";
 		std::cout << "========================\n";
-
+		timer t;
 		// trng
 		if (const auto* data = get_trng_data<T>()) {
-			evaluate_multi_pass(callback, create_data_test_setup<T>("trng", *data).set_tests({test.type}));
+			evaluate_multi_pass(callback, create_data_test_setup<T>("trng", *data).set_tests({test.type}).range(10, std::min(max_power_of_two, 22)));
 		}
 
 		// drng
@@ -213,19 +222,24 @@ void inspect_per_test_command() {
 
 		// mixers
 		for (const auto& m : get_mixers<T>()) {
-			evaluate_multi_pass(callback, create_mixer_test_setup(m).set_tests({test.type}));
+			evaluate_multi_pass(callback, create_mixer_test_setup(m).set_tests({test.type}).range(10, max_power_of_two));
 		}
 
 		// combiners
 		for (const auto& combiner : get_combiners<T>()) {
-			evaluate_multi_pass(callback, create_combiner_test_setup<T>(combiner).set_tests({test.type}));
+			evaluate_multi_pass(callback, create_combiner_test_setup<T>(combiner).set_tests({test.type}).range(10, max_power_of_two));
 		}
 
 		// prngs
 		for (const auto& prng : get_prngs<T>()) {
-			evaluate_multi_pass(callback, create_prng_test_setup<T>(prng).set_tests({test.type}));
+			evaluate_multi_pass(callback, create_prng_test_setup<T>(prng).set_tests({test.type}).range(10, max_power_of_two));
 		}
+		const auto test_time = t.milliseconds();
+		result["!score/s"][test.name] = std::to_string(static_cast<uint64_t>(std::round(1000 * static_cast<double>(test_score) / test_time)));
+		result["!score"][test.name] = std::to_string(test_score);
+		result["!time"][test.name] = std::to_string(test_time / 1000) + "s";
 		write<T>("power_of_two", result);
+		test_score = 0;
 	}
 }
 
