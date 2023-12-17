@@ -9,7 +9,6 @@
 #include "util/algo.h"
 
 namespace tfr {
-
 template <typename T>
 std::vector<uint64_t> collect_divisible(uint64_t divisor, uint64_t wanted, uint64_t tracked, const T& data) {
 	static_assert(std::is_integral_v<typename T::value_type>);
@@ -27,7 +26,7 @@ std::vector<uint64_t> collect_divisible(uint64_t divisor, uint64_t wanted, uint6
 		}
 		std::size_t index = draw_count - wanted;
 		index = std::min(draws_histogram.size() - 1, index);
-		draws_histogram[index] ++;
+		draws_histogram[index]++;
 		draw_count = 0;
 		collected = 0;
 	}
@@ -51,13 +50,13 @@ inline std::vector<double> divisible_expected_probabilities(const uint32_t divis
 template <typename T>
 sub_test_results divisibility_test(uint64_t n, const stream<T>& stream) {
 	sub_test_results results;
-	for (uint32_t divisor = 2; divisor <= 3; ++divisor) {
+	for (uint32_t divisor : {2, 3}) {
 		constexpr auto wanted = 5;
 		const auto ps = divisible_expected_probabilities(divisor, wanted);
 		const auto collected = collect_divisible(divisor, wanted, ps.size(), ranged_stream(stream, n));
 		assertion(collected.size() == ps.size(), "Unexpected size in divisible");
 
-		const auto expected_total_count = n / (divisor * 5);
+		const auto expected_total_count = n / (divisor * wanted);
 		if (expected_total_count < 100) continue;
 		if (const auto stats = chi2_stats(collected.size(), to_data(collected),
 		                                  mul(to_data(ps), to_data(expected_total_count)), 5.)) {
@@ -66,5 +65,4 @@ sub_test_results divisibility_test(uint64_t n, const stream<T>& stream) {
 	}
 	return results;
 }
-
 }
