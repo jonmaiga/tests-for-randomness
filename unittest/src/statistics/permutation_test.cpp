@@ -13,9 +13,9 @@ std::vector<uint64_t> get_histogram(const std::vector<T>& d) {
 }
 
 TEST(permutation, no_change) {
-	const auto r = permutation_stat(1000, test_stream());
-	EXPECT_NEAR(r->value, 23.2259, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.07945, 1e-4);
+	const auto r = permutation_test(1000, test_stream());
+	EXPECT_NEAR(r.front().stats->value, 23.2259, 1e-4);
+	EXPECT_NEAR(r.front().stats->p_value, 0.07945, 1e-4);
 }
 
 // TEST(permutation, permutation_fail_with_to_few_buckets_32bit) {
