@@ -70,4 +70,24 @@ TEST(permutation, no_change_8) {
 	EXPECT_NEAR(r->p_value, 0.3820, 1e-4);
 }
 
+TEST(permutation, get_permutation_size) {
+	using T = uint64_t;
+	EXPECT_EQ(get_permutation_size<T>(1<<10), 4);
+	EXPECT_EQ(get_permutation_size<T>(1<<15), 8);
+	EXPECT_EQ(get_permutation_size<T>(1<<20), 12);
+	EXPECT_EQ(get_permutation_size<T>(1<<25), 16);
+	EXPECT_EQ(get_permutation_size<T>(1<<30), 21);
+	EXPECT_EQ(get_permutation_size<T>(1ull<<35), 26);
+}
+
+TEST(permutation, get_permutation_size_32) {
+	using T = uint32_t;
+	EXPECT_EQ(get_permutation_size<T>(1<<10), 3);
+	EXPECT_EQ(get_permutation_size<T>(1<<15), 7);
+	EXPECT_EQ(get_permutation_size<T>(1<<20), 11);
+	EXPECT_EQ(get_permutation_size<T>(1<<25), 16);
+	EXPECT_EQ(get_permutation_size<T>(1<<30), 20);
+	EXPECT_EQ(get_permutation_size<T>(1ull<<35), 25);
+}
+
 }
