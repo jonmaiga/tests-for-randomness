@@ -18,15 +18,11 @@ TEST(permutation, no_change) {
 	EXPECT_NEAR(r.front().stats->p_value, 0.07945, 1e-4);
 }
 
-// TEST(permutation, permutation_fail_with_to_few_buckets_32bit) {
-// 	const auto r = permutation_test(1ull << 21, create_trng_stream<uint32_t>(602142720)).front().stats;
-// 	EXPECT_GT(r->p_value, 1e-4);
-// }
-//
-// TEST(permutation, permutation_fail_with_to_few_buckets_64bit) {
-// 	const auto r = permutation_test(1ull << 21, create_trng_stream<uint64_t>(301071360)).front().stats;
-// 	EXPECT_GT(r->p_value, 1e-4);
-// }
+TEST(permutation, no_change_large) {
+	const auto r = permutation_test(1ull << 18, create_stream_from_mixer(create_counter_stream<uint32_t>(1), mix32::mx3));
+	EXPECT_NEAR(r.front().stats->value, 489.4644, 1e-4);
+	EXPECT_NEAR(r.front().stats->p_value, 0.7461, 1e-4);
+}
 
 TEST(permutation, histogram_zeroes) {
 	using T = uint32_t;
@@ -85,9 +81,11 @@ TEST(permutation, get_permutation_size_32) {
 	EXPECT_EQ(get_permutation_size<T>(1<<10), 3);
 	EXPECT_EQ(get_permutation_size<T>(1<<15), 7);
 	EXPECT_EQ(get_permutation_size<T>(1<<20), 11);
+	EXPECT_EQ(get_permutation_size<T>(1<<24), 15);
 	EXPECT_EQ(get_permutation_size<T>(1<<25), 16);
+	EXPECT_EQ(get_permutation_size<T>(1<<26), 16);
+	EXPECT_EQ(get_permutation_size<T>(1<<27), 17);
 	EXPECT_EQ(get_permutation_size<T>(1<<30), 20);
 	EXPECT_EQ(get_permutation_size<T>(1ull<<35), 25);
 }
-
 }
