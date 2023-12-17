@@ -234,10 +234,9 @@ void inspect_per_test_command() {
 		for (const auto& prng : get_prngs<T>()) {
 			evaluate_multi_pass(callback, create_prng_test_setup<T>(prng).set_tests({test.type}).range(10, max_power_of_two));
 		}
-		const auto test_time = t.milliseconds();
-		result["!score/s"][test.name] = std::to_string(static_cast<uint64_t>(std::round(1000 * static_cast<double>(test_score) / test_time)));
+		const auto test_time = t.seconds();
 		result["!score"][test.name] = std::to_string(test_score);
-		result["!time"][test.name] = std::to_string(test_time / 1000) + "s";
+		result["!time"][test.name] = std::to_string(test_time) + "s";
 		write<T>("power_of_two", result);
 		test_score = 0;
 	}
