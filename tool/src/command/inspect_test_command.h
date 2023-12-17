@@ -195,11 +195,12 @@ void inspect_per_test_command() {
 	uint64_t test_score = 0;
 	per_test_result result;
 	const auto extract_power_of_two = [&test_score](const test_battery_result& br)-> std::string {
-		test_score += max_power_of_two - br.power_of_two();
 		const auto ras = get_analysis(br);
 		if (ras.empty()) {
 			return "NA";
 		}
+		const auto worst_analysis = ras.front().analysis;
+		test_score += worst_analysis.pass() ? 0 : (1 + max_power_of_two - br.power_of_two());
 		const std::string result = ras.front().analysis.pass() ? ">" : "";
 		return result + std::to_string(br.power_of_two());
 	};
