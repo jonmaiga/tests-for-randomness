@@ -38,8 +38,8 @@ TEST(gap, generate_gap_probabilities) {
 
 TEST(gap, no_change) {
 	const auto r = gap_test<uint64_t>(1000, test_stream()).front().stats;
-	EXPECT_NEAR(r->value, 15.7398, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.3995, 1e-4);
+	EXPECT_NEAR(r->value, 5.1234, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.4009, 1e-4);
 }
 
 TEST(gap, no_change_8) {
@@ -50,8 +50,8 @@ TEST(gap, no_change_8) {
 	}
 	const auto s8 = create_stream_from_data_by_ref("test", data);
 	auto r = gap_test<uint8_t>(data.size(), s8).front().stats;
-	EXPECT_NEAR(r->value, 21.6820, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.1972, 1e-4);
+	EXPECT_NEAR(r->value, 11.7348, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.1096, 1e-4);
 }
 
 

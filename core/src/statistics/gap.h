@@ -9,7 +9,6 @@
 #include "util/algo.h"
 
 namespace tfr {
-
 template <typename T>
 std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, const T& data01) {
 	static_assert(std::is_floating_point_v<typename T::value_type>);
@@ -17,7 +16,7 @@ std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, c
 	std::size_t current_gap = 0;
 	for (const auto v : data01) {
 		if (v >= a && v < b) {
-			gaps[std::min(current_gap, gaps.size() - 1)] ++;
+			gaps[std::min(current_gap, gaps.size() - 1)]++;
 			current_gap = 0;
 		}
 		else {
@@ -44,12 +43,10 @@ inline std::vector<double> generate_gap_probabilities(double a, double b) {
 template <typename T>
 sub_test_results gap_test(uint64_t n, const stream<T>& source) {
 	sub_test_results results;
-
-	for (int wanted_gaps = 4; wanted_gaps <= 4; ++wanted_gaps) {
+	for (const int wanted_gaps : {2}) {
 		const double gap_size = 1. / static_cast<double>(wanted_gaps);
 		const uint64_t expected_total_count = n / wanted_gaps;
 		for (int gi = 0; gi < wanted_gaps; ++gi) {
-
 			const double a = snap_to_01(gi * gap_size);
 			const double b = snap_to_01(a + gap_size);
 
@@ -58,12 +55,11 @@ sub_test_results gap_test(uint64_t n, const stream<T>& source) {
 
 			if (const auto s = chi2_stats(gaps.size(), to_data(gaps),
 			                              mul(to_data(ps), to_data(expected_total_count)),
-			                              1.)) {
+			                              5.)) {
 				results.push_back({"g" + std::to_string(gi), s});
 			}
 		}
 	}
 	return results;
 }
-
 }
