@@ -62,7 +62,7 @@ stream<T> create_stream_from_mixer(stream<T> source, const mixer<T>& mixer) {
 }
 
 template <typename T>
-stream_double rescale_type_to_01(stream<T> source) {
+stream<double> rescale_type_to_01(stream<T> source) {
 	return {
 		"rescale_type_to_01(" + source.name + ")",
 		[source]() mutable { return rescale_type_to_01(source()); }

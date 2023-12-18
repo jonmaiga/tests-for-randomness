@@ -6,7 +6,6 @@
 #include "util/assertion.h"
 
 namespace tfr {
-
 template <typename T>
 class stream {
 public:
@@ -97,8 +96,4 @@ private:
 	stream<T> s;
 	uint64_t n;
 };
-
-using stream_uint64 = stream<uint64_t>;
-using stream_double = stream<double>;
-
 }
