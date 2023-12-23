@@ -102,4 +102,11 @@ inline uint64_t reverse_bits(uint64_t x) {
 	return x >> 32 | x << 32;
 }
 
+template<typename T>
+T bit_floor(T x) {
+	if (x != 0)
+        return T{1} << (std::numeric_limits<T>::digits - std::countl_zero(x) - 1);
+    return 0;
+}
+
 }

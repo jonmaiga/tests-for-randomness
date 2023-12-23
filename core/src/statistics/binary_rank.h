@@ -108,7 +108,7 @@ template <typename T>
 uint64_t get_matrix_size(uint64_t n) {
 	constexpr double wanted_matrices = 5. / 0.0052387863054258942636;
 	constexpr double multiplier = bit_sizeof<T>() / wanted_matrices;
-	return std::bit_floor(static_cast<uint64_t>(std::sqrt(n * multiplier)));
+	return bit_floor(static_cast<uint64_t>(std::sqrt(n * multiplier)));
 }
 
 template <typename T>

@@ -76,5 +76,17 @@ TEST(bitwise, reverse_bits_64) {
 	EXPECT_EQ(reverse_bits<uint64_t>(0b1101001000100001000001000000111100111000110101011111000000101011), 0b1101010000001111101010110001110011110000001000001000010001001011);
 }
 
+TEST(bitwise, bit_floor) {
+	EXPECT_EQ(bit_floor<uint64_t>(0), 0);
+	EXPECT_EQ(bit_floor<uint64_t>(1), 1);
+	EXPECT_EQ(bit_floor<uint64_t>(2), 2);
+	EXPECT_EQ(bit_floor<uint64_t>(3), 2);
+	EXPECT_EQ(bit_floor<uint64_t>(4), 4);
+	EXPECT_EQ(bit_floor<uint64_t>(5), 4);
+	EXPECT_EQ(bit_floor<uint64_t>(6), 4);
+	EXPECT_EQ(bit_floor<uint64_t>(7), 4);
+	EXPECT_EQ(bit_floor<uint64_t>(8), 8);
+}
+
 
 }

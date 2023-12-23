@@ -11,7 +11,7 @@ std::vector<seed_data> generate_seeds(int n) {
 	for (const auto& seed : get_rrc_permutations<T>(1)) {
 		added.insert(seed);
 	}
-	T x = 1234;
+	T x = static_cast<T>(1234);
 	const auto mix = get_default_mixer<T>();
 	while (added.size() < n) {
 		added.insert(mix(x++));
