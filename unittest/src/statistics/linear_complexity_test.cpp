@@ -18,12 +18,12 @@ int berlekamp_massey(const std::vector<int>& u) {
 	int m = 0;
 
 	for (int n = 1; n <= len; ++n) {
-		int s = 0;
+		int s = u[n-1];
 		for (int j = 1; j <= l; ++j) {
 			s ^= c[j] & u[n-j-1];  // instead of s += c[j] * u[n-j-1]; s toggles between 0 and 1
 		}
 		
-		if (u[n-1] ^ s) { // same as if ((u[n-1] + s) % 2 != 0) {
+		if (s != 0) {
 			const int from = n - m;
 			const int to = from + l;
 			std::vector<int> bsub(b.begin(), b.begin() + l + 1);
