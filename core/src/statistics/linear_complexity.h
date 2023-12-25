@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <vector>
 
 #include "chi2.h"
@@ -78,8 +79,15 @@ std::optional<statistic> linear_complexity_stats(uint64_t n, stream<T> stream, u
 }
 
 template <typename T>
+uint64_t get_block_size(uint64_t n) {
+	constexpr double wanted_blocks = 5. / (1./96);
+	constexpr double multiplier = bit_sizeof<T>() / wanted_blocks;
+	return n * multiplier;
+}
+
+template <typename T>
 sub_test_results linear_complexity_test(uint64_t n, const stream<T>& source) {
-	const auto block_size = 100;
+	const auto block_size = get_block_size<T>(n);
 	return {{std::to_string(block_size), linear_complexity_stats(n, source, block_size)}};
 }
 
