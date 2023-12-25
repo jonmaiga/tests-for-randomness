@@ -111,6 +111,7 @@ std::vector<bm_test> bm_tests = {
 	{{0,0,1}, 3},
 	{{1,0,1}, 2},
 	{{1,1,1}, 1},
+	{{1,1,0,1,0,1,1,1,1,0,0,0,1}, 4},
 	{{1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0}, 2},
 	{{1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1}, 3},
 	{{1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1}, 4},
@@ -157,6 +158,13 @@ void benchmark_test(const T& impl) {
 TEST(linear_complexity, berlekamp_massey_perf) {
 	benchmark_test(bm_ref);
 	benchmark_test(berlekamp_massey);
+}
+
+TEST(linear_complexity, no_change) {
+	using T = uint64_t;
+	const auto stat = linear_complexity_stats<T>(1 << 12, test_stream(), 500);
+	EXPECT_NEAR(stat->value, 2.7871, 1e-4);
+	EXPECT_NEAR(stat->p_value, 0.24822, 1e-4);
 }
 
 }
