@@ -5,41 +5,6 @@
 #include "testutil.h"
 
 namespace tfr {
-/*
-int berlekamp_massey_3(const std::vector<int>& u) {
-	    N = len(sequence)
-    s = sequence[:]
-
-    for k in range(N):
-        if s[k] == 1:
-            break
-    f = set([k + 1, 0])  # use a set to denote polynomial
-    l = k + 1
-
-    g = set([0])
-    a = k
-    b = 0
-
-    for n in range(k + 1, N):
-        d = 0
-        for ele in f:
-            d ^= s[ele + n - l]
-
-        if d == 0:
-            b += 1
-        else:
-            if 2 * l > n:
-                f ^= set([a - b + ele for ele in g])
-                b += 1
-            else:
-                temp = f.copy()
-                f = set([b - a + ele for ele in f]) ^ g
-                l = n + 1 - l
-                g = temp
-                a = b
-                b = n - l + 1
-}
-*/
 
 int berlekamp_massey_2(const std::vector<int>& u) {
 	auto len = u.size();
@@ -137,7 +102,6 @@ struct bm_test {
 	int expected_complexity{};
 };
 
-// verified in mma
 std::vector<bm_test> bm_tests = {
 	{{0}, 0},
 	{{1}, 1},
@@ -163,4 +127,16 @@ TEST(linear_complexity, berlekamp_massey) {
 		EXPECT_EQ(berlekamp_massey_2(test.bit_sequence), test.expected_complexity);
 	}
 }
+
+TEST(linear_complexity, berlekamp_massey_cross) {
+	auto mix = get_default_mixer<uint64_t>();
+	for (int i = 1; i <= 1024; ++i) {
+		std::vector<int> bs;
+		for (int j = 1; j <= i; ++j) {
+			bs.push_back(mix(i*j) % 2);
+		}
+		EXPECT_EQ(bm_ref(bs), berlekamp_massey_2(bs));
+	}
+}
+
 }
