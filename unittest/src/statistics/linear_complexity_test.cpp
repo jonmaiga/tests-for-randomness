@@ -7,7 +7,7 @@
 
 namespace tfr {
 
-// from: https://mathematica.stackexchange.com/questions/21132/efficient-implementation-of-a-linear-complexity-measure-of-binary-sequences
+// adapted from: https://mathematica.stackexchange.com/questions/21132/efficient-implementation-of-a-linear-complexity-measure-of-binary-sequences
 int berlekamp_massey_2(const std::vector<int>& u) {
 	const auto len = u.size();
 	std::vector<int> b(len, 0);
@@ -20,9 +20,10 @@ int berlekamp_massey_2(const std::vector<int>& u) {
 	for (int n = 1; n <= len; ++n) {
 		int s = 0;
 		for (int j = 1; j <= l; ++j) {
-			s += c[j] * u[n-j-1];
+			s ^= c[j] & u[n-j-1];  // instead of s += c[j] * u[n-j-1]; s toggles between 0 and 1
 		}
-		if ((u[n-1] + s) % 2 != 0) {
+		
+		if (u[n-1] ^ s) { // same as if ((u[n-1] + s) % 2 != 0) {
 			const int from = n - m;
 			const int to = from + l;
 			std::vector<int> bsub(b.begin(), b.begin() + l + 1);
@@ -33,7 +34,7 @@ int berlekamp_massey_2(const std::vector<int>& u) {
 			}
 			
 			for (int j = from; j <= to; ++j) {
-				c[j] = (c[j] + bsub[j - from]) % 2;
+				c[j] ^= bsub[j - from]; // same as c[j] = (c[j] + bsub[j - from]) % 2;
 			}
 		}
 	}
