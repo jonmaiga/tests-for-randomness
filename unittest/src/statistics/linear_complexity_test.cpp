@@ -7,6 +7,7 @@
 
 namespace tfr {
 
+// from: https://mathematica.stackexchange.com/questions/21132/efficient-implementation-of-a-linear-complexity-measure-of-binary-sequences
 int berlekamp_massey_2(const std::vector<int>& u) {
 	const auto len = u.size();
 	std::vector<int> b(len, 0);
@@ -22,17 +23,17 @@ int berlekamp_massey_2(const std::vector<int>& u) {
 			s += c[j] * u[n-j-1];
 		}
 		if ((u[n-1] + s) % 2 != 0) {
-			const int old_l = l;
-			const int old_m = m;
+			const int from = n - m;
+			const int to = from + l;
 			std::vector<int> bsub(b.begin(), b.begin() + l + 1);
 			if (2 * l <= n) {
 				l = n - l;
 				m = n;
 				b = c;
 			}
-			const int mmn = 1 + n - old_m;
-			for (int j = mmn; j <= mmn + old_l; ++j) {
-				c[j-1] = (c[j-1] + bsub[j-mmn]) % 2;
+			
+			for (int j = from; j <= to; ++j) {
+				c[j] = (c[j] + bsub[j - from]) % 2;
 			}
 		}
 	}
