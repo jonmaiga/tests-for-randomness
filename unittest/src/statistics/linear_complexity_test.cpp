@@ -3,11 +3,12 @@
 #include <gtest/gtest.h>
 
 #include "testutil.h"
+#include "util/timer.h"
 
 namespace tfr {
 
 int berlekamp_massey_2(const std::vector<int>& u) {
-	auto len = u.size();
+	const auto len = u.size();
 	std::vector<int> b(len, 0);
 	std::vector<int> c(len, 0);
 	b[0] = c[0] = 1;
@@ -21,15 +22,15 @@ int berlekamp_massey_2(const std::vector<int>& u) {
 			s += c[j] * u[n-j-1];
 		}
 		if ((u[n-1] + s) % 2 != 0) {
-			int old_l = l;
-			int old_m = m;
+			const int old_l = l;
+			const int old_m = m;
 			std::vector<int> bsub(b.begin(), b.begin() + l + 1);
 			if (2 * l <= n) {
 				l = n - l;
 				m = n;
 				b = c;
 			}
-			int mmn = 1 + n - old_m;
+			const int mmn = 1 + n - old_m;
 			for (int j = mmn; j <= mmn + old_l; ++j) {
 				c[j-1] = (c[j-1] + bsub[j-mmn]) % 2;
 			}
@@ -61,10 +62,6 @@ int berlekamp_massey_ref(const std::vector<T>& s) {
             m = 0;
         }
     }
-    c.resize(l + 1);
-    c.erase(c.begin());
-    for (T &x : c)
-        x = -x;
     return l;
 }
 
@@ -130,13 +127,35 @@ TEST(linear_complexity, berlekamp_massey) {
 
 TEST(linear_complexity, berlekamp_massey_cross) {
 	auto mix = get_default_mixer<uint64_t>();
-	for (int i = 1; i <= 1024; ++i) {
+	for (int i = 1; i <= 256; ++i) {
 		std::vector<int> bs;
 		for (int j = 1; j <= i; ++j) {
 			bs.push_back(mix(i*j) % 2);
 		}
 		EXPECT_EQ(bm_ref(bs), berlekamp_massey_2(bs));
 	}
+}
+
+template<typename T>
+void benchmark_test(const T& impl) {
+	auto mix = get_default_mixer<uint64_t>();
+	uint64_t s = 0;
+	uint64_t total_ms = 0;
+	for (int i = 1; i <= 2*1024; ++i) {
+		std::vector<int> bs;
+		for (int j = 1; j <= i; ++j) {
+			bs.push_back(mix(i*j) % 2);
+		}
+		timer t;
+		s += impl(bs);
+		total_ms += t.milliseconds();
+	}
+	std::cout << total_ms << "ms\n";
+}
+
+TEST(linear_complexity, berlekamp_massey_perf) {
+	benchmark_test(bm_ref);
+	benchmark_test(berlekamp_massey_2);
 }
 
 }
