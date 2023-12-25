@@ -8,7 +8,7 @@
 namespace tfr {
 
 // adapted from: https://mathematica.stackexchange.com/questions/21132/efficient-implementation-of-a-linear-complexity-measure-of-binary-sequences
-int berlekamp_massey_2(const std::vector<int>& u) {
+int berlekamp_massey(const std::vector<int>& u) {
 	const auto len = u.size();
 	std::vector<int> b(len, 0);
 	std::vector<int> c(len, 0);
@@ -123,7 +123,7 @@ TEST(linear_complexity, berlekamp_massey) {
 	for (const auto& test : bm_tests) {
 		EXPECT_EQ(bm_ref(test.bit_sequence), test.expected_complexity);
 		//EXPECT_EQ(berlekamp_massey(test.bit_sequence), test.expected_complexity);
-		EXPECT_EQ(berlekamp_massey_2(test.bit_sequence), test.expected_complexity);
+		EXPECT_EQ(berlekamp_massey(test.bit_sequence), test.expected_complexity);
 	}
 }
 
@@ -134,7 +134,7 @@ TEST(linear_complexity, berlekamp_massey_cross) {
 		for (int j = 1; j <= i; ++j) {
 			bs.push_back(mix(i*j) % 2);
 		}
-		EXPECT_EQ(bm_ref(bs), berlekamp_massey_2(bs));
+		EXPECT_EQ(bm_ref(bs), berlekamp_massey(bs));
 	}
 }
 
@@ -157,7 +157,7 @@ void benchmark_test(const T& impl) {
 
 TEST(linear_complexity, berlekamp_massey_perf) {
 	benchmark_test(bm_ref);
-	benchmark_test(berlekamp_massey_2);
+	benchmark_test(berlekamp_massey);
 }
 
 }
