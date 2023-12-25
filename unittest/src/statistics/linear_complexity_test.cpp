@@ -1,0 +1,166 @@
+#include <statistics/linear_complexity.h>
+
+#include <gtest/gtest.h>
+
+#include "testutil.h"
+
+namespace tfr {
+/*
+int berlekamp_massey_3(const std::vector<int>& u) {
+	    N = len(sequence)
+    s = sequence[:]
+
+    for k in range(N):
+        if s[k] == 1:
+            break
+    f = set([k + 1, 0])  # use a set to denote polynomial
+    l = k + 1
+
+    g = set([0])
+    a = k
+    b = 0
+
+    for n in range(k + 1, N):
+        d = 0
+        for ele in f:
+            d ^= s[ele + n - l]
+
+        if d == 0:
+            b += 1
+        else:
+            if 2 * l > n:
+                f ^= set([a - b + ele for ele in g])
+                b += 1
+            else:
+                temp = f.copy()
+                f = set([b - a + ele for ele in f]) ^ g
+                l = n + 1 - l
+                g = temp
+                a = b
+                b = n - l + 1
+}
+*/
+
+int berlekamp_massey_2(const std::vector<int>& u) {
+	auto len = u.size();
+	std::vector<int> b(len, 0);
+	std::vector<int> c(len, 0);
+	b[0] = c[0] = 1;
+
+	int l = 0;
+	int m = 0;
+
+	for (int n = 1; n <= len; ++n) {
+		int s = 0;
+		for (int j = 1; j <= l; ++j) {
+			s += c[j] * u[n-j-1];
+		}
+		if ((u[n-1] + s) % 2 != 0) {
+			int old_l = l;
+			int old_m = m;
+			std::vector<int> bsub(b.begin(), b.begin() + l + 1);
+			if (2 * l <= n) {
+				l = n - l;
+				m = n;
+				b = c;
+			}
+			int mmn = 1 + n - old_m;
+			for (int j = mmn; j <= mmn + old_l; ++j) {
+				c[j-1] = (c[j-1] + bsub[j-mmn]) % 2;
+			}
+		}
+	}
+	return l;
+}
+
+template<typename T>
+int berlekamp_massey_ref(const std::vector<T>& s) {
+	using namespace std;
+    int n = (int) s.size(), l = 0, m = 1;
+    vector<T> b(n), c(n);
+    T ld = b[0] = c[0] = 1;
+    for (int i=0; i<n; i++, m++) {
+        T d = s[i];
+        for (int j=1; j<=l; j++)
+            d += c[j] * s[i-j];
+        if (d == 0)
+            continue;
+        vector<T> temp = c;
+        T coef = d / ld;
+        for (int j=m; j<n; j++)
+            c[j] -= coef * b[j-m];
+        if (2 * l <= i) {
+            l = i + 1 - l;
+            b = temp;
+            ld = d;
+            m = 0;
+        }
+    }
+    c.resize(l + 1);
+    c.erase(c.begin());
+    for (T &x : c)
+        x = -x;
+    return l;
+}
+
+template<int MOD>
+struct ModInt {
+    long long v;
+    ModInt(long long _v = 0) {v = (-MOD < _v && _v < MOD) ? _v : _v % MOD; if (v < 0) v += MOD;}
+    ModInt& operator += (const ModInt &other) {v += other.v; if (v >= MOD) v -= MOD; return *this;}
+    ModInt& operator -= (const ModInt &other) {v -= other.v; if (v < 0) v += MOD; return *this;}
+    ModInt& operator *= (const ModInt &other) {v = v * other.v % MOD; return *this;}
+    ModInt& operator /= (const ModInt &other) {return *this *= inverse(other);}
+    bool operator == (const ModInt &other) const {return v == other.v;}
+    bool operator != (const ModInt &other) const {return v != other.v;}
+    friend ModInt operator + (ModInt a, const ModInt &b) {return a += b;}
+    friend ModInt operator - (ModInt a, const ModInt &b) {return a -= b;}
+    friend ModInt operator * (ModInt a, const ModInt &b) {return a *= b;}
+    friend ModInt operator / (ModInt a, const ModInt &b) {return a /= b;}
+    friend ModInt operator - (const ModInt &a) {return 0 - a;}
+    friend ModInt power(ModInt a, long long b) {ModInt ret(1); while (b > 0) {if (b & 1) ret *= a; a *= a; b >>= 1;} return ret;}
+    friend ModInt inverse(ModInt a) {return power(a, MOD - 2);}
+    //friend istream& operator >> (istream &is, ModInt &m) {is >> m.v; m.v = (-MOD < m.v && m.v < MOD) ? m.v : m.v % MOD; if (m.v < 0) m.v += MOD; return is;}
+    //friend ostream& operator << (ostream &os, const ModInt &m) {return os << m.v;}
+};
+
+int bm_ref(const std::vector<int>& binary_sequence) {
+	std::vector<ModInt<2>> m2;
+	for (auto x : binary_sequence) {
+		m2.push_back(x);
+	}
+	return berlekamp_massey_ref(m2);
+}
+
+struct bm_test {
+	std::vector<int> bit_sequence;
+	int expected_complexity{};
+};
+
+// verified in mma
+std::vector<bm_test> bm_tests = {
+	{{0}, 0},
+	{{1}, 1},
+	{{0,0}, 0},
+	{{0,1}, 2},
+	{{1,0}, 1},
+	{{1,1}, 1},
+	{{0,0,1}, 3},
+	{{1,0,1}, 2},
+	{{1,1,1}, 1},
+	{{1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0}, 2},
+	{{1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1,1,1,0,1,0,0,1}, 3},
+	{{1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1}, 4},
+	{{1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,0,1,1,0,1,0,1,0,1,1,0,1}, 6},
+	{{1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1}, 7},
+	{{0,1,0,0,1,1,0,0,0,1,1,1,0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,1,1,1}, 16}
+}; 
+
+TEST(linear_complexity, berlekamp_massey) {
+	for (const auto& test : bm_tests) {
+		EXPECT_EQ(bm_ref(test.bit_sequence), test.expected_complexity);
+		//EXPECT_EQ(berlekamp_massey(test.bit_sequence), test.expected_complexity);
+		EXPECT_EQ(berlekamp_massey_2(test.bit_sequence), test.expected_complexity);
+	}
+}
+}
