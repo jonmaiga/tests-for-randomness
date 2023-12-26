@@ -42,45 +42,43 @@ int berlekamp_massey_(const std::vector<int>& u) {
 }
 
 template <typename RangeT>
-void for_each_block(const RangeT& data, uint64_t block_size, const std::function<void(const std::vector<int>&)>& callback) {
+void for_each_bit_block(const RangeT& data, uint64_t block_size, const std::function<void(const std::vector<int>&)>& callback) {
 	auto block = std::vector<int>(block_size, 0);
-	for_each_bit(data, [i=0ull, block_size, &block, callback](int bit) mutable {
-		block[i] = static_cast<int>(bit);
-		if (++i == block_size) {
+	for_each_bit(data, [i=0ull, &block, callback](int bit) mutable {
+		block[i] = bit;
+		if (++i == block.size()) {
 			callback(block);
 			i = 0;
 		}
 	});
 }
 
+std::vector<double> get_expected_probabilities(uint64_t block_size) {
+	return block_size % 2 == 0 ?
+		std::vector{1 / 96., 1 / 32., 1 / 8., 1 / 2., 1 / 4., 1 / 16., 1 / 48.} :
+		std::vector{1 / 48., 1 / 16., 1 / 4., 1 / 2., 1 / 8., 1 / 32., 1 / 96.};
+}
+
 template <typename T>
 std::optional<statistic> linear_complexity_stats(uint64_t n, stream<T> stream, uint64_t block_size) {
-	auto ps = std::vector<double>();
-	if (block_size % 2 == 0) {
-    	ps = {1 / 96., 1 / 32., 1 / 8., 1 / 2., 1 / 4., 1 / 16., 1 / 48.};
-	} else {
-		ps = {1 / 48., 1 / 16., 1 / 4., 1 / 2., 1 / 8., 1 / 32., 1 / 96.};
-	}
-
-	auto median = (block_size + 1) / 2;
+	const int median = (block_size + 1) / 2;
 	std::vector<uint64_t> counts(7, 0);
 	auto count = 0;
-	for_each_block(ranged_stream<T>(stream, n), block_size,
+	for_each_bit_block(ranged_stream<T>(stream, n), block_size,
 	                [median, &counts, &count](const std::vector<int>& bits) {
 		                const auto l = berlekamp_massey_(bits);
-						if (l <= median - 3) ++counts[0];
-						else if (l >= median + 3) ++counts[6];
-						else ++counts[l - median + 3];
+						++counts[std::clamp(l - median + 3, 0, 6)];
 		                ++count;
 	                });
 
+	const auto ps = get_expected_probabilities(block_size);
 	return chi2_stats(counts.size(), to_data(counts),
 	                  mul(to_data(ps), to_data(count)), 5.);
 }
 
 template <typename T>
 uint64_t get_block_size(uint64_t n) {
-	constexpr double wanted_blocks = 5. / (1./96);
+	constexpr double wanted_blocks = 5. / (1 / 96.);
 	constexpr double multiplier = bit_sizeof<T>() / wanted_blocks;
 	return n * multiplier;
 }
