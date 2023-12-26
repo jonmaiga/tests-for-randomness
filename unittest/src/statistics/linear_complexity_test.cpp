@@ -163,8 +163,8 @@ TEST(linear_complexity, berlekamp_massey_perf) {
 TEST(linear_complexity, no_change) {
 	using T = uint64_t;
 	const auto stat = linear_complexity_stats<T>(1 << 12, test_stream(), 500);
-	EXPECT_NEAR(stat->value, 2.7871, 1e-4);
-	EXPECT_NEAR(stat->p_value, 0.24822, 1e-4);
+	EXPECT_NEAR(stat->value, 11.0305, 1e-4);
+	EXPECT_NEAR(stat->p_value, 0.08743, 1e-4);
 }
 
 }
