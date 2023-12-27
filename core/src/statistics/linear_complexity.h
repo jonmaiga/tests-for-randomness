@@ -40,18 +40,6 @@ inline int berlekamp_massey(const std::vector<int>& u) {
 	return l;
 }
 
-template <typename RangeT>
-void for_each_bit_block(const RangeT& data, uint64_t block_size, const std::function<void(const std::vector<int>&)>& callback) {
-	auto block = std::vector<int>(block_size, 0);
-	for_each_bit(data, [i=0ull, &block, callback](int bit) mutable {
-		block[i] = bit;
-		if (++i == block.size()) {
-			callback(block);
-			i = 0;
-		}
-	});
-}
-
 inline std::vector<double> get_expected_probabilities(uint64_t block_size) {
 	return block_size % 2 == 0 ? std::vector{1 / 96., 1 / 32., 1 / 8., 1 / 2., 1 / 4., 1 / 16., 1 / 48.} : std::vector{1 / 48., 1 / 16., 1 / 4., 1 / 2., 1 / 8., 1 / 32., 1 / 96.};
 }
