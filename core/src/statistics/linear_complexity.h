@@ -7,8 +7,7 @@
 #include "types.h"
 
 namespace tfr {
-
-int berlekamp_massey_(const std::vector<int>& u) {
+inline int berlekamp_massey_(const std::vector<int>& u) {
 	const auto len = u.size();
 	std::vector<int> b(len, 0);
 	std::vector<int> c(len, 0);
@@ -18,11 +17,11 @@ int berlekamp_massey_(const std::vector<int>& u) {
 	int m = 0;
 
 	for (int n = 1; n <= len; ++n) {
-		int s = u[n-1];
+		int s = u[n - 1];
 		for (int j = 1; j <= l; ++j) {
-			s ^= c[j] & u[n-j-1];  // instead of s += c[j] * u[n-j-1]; s toggles between 0 and 1
+			s ^= c[j] & u[n - j - 1]; // instead of s += c[j] * u[n-j-1]; s toggles between 0 and 1
 		}
-		
+
 		if (s != 0) {
 			const int from = n - m;
 			const int to = from + l;
@@ -32,7 +31,7 @@ int berlekamp_massey_(const std::vector<int>& u) {
 				m = n;
 				b = c;
 			}
-			
+
 			for (int j = from; j <= to; ++j) {
 				c[j] ^= b_tmp[j - from]; // same as c[j] = (c[j] + bsub[j - from]) % 2;
 			}
@@ -53,10 +52,8 @@ void for_each_bit_block(const RangeT& data, uint64_t block_size, const std::func
 	});
 }
 
-std::vector<double> get_expected_probabilities(uint64_t block_size) {
-	return block_size % 2 == 0 ?
-		std::vector{1 / 96., 1 / 32., 1 / 8., 1 / 2., 1 / 4., 1 / 16., 1 / 48.} :
-		std::vector{1 / 48., 1 / 16., 1 / 4., 1 / 2., 1 / 8., 1 / 32., 1 / 96.};
+inline std::vector<double> get_expected_probabilities(uint64_t block_size) {
+	return block_size % 2 == 0 ? std::vector{1 / 96., 1 / 32., 1 / 8., 1 / 2., 1 / 4., 1 / 16., 1 / 48.} : std::vector{1 / 48., 1 / 16., 1 / 4., 1 / 2., 1 / 8., 1 / 32., 1 / 96.};
 }
 
 template <typename T>
@@ -65,11 +62,11 @@ std::optional<statistic> linear_complexity_stats(uint64_t n, stream<T> stream, u
 	std::vector<uint64_t> counts(7, 0);
 	auto count = 0;
 	for_each_bit_block(ranged_stream<T>(stream, n), block_size,
-	                [median, &counts, &count](const std::vector<int>& bits) {
-		                const auto l = berlekamp_massey_(bits);
-						++counts[std::clamp(l - median + 3, 0, 6)];
-		                ++count;
-	                });
+	                   [median, &counts, &count](const std::vector<int>& bits) {
+		                   const auto l = berlekamp_massey_(bits);
+		                   ++counts[std::clamp(l - median + 3, 0, 6)];
+		                   ++count;
+	                   });
 
 	const auto ps = get_expected_probabilities(block_size);
 	return chi2_stats(counts.size(), to_data(counts),
@@ -88,5 +85,4 @@ sub_test_results linear_complexity_test(uint64_t n, const stream<T>& source) {
 	const auto block_size = get_block_size<T>(n);
 	return {{std::to_string(block_size), linear_complexity_stats(n, source, block_size)}};
 }
-
 }
