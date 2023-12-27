@@ -24,16 +24,15 @@ inline int berlekamp_massey_(const std::vector<int>& u) {
 
 		if (s != 0) {
 			const int from = n - m;
-			const int to = from + l;
-			const std::vector<int> b_tmp(cbegin(b), cbegin(b) + l + 1);
+			const int to = std::min(static_cast<int>(c.size()), from + l + 1);
+			const std::vector<int> b_tmp(cbegin(b), cbegin(b) + to - from);
 			if (2 * l <= n) {
 				l = n - l;
 				m = n;
 				b = c;
 			}
-
-			for (int j = from; j <= to; ++j) {
-				c[j] ^= b_tmp[j - from]; // same as c[j] = (c[j] + bsub[j - from]) % 2;
+			for (int j = from; j < to; ++j) {
+				c[j] ^= b_tmp[j - from]; // same as c[j] = (c[j] + b_tmp[j - from]) % 2;
 			}
 		}
 	}
@@ -75,9 +74,9 @@ std::optional<statistic> linear_complexity_stats(uint64_t n, stream<T> stream, u
 
 template <typename T>
 uint64_t get_block_size(uint64_t n) {
-	constexpr double wanted_blocks = 5. / (1 / 96.);
+	constexpr double wanted_blocks = 10. / (1 / 96.);
 	constexpr double multiplier = bit_sizeof<T>() / wanted_blocks;
-	return n * multiplier;
+	return std::pow(n * multiplier, 0.75);
 }
 
 template <typename T>
