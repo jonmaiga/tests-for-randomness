@@ -8,9 +8,10 @@
 namespace tfr {
 // adapted from: https://mathematica.stackexchange.com/questions/21132/efficient-implementation-of-a-linear-complexity-measure-of-binary-sequences
 inline int berlekamp_massey(const std::vector<int>& u) {
-	const auto len = u.size();
+	const auto len = static_cast<int>(u.size());
 	std::vector<int> b(len, 0);
 	std::vector<int> c(len, 0);
+	std::vector<int> b_tmp(len, 0);
 	b[0] = c[0] = 1;
 
 	int l = 0;
@@ -24,8 +25,8 @@ inline int berlekamp_massey(const std::vector<int>& u) {
 
 		if (s != 0) {
 			const int from = n - m;
-			const int to = std::min(static_cast<int>(c.size()), from + l + 1);
-			const std::vector<int> b_tmp(cbegin(b), cbegin(b) + to - from);
+			const int to = std::min(len, from + l + 1);
+			std::copy(cbegin(b), cbegin(b) + l + 1, begin(b_tmp));
 			if (2 * l <= n) {
 				l = n - l;
 				m = n;
@@ -76,7 +77,7 @@ template <typename T>
 uint64_t get_block_size(uint64_t n) {
 	constexpr double wanted_blocks = 10. / (1 / 96.);
 	constexpr double multiplier = bit_sizeof<T>() / wanted_blocks;
-	return std::pow(n * multiplier, 0.75);
+	return std::pow(n * multiplier, 0.6);
 }
 
 template <typename T>
