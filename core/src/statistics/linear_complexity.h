@@ -1,13 +1,13 @@
 #pragma once
 
-#include <iostream>
 #include <vector>
 
 #include "chi2.h"
 #include "types.h"
 
 namespace tfr {
-inline int berlekamp_massey_(const std::vector<int>& u) {
+// adapted from: https://mathematica.stackexchange.com/questions/21132/efficient-implementation-of-a-linear-complexity-measure-of-binary-sequences
+inline int berlekamp_massey(const std::vector<int>& u) {
 	const auto len = u.size();
 	std::vector<int> b(len, 0);
 	std::vector<int> c(len, 0);
@@ -62,7 +62,7 @@ std::optional<statistic> linear_complexity_stats(uint64_t n, stream<T> stream, u
 	auto count = 0;
 	for_each_bit_block(ranged_stream<T>(stream, n), block_size,
 	                   [median, &counts, &count](const std::vector<int>& bits) {
-		                   const auto l = berlekamp_massey_(bits);
+		                   const auto l = berlekamp_massey(bits);
 		                   ++counts[std::clamp(l - median + 3, 0, 6)];
 		                   ++count;
 	                   });
