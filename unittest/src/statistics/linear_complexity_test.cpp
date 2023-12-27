@@ -25,16 +25,15 @@ int berlekamp_massey(const std::vector<int>& u) {
 		
 		if (s != 0) {
 			const int from = n - m;
-			const int to = from + l;
-			const std::vector<int> b_tmp(cbegin(b), cbegin(b) + l + 1);
+			const int to = std::min(static_cast<int>(c.size()), from + l + 1);
+			const std::vector<int> b_tmp(cbegin(b), cbegin(b) + to - from);
 			if (2 * l <= n) {
 				l = n - l;
 				m = n;
 				b = c;
 			}
-			
-			for (int j = from; j <= to; ++j) {
-				c[j] ^= b_tmp[j - from]; // same as c[j] = (c[j] + bsub[j - from]) % 2;
+			for (int j = from; j < to; ++j) {
+				c[j] ^= b_tmp[j - from]; // same as c[j] = (c[j] + b_tmp[j - from]) % 2;
 			}
 		}
 	}
@@ -143,7 +142,7 @@ void benchmark_test(const T& impl) {
 	auto mix = get_default_mixer<uint64_t>();
 	uint64_t s = 0;
 	uint64_t total_ms = 0;
-	for (int i = 1; i <= 2*1024; ++i) {
+	for (int i = 1; i <= 3*1024; ++i) {
 		std::vector<int> bs;
 		for (int j = 1; j <= i; ++j) {
 			bs.push_back(mix(i*j) % 2);
@@ -156,7 +155,7 @@ void benchmark_test(const T& impl) {
 }
 
 TEST(linear_complexity, berlekamp_massey_perf) {
-	benchmark_test(bm_ref);
+	//benchmark_test(bm_ref);
 	benchmark_test(berlekamp_massey);
 }
 
