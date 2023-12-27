@@ -6,6 +6,7 @@
 #include "util/timer.h"
 
 namespace tfr {
+// from: https://mzhang2021.github.io/cp-blog/berlekamp-massey/
 template <typename T>
 int berlekamp_massey_ref(const std::vector<T>& s) {
 	using namespace std;
@@ -122,7 +123,7 @@ TEST(linear_complexity, berlekamp_massey) {
 }
 
 TEST(linear_complexity, berlekamp_massey_cross) {
-	auto mix = get_default_mixer<uint64_t>();
+	const auto mix = get_default_mixer<uint64_t>();
 	for (int i = 1; i <= 256; ++i) {
 		std::vector<int> bs;
 		for (int j = 1; j <= i; ++j) {
@@ -134,10 +135,10 @@ TEST(linear_complexity, berlekamp_massey_cross) {
 
 template <typename T>
 void benchmark_test(const T& impl) {
-	auto mix = get_default_mixer<uint64_t>();
+	const auto mix = get_default_mixer<uint64_t>();
 	uint64_t s = 0;
 	uint64_t total_ms = 0;
-	for (int i = 1; i <= 3 * 1024; ++i) {
+	for (int i = 1; i <= 4 * 1024; ++i) {
 		std::vector<int> bs;
 		for (int j = 1; j <= i; ++j) {
 			bs.push_back(mix(i * j) % 2);
@@ -151,7 +152,7 @@ void benchmark_test(const T& impl) {
 
 TEST(linear_complexity, berlekamp_massey_perf) {
 	//benchmark_test(bm_ref);
-	benchmark_test(berlekamp_massey);
+	//benchmark_test(berlekamp_massey);
 }
 
 TEST(linear_complexity, no_change) {
