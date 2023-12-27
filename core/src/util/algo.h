@@ -157,6 +157,18 @@ void for_each_bit(const T& data, const std::function<void(bool)>& callback) {
 	}
 }
 
+template <typename RangeT>
+void for_each_bit_block(const RangeT& data, uint64_t block_size, const std::function<void(const std::vector<int>&)>& callback) {
+	auto block = std::vector<int>(block_size, 0);
+	for_each_bit(data, [i=0ull, &block, callback](int bit) mutable {
+		block[i] = bit;
+		if (++i == block.size()) {
+			callback(block);
+			i = 0;
+		}
+	});
+}
+
 template <typename T>
 void sliding_bit_window(const T& data, int window_size, const std::function<void(uint64_t)>& callback) {
 	assertion(window_size > 0 && window_size < 64, "Invalid window size");
