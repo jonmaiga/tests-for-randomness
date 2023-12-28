@@ -147,9 +147,9 @@ typename T::value_type accumulate(const T& data) {
 	return std::accumulate(data.begin(), data.end(), 0ull, std::plus());
 }
 
-template <typename T>
-void for_each_bit(const T& data, const std::function<void(bool)>& callback) {
-	constexpr auto Size = bit_sizeof<typename T::value_type>();
+template <typename RangeT, typename CallbackT>
+void for_each_bit(const RangeT& data, CallbackT callback) {
+	constexpr auto Size = bit_sizeof<typename RangeT::value_type>();
 	for (const auto v : data) {
 		for (int b = 0; b < Size; ++b) {
 			callback(is_bit_set(v, b));
@@ -157,8 +157,8 @@ void for_each_bit(const T& data, const std::function<void(bool)>& callback) {
 	}
 }
 
-template <typename RangeT>
-void for_each_bit_block(const RangeT& data, uint64_t block_size, const std::function<void(const std::vector<int>&)>& callback) {
+template <typename RangeT, typename CallbackT>
+void for_each_bit_block(const RangeT& data, uint64_t block_size, CallbackT callback) {
 	auto block = std::vector<int>(block_size, 0);
 	for_each_bit(data, [i=0ull, &block, callback](int bit) mutable {
 		block[i] = bit;
@@ -169,8 +169,8 @@ void for_each_bit_block(const RangeT& data, uint64_t block_size, const std::func
 	});
 }
 
-template <typename T>
-void sliding_bit_window(const T& data, int window_size, const std::function<void(uint64_t)>& callback) {
+template <typename T, typename CallbackT>
+void sliding_bit_window(const T& data, int window_size, CallbackT callback) {
 	assertion(window_size > 0 && window_size < 64, "Invalid window size");
 	uint64_t v = 0;
 	int c = 0;
