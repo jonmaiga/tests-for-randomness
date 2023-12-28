@@ -2,6 +2,7 @@
 
 #include <bit>
 #include <cstdint>
+#include <vector>
 
 #include "assertion.h"
 
@@ -107,6 +108,47 @@ T bit_floor(T x) {
 	if (x != 0)
         return T{1} << (std::numeric_limits<T>::digits - std::countl_zero(x) - 1);
     return 0;
+}
+
+template <typename RangeT, typename CallbackT>
+void for_each_bit(const RangeT& data, CallbackT callback) {
+	constexpr auto Size = bit_sizeof<typename RangeT::value_type>();
+	for (const auto v : data) {
+		for (int b = 0; b < Size; ++b) {
+			callback(is_bit_set(v, b));
+		}
+	}
+}
+
+template <typename RangeT, typename CallbackT>
+void for_each_bit_block(const RangeT& data, uint64_t block_size, CallbackT callback) {
+	auto block = std::vector<int>(block_size, 0);
+	for_each_bit(data, [i=0ull, &block, callback](bool bit) mutable {
+		block[i] = bit;
+		if (++i == block.size()) {
+			callback(block);
+			i = 0;
+		}
+	});
+}
+
+template <typename T, typename CallbackT>
+void sliding_bit_window(const T& data, int window_size, CallbackT callback) {
+	assertion(window_size > 0 && window_size < 64, "Invalid window size");
+	uint64_t v = 0;
+	int c = 0;
+
+	const auto acc = [callback, c, v, window_size](bool is_set) mutable {
+		v |= (is_set ? 1ull : 0ull) << c;
+		++c;
+		if (c == window_size) {
+			callback(v);
+			c = 0;
+			v = 0;
+		}
+	};
+
+	for_each_bit(data, acc);
 }
 
 }

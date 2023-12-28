@@ -147,47 +147,6 @@ typename T::value_type accumulate(const T& data) {
 	return std::accumulate(data.begin(), data.end(), 0ull, std::plus());
 }
 
-template <typename RangeT, typename CallbackT>
-void for_each_bit(const RangeT& data, CallbackT callback) {
-	constexpr auto Size = bit_sizeof<typename RangeT::value_type>();
-	for (const auto v : data) {
-		for (int b = 0; b < Size; ++b) {
-			callback(is_bit_set(v, b));
-		}
-	}
-}
-
-template <typename RangeT, typename CallbackT>
-void for_each_bit_block(const RangeT& data, uint64_t block_size, CallbackT callback) {
-	auto block = std::vector<int>(block_size, 0);
-	for_each_bit(data, [i=0ull, &block, callback](int bit) mutable {
-		block[i] = bit;
-		if (++i == block.size()) {
-			callback(block);
-			i = 0;
-		}
-	});
-}
-
-template <typename T, typename CallbackT>
-void sliding_bit_window(const T& data, int window_size, CallbackT callback) {
-	assertion(window_size > 0 && window_size < 64, "Invalid window size");
-	uint64_t v = 0;
-	int c = 0;
-
-	const auto acc = [callback, c, v, window_size](bool is_set) mutable {
-		v |= (is_set ? 1ull : 0ull) << c;
-		++c;
-		if (c == window_size) {
-			callback(v);
-			c = 0;
-			v = 0;
-		}
-	};
-
-	for_each_bit(data, acc);
-}
-
 struct merge_bins_result {
 	std::vector<uint64_t> observed;
 	std::vector<double> expected;
