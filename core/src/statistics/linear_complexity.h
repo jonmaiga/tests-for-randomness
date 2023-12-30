@@ -71,6 +71,9 @@ uint64_t get_block_size(uint64_t n) {
 template <typename T>
 sub_test_results linear_complexity_test(uint64_t n, const stream<T>& source) {
 	const auto block_size = get_block_size<T>(n);
+	if (block_size < 8) {
+		return {};
+	}
 	return {{std::to_string(block_size), linear_complexity_stats(n, source, block_size)}};
 }
 }

@@ -161,4 +161,13 @@ TEST(linear_complexity, no_change) {
 	EXPECT_NEAR(stat->value, 11.0305, 1e-4);
 	EXPECT_NEAR(stat->p_value, 0.08743, 1e-4);
 }
+
+TEST(linear_complexity, no_change_8bit) {
+	//todo: understand why this fails (see counts) also try with trng
+	using T = uint8_t;
+	const auto ss = linear_complexity_test<T>(1 << 15, test_stream<T>());
+	EXPECT_NEAR(ss[0].stats->value, 262.6287, 1e-4);
+	EXPECT_NEAR(ss[0].stats->p_value, 0, 1e-4);
+}
+
 }
