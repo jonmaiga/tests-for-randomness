@@ -88,6 +88,19 @@ TEST(bitwise, bit_floor) {
 	EXPECT_EQ(bit_floor<uint64_t>(8), 8);
 }
 
+TEST(bitwise, bit_ceil) {
+	EXPECT_EQ(bit_ceil<uint64_t>(0), 0);
+	EXPECT_EQ(bit_ceil<uint64_t>(1), 1);
+	EXPECT_EQ(bit_ceil<uint64_t>(2), 2);
+	EXPECT_EQ(bit_ceil<uint64_t>(3), 4);
+	EXPECT_EQ(bit_ceil<uint64_t>(4), 4);
+	EXPECT_EQ(bit_ceil<uint64_t>(5), 8);
+	EXPECT_EQ(bit_ceil<uint64_t>(6), 8);
+	EXPECT_EQ(bit_ceil<uint64_t>(7), 8);
+	EXPECT_EQ(bit_ceil<uint64_t>(8), 8);
+	EXPECT_EQ(bit_ceil<uint64_t>(std::numeric_limits<uint64_t>::max()-1), std::numeric_limits<uint64_t>::max());
+}
+
 template <typename T = uint64_t>
 std::vector<uint64_t> sliding_bit_window(const std::vector<T>& data, int window_size) {
 	std::vector<uint64_t> r;

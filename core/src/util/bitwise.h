@@ -104,9 +104,22 @@ inline uint64_t reverse_bits(uint64_t x) {
 }
 
 template<typename T>
-T bit_floor(T x) {
+T bit_width(T x) {
+	return std::numeric_limits<T>::digits - std::countl_zero(x);
+}
+
+template<typename T>
+int bit_floor(T x) {
 	if (x != 0)
-        return T{1} << (std::numeric_limits<T>::digits - std::countl_zero(x) - 1);
+        return T{1} << (bit_width(x) - 1);
+    return 0;
+}
+
+template<typename T>
+T bit_ceil(T x) {
+	if (x != 0) {
+		return T(1) << bit_width(T(x - 1));
+	}
     return 0;
 }
 
