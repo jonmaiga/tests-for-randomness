@@ -78,12 +78,36 @@ template <typename T>
 test_setup<T> create_prng_test_setup(std::function<stream<T>(const seed_data& seed)> create_prng) {
 	std::string test_subject_name;
 	streams<T> to_test;
-	for (auto seed : generate_seeds<T>(4 * bit_sizeof<T>())) {
-		auto& prng = to_test.emplace_back(create_prng(seed));
-		if (test_subject_name.empty()) {
-			test_subject_name = prng.name;
+	int bit = 0;
+	const auto seeds = generate_seeds<T>(4*bit_sizeof<T>());
+	for (int i = 0; i < seeds.size(); i += 4) {
+		{
+			const auto seed = seeds[i];
+			auto& prng = to_test.emplace_back(create_prng(seed));
+			if (test_subject_name.empty()) {
+				test_subject_name = prng.name;
+			}
+			prng.name += " seed=" + to_string(seed);
 		}
-		prng.name += " seed=" + to_string(seed);
+
+		{
+			const auto seed = seeds[i+1];
+			auto& prng = to_test.emplace_back(create_bit_isolation_stream(create_prng(seed), bit));
+			bit = (bit + 1) % bit_sizeof<T>();
+			prng.name += " seed=" + to_string(seed);
+		}
+
+		{
+			const auto seed = seeds[i+2];
+			auto& prng = to_test.emplace_back(create_bit_reverse_stream(create_prng(seed)));
+			prng.name += " seed=" + to_string(seed);
+		}
+
+		{
+			const auto seed = seeds[i+3];
+			auto& prng = to_test.emplace_back(create_prng(seed));
+			prng.name += " seed=" + to_string(seed);
+		}
 	}
 
 	return test_setup<T>{
