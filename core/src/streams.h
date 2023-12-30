@@ -54,6 +54,24 @@ stream<T> create_stream_from_data_by_ref(const std::string& name, const std::vec
 }
 
 template <typename T>
+stream<T> create_bit_isolation_stream(stream<T> source, int bit) {
+	return stream<T>{
+		"bit-" + std::to_string(bit) + "(" + source.name + ")", [source, bit]() mutable -> T {
+			return isolate_bit_by_ref(source, bit);
+		}
+	};
+}
+
+template <typename T>
+stream<T> create_bit_reverse_stream(stream<T> source) {
+	return stream<T>{
+		"reverse-bits(" + source.name + ")", [source]() mutable -> T {
+			return reverse_bits<T>(source());
+		}
+	};
+}
+
+template <typename T>
 stream<T> create_stream_from_data_by_ref_thread_safe(const std::string& name, const std::vector<T>& data) {
 	static std::atomic_size_t index = 0;
 	return stream<T>{
