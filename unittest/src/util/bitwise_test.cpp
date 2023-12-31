@@ -86,6 +86,7 @@ TEST(bitwise, bit_floor) {
 	EXPECT_EQ(bit_floor<uint64_t>(6), 4);
 	EXPECT_EQ(bit_floor<uint64_t>(7), 4);
 	EXPECT_EQ(bit_floor<uint64_t>(8), 8);
+	EXPECT_EQ(bit_floor<uint64_t>(std::numeric_limits<uint64_t>::max()-1), 9223372036854775808u);
 }
 
 TEST(bitwise, bit_ceil) {
@@ -98,7 +99,7 @@ TEST(bitwise, bit_ceil) {
 	EXPECT_EQ(bit_ceil<uint64_t>(6), 8);
 	EXPECT_EQ(bit_ceil<uint64_t>(7), 8);
 	EXPECT_EQ(bit_ceil<uint64_t>(8), 8);
-	EXPECT_EQ(bit_ceil<uint64_t>(std::numeric_limits<uint64_t>::max()-1), std::numeric_limits<uint64_t>::max());
+	EXPECT_EQ(bit_ceil<uint64_t>(std::numeric_limits<uint64_t>::max()-1), 1);
 }
 
 template <typename T = uint64_t>

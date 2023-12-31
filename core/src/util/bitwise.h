@@ -109,7 +109,7 @@ T bit_width(T x) {
 }
 
 template<typename T>
-int bit_floor(T x) {
+T bit_floor(T x) {
 	if (x != 0)
         return T{1} << (bit_width(x) - 1);
     return 0;
