@@ -34,6 +34,16 @@ stream<T> test_stream() {
 }
 
 template <typename T>
+auto test_stream_casted(uint64_t n) {
+	auto s = test_stream();
+	std::vector<T> data;
+	for (int i = 0; i < n; ++i) {
+		data.push_back(static_cast<T>(s()));
+	}
+	return create_stream_from_data("test", data);
+}
+
+template <typename T>
 uint64_t hash64(const T& data) {
 	static_assert(sizeof(typename T::value_type) == sizeof(uint64_t));
 	uint64_t h = 0;

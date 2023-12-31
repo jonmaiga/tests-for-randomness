@@ -43,13 +43,8 @@ TEST(gap, no_change) {
 }
 
 TEST(gap, no_change_8) {
-	auto s = test_stream();
-	std::vector<uint8_t> data;
-	for (int i = 0; i < (1<<22); ++i) {
-		data.push_back(static_cast<uint8_t>(s()));
-	}
-	const auto s8 = create_stream_from_data_by_ref("test", data);
-	auto r = gap_test<uint8_t>(data.size(), s8).front().stats;
+	auto n = 1 << 22;
+	auto r = gap_test<uint8_t>(n, test_stream_casted<uint8_t>(n)).front().stats;
 	EXPECT_NEAR(r->value, 11.7348, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.1096, 1e-4);
 }

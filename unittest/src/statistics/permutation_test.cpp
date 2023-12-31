@@ -55,13 +55,8 @@ TEST(permutation, histogram) {
 }
 
 TEST(permutation, no_change_8) {
-	auto s = test_stream();
-	std::vector<uint8_t> data;
-	for (int i = 0; i < (1 << 20); ++i) {
-		data.push_back(static_cast<uint8_t>(s()));
-	}
-	const auto s8 = create_stream_from_data_by_ref("test", data);
-	const auto r = permutation_test(data.size(), s8).front().stats;
+	auto n = 1 << 20;
+	const auto r = permutation_test(n, test_stream_casted<uint8_t>(n)).front().stats;
 	EXPECT_NEAR(r->value, 519.98341, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.3820, 1e-4);
 }
