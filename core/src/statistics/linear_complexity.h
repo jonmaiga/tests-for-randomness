@@ -6,6 +6,19 @@
 #include "types.h"
 
 namespace tfr {
+// from: https://github.com/google/paranoid_crypto/blob/main/paranoid_crypto/lib/randomness_tests/nist_suite.py
+inline int64_t lfsr_log_probability(uint64_t block_size, uint64_t lfsr_length) {
+	assertion(block_size > 0, "Block size must be positive");
+	assertion(lfsr_length <= block_size, "Lfsr length must be smaller or equal to block_size");
+	if (lfsr_length == 0) {
+		return -block_size;
+	}
+	if (lfsr_length <= block_size / 2) {
+		return 2 * lfsr_length - block_size - 1;
+	}
+	return block_size - 2 * lfsr_length;
+}
+
 // adapted from: https://mathematica.stackexchange.com/questions/21132/efficient-implementation-of-a-linear-complexity-measure-of-binary-sequences
 inline int berlekamp_massey(const std::vector<int>& u) {
 	const auto len = static_cast<int>(u.size());
