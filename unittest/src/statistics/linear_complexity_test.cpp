@@ -170,4 +170,39 @@ TEST(linear_complexity, no_change_8) {
 	EXPECT_NEAR(ss[0].stats->p_value, 0.2586, 1e-4);
 }
 
+TEST(linear_complexity, lfsr_log_probability) {
+	EXPECT_EQ(lfsr_log_probability(1, 0), -1);
+	EXPECT_EQ(lfsr_log_probability(1, 1), -1);
+	
+	EXPECT_EQ(lfsr_log_probability(2, 0), -2);
+	EXPECT_EQ(lfsr_log_probability(2, 1), -1);
+	EXPECT_EQ(lfsr_log_probability(2, 2), -2);
+
+	EXPECT_EQ(lfsr_log_probability(3, 0), -3);
+	EXPECT_EQ(lfsr_log_probability(3, 1), -2);
+	EXPECT_EQ(lfsr_log_probability(3, 2), -1);
+	EXPECT_EQ(lfsr_log_probability(3, 3), -3);
+
+	EXPECT_EQ(lfsr_log_probability(4, 0), -4);
+	EXPECT_EQ(lfsr_log_probability(4, 1), -3);
+	EXPECT_EQ(lfsr_log_probability(4, 2), -1);
+	EXPECT_EQ(lfsr_log_probability(4, 3), -2);
+	EXPECT_EQ(lfsr_log_probability(4, 4), -4);
+
+	EXPECT_EQ(lfsr_log_probability(5, 0), -5);
+	EXPECT_EQ(lfsr_log_probability(5, 1), -4);
+	EXPECT_EQ(lfsr_log_probability(5, 2), -2);
+	EXPECT_EQ(lfsr_log_probability(5, 3), -1);
+	EXPECT_EQ(lfsr_log_probability(5, 4), -3);
+	EXPECT_EQ(lfsr_log_probability(5, 5), -5);
+
+	EXPECT_EQ(lfsr_log_probability(6, 0), -6);
+	EXPECT_EQ(lfsr_log_probability(6, 1), -5);
+	EXPECT_EQ(lfsr_log_probability(6, 2), -3);
+	EXPECT_EQ(lfsr_log_probability(6, 3), -1);
+	EXPECT_EQ(lfsr_log_probability(6, 4), -2);
+	EXPECT_EQ(lfsr_log_probability(6, 5), -4);
+	EXPECT_EQ(lfsr_log_probability(6, 6), -6);	
+}
+
 }
