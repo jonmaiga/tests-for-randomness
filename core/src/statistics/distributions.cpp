@@ -115,7 +115,6 @@ double gamma_regularized(double s, double z) {
 	return 1. - kf_gammap(s, z);
 }
 
-
 //https://github.com/odelalleau/PLearn/blob/76684e2a2af134859be2ef621e84af0dbd838f2e/plearn/math/stats_utils.cc
 double kolmogorov_smirnov_cdf(double D, double df, int conv) {
 	double res = 0.0;
@@ -130,6 +129,26 @@ double kolmogorov_smirnov_cdf(double D, double df, int conv) {
 			res += x;
 	}
 	return std::clamp(2. * res, 0., 1.);
+}
+
+double binomial_cdf(uint32_t n, double p, uint32_t k) {
+	// adapted from: https://stackoverflow.com/questions/1095650/how-can-i-efficiently-calculate-the-binomial-cumulative-distribution-function
+	// alternative: return 1. - beta_regularized(x + 1, n - x, p);
+	if (is_near(p, 0, 1e-10)) {
+		return 1.;
+	}
+	if (is_near(p, 1, 1e-10)) {
+		return 0.;
+	}
+	const auto log_p = std::log(p);
+	const auto log_1_p = std::log(1-p);
+	double b = 0;
+	double cdf = std::pow(1-p, n);
+    for (int i = 1; i <= k; ++i) {
+        b += std::log(n - i + 1) - std::log(i);
+        cdf += std::exp(b + i * log_p + (n - i) * log_1_p);
+	}
+    return std::clamp(cdf, 0., 1.);
 }
 
 

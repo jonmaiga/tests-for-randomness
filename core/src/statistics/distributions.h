@@ -71,6 +71,8 @@ inline double binomial_pdf(uint32_t n, double p, uint32_t k) {
 		std::pow(p, k) * std::pow((1 - p), n - k);
 }
 
+double binomial_cdf(uint32_t n, double p, uint32_t k);
+
 inline double negative_binomial_pdf(uint32_t successes, double p, uint32_t failures) {
 	assertion(successes + failures > 0, "Expected at least one success or failure");
 	return static_cast<double>(binomial_coefficient(failures + successes - 1, successes - 1)) *
