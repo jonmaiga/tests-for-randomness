@@ -82,6 +82,28 @@ TEST(binomial_pdf, basic) {
 	EXPECT_NEAR(binomial_pdf(64, 0.5, 33), 0.09633, 1e-4);
 }
 
+TEST(binomial_cdf, basic) {
+	// matches mma CDF[BinomialDistribution[...], x]
+	EXPECT_NEAR(binomial_cdf(1, 1, 0), 0, 1e-4);
+	EXPECT_NEAR(binomial_cdf(1, 0, 0), 1, 1e-4);
+
+	EXPECT_NEAR(binomial_cdf(2, 0.25, 1), 0.9375, 1e-4);
+	EXPECT_NEAR(binomial_cdf(2, 0.5, 1), 0.75, 1e-4);
+	EXPECT_NEAR(binomial_cdf(2, 0.75, 1), 0.4375, 1e-4);
+
+	EXPECT_NEAR(binomial_cdf(40, 0.5, 0), 0, 1e-4);
+	EXPECT_NEAR(binomial_cdf(40, 0.5, 40), 1, 1e-4);
+	EXPECT_NEAR(binomial_cdf(40, 0.5, 10), 0.001110, 1e-4);
+	EXPECT_NEAR(binomial_cdf(40, 0.5, 20), 0.5626, 1e-4);
+	EXPECT_NEAR(binomial_cdf(40, 0.5, 30), 0.9996, 1e-4);
+
+	EXPECT_NEAR(binomial_cdf(1000, 0.5, 500), 0.5126, 1e-4);	
+}
+
+TEST(binomial_cdf, error) {
+	EXPECT_NEAR(binomial_cdf(1000, 0.5, 500)-0.5126125090887863, 0, 1e-13);
+}
+
 TEST(binomial_coefficent, basic) {
 	EXPECT_NEAR(binomial_coefficient_reals(0, 0), 1, 1e-4);
 	EXPECT_NEAR(binomial_coefficient_reals(0, 1), 0, 1e-4);
