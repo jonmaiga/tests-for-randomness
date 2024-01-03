@@ -54,22 +54,32 @@ inline int berlekamp_massey(const std::vector<int>& u) {
 }
 
 inline std::vector<double> get_expected_probabilities(uint64_t block_size) {
-	return block_size % 2 == 0 ? std::vector{1 / 96., 1 / 32., 1 / 8., 1 / 2., 1 / 4., 1 / 16., 1 / 48.} : std::vector{1 / 48., 1 / 16., 1 / 4., 1 / 2., 1 / 8., 1 / 32., 1 / 96.};
+	std::vector<double> ps;
+	auto sum = 0.;
+	auto i = 0;
+	while (sum < 1.) {
+		sum += ps.emplace_back(std::pow(2, lfsr_log_probability(block_size, i)));
+		++i;
+	}
+	return ps;
 }
 
 template <typename T>
 std::optional<statistic> linear_complexity_stats(uint64_t n, stream<T> stream, uint64_t block_size) {
-	const int median = (block_size + 1) / 2;
-	std::vector<uint64_t> counts(7, 0);
-	auto count = 0;
-	for_each_bit_block(ranged_stream<T>(stream, n), block_size,
-	                   [median, &counts, &count](const std::vector<int>& bits) {
-		                   const auto l = berlekamp_massey(bits);
-		                   ++counts[std::clamp(l - median + 3, 0, 6)];
-		                   ++count;
-	                   });
-
 	const auto ps = get_expected_probabilities(block_size);
+	std::vector<uint64_t> counts(ps.size(), 0);
+	auto count = 0;
+	int log_probability = 0;
+	for_each_bit_block(ranged_stream<T>(stream, n), block_size,
+	                   [&counts, &count, &log_probability, block_size](const std::vector<int>& bits) {
+							const auto l = berlekamp_massey(bits);
+							++counts[l];
+							++count;
+							log_probability += -lfsr_log_probability(block_size, l);
+	                   });
+	//auto pv = binomial_cdf(log_probability - 1, 0.5, count - 1);
+	//return statistic{statistic_type::chi2, static_cast<double>(log_probability), pv, static_cast<double>(count-1)};
+
 	return chi2_stats(counts.size(), to_data(counts),
 	                  mul(to_data(ps), to_data(count)), 5.);
 }
