@@ -76,9 +76,7 @@ test_setup<T> create_mixer_test_setup(const mixer<T> mixer) {
 
 template <typename T>
 test_setup<T> create_prng_test_setup(prng_factory<T> create_prng) {
-	constexpr auto wanted_streams = 4 * bit_sizeof<T>();
-
-	auto seeds = generate_seeds<T>(wanted_streams);
+	auto seeds = generate_seeds<T>(std::min(bit_sizeof<T>(), 1024));
 	const auto pop_seed = [&seeds]() {
 		assertion(!seeds.empty(), "Out of seeds");
 		const auto seed = seeds.back();
@@ -94,16 +92,27 @@ test_setup<T> create_prng_test_setup(prng_factory<T> create_prng) {
 
 	const auto bit_isolation_seed = pop_seed();
 	for (int bit = 0; bit < bit_sizeof<T>(); ++bit) {
-		add(bit_isolation_seed, [bit](stream<T> stream) { return create_bit_isolation_stream(stream, bit); });
+	 	add(bit_isolation_seed, [bit](stream<T> stream) { return create_bit_isolation_stream(stream, bit); });
 	}
 
-	for (int i = 0; i < 16; ++i) {
+	for (int i = 0; i < bit_sizeof<T>(); ++i) {
+		add(pop_seed(), [i](stream<T> stream) { return create_ror_stream(stream, i); });
+	}
+
+	for (int i = 0; i < bit_sizeof<T>()/4; ++i) {
 		add(pop_seed(), [](stream<T> stream) { return create_bit_reverse_stream(stream); });
 	}
 
-	while (to_test.size() < wanted_streams) {
+	for (int i = 0; i < bit_sizeof<T>()/4; ++i) {
+		add(pop_seed(), [](stream<T> stream) { return create_byteswap_stream(stream); });
+	}
+
+	for (int i = 0; i < bit_sizeof<T>()/4; ++i) {
 		add(pop_seed());
 	}
+	// while (to_test.size() < wanted_streams) {
+	//   	add(pop_seed());
+	// }
 
 	return test_setup<T>{
 		create_prng({0,0,0,0}).name,

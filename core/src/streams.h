@@ -72,6 +72,27 @@ stream<T> create_bit_reverse_stream(stream<T> source) {
 }
 
 template <typename T>
+stream<T> create_byteswap_stream(stream<T> source) {
+	return stream<T>{
+		"byteswap(" + source.name + ")", [source]() mutable -> T {
+			return byteswap<T>(source());
+		}
+	};
+}
+
+template <typename T>
+stream<T> create_ror_stream(stream<T> source, int rotate_right) {
+	if (rotate_right == 0) {
+		return source;
+	}
+	return stream<T>{
+		"ror(" + source.name + "," + std::to_string(rotate_right) + ")", [source, rotate_right]() mutable -> T {
+			return ror(source(), rotate_right);
+		}
+	};
+}
+	
+template <typename T>
 stream<T> create_stream_from_data_by_ref_thread_safe(const std::string& name, const std::vector<T>& data) {
 	static std::atomic_size_t index = 0;
 	return stream<T>{

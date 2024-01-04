@@ -164,4 +164,27 @@ void sliding_bit_window(const T& data, int window_size, CallbackT callback) {
 	for_each_bit(data, acc);
 }
 
+template<class To, class From>
+std::enable_if_t<
+    sizeof(To) == sizeof(From) &&
+    std::is_trivially_copyable_v<From> &&
+    std::is_trivially_copyable_v<To>,
+    To>
+bit_cast(const From& src) noexcept {
+    static_assert(std::is_trivially_constructible_v<To>,
+        "This implementation additionally requires "
+        "destination type to be trivially constructible");
+    To dst;
+    std::memcpy(&dst, &src, sizeof(To));
+    return dst;
+}
+
+template<typename T>
+constexpr T byteswap(T value) noexcept {
+    static_assert(std::has_unique_object_representations_v<T>, "T may not have padding bits");
+    auto value_representation = bit_cast<std::array<std::byte, sizeof(T)>>(value);
+    std::reverse(value_representation.begin(), value_representation.end());
+    return bit_cast<T>(value_representation);
+}
+
 }
