@@ -68,32 +68,23 @@ template <typename T>
 std::optional<statistic> linear_complexity_stats(uint64_t n, stream<T> stream, uint64_t block_size) {
 	const auto ps = get_expected_probabilities(block_size);
 	std::vector<uint64_t> counts(ps.size(), 0);
-	auto count = 0;
-	int log_probability = 0;
-	for_each_bit_block(ranged_stream<T>(stream, n), block_size,
-	                   [&counts, &count, &log_probability, block_size](const std::vector<int>& bits) {
-							const auto l = berlekamp_massey(bits);
-							++counts[l];
-							++count;
-							log_probability += -lfsr_log_probability(block_size, l);
-	                   });
-	//auto pv = binomial_cdf(log_probability - 1, 0.5, count - 1);
-	//return statistic{statistic_type::chi2, static_cast<double>(log_probability), pv, static_cast<double>(count-1)};
 
+	const auto blocks = n / block_size;
+	for (uint64_t block = 0; block < blocks; ++block) {
+		std::vector<int> bits;
+		for (uint64_t i = 0; i < block_size; ++i) {
+			bits.push_back(stream() & 1);
+		}
+		const auto l = berlekamp_massey(bits);
+		++counts[l];
+	}
 	return chi2_stats(counts.size(), to_data(counts),
-	                  mul(to_data(ps), to_data(count)), 5.);
-}
-
-template <typename T>
-uint64_t get_block_size(uint64_t n) {
-	constexpr double wanted_blocks = 10. / (1 / 96.);
-	constexpr double multiplier = bit_sizeof<T>() / wanted_blocks;
-	return std::pow(n * multiplier, 0.6);
+	                  mul(to_data(ps), to_data(blocks)), 5.);
 }
 
 template <typename T>
 sub_test_results linear_complexity_test(uint64_t n, const stream<T>& source) {
-	const auto block_size = get_block_size<T>(n);
+	const auto block_size = n / 1024;
 	if (block_size < 8) {
 		return {};
 	}
