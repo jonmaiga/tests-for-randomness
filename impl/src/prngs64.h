@@ -1,7 +1,9 @@
 #pragma once
 
 #include "mixers64.h"
+#include "prng.h"
 #include "stream.h"
+#include "external/pcg/pcg_random.hpp"
 #include "external/sfc/sfc64.h"
 
 namespace tfr {

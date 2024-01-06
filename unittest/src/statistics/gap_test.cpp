@@ -10,7 +10,19 @@ TEST(gap, generate_gaps) {
 	using T = std::vector<double>;
 	using U = std::vector<uint64_t>;
 	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {}), (U{0, 0}));
+	
+	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {0.}), (U{1, 0}));
 	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {0.5}), (U{1, 0}));
+	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {1.}), (U{1, 0}));
+
+	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.}), (U{1, 0}));
+	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.5}), (U{0, 0}));
+	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {1.}), (U{0, 0}));
+
+	EXPECT_EQ(generate_gaps<T>(2, .5, 1, {0.}), (U{0, 0}));
+	EXPECT_EQ(generate_gaps<T>(2, .5, 1, {0.5}), (U{1, 0}));
+	EXPECT_EQ(generate_gaps<T>(2, .5, 1, {1.}), (U{1, 0}));
+	
 	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {0.25, 0.75}), (U{2, 0}));
 
 	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.25, 0.75}), (U{1, 0}));
@@ -44,10 +56,11 @@ TEST(gap, no_change) {
 
 TEST(gap, no_change_8) {
 	auto n = 1 << 22;
-	auto r = gap_test<uint8_t>(n, test_stream_casted<uint8_t>(n)).front().stats;
-	EXPECT_NEAR(r->value, 11.7348, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.1096, 1e-4);
+	auto rs = gap_test<uint8_t>(n, test_stream_casted<uint8_t>(n));
+	EXPECT_NEAR(rs.front().stats->value, 11.7348, 1e-4);
+	EXPECT_NEAR(rs.front().stats->p_value, 0.1096, 1e-4);
+	EXPECT_NEAR(rs.back().stats->value, 6.7704, 1e-4);
+	EXPECT_NEAR(rs.back().stats->p_value, 0.4531, 1e-4);
 }
-
 
 }

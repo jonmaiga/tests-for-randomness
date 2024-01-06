@@ -14,6 +14,9 @@ std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, c
 	static_assert(std::is_floating_point_v<typename T::value_type>);
 	std::vector<uint64_t> gaps(max_gap_size);
 	std::size_t current_gap = 0;
+	if (is_near(b, 1., 1e-14)) {
+		b = 2.;
+	}
 	for (const auto v : data01) {
 		if (v >= a && v < b) {
 			gaps[std::min(current_gap, gaps.size() - 1)]++;
