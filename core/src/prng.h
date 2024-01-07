@@ -5,6 +5,7 @@
 
 namespace tfr {
 struct seed_data {
+	uint8_t s8(size_t i = 0) const { return static_cast<uint8_t>(data[i]); }
 	uint16_t s16(size_t i = 0) const { return static_cast<uint16_t>(data[i]); }
 	uint32_t s32(size_t i = 0) const { return static_cast<uint32_t>(data[i]); }
 	uint64_t s64(size_t i = 0) const { return data[i]; }
