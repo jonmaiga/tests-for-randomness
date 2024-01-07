@@ -12,8 +12,7 @@ namespace tfr {
 template <typename T>
 std::vector<uint64_t> collect_divisible(uint64_t divisor, uint64_t wanted, uint64_t tracked, const T& data) {
 	static_assert(std::is_integral_v<typename T::value_type>);
-	std::set<uint64_t> coupons_collected;
-	std::vector<uint64_t> draws_histogram(tracked);
+	std::vector<uint64_t> draws_histogram(tracked, 0);
 	uint64_t draw_count = 0;
 	uint64_t collected = 0;
 	for (const auto& v : data) {
@@ -50,7 +49,8 @@ inline std::vector<double> divisible_expected_probabilities(const uint32_t divis
 template <typename T>
 sub_test_results divisibility_test(uint64_t n, const stream<T>& stream) {
 	sub_test_results results;
-	for (uint32_t divisor : {2, 3}) {
+	// @attn: Using non power of two divisors gives significant bias for 8-bit streams
+	for (uint32_t divisor : {2,4}) {
 		constexpr auto wanted = 5;
 		const auto ps = divisible_expected_probabilities(divisor, wanted);
 		const auto collected = collect_divisible(divisor, wanted, ps.size(), ranged_stream(stream, n));

@@ -20,19 +20,19 @@ TEST(divisibility, expected_probabilities) {
 }
 
 TEST(divisibility, divisibility_no_change) {
-	auto r = divisibility_test(10000, test_stream()).front().stats;
-	EXPECT_NEAR(r->value, 26.0893, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.03709, 1e-4);
-
-	r = divisibility_test(10000, test_stream()).back().stats;
-	EXPECT_NEAR(r->value, 18.6600, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.6662, 1e-4);
+	auto rs = divisibility_test(10000, test_stream());
+	EXPECT_NEAR(rs.front().stats->value, 26.0893, 1e-4);
+	EXPECT_NEAR(rs.front().stats->p_value, 0.03709, 1e-4);
+	EXPECT_NEAR(rs.back().stats->value, 27.5715, 1e-4);
+	EXPECT_NEAR(rs.back().stats->p_value, 0.3279, 1e-4);
 }
 
 TEST(divisibility, divisibility_no_change_8) {
 	auto n = 1 << 22;
-	auto r = divisibility_test<uint8_t>(n, test_stream_casted<uint8_t>(n)).front().stats;
-	EXPECT_NEAR(r->value, 11.1800, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.7397, 1e-4);
+	auto rs = divisibility_test<uint8_t>(n, test_stream_casted<uint8_t>(n));
+	EXPECT_NEAR(rs.front().stats->value, 11.1800, 1e-4);
+	EXPECT_NEAR(rs.front().stats->p_value, 0.7397, 1e-4);
+	EXPECT_NEAR(rs.back().stats->value, 44.5509, 1e-4);
+	EXPECT_NEAR(rs.back().stats->p_value, 0.2496, 1e-4);
 }
 }
