@@ -110,8 +110,8 @@ test_setup<T> create_prng_test_setup(prng_factory<T> create_prng) {
 	for (int i = 0; i < bit_sizeof<T>()/4; ++i) {
 		add(pop_seed());
 	}
-	// while (to_test.size() < wanted_streams) {
-	//   	add(pop_seed());
+	// while (to_test.size() < 4 * bit_sizeof<T>()) {
+	//    	add(pop_seed());
 	// }
 
 	return test_setup<T>{
