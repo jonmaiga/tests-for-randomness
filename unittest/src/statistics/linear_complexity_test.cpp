@@ -1,3 +1,4 @@
+#include <deque>
 #include <statistics/linear_complexity.h>
 
 #include <gtest/gtest.h>
