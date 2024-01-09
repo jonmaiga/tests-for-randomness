@@ -65,7 +65,7 @@ inline std::vector<double> get_expected_probabilities(uint64_t block_size) {
 }
 
 template <typename T>
-std::optional<statistic> linear_complexity_stats(uint64_t n, stream<T> stream, uint64_t block_size) {
+std::optional<statistic> linear_complexity_stats(uint64_t n, stream<T> stream, uint64_t block_size, int bit = 0) {
 	const auto ps = get_expected_probabilities(block_size);
 	std::vector<uint64_t> counts(ps.size(), 0);
 
@@ -73,7 +73,7 @@ std::optional<statistic> linear_complexity_stats(uint64_t n, stream<T> stream, u
 	for (uint64_t block = 0; block < blocks; ++block) {
 		std::vector<int> bits;
 		for (uint64_t i = 0; i < block_size; ++i) {
-			bits.push_back(stream() & 1);
+			bits.push_back(is_bit_set(stream(), bit) ? 1 : 0);
 		}
 		const auto l = berlekamp_massey(bits);
 		++counts[l];
@@ -88,6 +88,10 @@ sub_test_results linear_complexity_test(uint64_t n, const stream<T>& source) {
 	if (block_size < 8) {
 		return {};
 	}
-	return {{std::to_string(block_size), linear_complexity_stats(n, source, block_size)}};
+	sub_test_results r;
+	for (const auto bit : {0, bit_sizeof<T>() - 1}) {
+		r.push_back({std::to_string(block_size) + ":" + std::to_string(bit), linear_complexity_stats(n, source, block_size, bit)});
+	}
+	return r;
 }
 }
