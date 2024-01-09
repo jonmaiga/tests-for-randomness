@@ -3,7 +3,6 @@
 #include <gtest/gtest.h>
 
 #include "testutil.h"
-#include "util/timer.h"
 
 namespace tfr {
 binary_square_matrix create_binary_square_matrix(const std::vector<std::vector<uint8_t>>& m) {

@@ -35,8 +35,8 @@ inline uint64_t row_reduce_and_rank(binary_square_matrix& m) {
 	return rank;
 }
 
-template <typename RangeT>
-void for_each_matrix(const RangeT& data, uint64_t matrix_size, const std::function<void(binary_square_matrix&)>& callback) {
+template <typename RangeT, typename CallbackT>
+void for_each_matrix(const RangeT& data, uint64_t matrix_size, const CallbackT& callback) {
 	auto tmp_matrix = binary_square_matrix(matrix_size);
 
 	for_each_bit(data, [c=0ull, r=0ull, matrix_size, &tmp_matrix, callback](int bit) mutable {
