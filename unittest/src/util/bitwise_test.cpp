@@ -2,7 +2,20 @@
 
 #include <gtest/gtest.h>
 
+#include "mixers64.h"
+
 namespace tfr {
+TEST(bitwise, rol) {
+	EXPECT_EQ(rol<uint8_t>(0b10000001, 0), 0b10000001);
+	EXPECT_EQ(rol<uint8_t>(0b10000001, 1), 0b00000011);
+	EXPECT_EQ(rol<uint8_t>(0b10000001, 2), 0b00000110);
+}
+
+TEST(bitwise, ror) {
+	EXPECT_EQ(ror<uint8_t>(0b10000001, 0), 0b10000001);
+	EXPECT_EQ(ror<uint8_t>(0b10000001, 1), 0b11000000);
+	EXPECT_EQ(ror<uint8_t>(0b10000001, 2), 0b01100000);
+}
 
 TEST(bitwise, flip_bit) {
 	EXPECT_EQ(flip_bit(0, 0), 1);
@@ -176,5 +189,4 @@ TEST(bitwise, sliding_window_irl) {
 	auto r = sliding_bit_window<uint32_t>({4068143377, 1617203981, 3574511604}, 5);
 	EXPECT_EQ(r, (std::vector<uint64_t>{17,8,28,21,7,25,23,1,19,4,25,0,6,26,31,22,14,8,21}));
 }
-
 }
