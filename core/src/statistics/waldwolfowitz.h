@@ -5,14 +5,14 @@
 
 namespace tfr {
 
-struct wald_wolfowitz_data {
+struct runs_data {
 	double runs{};
 	double n_plus{};
 	double n_minus{};
 };
 
 template <typename T>
-wald_wolfowitz_data generate_wald_wolfowitz_data(const T& data) {
+runs_data generate_runs_data(const T& data) {
 	if (data.empty()) {
 		return {};
 	}
@@ -38,7 +38,7 @@ wald_wolfowitz_data generate_wald_wolfowitz_data(const T& data) {
 	};
 }
 
-inline std::optional<statistic> wald_wolfowitz_stats(wald_wolfowitz_data s) {
+inline std::optional<statistic> runs_stats(runs_data s) {
 	// https://en.wikipedia.org/wiki/Wald%E2%80%93Wolfowitz_runs_test
 	// info https://support.sas.com/kb/33/092.html
 	// exact, z-test, improved: https://ncss-wpengine.netdna-ssl.com/wp-content/themes/ncss/pdf/Procedures/NCSS/Analysis_of_Runs.pdf
@@ -52,9 +52,9 @@ inline std::optional<statistic> wald_wolfowitz_stats(wald_wolfowitz_data s) {
 }
 
 template <typename T>
-sub_test_results wald_wolfowitz_test(const uint64_t n, stream<T> source) {
-	return main_sub_test(wald_wolfowitz_stats(
-		generate_wald_wolfowitz_data(ranged_stream(source, n))
+sub_test_results runs_test(const uint64_t n, stream<T> source) {
+	return main_sub_test(runs_stats(
+		generate_runs_data(ranged_stream(source, n))
 	));
 }
 

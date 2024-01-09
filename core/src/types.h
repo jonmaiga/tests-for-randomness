@@ -34,7 +34,7 @@ enum class statistic_type {
 enum class test_type {
 	mean,
 	uniform,
-	wald_wolfowitz_runs,
+	runs,
 	bit_count_2d,
 	gap,
 	coupon,
