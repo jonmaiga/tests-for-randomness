@@ -85,20 +85,20 @@ inline prng32 pcg_64(const seed_data& seed) {
 }
 
 inline prng32 xoshiro128plus_128(const seed_data& seed) {
-    // https://prng.di.unimi.it/xoshiro128plus.c
-    return {
-        "rng32::xoshiro128+_128", [s = seed.s128_32()]() mutable {
-            const uint32_t result = s[0] + s[3];
-            const uint32_t t = s[1] << 9;
-            s[2] ^= s[0];
-            s[3] ^= s[1];
-            s[1] ^= s[2];
-            s[0] ^= s[3];
-            s[2] ^= t;
-            s[3] = rol(s[3], 11);
-            return result;
-        }
-    };
+	// https://prng.di.unimi.it/xoshiro128plus.c
+	return {
+		"rng32::xoshiro128+_128", [s = seed.s128_32()]() mutable {
+			const uint32_t result = s[0] + s[3];
+			const uint32_t t = s[1] << 9;
+			s[2] ^= s[0];
+			s[3] ^= s[1];
+			s[1] ^= s[2];
+			s[0] ^= s[3];
+			s[2] ^= t;
+			s[3] = rol(s[3], 11);
+			return result;
+		}
+	};
 }
 
 inline prng32 xoshiro128plusplus_128(const seed_data& seed) {
@@ -135,11 +135,11 @@ inline prng32 xorshift(const seed_data& seed) {
 }
 
 inline prng32 xorshift_64(const seed_data& seed) {
-    return {
-        "rng32::xorshift_64", [rng = rng64::xorshift(seed)]() mutable {
-            return rng() >> 32;
-        }
-    };
+	return {
+		"rng32::xorshift_64", [rng = rng64::xorshift(seed)]() mutable {
+			return static_cast<uint32_t>(rng() >> 32);
+		}
+	};
 }
 
 inline prng32 mt19337(const seed_data& seed) {
