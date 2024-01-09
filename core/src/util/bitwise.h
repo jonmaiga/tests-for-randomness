@@ -1,7 +1,9 @@
 #pragma once
 
+#include <array>
 #include <bit>
 #include <cstdint>
+#include <cstring>
 #include <vector>
 
 #include "assertion.h"
