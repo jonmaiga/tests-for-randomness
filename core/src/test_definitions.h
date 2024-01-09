@@ -9,8 +9,9 @@
 #include "statistics/gap.h"
 #include "statistics/linear_complexity.h"
 #include "statistics/permutation.h"
+#include "statistics/run.h"
 #include "statistics/uniform.h"
-#include "statistics/waldwolfowitz.h"
+
 
 namespace tfr {
 template <typename T>

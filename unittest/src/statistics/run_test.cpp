@@ -1,4 +1,4 @@
-#include <statistics/waldwolfowitz.h>
+#include <statistics/run.h>
 
 #include <gtest/gtest.h>
 
