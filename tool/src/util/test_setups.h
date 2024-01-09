@@ -90,11 +90,6 @@ test_setup<T> create_prng_test_setup(prng_factory<T> create_prng) {
 		prng.name += " seed=" + to_string(seed);
 	};
 
-	const auto bit_isolation_seed = pop_seed();
-	for (int bit = 0; bit < bit_sizeof<T>(); ++bit) {
-	 	add(bit_isolation_seed, [bit](stream<T> stream) { return create_bit_isolation_stream(stream, bit); });
-	}
-
 	for (int i = 0; i < bit_sizeof<T>(); ++i) {
 		add(pop_seed(), [i](stream<T> stream) { return create_ror_stream(stream, i); });
 	}
@@ -107,12 +102,9 @@ test_setup<T> create_prng_test_setup(prng_factory<T> create_prng) {
 		add(pop_seed(), [](stream<T> stream) { return create_byteswap_stream(stream); });
 	}
 
-	for (int i = 0; i < bit_sizeof<T>()/4; ++i) {
+	while (to_test.size() < 4 * bit_sizeof<T>()) {
 		add(pop_seed());
 	}
-	// while (to_test.size() < 4 * bit_sizeof<T>()) {
-	//    	add(pop_seed());
-	// }
 
 	return test_setup<T>{
 		create_prng({0,0,0,0}).name,
