@@ -76,7 +76,8 @@ test_setup<T> create_mixer_test_setup(const mixer<T> mixer) {
 
 template <typename T>
 test_setup<T> create_prng_test_setup(prng_factory<T> create_prng) {
-	auto seeds = generate_seeds<T>(std::min(bit_sizeof<T>(), 1024));
+	const auto max_unique_seeds = static_cast<uint64_t>(std::numeric_limits<T>::max() - 1);
+	auto seeds = generate_seeds<T>(std::min(max_unique_seeds, static_cast<uint64_t>(1024)));
 	const auto pop_seed = [&seeds]() {
 		assertion(!seeds.empty(), "Out of seeds");
 		const auto seed = seeds.back();
@@ -86,6 +87,7 @@ test_setup<T> create_prng_test_setup(prng_factory<T> create_prng) {
 
 	streams<T> to_test;
 	const auto add = [pop_seed, &to_test, create_prng](const seed_data& seed, std::function<stream<T>(stream<T>)> outer = {}) {
+		assertion(seed.s64() != 0, "Avoid zero seeds");
 		auto& prng = to_test.emplace_back(outer ? outer(create_prng(seed)) : create_prng(seed));
 		prng.name += " seed=" + to_string(seed);
 	};
