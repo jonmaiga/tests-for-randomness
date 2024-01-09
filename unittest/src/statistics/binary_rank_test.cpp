@@ -94,6 +94,13 @@ TEST(binary_rank, no_change) {
 	EXPECT_NEAR(stat->p_value, 0.24822, 1e-4);
 }
 
+TEST(binary_rank, no_change_bit_isolation) {
+	using T = uint64_t;
+	const auto stat = binary_rank_isolated_bit_stats<T>(1 << 15, test_stream(), 32, 0);
+	EXPECT_NEAR(stat->value, 5.1677, 1e-4);
+	EXPECT_NEAR(stat->p_value, 0.1599, 1e-4);
+}
+
 TEST(binary_rank, large) {
 	using T = uint64_t;
 	const auto stat = binary_rank_stats<T>(1 << 15, test_stream(), 32);

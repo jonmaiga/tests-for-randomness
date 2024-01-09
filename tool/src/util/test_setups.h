@@ -92,6 +92,10 @@ test_setup<T> create_prng_test_setup(prng_factory<T> create_prng) {
 		prng.name += " seed=" + to_string(seed);
 	};
 
+	for (int bit = 1; bit < bit_sizeof<T>(); ++bit) {
+		add(pop_seed(), [bit](stream<T> s) { return create_ror_stream<T>(s, bit); });
+	}
+
 	while (to_test.size() < 4 * bit_sizeof<T>()) {
 		add(pop_seed());
 	}
