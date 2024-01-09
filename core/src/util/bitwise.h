@@ -40,15 +40,15 @@ T ror(T v, int r) {
 }
 
 template <typename T>
-T flip_bit(T i, int bit) {
+T flip_bit(T v, int bit) {
 	assertion(bit >= 0 && bit < bit_sizeof<T>(), "bit to flip out of range");
-	return i ^ (1ull << bit);
+	return v ^ (1ull << bit);
 }
 
 template <typename T>
-bool is_bit_set(T i, int bit) {
+bool is_bit_set(T v, int bit) {
 	assertion(bit >= 0 && bit < bit_sizeof<T>(), "is bit set out of range");
-	return ((i >> bit) & 1) != 0;
+	return (v >> bit) & 1;
 }
 
 template <typename T>
