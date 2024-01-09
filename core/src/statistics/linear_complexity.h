@@ -89,9 +89,7 @@ sub_test_results linear_complexity_test(uint64_t n, const stream<T>& source) {
 		return {};
 	}
 	sub_test_results r;
-	for (const auto bit : {0, bit_sizeof<T>() - 1}) {
-		r.push_back({std::to_string(block_size) + ":" + std::to_string(bit), linear_complexity_stats(n, source, block_size, bit)});
-	}
+	r.push_back({std::to_string(block_size) + ":0", linear_complexity_stats(n, source, block_size, 0)});
 	return r;
 }
 }
