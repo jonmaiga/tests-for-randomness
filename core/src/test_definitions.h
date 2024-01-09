@@ -7,6 +7,7 @@
 #include "statistics/coupon.h"
 #include "statistics/divisibility.h"
 #include "statistics/gap.h"
+#include "statistics/linear_complexity.h"
 #include "statistics/permutation.h"
 #include "statistics/uniform.h"
 #include "statistics/waldwolfowitz.h"
@@ -34,6 +35,7 @@ std::vector<test_definition<T>> get_tests() {
 		{test_type::divisibility, limit_n_slow<T>(divisibility_test<T>), {}, "divisibility"},
 		{test_type::permutation, limit_n_slow<T>(permutation_test<T>), {}, "permutation"},
 		{test_type::binary_rank, limit_n_slower<T>(binary_rank_test<T>), {}, "binary-rank"},
+		{test_type::linear_complexity, limit_n_slower<T>(linear_complexity_test<T>), {}, "linear-complexity"},
 
 		// mixer tests
 		{test_type::sac, {}, limit_n_slow<T>(avalanche_mixer_sac_test<T>), "sac"},
