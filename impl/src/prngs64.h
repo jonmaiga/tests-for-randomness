@@ -62,6 +62,17 @@ inline prng64 pcg(const seed_data& seed) {
 	};
 }
 
+inline prng64 xorshift(const seed_data& seed) {
+    return {
+        "rng64::xorshift", [x = seed.s64()]() mutable {
+            x ^= x << 13;
+            x ^= x >> 7; 
+            x ^= x << 17;
+            return x;
+        }
+    };
+}
+
 inline prng64 xorshift128plus_128(const seed_data& seed) {
 	return {
 		"rng64::xorshift128+_128", [s = seed.s128_64()]() mutable {
@@ -111,6 +122,7 @@ inline std::vector<prng_factory<uint64_t>> get_prngs() {
 		rng64::mx3,
 		rng64::splitmix,
 		rng64::pcg,
+		rng64::xorshift,
 		rng64::xorshift128plus_128,
 		rng64::xoroshiro128plus_128,
 		rng64::sfc_256,
