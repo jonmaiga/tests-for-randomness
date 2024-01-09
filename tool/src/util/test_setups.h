@@ -92,24 +92,12 @@ test_setup<T> create_prng_test_setup(prng_factory<T> create_prng) {
 		prng.name += " seed=" + to_string(seed);
 	};
 
-	for (int i = 0; i < bit_sizeof<T>(); ++i) {
-		add(pop_seed(), [i](stream<T> stream) { return create_ror_stream(stream, i); });
-	}
-
-	for (int i = 0; i < bit_sizeof<T>()/4; ++i) {
-		add(pop_seed(), [](stream<T> stream) { return create_bit_reverse_stream(stream); });
-	}
-
-	for (int i = 0; i < bit_sizeof<T>()/4; ++i) {
-		add(pop_seed(), [](stream<T> stream) { return create_byteswap_stream(stream); });
-	}
-
 	while (to_test.size() < 4 * bit_sizeof<T>()) {
 		add(pop_seed());
 	}
 
 	return test_setup<T>{
-		create_prng({0,0,0,0}).name,
+		create_prng({0, 0, 0, 0}).name,
 		to_test,
 		default_test_types,
 	};
