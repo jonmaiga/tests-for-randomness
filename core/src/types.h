@@ -228,4 +228,38 @@ inline data_fn mul(const data_fn& a, const data_fn& b) {
 inline unsigned int default_max_threads() {
 	return std::max(std::thread::hardware_concurrency() - 4, 2u);
 }
+
+class binary_square_matrix {
+public:
+	binary_square_matrix(std::size_t size) : _data(size * size, 0), _size(size) {
+	}
+
+	bool empty() const {
+		return get_size() == 0;
+	}
+
+	std::size_t get_size() const {
+		return _size;
+	}
+
+	uint8_t& get(std::size_t row, std::size_t col) {
+		return _data[row * _size + col];
+	}
+
+	uint8_t get(std::size_t row, std::size_t col) const {
+		return _data[row * _size + col];
+	}
+
+	void set(std::size_t row, std::size_t col, bool value) {
+		_data[row * _size + col] = static_cast<uint8_t>(value);
+	}
+
+	bool operator ==(const binary_square_matrix& rhs) const {
+		return _data == rhs._data;
+	}
+
+private:
+	std::vector<uint8_t> _data;
+	std::size_t _size;
+};
 }

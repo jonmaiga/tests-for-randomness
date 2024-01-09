@@ -3,10 +3,25 @@
 #include <gtest/gtest.h>
 
 #include "testutil.h"
+#include "util/timer.h"
 
 namespace tfr {
-uint64_t calculate_rank(binary_matrix m) {
-	return row_reduce_and_rank(m);
+binary_square_matrix create_binary_square_matrix(const std::vector<std::vector<uint8_t>>& m) {
+	auto bm = binary_square_matrix(m.size());
+	assertion(m.empty() || m.size() == m.front().size(), "Not a square matrix");
+	for (std::size_t r = 0; r < m.size(); ++r) {
+		for (std::size_t c = 0; c < m.size(); ++c) {
+			const auto v = m[r][c];
+			assertion(v == 0 || v == 1, "Not a binary matrix");
+			bm.set(r, c, v);
+		}
+	}
+	return bm;
+}
+
+uint64_t calculate_rank(const std::vector<std::vector<uint8_t>>& m) {
+	auto bm = create_binary_square_matrix(m);
+	return row_reduce_and_rank(bm);
 }
 
 TEST(binary_rank, calculate_rank_small) {
@@ -43,10 +58,10 @@ TEST(binary_rank, calculate_rank_small_3_3) {
 	EXPECT_EQ(calculate_rank({{1,0,1},{1,1,0},{0,0,1}}), 3);
 }
 
-std::vector<binary_matrix> get_matrices(int matrix_size, uint64_t bits_low, uint64_t bits_high) {
+std::vector<binary_square_matrix> get_matrices(int matrix_size, uint64_t bits_low, uint64_t bits_high) {
 	using V = std::vector<uint64_t>;
-	std::vector<binary_matrix> ms;
-	for_each_matrix(V{bits_low, bits_high}, matrix_size, [&ms](const binary_matrix& m) {
+	std::vector<binary_square_matrix> ms;
+	for_each_matrix(V{bits_low, bits_high}, matrix_size, [&ms](const binary_square_matrix& m) {
 		ms.push_back(m);
 	});
 	return ms;
@@ -55,21 +70,21 @@ std::vector<binary_matrix> get_matrices(int matrix_size, uint64_t bits_low, uint
 TEST(binary_rank, for_each_matrix_2_2) {
 	const auto ms = get_matrices(2, 0b1010111100000100, 0b0011);
 	EXPECT_EQ(ms.size(), 32);
-	EXPECT_EQ(binary_matrix({{0,0},{1,0}}), ms[0]);
-	EXPECT_EQ(binary_matrix({{0,0},{0,0}}), ms[1]);
-	EXPECT_EQ(binary_matrix({{1,1},{1,1}}), ms[2]);
-	EXPECT_EQ(binary_matrix({{0,1},{0,1}}), ms[3]);
-	EXPECT_EQ(binary_matrix({{1,1},{0,0}}), ms[16]);
+	EXPECT_EQ(create_binary_square_matrix({{0,0},{1,0}}), ms[0]);
+	EXPECT_EQ(create_binary_square_matrix({{0,0},{0,0}}), ms[1]);
+	EXPECT_EQ(create_binary_square_matrix({{1,1},{1,1}}), ms[2]);
+	EXPECT_EQ(create_binary_square_matrix({{0,1},{0,1}}), ms[3]);
+	EXPECT_EQ(create_binary_square_matrix({{1,1},{0,0}}), ms[16]);
 }
 
 TEST(binary_rank, for_each_matrix_3_3) {
 	constexpr uint64_t low = 0b111010111100000100 | static_cast<uint64_t>(0b1101101111) << 54;
 	const auto ms = get_matrices(3, low, 0b10000000);
 	EXPECT_EQ(ms.size(), 14);
-	EXPECT_EQ(binary_matrix({{0,0,1},{0,0,0}, {0,0,1}}), ms[0]);
-	EXPECT_EQ(binary_matrix({{1,1,1},{0,1,0}, {1,1,1}}), ms[1]);
-	EXPECT_EQ(binary_matrix({{1,1,1},{1,0,1}, {1,0,1}}), ms[6]);
-	EXPECT_EQ(binary_matrix({{1,0,0},{0,0,0}, {0,0,1}}), ms[7]);
+	EXPECT_EQ(create_binary_square_matrix({{0,0,1},{0,0,0}, {0,0,1}}), ms[0]);
+	EXPECT_EQ(create_binary_square_matrix({{1,1,1},{0,1,0}, {1,1,1}}), ms[1]);
+	EXPECT_EQ(create_binary_square_matrix({{1,1,1},{1,0,1}, {1,0,1}}), ms[6]);
+	EXPECT_EQ(create_binary_square_matrix({{1,0,0},{0,0,0}, {0,0,1}}), ms[7]);
 }
 
 TEST(binary_rank, no_change) {
@@ -136,6 +151,22 @@ TEST(binary_rank, get_matrix_size) {
 	EXPECT_EQ(get_matrix_size<T>(1<<18), 128);
 	EXPECT_EQ(get_matrix_size<T>(1<<19), 128);
 	EXPECT_EQ(get_matrix_size<T>(1<<20), 256);
+	EXPECT_EQ(get_matrix_size<T>(1ull<<30), 8192);
+	EXPECT_EQ(get_matrix_size<T>(1ull<<31), 8192);
+	EXPECT_EQ(get_matrix_size<T>(1ull<<32), 16384);
+	EXPECT_EQ(get_matrix_size<T>(1ull<<39), 131072);
 }
 
+TEST(binary_rank, get_matrix_size_32) {
+	using T = uint32_t;
+	EXPECT_EQ(get_matrix_size<T>(1<<10), 4);
+	EXPECT_EQ(get_matrix_size<T>(1<<11), 8);
+	EXPECT_EQ(get_matrix_size<T>(1<<12), 8);
+	EXPECT_EQ(get_matrix_size<T>(1<<13), 16);
+	EXPECT_EQ(get_matrix_size<T>(1<<14), 16);
+	EXPECT_EQ(get_matrix_size<T>(1ull<<30), 4096);
+	EXPECT_EQ(get_matrix_size<T>(1ull<<31), 8192);
+	EXPECT_EQ(get_matrix_size<T>(1ull<<32), 8192);
+	EXPECT_EQ(get_matrix_size<T>(1ull<<33), 16384);
+}
 }

@@ -8,31 +8,24 @@
 #include "types.h"
 
 namespace tfr {
-using binary_matrix = std::vector<std::vector<uint8_t>>;
-
-inline binary_matrix create_binary_matrix(uint64_t size) {
-	return {size, binary_matrix::value_type(size, 0)};
-}
-
-inline uint64_t row_reduce_and_rank(binary_matrix& m) {
+inline uint64_t row_reduce_and_rank(binary_square_matrix& m) {
 	if (m.empty()) { return 0; }
-	const auto rows = m.size();
-	const auto cols = m[0].size();
+	const auto size = m.get_size();
 	uint64_t rank = 0;
 
-	for (size_t row = 0; row < rows; ++row) {
+	for (size_t row = 0; row < size; ++row) {
 		size_t col = 0;
-		while (col < cols && m[row][col] == 0) {
+		while (col < size && m.get(row, col) == 0) {
 			col++;
 		}
 
-		if (col < cols) {
+		if (col < size) {
 			rank++;
 
-			for (size_t r = row + 1; r < rows; ++r) {
-				if (m[r][col] == 1) {
-					for (size_t c = col; c < cols; ++c) {
-						m[r][c] ^= m[row][c];
+			for (size_t r = row + 1; r < size; ++r) {
+				if (m.get(r, col) == 1) {
+					for (size_t c = col; c < size; ++c) {
+						m.get(r, c) ^= m.get(row, c);
 					}
 				}
 			}
@@ -43,11 +36,11 @@ inline uint64_t row_reduce_and_rank(binary_matrix& m) {
 }
 
 template <typename RangeT>
-void for_each_matrix(const RangeT& data, uint64_t matrix_size, const std::function<void(binary_matrix&)>& callback) {
-	auto tmp_matrix = create_binary_matrix(matrix_size);
+void for_each_matrix(const RangeT& data, uint64_t matrix_size, const std::function<void(binary_square_matrix&)>& callback) {
+	auto tmp_matrix = binary_square_matrix(matrix_size);
 
 	for_each_bit(data, [c=0ull, r=0ull, matrix_size, &tmp_matrix, callback](int bit) mutable {
-		tmp_matrix[r][c] = static_cast<uint8_t>(bit);
+		tmp_matrix.set(r, c, bit != 0);
 		if (++c == matrix_size) {
 			++r;
 			c = 0;
@@ -93,7 +86,7 @@ std::optional<statistic> binary_rank_stats(uint64_t n, stream<T> stream, uint64_
 	std::vector<uint64_t> rank_counts(ps.size(), 0);
 	auto matrix_count = 0;
 	for_each_matrix(ranged_stream<T>(stream, n), matrix_size,
-	                [&rank_counts, matrix_size, &matrix_count](binary_matrix& m) {
+	                [&rank_counts, matrix_size, &matrix_count](binary_square_matrix& m) {
 		                const auto r = row_reduce_and_rank(m);
 		                const auto s = matrix_size - r;
 		                rank_counts[s]++;
