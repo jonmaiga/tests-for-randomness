@@ -9,7 +9,6 @@
 #include "assertion.h"
 
 namespace tfr {
-
 template <typename T>
 constexpr int bit_sizeof() {
 	return 8 * sizeof(T);
@@ -30,16 +29,14 @@ constexpr int shift_sizeof() {
 
 template <typename T>
 T rol(T v, int r) {
-	constexpr auto Bits = bit_sizeof<T>();
-	assertion(r >= 0 && r < Bits, "rol out of range, should be in range 0 < r < bits in type");
-	return (v << r) | (v >> (Bits - r));
+	assertion(r >= 0 && r < bit_sizeof<T>(), "rol out of range, should be in range 0 < r < bits in type");
+	return std::rotl(v, r);
 }
 
 template <typename T>
 T ror(T v, int r) {
-	constexpr auto Bits = bit_sizeof<T>();
-	assertion(r >= 0 && r < Bits, "ror out of range, should be in range 0 < r < bits in type");
-	return (v >> r) | (v << (Bits - r));
+	assertion(r >= 0 && r < bit_sizeof<T>(), "ror out of range, should be in range 0 < r < bits in type");
+	return std::rotr(v, r);
 }
 
 template <typename T>
@@ -105,24 +102,24 @@ inline uint64_t reverse_bits(uint64_t x) {
 	return x >> 32 | x << 32;
 }
 
-template<typename T>
+template <typename T>
 T bit_width(T x) {
 	return std::numeric_limits<T>::digits - std::countl_zero(x);
 }
 
-template<typename T>
+template <typename T>
 T bit_floor(T x) {
 	if (x != 0)
-        return T{1} << (bit_width(x) - 1);
-    return 0;
+		return T{1} << (bit_width(x) - 1);
+	return 0;
 }
 
-template<typename T>
+template <typename T>
 T bit_ceil(T x) {
 	if (x != 0) {
 		return T(1) << bit_width(T(x - 1));
 	}
-    return 0;
+	return 0;
 }
 
 template <typename RangeT, typename CallbackT>
@@ -166,27 +163,26 @@ void sliding_bit_window(const T& data, int window_size, CallbackT callback) {
 	for_each_bit(data, acc);
 }
 
-template<class To, class From>
+template <class To, class From>
 std::enable_if_t<
-    sizeof(To) == sizeof(From) &&
-    std::is_trivially_copyable_v<From> &&
-    std::is_trivially_copyable_v<To>,
-    To>
+	sizeof(To) == sizeof(From) &&
+	std::is_trivially_copyable_v<From> &&
+	std::is_trivially_copyable_v<To>,
+	To>
 bit_cast(const From& src) noexcept {
-    static_assert(std::is_trivially_constructible_v<To>,
-        "This implementation additionally requires "
-        "destination type to be trivially constructible");
-    To dst;
-    std::memcpy(&dst, &src, sizeof(To));
-    return dst;
+	static_assert(std::is_trivially_constructible_v<To>,
+	              "This implementation additionally requires "
+	              "destination type to be trivially constructible");
+	To dst;
+	std::memcpy(&dst, &src, sizeof(To));
+	return dst;
 }
 
-template<typename T>
+template <typename T>
 constexpr T byteswap(T value) noexcept {
-    static_assert(std::has_unique_object_representations_v<T>, "T may not have padding bits");
-    auto value_representation = bit_cast<std::array<std::byte, sizeof(T)>>(value);
-    std::reverse(value_representation.begin(), value_representation.end());
-    return bit_cast<T>(value_representation);
+	static_assert(std::has_unique_object_representations_v<T>, "T may not have padding bits");
+	auto value_representation = bit_cast<std::array<std::byte, sizeof(T)>>(value);
+	std::reverse(value_representation.begin(), value_representation.end());
+	return bit_cast<T>(value_representation);
 }
-
 }
