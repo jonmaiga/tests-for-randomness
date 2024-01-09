@@ -41,6 +41,7 @@ enum class test_type {
 	divisibility,
 	permutation,
 	binary_rank,
+	linear_complexity,
 
 	// mixer
 	sac,
