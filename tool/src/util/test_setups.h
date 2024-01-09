@@ -86,7 +86,7 @@ test_setup<T> create_prng_test_setup(prng_factory<T> create_prng) {
 	};
 
 	streams<T> to_test;
-	const auto add = [pop_seed, &to_test, create_prng](const seed_data& seed, std::function<stream<T>(stream<T>)> outer = {}) {
+	const auto add = [&to_test, create_prng](const seed_data& seed, std::function<stream<T>(stream<T>)> outer = {}) {
 		assertion(seed.s64() != 0, "Avoid zero seeds");
 		auto& prng = to_test.emplace_back(outer ? outer(create_prng(seed)) : create_prng(seed));
 		prng.name += " seed=" + to_string(seed);

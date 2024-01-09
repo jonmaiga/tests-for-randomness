@@ -84,18 +84,38 @@ template <typename T>
 std::optional<statistic> binary_rank_stats(uint64_t n, stream<T> stream, uint64_t matrix_size) {
 	const auto ps = get_rank_probabilities(matrix_size);
 	std::vector<uint64_t> rank_counts(ps.size(), 0);
-	auto matrix_count = 0;
+	uint64_t blocks = 0;
 	for_each_matrix(ranged_stream<T>(stream, n), matrix_size,
-	                [&rank_counts, matrix_size, &matrix_count](binary_square_matrix& m) {
+	                [&rank_counts, matrix_size, &blocks](binary_square_matrix& m) {
 		                const auto r = row_reduce_and_rank(m);
 		                const auto s = matrix_size - r;
 		                rank_counts[s]++;
-		                ++matrix_count;
+		                ++blocks;
 	                });
-
 	return chi2_stats(rank_counts.size(), to_data(rank_counts),
-	                  mul(to_data(ps), to_data(matrix_count)), 5.);
+	                  mul(to_data(ps), to_data(blocks)), 5.);
 }
+
+template <typename T>
+std::optional<statistic> binary_rank_isolated_bit_stats(uint64_t n, stream<T> stream, uint64_t matrix_size, int bit) {
+	const auto blocks = bit_sizeof<T>() * n / (matrix_size * matrix_size);
+	const auto ps = get_rank_probabilities(matrix_size);
+	std::vector<uint64_t> rank_counts(ps.size(), 0);
+	for (uint64_t block = 0; block < blocks; ++block) {
+		binary_square_matrix bits(matrix_size);
+		for (uint64_t r = 0; r < matrix_size; ++r) {
+			for (uint64_t c = 0; c < matrix_size; ++c) {
+				bits.set(r, c, is_bit_set(stream(), bit));
+			}
+		}
+		const auto r = row_reduce_and_rank(bits);
+		const auto s = matrix_size - r;
+		rank_counts[s]++;
+	}
+	return chi2_stats(rank_counts.size(), to_data(rank_counts),
+	                  mul(to_data(ps), to_data(blocks)), 5.);
+}
+
 
 template <typename T>
 uint64_t get_matrix_size(uint64_t n) {
@@ -107,6 +127,13 @@ uint64_t get_matrix_size(uint64_t n) {
 template <typename T>
 sub_test_results binary_rank_test(uint64_t n, const stream<T>& source) {
 	const auto matrix_size = get_matrix_size<T>(n);
-	return {{std::to_string(matrix_size), binary_rank_stats(n, source, matrix_size)}};
+
+	sub_test_results r;
+	r.push_back({std::to_string(matrix_size), binary_rank_stats(n, source, matrix_size)});
+	for (const auto bit : {0}) {
+		r.push_back({std::to_string(matrix_size) + ":" + std::to_string(bit), 
+			binary_rank_isolated_bit_stats(n, source, matrix_size, bit)});
+	}
+	return r;
 }
 }
