@@ -7,7 +7,7 @@
 
 namespace tfr {
 // from: https://github.com/google/paranoid_crypto/blob/main/paranoid_crypto/lib/randomness_tests/nist_suite.py
-inline int64_t lfsr_log_probability(uint64_t block_size, uint64_t lfsr_length) {
+inline int64_t lfsr_log2_probability(uint64_t block_size, uint64_t lfsr_length) {
 	assertion(block_size > 0, "Block size must be positive");
 	assertion(lfsr_length <= block_size, "Lfsr length must be smaller or equal to block_size");
 	if (lfsr_length == 0) {
@@ -56,11 +56,10 @@ inline int berlekamp_massey(const std::vector<int>& u) {
 inline std::vector<double> get_expected_probabilities(uint64_t block_size) {
 	std::vector<double> ps;
 	auto sum = 0.;
-	auto i = 0;
-	while (sum < 1.) {
-		sum += ps.emplace_back(std::pow(2, lfsr_log_probability(block_size, i)));
-		++i;
+	for (uint64_t l = 0; l <= block_size; ++l) {
+		sum += ps.emplace_back(std::pow(2., lfsr_log2_probability(block_size, l)));
 	}
+	assertion(is_near(sum, 1), "Unexpected sum in lfsr probabilities");
 	return ps;
 }
 
