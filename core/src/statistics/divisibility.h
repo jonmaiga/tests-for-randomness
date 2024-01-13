@@ -50,7 +50,7 @@ template <typename T>
 sub_test_results divisibility_test(uint64_t n, const stream<T>& stream) {
 	sub_test_results results;
 	// @attn: Using non power of two divisors gives significant bias for 8-bit streams
-	for (uint32_t divisor : {2,4}) {
+	for (uint32_t divisor : {2}) {
 		constexpr auto wanted = 5;
 		const auto ps = divisible_expected_probabilities(divisor, wanted);
 		const auto collected = collect_divisible(divisor, wanted, ps.size(), ranged_stream(stream, n));
