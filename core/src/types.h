@@ -193,6 +193,16 @@ template <typename T>
 stream_test<T> limit_n_slower(const stream_test<T>& test) { return detail::limit_n<T>(test, detail::limit_n_slower); }
 
 template <typename T>
+stream_test<T> limit_n_to(const stream_test<T>& test, uint64_t max_n) {
+	return detail::limit_n(test, [max_n](uint64_t n)-> std::optional<uint64_t> {
+		if (n <= max_n) {
+			return n;
+		}
+		return {};
+	});
+}
+
+template <typename T>
 mixer_test<T> limit_n_slow(const mixer_test<T>& test) { return detail::limit_n<T>(test, detail::limit_n_slow); }
 
 template <typename T>

@@ -25,7 +25,7 @@ struct test_definition {
 template <typename T>
 std::vector<test_definition<T>> get_tests() {
 	return {
-		{test_type::mean, mean_test<T>, {}, "mean"},
+		{test_type::mean, limit_n_to<T>(mean_test<T>, 1ull << 20), {}, "mean"},
 		{test_type::uniform, uniform_test<T>, {}, "uniform"},
 
 		{test_type::runs, runs_test<T>, {}, "runs"},
