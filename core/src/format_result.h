@@ -31,10 +31,6 @@ inline void draw_histogram_rescale(const std::vector<double>& data) {
 	draw_histogram(rescale_to_01(data));
 }
 
-inline std::string to_string(const std::string& name, const double p_value) {
-	return p_value_to_string(p_value) + " " + name;
-}
-
 inline std::string to_string(const test_key& key) {
 	return get_test_name(key.type) + "-" + key.name;
 }
