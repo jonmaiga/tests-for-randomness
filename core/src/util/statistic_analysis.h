@@ -105,7 +105,17 @@ inline statistic_analysis create_statistic_analysis(const std::vector<test_resul
 inline std::string p_value_to_string(const double p_value) {
 	std::stringstream ss;
 	ss << p_value;
-	return ss.str();
+	auto r = ss.str();
+	if (r != "1") {
+		return r;
+	}
+	std::stringstream ss2;
+	ss2 << 1 - p_value;
+	const auto r2 = ss2.str();
+	if (r2 != "0") {
+		return "1 - " + r2;
+	}
+	return r;
 }
 
 struct result_analysis {
