@@ -35,9 +35,8 @@ uint64_t get_permutation_size(const uint64_t n) {
 template <typename T>
 sub_test_results permutation_test(uint64_t n, stream<T> source) {
 	const auto permutation_size = get_permutation_size<T>(n);
-	auto sub_tests = split_test(n, 1 << 20, [&source, permutation_size](uint64_t size) {
-		return permutation_stat(size, source, permutation_size);
-	});
-	return sub_tests;
+	return {
+		{std::to_string(permutation_size), (permutation_stat(n, source, permutation_size))}
+	};
 }
 }
