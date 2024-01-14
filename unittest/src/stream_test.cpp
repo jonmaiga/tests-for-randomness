@@ -4,8 +4,6 @@
 #include <gtest/gtest.h>
 
 namespace tfr {
-
-
 TEST(stream, expected_behavior) {
 	auto s1 = create_counter_stream<uint64_t>(1);
 	EXPECT_EQ(s1(), 1);
@@ -24,9 +22,6 @@ TEST(stream, expected_behavior) {
 	EXPECT_EQ(s3(), 2);
 
 	auto s4 = create_counter_stream<uint64_t>(1);
-	auto rs = rescale_type_to_01(s4);
-	auto d = rs();
-	EXPECT_TRUE(is_near(d, 0));
 	EXPECT_EQ(s4(), 1);
 	EXPECT_EQ(s4(), 2);
 }
@@ -89,7 +84,7 @@ TEST(stream, iterator) {
 		++it;
 		EXPECT_EQ(it, r.end());
 		EXPECT_EQ(*r.begin(), 1);
-		
+
 		const stream_iterator n = ++r.begin();
 		EXPECT_TRUE(n == r.end());
 	}
@@ -101,4 +96,23 @@ TEST(stream, iterator) {
 	}
 }
 
+TEST(streams, copy) {
+	const auto s = test_stream();
+	int j = 0;
+	double sum = 0;
+	for (const auto v : ranged_stream(s, 10)) {
+		j++;
+		sum += v;
+	}
+
+	j = 0;
+	double sum2 = 0;
+	for (const auto v : ranged_stream(s, 10)) {
+		j++;
+		sum2 += v;
+	}
+	EXPECT_EQ(j, 10);
+	EXPECT_EQ(sum, sum2);
+	EXPECT_NEAR(sum, 4.9435, 1e-4);
+}
 }

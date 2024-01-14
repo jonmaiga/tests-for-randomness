@@ -10,14 +10,14 @@
 
 namespace tfr {
 template <typename T>
-std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, const T& data01) {
-	static_assert(std::is_floating_point_v<typename T::value_type>);
+std::vector<uint64_t> generate_gaps(uint64_t max_gap_size, double a, double b, const T& data) {
 	std::vector<uint64_t> gaps(max_gap_size);
 	std::size_t current_gap = 0;
 	if (is_near(b, 1., 1e-14)) {
 		b = 2.;
 	}
-	for (const auto v : data01) {
+	for (const auto vv : data) {
+		const auto v = rescale_type_to_01(vv);
 		if (v >= a && v < b) {
 			gaps[std::min(current_gap, gaps.size() - 1)]++;
 			current_gap = 0;
@@ -54,7 +54,7 @@ sub_test_results gap_test(uint64_t n, const stream<T>& source) {
 			const double b = snap_to_01(a + gap_size);
 
 			const auto& ps = generate_gap_probabilities(a, b);
-			const auto& gaps = generate_gaps(ps.size(), a, b, ranged_stream(rescale_type_to_01(source), n));
+			const auto& gaps = generate_gaps(ps.size(), a, b, ranged_stream(source, n));
 
 			if (const auto s = chi2_stats(gaps.size(), to_data(gaps),
 			                              mul(to_data(ps), to_data(expected_total_count)),

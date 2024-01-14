@@ -60,7 +60,7 @@ TEST(coupon, expected_probabilities_10_20) {
 
 TEST(coupon, coupon_no_change) {
 	constexpr auto n = 10000;
-	const auto r = coupon_stats(n, ranged_stream(rescale_type_to_01(test_stream()), n));
+	const auto r = coupon_stats(n, ranged_stream(test_stream(), n));
 	EXPECT_NEAR(r->value, 29.3991, 1e-4);
 	EXPECT_NEAR(r->p_value, 0.2054, 1e-4);
 }

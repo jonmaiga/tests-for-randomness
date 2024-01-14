@@ -10,12 +10,12 @@
 
 namespace tfr {
 template <typename T>
-std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t tracked_draws, const T& data01) {
-	static_assert(std::is_floating_point_v<typename T::value_type>);
+std::vector<uint64_t> collect_coupons(uint64_t wanted_coupons, uint64_t tracked_draws, const T& data) {
 	std::set<uint64_t> coupons_collected;
 	std::vector<uint64_t> draws_histogram(tracked_draws);
 	uint64_t draw_count = 0;
-	for (const auto& v : data01) {
+	for (const auto& vv : data) {
+		const auto v = rescale_type_to_01(vv);
 		auto coupon_id = std::min(static_cast<uint64_t>(wanted_coupons * v), wanted_coupons - 1);
 		++draw_count;
 		if (!coupons_collected.insert(coupon_id).second) {
@@ -59,10 +59,10 @@ inline double expected_draws_per_coupon(uint64_t wanted_coupons) {
 }
 
 template <typename T>
-std::optional<statistic> coupon_stats(uint64_t n, const T& data01) {
+std::optional<statistic> coupon_stats(uint64_t n, const T& data) {
 	constexpr uint64_t wanted_coupons = 5;
 	const auto ps = expected_probabilities(wanted_coupons);
-	const auto cc = collect_coupons(wanted_coupons, ps.size(), data01);
+	const auto cc = collect_coupons(wanted_coupons, ps.size(), data);
 	assertion(cc.size() == ps.size(), "Unexpected size in coupons");
 
 	const auto expected_total_count = n / expected_draws_per_coupon(wanted_coupons);
@@ -71,6 +71,6 @@ std::optional<statistic> coupon_stats(uint64_t n, const T& data01) {
 
 template <typename T>
 sub_test_results coupon_test(uint64_t n, const stream<T>& stream) {
-	return main_sub_test(coupon_stats(n, ranged_stream(rescale_type_to_01(stream), n)));
+	return main_sub_test(coupon_stats(n, ranged_stream(stream, n)));
 }
 }
