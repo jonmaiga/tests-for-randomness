@@ -5,7 +5,6 @@
 #include "testutil.h"
 
 namespace tfr {
-
 TEST(run, empty) {
 	using V = std::vector<uint64_t>;
 	const auto ww = generate_runs_data<V>({}, 0);
@@ -56,9 +55,8 @@ TEST(run, two_runs_2) {
 }
 
 TEST(run, no_change) {
-	const auto r = runs_test(50, test_stream()).front().stats;
-	EXPECT_NEAR(r->value, 0.3007, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.7636, 1e-4);
+	const auto r = runs_test(1 << 15, test_stream()).front().stats;
+	EXPECT_NEAR(r->value, 0.724030, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.469046, 1e-4);
 }
-
 }
