@@ -28,11 +28,11 @@ auto create_bin_count_pow2() {
 using bin_count_function = std::function<uint64_t(uint64_t)>;
 
 template <typename T>
-std::vector<uint64_t> bin_data_for_chi2(const T& data01, const bin_count_function& get_bin_count) {
-	static_assert(std::is_floating_point_v<typename T::value_type>);
-	std::vector<uint64_t> bins(get_bin_count(data01.size()));
+std::vector<uint64_t> bin_data_for_chi2(const T& data, const bin_count_function& get_bin_count) {
+	std::vector<uint64_t> bins(get_bin_count(data.size()));
 	const auto bin_count = static_cast<double>(bins.size());
-	for (const auto v : data01) {
+	for (const auto vv : data) {
+		const auto v = rescale_type_to_01(vv);
 		assertion(is_valid_between_01(v), "Invalid data in chi2");
 		auto index = static_cast<std::size_t>(bin_count * v);
 		++bins[std::min(bins.size() - 1, index)];
@@ -63,10 +63,10 @@ inline std::optional<statistic> chi2_stats(const std::vector<uint64_t>& bins, do
 }
 
 template <typename RangeT>
-std::optional<statistic> chi2_uniform_stats(const RangeT& data01, const bin_count_function& bin_counter) {
-	static_assert(std::is_floating_point_v<typename RangeT::value_type>);
-	const auto& bins = bin_data_for_chi2(data01, bin_counter);
-	const double expected_count = static_cast<double>(data01.size()) / static_cast<double>(bins.size());
+std::optional<statistic> chi2_uniform_stats(const RangeT& data, const bin_count_function& bin_counter) {
+	//static_assert(std::is_floating_point_v<typename RangeT::value_type>);
+	const auto& bins = bin_data_for_chi2(data, bin_counter);
+	const double expected_count = static_cast<double>(data.size()) / static_cast<double>(bins.size());
 	return chi2_stats(bins, expected_count);
 }
 }
