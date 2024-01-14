@@ -4,28 +4,28 @@
 #include "basic.h"
 
 namespace tfr {
-
 struct runs_data {
 	double runs{};
 	double n_plus{};
 	double n_minus{};
 };
 
-template <typename T>
-runs_data generate_runs_data(const T& data) {
+template <typename RangeT>
+runs_data generate_runs_data(const RangeT& data, const typename RangeT::value_type cutoff) {
 	if (data.empty()) {
 		return {};
 	}
-	const auto cutoff = get_mean(data);
 	uint64_t n_plus = 0;
 	uint64_t n_minus = 0;
 	uint64_t runs = 1;
 	bool is_current_run_greater = *data.begin() > cutoff;
 	for (const auto v : data) {
-		const auto is_greater = v > cutoff;
-		if (v != cutoff) {
-			is_greater ? ++n_plus : ++n_minus;
+		if (v == cutoff) {
+			continue;
 		}
+		const auto is_greater = v > cutoff;
+		is_greater ? ++n_plus : ++n_minus;
+
 		if (is_greater != is_current_run_greater) {
 			is_current_run_greater = !is_current_run_greater;
 			++runs;
@@ -54,9 +54,7 @@ inline std::optional<statistic> runs_stats(runs_data s) {
 template <typename T>
 sub_test_results runs_test(const uint64_t n, stream<T> source) {
 	return main_sub_test(runs_stats(
-		generate_runs_data(ranged_stream(source, n))
+		generate_runs_data(ranged_stream(source, n), std::numeric_limits<T>::max() / 2)
 	));
 }
-
-
 }
