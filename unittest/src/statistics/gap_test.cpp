@@ -5,37 +5,40 @@
 #include "testutil.h"
 
 namespace tfr {
+std::vector<uint64_t> generate_gaps_upscale(uint64_t max_gap_size, double a, double b, const std::vector<double>& d) {
+	return generate_gaps(max_gap_size, a, b, rescale_01_to_type(d));
+}
 
 TEST(gap, generate_gaps) {
 	using T = std::vector<double>;
 	using U = std::vector<uint64_t>;
-	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {}), (U{0, 0}));
-	
-	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {0.}), (U{1, 0}));
-	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {0.5}), (U{1, 0}));
-	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {1.}), (U{1, 0}));
+	EXPECT_EQ(generate_gaps_upscale(2, 0, 1, {}), (U{0, 0}));
 
-	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.}), (U{1, 0}));
-	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.5}), (U{0, 0}));
-	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {1.}), (U{0, 0}));
+	EXPECT_EQ(generate_gaps_upscale(2, 0, 1, {0.}), (U{1, 0}));
+	EXPECT_EQ(generate_gaps_upscale(2, 0, 1, {0.5}), (U{1, 0}));
+	EXPECT_EQ(generate_gaps_upscale(2, 0, 1, {1.}), (U{1, 0}));
 
-	EXPECT_EQ(generate_gaps<T>(2, .5, 1, {0.}), (U{0, 0}));
-	EXPECT_EQ(generate_gaps<T>(2, .5, 1, {0.5}), (U{1, 0}));
-	EXPECT_EQ(generate_gaps<T>(2, .5, 1, {1.}), (U{1, 0}));
-	
-	EXPECT_EQ(generate_gaps<T>(2, 0, 1, {0.25, 0.75}), (U{2, 0}));
+	EXPECT_EQ(generate_gaps_upscale(2, 0, .5, {0.}), (U{1, 0}));
+	EXPECT_EQ(generate_gaps_upscale(2, 0, .5, {0.5}), (U{0, 0}));
+	EXPECT_EQ(generate_gaps_upscale(2, 0, .5, {1.}), (U{0, 0}));
 
-	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.25, 0.75}), (U{1, 0}));
-	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.75, 0.25}), (U{0, 1}));
-	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.75, 0.25, 0.5, 0.25}), (U{0, 2}));
-	EXPECT_EQ(generate_gaps<T>(2, 0, .5, {0.25, 0.75, 0.25, 0.5, 0.25}), (U{1, 2}));
-	EXPECT_EQ(generate_gaps<T>(2, .5, .6, {0.25, 0.5}), (U{0, 1}));
+	EXPECT_EQ(generate_gaps_upscale(2, .5, 1, {0.}), (U{0, 0}));
+	EXPECT_EQ(generate_gaps_upscale(2, .5, 1, {0.5}), (U{1, 0}));
+	EXPECT_EQ(generate_gaps_upscale(2, .5, 1, {1.}), (U{1, 0}));
+
+	EXPECT_EQ(generate_gaps_upscale(2, 0, 1, {0.25, 0.75}), (U{2, 0}));
+
+	EXPECT_EQ(generate_gaps_upscale(2, 0, .5, {0.25, 0.75}), (U{1, 0}));
+	EXPECT_EQ(generate_gaps_upscale(2, 0, .5, {0.75, 0.25}), (U{0, 1}));
+	EXPECT_EQ(generate_gaps_upscale(2, 0, .5, {0.75, 0.25, 0.5, 0.25}), (U{0, 2}));
+	EXPECT_EQ(generate_gaps_upscale(2, 0, .5, {0.25, 0.75, 0.25, 0.5, 0.25}), (U{1, 2}));
+	EXPECT_EQ(generate_gaps_upscale(2, .5, .6, {0.25, 0.5}), (U{0, 1}));
 }
 
 TEST(gap, generate_too_large_gaps) {
 	using T = std::vector<double>;
 	using U = std::vector<uint64_t>;
-	EXPECT_EQ(generate_gaps<T>(2, .5, .6, {0.25, 0.35, 0.52, 0.25, 0.35, 0.52}), (U{0, 2}));
+	EXPECT_EQ(generate_gaps_upscale(2, .5, .6, {0.25, 0.35, 0.52, 0.25, 0.35, 0.52}), (U{0, 2}));
 }
 
 TEST(gap, generate_gap_probabilities) {
@@ -62,5 +65,4 @@ TEST(gap, no_change_8) {
 	EXPECT_NEAR(rs.back().stats->value, 6.7704, 1e-4);
 	EXPECT_NEAR(rs.back().stats->p_value, 0.4531, 1e-4);
 }
-
 }
