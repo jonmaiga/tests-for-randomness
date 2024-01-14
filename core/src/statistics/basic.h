@@ -6,7 +6,6 @@
 
 
 namespace tfr {
-
 template <typename T>
 typename T::value_type get_median(const T& sorted) {
 	assertion(!sorted.empty(), "median in empty vector");
@@ -58,9 +57,7 @@ template <typename T>
 sub_test_results mean_test(uint64_t n, stream<T> stream) {
 	// mean from uniform is approximately normal
 	// https://stats.stackexchange.com/questions/458341/what-distribution-does-the-mean-of-a-random-sample-from-a-uniform-distribution-f
-	const auto stats = basic_stats(ranged_stream(rescale_type_to_01(stream), n));
-	return main_sub_test(z_test(stats.n, stats.mean, .5, 1. / 12.));
+	const auto mean = get_mean(ranged_stream(rescale_type_to_01(stream), n));
+	return main_sub_test(z_test(n, mean, .5, 1. / 12.));
 }
-
-
 }
