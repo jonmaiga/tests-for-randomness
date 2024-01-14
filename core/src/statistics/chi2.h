@@ -64,7 +64,6 @@ inline std::optional<statistic> chi2_stats(const std::vector<uint64_t>& bins, do
 
 template <typename RangeT>
 std::optional<statistic> chi2_uniform_stats(const RangeT& data, const bin_count_function& bin_counter) {
-	//static_assert(std::is_floating_point_v<typename RangeT::value_type>);
 	const auto& bins = bin_data_for_chi2(data, bin_counter);
 	const double expected_count = static_cast<double>(data.size()) / static_cast<double>(bins.size());
 	return chi2_stats(bins, expected_count);

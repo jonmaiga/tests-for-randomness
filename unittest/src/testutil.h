@@ -52,4 +52,13 @@ uint64_t hash64(const T& data) {
 	}
 	return h;
 }
+
+inline std::vector<uint64_t> rescale_01_to_type(const std::vector<double>& d) {
+	std::vector<uint64_t> data;
+	for (const double p : d) {
+		const auto max = std::numeric_limits<uint64_t>::max();
+		data.push_back(static_cast<uint64_t>(p * max));
+	}
+	return data;
+}
 }

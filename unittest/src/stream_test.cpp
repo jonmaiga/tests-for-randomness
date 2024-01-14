@@ -102,14 +102,14 @@ TEST(streams, copy) {
 	double sum = 0;
 	for (const auto v : ranged_stream(s, 10)) {
 		j++;
-		sum += v;
+		sum += rescale_type_to_01(v);
 	}
 
 	j = 0;
 	double sum2 = 0;
 	for (const auto v : ranged_stream(s, 10)) {
 		j++;
-		sum2 += v;
+		sum2 += rescale_type_to_01(v);;
 	}
 	EXPECT_EQ(j, 10);
 	EXPECT_EQ(sum, sum2);
