@@ -122,14 +122,14 @@ struct result_analysis {
 	enum class type { Sample, Meta };
 
 	type type;
-	std::string name;
+	std::string stream_name;
 	test_key key;
 	statistic_analysis analysis;
 	std::vector<test_result> results;
 
 
 	std::string to_string() const {
-		return p_value_to_string(analysis.stat.p_value) + " " + analysis.to_string() + " " + name;
+		return p_value_to_string(analysis.stat.p_value) + " " + analysis.to_string() + " " + stream_name;
 	}
 
 	bool operator <(const result_analysis& rhs) const {

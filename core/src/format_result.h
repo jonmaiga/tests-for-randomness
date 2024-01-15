@@ -124,7 +124,7 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 		tests_table.col(to_string(ra.key))
 		           .col(p_value_to_string(ra.analysis.stat.p_value))
 		           .col(ra.analysis.to_string())
-		           .col(ra.name)
+		           .col(ra.stream_name)
 		           .row();
 	}
 	std::cout << tests_table.to_string() << "\n";
