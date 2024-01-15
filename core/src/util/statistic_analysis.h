@@ -121,9 +121,9 @@ inline std::string p_value_to_string(const double p_value) {
 struct result_analysis {
 	enum class type { Sample, Meta };
 
-	type type;
+	type analysis_type;
 	std::string stream_name;
-	test_key key;
+	test_key test_key;
 	statistic_analysis analysis;
 	std::vector<test_result> results;
 

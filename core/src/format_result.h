@@ -32,7 +32,7 @@ inline void draw_histogram_rescale(const std::vector<double>& data) {
 }
 
 inline std::string to_string(const test_key& key) {
-	return get_test_name(key.type) + "-" + key.name;
+	return get_test_name(key.type) + "-" + key.sub_test_name;
 }
 
 inline std::string to_string(const seed_data& seed) {
@@ -44,7 +44,7 @@ inline std::vector<result_analysis> filter_to_show(std::vector<result_analysis> 
 
 	std::map<test_type, std::vector<result_analysis>> per_test;
 	for (const auto& e : results) {
-		per_test[e.key.type].push_back(e);
+		per_test[e.test_key.type].push_back(e);
 	}
 
 	std::vector<result_analysis> to_show;
@@ -85,10 +85,10 @@ inline std::vector<std::string> get_failed_tests(const std::vector<result_analys
 		if (ra.analysis.pass()) {
 			continue;
 		}
-		if (ra.type == result_analysis::type::Meta) {
+		if (ra.analysis_type == result_analysis::type::Meta) {
 			continue;
 		}
-		test_names.insert(get_test_name(ra.key.type));
+		test_names.insert(get_test_name(ra.test_key.type));
 	}
 
 	std::vector result(test_names.begin(), test_names.end());
@@ -96,10 +96,10 @@ inline std::vector<std::string> get_failed_tests(const std::vector<result_analys
 		if (ra.analysis.pass()) {
 			continue;
 		}
-		if (ra.type != result_analysis::type::Meta) {
+		if (ra.analysis_type != result_analysis::type::Meta) {
 			continue;
 		}
-		const auto name = get_test_name(ra.key.type);
+		const auto name = get_test_name(ra.test_key.type);
 		if (test_names.contains(name)) {
 			continue;
 		}
@@ -121,7 +121,7 @@ inline void print_battery_result(const test_battery_result& battery_result) {
 	const auto ras = get_analysis(battery_result);
 	table tests_table({"test", "p-value", "remark", "stream/description"});
 	for (const auto& ra : filter_to_show(ras)) {
-		tests_table.col(to_string(ra.key))
+		tests_table.col(to_string(ra.test_key))
 		           .col(p_value_to_string(ra.analysis.stat.p_value))
 		           .col(ra.analysis.to_string())
 		           .col(ra.stream_name)

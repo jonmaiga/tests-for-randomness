@@ -52,7 +52,7 @@ void test_command() {
 		std::ostringstream os;
 		os << "# " << bit_sizeof<T>() << "-bit results\n";
 		os << "_While TFR is new you should take the results with a grain of salt._\n\n";
-		os << "Tests stop at 2^" << max_power_of_two << " stream elements have been tested.\n\n";
+		os << "Tests stop when 2^" << max_power_of_two << " stream elements have been tested. A failed test with '*' suffix indicates the meta analysis failed (non uniform p-values).\n\n";
 		os << "Source|TFR|Failures|\n-|-|-|\n";
 		write(report_filename, os.str());
 		on_done = [report_filename](const test_battery_result& br, bool pass) {

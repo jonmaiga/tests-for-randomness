@@ -80,14 +80,14 @@ inline sub_test_results main_sub_test(std::optional<statistic> s) {
 
 struct test_key {
 	test_type type;
-	std::string name;
+	std::string sub_test_name;
 
 	bool operator <(const test_key& rhs) const {
 		if (type != rhs.type) {
 			return type < rhs.type;
 		}
-		if (name != rhs.name) {
-			return name < rhs.name;
+		if (sub_test_name != rhs.sub_test_name) {
+			return sub_test_name < rhs.sub_test_name;
 		}
 		return false;
 	}
