@@ -9,7 +9,8 @@
 
 namespace tfr {
 
-inline std::optional<statistic> g_test_stats(std::size_t n, const data_fn& observed, const data_fn& expected, double expected_threshold = 1) {
+template<typename FunctionT1, typename FunctionT2>
+std::optional<statistic> g_test_stats(std::size_t n, const FunctionT1& observed, const FunctionT2& expected, double expected_threshold = 1) {
 	assertion(expected_threshold > 0, "G test requires expected threshold > 0");
 	double g = 0;
 	double df = 0;

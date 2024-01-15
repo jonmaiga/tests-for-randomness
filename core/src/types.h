@@ -213,10 +213,8 @@ mixer_test<T> limit_n_slower(const mixer_test<T>& test) { return detail::limit_n
 /// DATA TYPES
 ///////////////////////////////////////////////////////////////
 
-using data_fn = std::function<double(std::size_t)>;
-
 template <typename T>
-data_fn to_data(const T& d) {
+auto to_data(const T& d) {
 	if constexpr (std::is_arithmetic<T>()) {
 		return [d](std::size_t) {
 			return static_cast<double>(d);
@@ -229,7 +227,8 @@ data_fn to_data(const T& d) {
 	}
 }
 
-inline data_fn mul(const data_fn& a, const data_fn& b) {
+template <typename FunctionT1, typename FunctionT2>
+auto mul(const FunctionT1& a, const FunctionT2& b) {
 	return [&a, &b](std::size_t i) {
 		return a(i) * b(i);
 	};
