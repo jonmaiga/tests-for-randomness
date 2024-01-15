@@ -76,17 +76,36 @@ inline std::vector<std::string> get_tests(const test_battery_result& br) {
 	for (const auto& result : br.results) {
 		test_names.insert(get_test_name(result.first.type));
 	}
-	return std::vector(test_names.begin(), test_names.end());
+	return {test_names.begin(), test_names.end()};
 }
 
 inline std::vector<std::string> get_failed_tests(const std::vector<result_analysis>& ras) {
 	std::set<std::string> test_names;
 	for (const auto& ra : ras) {
-		if (!ra.analysis.pass()) {
-			test_names.insert(get_test_name(ra.key.type));
+		if (ra.analysis.pass()) {
+			continue;
 		}
+		if (ra.type == result_analysis::type::Meta) {
+			continue;
+		}
+		test_names.insert(get_test_name(ra.key.type));
 	}
-	return std::vector(test_names.begin(), test_names.end());
+
+	std::vector result(test_names.begin(), test_names.end());
+	for (const auto& ra : ras) {
+		if (ra.analysis.pass()) {
+			continue;
+		}
+		if (ra.type != result_analysis::type::Meta) {
+			continue;
+		}
+		const auto name = get_test_name(ra.key.type);
+		if (test_names.contains(name)) {
+			continue;
+		}
+		result.push_back(name + "*");
+	}
+	return result;
 }
 
 inline void print_battery_result(const test_battery_result& battery_result) {
