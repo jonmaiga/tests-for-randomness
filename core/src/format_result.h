@@ -32,7 +32,7 @@ inline void draw_histogram_rescale(const std::vector<double>& data) {
 }
 
 inline std::string to_string(const test_key& key) {
-	return get_test_name(key.type) + "-" + key.sub_test_name;
+	return get_test_name(key.type) + (key.sub_test_name.empty() ? "" : ":" + key.sub_test_name);
 }
 
 inline std::string to_string(const seed_data& seed) {

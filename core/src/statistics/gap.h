@@ -59,7 +59,7 @@ sub_test_results gap_test(uint64_t n, const stream<T>& source) {
 			if (const auto s = chi2_stats(gaps.size(), to_data(gaps),
 			                              mul(to_data(ps), to_data(expected_total_count)),
 			                              5.)) {
-				results.push_back({"g" + std::to_string(gi), s});
+				results.push_back({std::to_string(gi + 1) + "/" + std::to_string(wanted_gaps), s});
 			}
 		}
 	}

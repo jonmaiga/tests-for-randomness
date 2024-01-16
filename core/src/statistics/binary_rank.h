@@ -129,7 +129,7 @@ sub_test_results binary_rank_test(uint64_t n, const stream<T>& source) {
 	const auto matrix_size = get_matrix_size<T>(n);
 	sub_test_results r;
 	r.push_back({std::to_string(matrix_size), binary_rank_stats(n, source, matrix_size)});
-	r.push_back({std::to_string(matrix_size) + ":0", binary_rank_isolated_bit_stats(n, source, matrix_size, 0)});
+	r.push_back({std::to_string(matrix_size) + ":bit(0)", binary_rank_isolated_bit_stats(n, source, matrix_size, 0)});
 	return r;
 }
 }
