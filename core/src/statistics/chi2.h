@@ -40,7 +40,7 @@ std::vector<uint64_t> bin_data_for_chi2(const T& data, const bin_count_function&
 	return bins;
 }
 
-template <typename ExpectedT, typename ObservedT>
+template <typename ObservedT, typename ExpectedT>
 std::optional<statistic> chi2_stats(std::size_t n, const ExpectedT& observed, const ObservedT& expected, double expected_threshold = 0) {
 	double chi2 = 0;
 	double df = 0;
