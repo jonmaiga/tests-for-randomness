@@ -145,7 +145,7 @@ inline std::vector<result_analysis> get_analysis(const test_battery_result& batt
 
 		const auto analysis = create_uniform_p_values_analysis(e.second);
 		const auto name = "meta analysis over " + std::to_string(e.second.size()) + " samples";
-		//ras.push_back({result_analysis::type::Meta, name, e.first, analysis, e.second});
+		ras.push_back({result_analysis::type::Meta, name, e.first, analysis, e.second});
 	}
 	std::sort(ras.begin(), ras.end());
 	return ras;
