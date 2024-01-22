@@ -31,8 +31,8 @@ std::vector<seed_data> generate_seeds(int n) {
 	return results;
 }
 
-template <typename T>
-streams<T> create_evenly_seeded_stream(const std::string& name, const std::vector<T>& data, int sample_count) {
+template <typename RangeT, typename T = typename RangeT::value_type>
+streams<T> create_evenly_seeded_stream(const std::string& name, const RangeT& data, int sample_count) {
 	streams<T> ts;
 	const uint64_t interval = data.size() / sample_count;
 	std::cout << "Warning: " << name << " data samples will overlap for >2^" << std::floor(std::log2(interval)) << ", this will make meta analysis unreliable.\n";
@@ -40,17 +40,17 @@ streams<T> create_evenly_seeded_stream(const std::string& name, const std::vecto
 	for (uint64_t i = 0; i < sample_count; ++i) {
 		const auto start_index = i * interval;
 		ts.push_back(
-			create_stream_from_data_by_ref<T>(name + "-" + std::to_string(start_index), data, start_index)
+			create_stream_from_data_by_ref(name + "-" + std::to_string(start_index), data, start_index)
 		);
 	}
 	return ts;
 }
 
-template <typename T>
-test_setup<T> create_data_test_setup(const std::string& name, const std::vector<T>& data, int sample_count = 128) {
+template <typename RangeT, typename T = typename RangeT::value_type>
+test_setup<T> create_data_test_setup(const std::string& name, const RangeT& data, int sample_count = 128) {
 	return test_setup<T>{
 		name,
-		create_evenly_seeded_stream<T>(name, data, sample_count),
+		create_evenly_seeded_stream(name, data, sample_count),
 		default_test_types
 	};
 }

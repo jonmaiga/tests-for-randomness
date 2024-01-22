@@ -8,7 +8,7 @@
 namespace tfr {
 template <typename T>
 std::vector<uint64_t> get_histogram(const std::vector<T>& d) {
-	auto s = create_stream_from_data_by_ref<T>("d", d, 0);
+	auto s = create_stream_from_data_by_ref("d", d, 0);
 	return get_permutation_histogram(ranged_stream(s, d.size()), 5);
 }
 
