@@ -212,13 +212,13 @@ void inspect_per_test_command() {
 		std::cout << "========================\n";
 		timer t;
 		// trng
-		if (const auto* data = get_trng_data<T>()) {
-			evaluate_multi_pass(callback, create_data_test_setup<T>("trng", *data).set_tests({test.type}).range(10, std::min(max_power_of_two, 22)));
+		if (const auto& data = get_trng_data<T>()) {
+			evaluate_multi_pass(callback, create_data_test_setup("trng", *data).set_tests({test.type}).range(10, std::min(max_power_of_two, 22)));
 		}
 
 		// drng
-		if (const auto* data = get_drng_data<T>()) {
-			evaluate_multi_pass(callback, create_data_test_setup<T>("drng", *data).set_tests({test.type}));
+		if (const auto& data = get_drng_data<T>()) {
+			evaluate_multi_pass(callback, create_data_test_setup("drng", *data).set_tests({test.type}));
 		}
 
 		// mixers
