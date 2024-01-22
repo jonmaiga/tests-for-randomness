@@ -40,7 +40,7 @@ streams<T> create_evenly_seeded_stream(const std::string& name, const RangeT& da
 	for (uint64_t i = 0; i < sample_count; ++i) {
 		const auto start_index = i * interval;
 		ts.push_back(
-			create_stream_from_data_by_ref(name + "-" + std::to_string(start_index), data, start_index)
+			create_stream_from_data(name + "-" + std::to_string(start_index), data, start_index)
 		);
 	}
 	return ts;

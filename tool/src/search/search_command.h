@@ -33,7 +33,7 @@ inline bit_vector find_seed(const sffs_config& config, int tries) {
 
 template <typename T>
 sffs_state start_search(const std::string& name, const sffs_config& config) {
-	//auto trng_stream = create_stream_from_data_by_ref_thread_safe<T>("trng", get_trng_data<T>());
+	//auto trng_stream = create_stream_from_data_thread_safe<T>("trng", get_trng_data<T>());
 	//const auto trng = create_mixer_from_stream("trng1", trng_stream);
 
 	std::cout << "===========================\n";

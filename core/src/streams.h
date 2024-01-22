@@ -33,21 +33,11 @@ stream<T> create_counter_stream(uint64_t increment) {
 	return create_counter_stream<T>(increment, 0);
 }
 
-template <typename T>
-stream<T> create_stream_from_data(const std::string& name, const std::vector<T>& data, std::size_t start_index = 0) {
+template <typename RangeT, typename T = typename RangeT::value_type>
+stream<T> create_stream_from_data(const std::string& name, const RangeT& data, std::size_t start_index = 0) {
 	std::size_t index = start_index;
 	return stream<T>{
 		name, [data, index]() mutable -> T {
-			return data[index++ % data.size()];
-		}
-	};
-}
-
-template <typename DataT, typename T = typename DataT::value_type>
-stream<T> create_stream_from_data_by_ref(const std::string& name, const DataT& data, std::size_t start_index = 0) {
-	std::size_t index = start_index;
-	return stream<T>{
-		name, [&data, index]() mutable -> T {
 			return data[index++ % data.size()];
 		}
 	};
@@ -93,7 +83,7 @@ stream<T> create_ror_stream(stream<T> source, int rotate_right) {
 }
 	
 template <typename T>
-stream<T> create_stream_from_data_by_ref_thread_safe(const std::string& name, const std::vector<T>& data) {
+stream<T> create_stream_from_data_thread_safe(const std::string& name, const std::vector<T>& data) {
 	static std::atomic_size_t index = 0;
 	return stream<T>{
 		name, [&data]() -> T {
