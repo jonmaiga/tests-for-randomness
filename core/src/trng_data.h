@@ -58,7 +58,7 @@ std::optional<stream<T>> create_trng_stream(std::size_t start_index = 0) {
 template <typename T>
 std::optional<stream<T>> create_drng_stream(std::size_t start_index = 0) {
 	if (const auto drng_data = get_drng_data<T>()) {
-		return create_stream_from_data_by_ref<T>("drng", *drng_data, start_index);
+		return create_stream_from_data_by_ref("drng", *drng_data, start_index);
 	}
 	return {};
 }
