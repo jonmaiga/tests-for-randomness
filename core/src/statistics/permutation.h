@@ -27,7 +27,7 @@ uint64_t get_permutation_size(const uint64_t n) {
 	// solve n*bits/expected_count = x*2^x, where x is permutation_size
 	static const auto log2 = std::log(2);
 	const auto total_bits = n * bit_sizeof<T>();
-	constexpr double approximated_count_per_bin = 1000;
+	constexpr double approximated_count_per_bin = 32;
 	const double y = static_cast<double>(total_bits) / approximated_count_per_bin;
 	return static_cast<uint64_t>(lambert_w_approximation(y * log2) / log2);
 }

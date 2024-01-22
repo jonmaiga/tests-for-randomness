@@ -14,14 +14,14 @@ std::vector<uint64_t> get_histogram(const std::vector<T>& d) {
 
 TEST(permutation, no_change) {
 	const auto r = permutation_test(1000, test_stream());
-	EXPECT_NEAR(r.front().stats->value, 23.2259, 1e-4);
-	EXPECT_NEAR(r.front().stats->p_value, 0.07945, 1e-4);
+	EXPECT_NEAR(r.front().stats->value, 116.2279, 1e-4);
+	EXPECT_NEAR(r.front().stats->p_value, 0.7434, 1e-4);
 }
 
 TEST(permutation, no_change_large) {
 	const auto r = permutation_test(1ull << 18, create_stream_from_mixer(create_counter_stream<uint32_t>(1), mix32::mx3));
-	EXPECT_NEAR(r.front().stats->value, 489.4644, 1e-4);
-	EXPECT_NEAR(r.front().stats->p_value, 0.7461, 1e-4);
+	EXPECT_NEAR(r.front().stats->value, 16398.3950, 1e-4);
+	EXPECT_NEAR(r.front().stats->p_value, 0.4646, 1e-4);
 }
 
 TEST(permutation, histogram_zeroes) {
@@ -57,30 +57,30 @@ TEST(permutation, histogram) {
 TEST(permutation, no_change_8) {
 	auto n = 1 << 20;
 	const auto r = permutation_test(n, test_stream_casted<uint8_t>(n)).front().stats;
-	EXPECT_NEAR(r->value, 519.98341, 1e-4);
-	EXPECT_NEAR(r->p_value, 0.3820, 1e-4);
+	EXPECT_NEAR(r->value, 16281.0356, 1e-4);
+	EXPECT_NEAR(r->p_value, 0.7125, 1e-4);
 }
 
 TEST(permutation, get_permutation_size) {
 	using T = uint64_t;
-	EXPECT_EQ(get_permutation_size<T>(1<<10), 4);
-	EXPECT_EQ(get_permutation_size<T>(1<<15), 8);
-	EXPECT_EQ(get_permutation_size<T>(1<<20), 12);
-	EXPECT_EQ(get_permutation_size<T>(1<<25), 16);
-	EXPECT_EQ(get_permutation_size<T>(1<<30), 21);
-	EXPECT_EQ(get_permutation_size<T>(1ull<<35), 26);
+	EXPECT_EQ(get_permutation_size<T>(1<<10), 8);
+	EXPECT_EQ(get_permutation_size<T>(1<<15), 12);
+	EXPECT_EQ(get_permutation_size<T>(1<<20), 16);
+	EXPECT_EQ(get_permutation_size<T>(1<<25), 21);
+	EXPECT_EQ(get_permutation_size<T>(1<<30), 26);
+	EXPECT_EQ(get_permutation_size<T>(1ull<<35), 31);
 }
 
 TEST(permutation, get_permutation_size_32) {
 	using T = uint32_t;
-	EXPECT_EQ(get_permutation_size<T>(1<<10), 3);
-	EXPECT_EQ(get_permutation_size<T>(1<<15), 7);
-	EXPECT_EQ(get_permutation_size<T>(1<<20), 11);
-	EXPECT_EQ(get_permutation_size<T>(1<<24), 15);
-	EXPECT_EQ(get_permutation_size<T>(1<<25), 16);
-	EXPECT_EQ(get_permutation_size<T>(1<<26), 16);
-	EXPECT_EQ(get_permutation_size<T>(1<<27), 17);
-	EXPECT_EQ(get_permutation_size<T>(1<<30), 20);
-	EXPECT_EQ(get_permutation_size<T>(1ull<<35), 25);
+	EXPECT_EQ(get_permutation_size<T>(1<<10), 7);
+	EXPECT_EQ(get_permutation_size<T>(1<<15), 11);
+	EXPECT_EQ(get_permutation_size<T>(1<<20), 16);
+	EXPECT_EQ(get_permutation_size<T>(1<<24), 19);
+	EXPECT_EQ(get_permutation_size<T>(1<<25), 20);
+	EXPECT_EQ(get_permutation_size<T>(1<<26), 21);
+	EXPECT_EQ(get_permutation_size<T>(1<<27), 22);
+	EXPECT_EQ(get_permutation_size<T>(1<<30), 25);
+	EXPECT_EQ(get_permutation_size<T>(1ull<<35), 30);
 }
 }
