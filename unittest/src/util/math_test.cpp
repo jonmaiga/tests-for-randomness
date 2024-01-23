@@ -74,8 +74,8 @@ TEST(math, lambert_w) {
 
 TEST(math, fishers_transformation_safe) {
 	EXPECT_EQ(fishers_transformation_safe(0), 0);
-	EXPECT_EQ(fishers_transformation_safe(.5), std::atanh(.5));
-	EXPECT_EQ(fishers_transformation_safe(-.5), std::atanh(-.5));
+	EXPECT_NEAR(fishers_transformation_safe(.5), std::atanh(.5), 1e-10);
+	EXPECT_NEAR(fishers_transformation_safe(-.5), std::atanh(-.5), 1e-10);
 	EXPECT_NEAR(fishers_transformation_safe(.99), 2.6466, 1e-4);
 	EXPECT_NEAR(fishers_transformation_safe(-1), -18.715, 1e-4);
 	EXPECT_NEAR(fishers_transformation_safe(1), 18.715, 1e-4);
