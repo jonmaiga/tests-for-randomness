@@ -100,7 +100,7 @@ void inspect_tests(const streams<T>& sources, bool all_should_pass) {
 			return true;
 		}
 
-		if (def.name == "ww" && !all_should_pass) {
+		if (def.type == test_type::runs && !all_should_pass) {
 			return fail_sources.size() == 4;
 		}
 
