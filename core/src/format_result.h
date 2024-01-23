@@ -88,7 +88,7 @@ inline std::vector<std::string> get_failed_tests(const std::vector<result_analys
 		if (ra.analysis_type == result_analysis::type::Meta) {
 			continue;
 		}
-		test_names.insert(get_test_name(ra.test_id.type));
+		test_names.insert(to_string(ra.test_id));
 	}
 
 	std::vector result(test_names.begin(), test_names.end());
@@ -99,7 +99,7 @@ inline std::vector<std::string> get_failed_tests(const std::vector<result_analys
 		if (ra.analysis_type != result_analysis::type::Meta) {
 			continue;
 		}
-		const auto name = get_test_name(ra.test_id.type);
+		const auto name = to_string(ra.test_id);
 		if (test_names.contains(name)) {
 			continue;
 		}
