@@ -15,7 +15,8 @@ Uses c++20, cmake and is tested with msvc, clang and gcc.
 ## Install
 Uses external dependency on [googletest-release-1.12.1](https://github.com/google/googletest/releases/tag/release-1.12.1) just place it directly under your cloned directory.
 
-TODO
+## Run
+To run all the tests type `tfr-tool root-path -test` where `root-path` is a path where reports will be saved (e.g. `c:/tmp/tfr/`)
 
 ## Tests
 - Mean
@@ -26,6 +27,8 @@ TODO
 - Coupon
 - Divisibility
 - Permutation
+- Binary rank
+- Linear complexity
 - Strict Avalanche Criterion (for mixers)
 - Bit Independence Criterion (for mixers)
 
