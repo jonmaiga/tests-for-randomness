@@ -5,11 +5,14 @@
 
 namespace tfr {
 template <typename T>
-std::vector<uint64_t> get_permutation_histogram(const T& data, uint64_t window_size) {
+std::vector<uint8_t> get_permutation_histogram(const T& data, uint64_t window_size) {
 	static_assert(std::is_integral_v<typename T::value_type>);
-	std::vector<uint64_t> histogram(1ull << window_size);
+	std::vector<uint8_t> histogram(1ull << window_size);
 	sliding_bit_window(data, window_size, [&histogram](uint64_t v) {
-		histogram[v]++;
+		auto& count = histogram[v];
+		if (count < 255) {
+			++count;
+		}
 	});
 	return histogram;
 }
@@ -17,9 +20,9 @@ std::vector<uint64_t> get_permutation_histogram(const T& data, uint64_t window_s
 template <typename T>
 std::optional<statistic> permutation_stat(const uint64_t n, const stream<T>& stream, uint64_t permutation_size) {
 	const auto total_bits = n * bit_sizeof<T>();
-	const auto histogram = get_permutation_histogram(ranged_stream<T>(stream, n), permutation_size);
+	const auto& histogram = get_permutation_histogram(ranged_stream<T>(stream, n), permutation_size);
 	const double expected_count = std::floor(total_bits / permutation_size) / histogram.size();
-	return chi2_stats(histogram, expected_count);
+	return chi2_stats(histogram.size(), to_data(histogram), to_data(expected_count));
 }
 
 template <typename T>
