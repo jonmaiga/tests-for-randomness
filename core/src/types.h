@@ -35,7 +35,7 @@ enum class test_type {
 	mean,
 	uniform,
 	runs,
-	bit_count_2d,
+	serial_avalanche,
 	gap,
 	coupon,
 	divisibility,

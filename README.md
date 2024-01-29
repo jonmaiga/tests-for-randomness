@@ -22,7 +22,7 @@ To run all the tests type `tfr-tool root-path -test` where `root-path` is a path
 - Mean
 - Uniform
 - Runs
-- Bit correlation
+- Serial avalanche
 - Gap
 - Coupon
 - Divisibility
@@ -37,8 +37,11 @@ Many of the tests are pretty standard and can be found on wikipedia or by googli
 ### Divisibility test
 The divisibility test is a variation on the coupon test, where we collect numbers that are divisible by some constant. For example every second number is divisible by two, every third by three and so on. Statistically this should hold for randomness too.
 
-### Bit correlection test
+### Serial avalanche test
 For mixers we can employ sac and bic since we can control the input. This is an attempt to do something similar for prngs (that uses an internal state). It basically creates a matrix of the consecutive stream outputs counting the number of bits set. Each row in the matrix (with enough information) should be approximately binomially distributed.
+
+### Permutation test
+This tests uniformity of increasing sizes of bit permutations. Appears to be able to detect mixer bias where other tests do not.
 
 ## Randomness
 - PRNGs `f()`

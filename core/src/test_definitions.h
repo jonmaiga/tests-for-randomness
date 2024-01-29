@@ -3,7 +3,7 @@
 #include "statistics/avalanche.h"
 #include "statistics/basic.h"
 #include "statistics/binary_rank.h"
-#include "statistics/bit_correlation.h"
+#include "statistics/serial_avalanche.h"
 #include "statistics/coupon.h"
 #include "statistics/divisibility.h"
 #include "statistics/gap.h"
@@ -29,7 +29,7 @@ std::vector<test_definition<T>> get_tests() {
 		{test_type::uniform, uniform_test<T>, {}, "uniform"},
 
 		{test_type::runs, runs_test<T>, {}, "runs"},
-		{test_type::bit_count_2d, bit_count_2d_test<T>, {}, "bc2d"},
+		{test_type::serial_avalanche, serial_avalanche<T>, {}, "serial-avalanche"},
 
 		{test_type::gap, limit_n_slow<T>(gap_test<T>), {}, "gap"},
 		{test_type::coupon, limit_n_slower<T>(coupon_test<T>), {}, "coupon"},

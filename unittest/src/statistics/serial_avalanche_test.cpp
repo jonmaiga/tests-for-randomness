@@ -1,13 +1,13 @@
-#include <statistics/bit_correlation.h>
+#include <statistics/serial_avalanche.h>
 
 #include <gtest/gtest.h>
 
 #include "testutil.h"
 
 namespace tfr {
-TEST(bit_correlation, bit_count_2d_no_change) {
+TEST(serial_avalanche, bit_count_2d_no_change) {
 	using T = uint64_t;
-	const auto rs = bit_count_2d_test(1ull << 20, test_stream<T>());
+	const auto rs = serial_avalanche(1ull << 20, test_stream<T>());
 	EXPECT_EQ(rs.size(), 23);
 	double p_sum = 0;
 	double s_sum = 0;
