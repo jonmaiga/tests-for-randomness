@@ -43,6 +43,11 @@ For mixers we can employ sac and bic since we can control the input. This is an 
 ### Permutation test
 This tests uniformity of increasing sizes of bit permutations. Appears to be able to detect mixer bias where other tests do not.
 
+### Strong tests
+Empirically it appears that `Uniform`, `Serial avalanche`, `Permutation`, `Binary rank`, `Linear complexity` and `Strict Avalanche Criterion` are good worthwhile tests.
+
+The others can/should probably be disabled for data larger than ~`2^25`.
+
 ## Randomness
 - PRNGs `f()`
 - Mixers `f(x)`
