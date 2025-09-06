@@ -1,5 +1,7 @@
 project(tfr-tool)
 include_directories(src ../impl/src)
+enable_testing()
+set(gtest_disable_pthreads ON CACHE BOOL "Force gtest to use std::thread")
 file(GLOB_RECURSE SOURCES "src/*.*")
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(${PROJECT_NAME} tfr-core tfr-impl Threads::Threads ${CXX_FILESYSTEM_LIBRARIES})
